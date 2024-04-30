@@ -4,7 +4,7 @@ import model.Command;
 
 public class LoginController extends AppController {
     @Command(command = "login -u <username> -p <password> --stayLoggedIn")
-    public String login(String username, String password, boolean stayLoggedIn) { // It works!!!
+    public String login(String username, String password, boolean stayLoggedIn) { // It works!!!commandgit git status
         return "username : " + username + ", password : " + password + ", stayLoggedIn : " + stayLoggedIn;
     }
 }
