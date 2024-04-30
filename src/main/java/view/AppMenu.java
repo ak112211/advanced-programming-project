@@ -12,13 +12,11 @@ public abstract class AppMenu {
     public void check(Scanner scanner) {
 
         String input = scanner.nextLine();
-
-        for (Method method : App.getController().getClass().getDeclaredMethods()) {
+        for (Method method : App.getController().getClass().getMethods()) {
             Command command = method.getAnnotation(Command.class);
-            System.out.println("method : " + method.getName());
             if (command != null) {
-                if (input.replaceAll(" -.++", "").equals(
-                        command.command().replaceAll(" -.++", ""))) {
+                if (input.replaceAll("-.++", "").trim().equals(
+                        command.command().replaceAll("-.++", "").trim())) {
                     System.out.println(CommandMatcher.run(method, command.command(), input));
                     return;
                 }
