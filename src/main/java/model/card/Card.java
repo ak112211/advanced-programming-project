@@ -1,2 +1,5 @@
-package model.card;public class Card {
+package model.card;
+
+public interface Card {
+    String getName();
 }
