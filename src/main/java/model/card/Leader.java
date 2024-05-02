@@ -1,4 +1,4 @@
 package model.card;
 
-public enum Commander {
+public enum Leader {
 }

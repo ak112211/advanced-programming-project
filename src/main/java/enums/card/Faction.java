@@ -1,2 +1,4 @@
-package enums.card;public enum Faction {
+package enums.card;
+
+public enum Faction {
 }

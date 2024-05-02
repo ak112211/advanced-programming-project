@@ -1,5 +1,8 @@
 package model;
 
+import enums.card.Faction;
+import model.card.Leader;
+
 import java.util.ArrayList;
 
 public class User {
@@ -12,7 +15,12 @@ public class User {
     private String password;
     private int questionNumber;
     private String answer;
+
     private ArrayList<Game> games = new ArrayList<Game>();
+    private Faction faction;
+    private Leader leader;
+    private Deck deck;
+    private ArrayList<Deck> decks = new ArrayList<Deck>();
 
     public User(String username, String nickname, String email, String password) {
         this.username = username;
@@ -77,6 +85,26 @@ public class User {
             }
         }
         return null;
+    }
+
+    public ArrayList<Game> getGames() {
+        return games;
+    }
+
+    public Faction getFaction() {
+        return faction;
+    }
+
+    public void setFaction(Faction faction) {
+        this.faction = faction;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public ArrayList<Deck> getDecks() {
+        return decks;
     }
 }
 
