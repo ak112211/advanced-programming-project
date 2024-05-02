@@ -7,10 +7,11 @@ import view.ProfileMenu;
 import java.util.HashMap;
 
 public class ProfileController extends AppController {
-
+    
     @Command(command = "show current menu")
     public void showCurrentMenu() {
         ProfileMenu.showCurrentMenu();
+
     }
 
     @Command(command = "change username -u <username>")
