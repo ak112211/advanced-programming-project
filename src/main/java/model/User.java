@@ -10,6 +10,9 @@ public class User {
     private String nickname;
     private String email;
     private String password;
+    private int questionNumber;
+    private String answer;
+    private ArrayList<Game> games = new ArrayList<Game>();
 
     public User(String username, String nickname, String email, String password) {
         this.username = username;
@@ -49,6 +52,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public User getUserByUsername(String username) {
