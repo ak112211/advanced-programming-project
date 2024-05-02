@@ -8,9 +8,30 @@ public class RegisterController extends AppController {
         return null;
     }
 
-    @Command(command = "pick question -q <questionNumber> -a <answer> -c <answer_confirm>")
+    @Command(command = "pick question -q <questionNumber> -a <answer> -c <answerConfirm>")
     public String pickQuestion() {
         return null;
     }
+
+    public static boolean isUsernameFormatValid(String username) {
+        return false;
+    }
+
+    public static boolean isPasswordFormatValid(String password) {
+        return false;
+    }
+
+    public static String passwordStrengthChecker(String password) {
+        return null;
+    }
+
+    public static boolean isValidNickname(String nickname) {
+        return false;
+    }
+
+    public static boolean isEmailFormatValid(String email) {
+        return false;
+    }
+
 
 }
