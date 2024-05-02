@@ -27,7 +27,7 @@ public class CommandMatcher {
     }};
 
     public static String getPattern(String command) {
-        Matcher matcher1 = Pattern.compile(" -([a-z]++) <([^>]++)>").matcher(command);
+        Matcher matcher1 = Pattern.compile(" -([a-z0-9]++) <([^>]++)>").matcher(command);
         StringBuilder sb1 = new StringBuilder();
         while (matcher1.find()) {
             matcher1.appendReplacement(sb1, "(?=.+-" + matcher1.group(1) + "\\\\s++" +
@@ -54,7 +54,6 @@ public class CommandMatcher {
             Object[] parObjs = new Object[method.getParameterCount()];
             int i = 0;
             for (Parameter parameter : method.getParameters()) {
-                System.out.println(parameter.getName());
             }
             for (Parameter parameter : method.getParameters()) {
                 Function<String, Object> toString = toStrings.get(parameter.getType());
