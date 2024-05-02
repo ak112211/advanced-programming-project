@@ -13,6 +13,10 @@ public class RegisterController extends AppController {
         return null;
     }
 
+    public String showQuestions() {
+        return null;
+    }
+
     public static boolean isUsernameFormatValid(String username) {
         return false;
     }

@@ -28,12 +28,6 @@ public class LoginController extends AppController {
         return null;
     }
 
-    @Command(command = "user logout")
-    public String logout() {
-        return null;
-    }
-
-
     private static String getRandomPassword() {
         return null;
     }
