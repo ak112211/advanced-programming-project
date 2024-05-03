@@ -1,9 +1,11 @@
 package model;
 
 import enums.card.Faction;
+import model.card.Card;
 import model.card.Leader;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class User {
 
@@ -15,6 +17,7 @@ public class User {
     private String password;
     private int questionNumber;
     private String answer;
+    private Card playCard;
 
     private ArrayList<Game> games = new ArrayList<Game>();
     private Faction faction;
@@ -105,6 +108,15 @@ public class User {
 
     public ArrayList<Deck> getDecks() {
         return decks;
+    }
+
+    public void setPlayCard(Card playCard) {
+        this.playCard = playCard;
+    }
+
+    // Method to play a card from the hand
+    public Card getPlayCard() {
+        return playCard;
     }
 }
 
