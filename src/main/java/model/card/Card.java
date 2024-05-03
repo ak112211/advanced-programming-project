@@ -43,4 +43,25 @@ public class Card {
     public Description getDescription() {
         return description;
     }
+
+    // Setters
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setPower(Power power) {
+        this.power = power;
+    }
+
+    public void setAbility(Ability ability) {
+        this.ability = ability;
+    }
+
+    public void setFaction(Faction faction) {
+        this.faction = faction;
+    }
 }
