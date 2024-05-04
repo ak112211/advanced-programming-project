@@ -15,4 +15,7 @@ public abstract class AppController {
         System.exit(0);
         return null;
     }
+
+    @Command(command = "menu enter <menuName>")
+    public abstract String menuEnter(String menuName);
 }

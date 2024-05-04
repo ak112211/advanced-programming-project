@@ -3,6 +3,12 @@ package controller;
 import model.Command;
 
 public class LoginController extends AppController {
+
+    @Override
+    public String menuEnter(String menuName) {
+        return null;
+    }
+
     @Command(command = "login -u <username> -p <password> --stayLoggedIn")
     public String login(String username, String password, boolean stayLoggedIn) {
         return null;
@@ -23,12 +29,8 @@ public class LoginController extends AppController {
         return null;
     }
 
-    @Command(command = "menu enter register menu")
-    public String enterRegisterMenu() {
-        return null;
-    }
-
     private static String getRandomPassword() {
         return null;
     }
+
 }

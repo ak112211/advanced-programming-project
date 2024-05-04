@@ -3,6 +3,12 @@ package controller;
 import model.Command;
 
 public class RegisterController extends AppController {
+
+    @Override
+    public String menuEnter(String menuName) {
+        return null;
+    }
+
     @Command(command = "register -u <username> -p <password> -c <passwordConfirm> -n <nickname> -e <email>")
     public String register(String username, String password, String passwordConfirm, String nickname, String email) {
         return null;

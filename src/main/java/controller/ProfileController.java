@@ -8,6 +8,11 @@ import java.util.HashMap;
 
 public class ProfileController extends AppController {
 
+    @Override
+    public String menuEnter(String menuName) {
+        return null;
+    }
+
     @Command(command = "change username -u <username>")
     public String changeUsername(String username) {
         // Implementation to change the username
@@ -29,13 +34,6 @@ public class ProfileController extends AppController {
     @Command(command = "change password -p <newPassword> -o <oldPassword>")
     public String changePassword(String newPassword, String oldPassword) {
         // Implementation to change the password
-        return null;
-    }
-
-    @Command(command = "menu enter user info")
-    public String displayUserInfo() {
-        // Implementation to display user information
-        // Code to fetch and display user info from the database or any storage
         return null;
     }
 

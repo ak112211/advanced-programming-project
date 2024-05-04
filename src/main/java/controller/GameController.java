@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Date;  // Necessary for initializing Game with a date
 
 public class GameController extends AppController {
+
+    @Override
+    public String menuEnter(String menuName) {
+        return null;
+    }
+
     private Game game;  // Renamed from gameBoard to game for clarity
     private boolean gameRunning;
 
@@ -17,13 +23,13 @@ public class GameController extends AppController {
         User palyer1 = null;
         User player2 = null;
         // Assume Game takes two players and a date; adjust if Game constructor differs
-        this.game = new Game(palyer1, player2 , new Date());
+        this.game = new Game(palyer1, player2, new Date());
         this.gameRunning = false;
     }
 
     // Initialize a single player for the game
     private void initializePlayer(String name) {
-          // Assuming Player constructor takes a name
+        // Assuming Player constructor takes a name
     }
 
     // Method to start the game
