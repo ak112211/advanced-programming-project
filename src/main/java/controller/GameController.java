@@ -2,8 +2,6 @@ package controller;
 
 import model.Command;
 
-import java.util.SequencedSet;
-
 public class GameController extends AppController {
 
     @Override
@@ -47,7 +45,7 @@ public class GameController extends AppController {
     }
 
     @Command(command = "show leader")
-    public String showCommander() {
+    public String showLeader() {
         return null;
     }
 
@@ -90,6 +88,5 @@ public class GameController extends AppController {
     public String pass() {
         return null;
     }
-
 
 }

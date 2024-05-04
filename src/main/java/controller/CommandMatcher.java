@@ -5,7 +5,6 @@ import model.App;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Function;
@@ -65,7 +64,7 @@ public class CommandMatcher {
                     return "The flag " + parameter.getName() + " is not " + parameter.getType().getName() + ".";
 
                 }
-                parObjs[i++]=parObj;
+                parObjs[i++] = parObj;
             }
             try {
                 return (String) method.invoke(App.getController(), parObjs);

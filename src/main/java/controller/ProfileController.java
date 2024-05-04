@@ -1,10 +1,6 @@
 package controller;
 
 import model.Command;
-import view.MainMenu;
-import view.ProfileMenu;
-
-import java.util.HashMap;
 
 public class ProfileController extends AppController {
 

@@ -2,7 +2,6 @@ package enums.cards;
 
 import enums.cardsinformation.Ability;
 import enums.cardsinformation.Description;
-import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import model.card.Card;
 

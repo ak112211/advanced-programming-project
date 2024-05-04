@@ -3,7 +3,6 @@ package model;
 import controller.AppController;
 import controller.LoginController;
 import enums.Menu;
-import view.ProfileMenu;
 
 public class App {
 

@@ -3,7 +3,6 @@ package controller;
 import enums.Menu;
 import model.App;
 import model.Command;
-import view.MainMenu;
 
 public class MainController extends AppController {
 

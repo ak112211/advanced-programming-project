@@ -113,7 +113,6 @@ public class User {
         this.playCard = playCard;
     }
 
-    // Method to play a card from the hand
     public Card getPlayCard() {
         return playCard;
     }
