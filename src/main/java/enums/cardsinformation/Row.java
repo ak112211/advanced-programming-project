@@ -1,2 +1,11 @@
-package enums.cardsinformation;public enum Row {
+package enums.cardsinformation;
+
+public enum Row {
+    WEATHER,
+    PLAYER1_CLOSE_COMBAT,
+    PLAYER2_CLOSE_COMBAT,
+    PLAYER1_RANGED,
+    PLAYER2_RANGED,
+    PLAYER1_SIEGE,
+    PLAYER2_SIEGE
 }
