@@ -1,67 +1,51 @@
 package model.card;
 
-import enums.card.*;
+import enums.cardsinformation.*;
 
 public class Card {
-    private String name;
-    private Type type;
-    private Power power;
-    private Ability ability;  // Assuming you have an Ability enum similar to CardType and CardPower
-    private Faction faction;  // Adding Faction as a property of Card
-    private Description description;
-    // Constructor updated to include faction
-    public Card(String name, Type type, Power power, Ability ability, Faction faction, Description description) {
-        this.name = name;
-        this.type = type;
+    private final String NAME;
+    private final Type TYPE;
+    private int power;
+    private final Ability ABILITY;  // Assuming you have an Ability enum similar to CardType and CardPower
+    private final Faction FACTION;  // Adding Faction as a property of Card
+    private final Description DESCRIPTION;
+
+    public Card(String name, Type type, int power, Ability ability, Faction faction, Description description) {
+        this.NAME = name;
+        this.TYPE = type;
         this.power = power;
-        this.ability = ability;
-        this.description = description;
-        this.faction = faction;  // Initialize faction
+        this.ABILITY = ability;
+        this.DESCRIPTION = description;
+        this.FACTION = faction;  // Initialize faction
     }
 
     // Getters
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public Type getType() {
-        return type;
+        return TYPE;
     }
 
-    public Power getPower() {
+    public int getPower() {
         return power;
     }
 
     public Ability getAbility() {
-        return ability;
+        return ABILITY;
     }
 
     public Faction getFaction() {
-        return faction;
+        return FACTION;
     }
 
     public Description getDescription() {
-        return description;
+        return DESCRIPTION;
     }
 
-    // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public void setPower(Power power) {
+    public void setPower(int power) {
         this.power = power;
     }
 
-    public void setAbility(Ability ability) {
-        this.ability = ability;
-    }
-
-    public void setFaction(Faction faction) {
-        this.faction = faction;
-    }
 }

@@ -1,11 +1,10 @@
 package model;
 
-import enums.card.Faction;
+import enums.cardsinformation.Faction;
 import model.card.Card;
 import model.card.Leader;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class User {
 

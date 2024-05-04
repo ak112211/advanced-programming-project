@@ -1,4 +1,4 @@
-package enums.card;
+package enums.cardsinformation;
 
 public enum Ability {
     COMMANDERS_HORN,

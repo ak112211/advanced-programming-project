@@ -1,4 +1,4 @@
-package enums.card;
+package enums.cardsinformation;
 
 public enum Description {
     DESCRIPTION_ONE("Description for scenario one."),
