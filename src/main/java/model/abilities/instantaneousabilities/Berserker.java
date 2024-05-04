@@ -1,7 +1,8 @@
-package model.abilities;
+package model.abilities.instantaneousabilities;
 
 import enums.Row;
 import model.Game;
+import model.abilities.Ability;
 import model.card.Card;
 
 import java.util.ArrayList;

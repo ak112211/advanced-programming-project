@@ -1,4 +1,4 @@
-package model.abilities;
+package model.abilities.instantaneousabilities;
 
 public class Spy extends InstantaneousAbility {
     public Spy(){
