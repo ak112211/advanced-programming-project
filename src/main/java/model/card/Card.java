@@ -1,12 +1,24 @@
 package model.card;
 
+import enums.Row;
 import enums.cardsinformation.*;
 
 public class Card {
     private final String NAME;
     private final Type TYPE;
     private final int NO_OF_CARDS_IN_GAME;
-    private int power;
+    private final int POWER;
+    private int changedPower;
+
+    public Row getRow() {
+        return row;
+    }
+
+    public void setRow(Row row) {
+        this.row = row;
+    }
+
+    private Row row;
     private final Ability ABILITY;
     private final boolean IS_HERO;
     private final Faction FACTION;
@@ -17,7 +29,7 @@ public class Card {
         this.NAME = name;
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        this.power = power;
+        this.POWER = power;
         this.ABILITY = ability;
         this.IS_HERO = isHero;
         this.FACTION = faction;
@@ -48,11 +60,20 @@ public class Card {
         return DESCRIPTION;
     }
 
-    public int getPower() {
-        return power;
+    public int getPOWER() {
+        return POWER;
     }
 
-    public void setPower(int power) {
-        this.power = power;
+    public boolean getIS_HERO() {
+        return IS_HERO;
     }
+
+    public int getChangedPower() {
+        return changedPower;
+    }
+
+    public void setChangedPower(int power) {
+        this.changedPower = power;
+    }
+
 }

@@ -5,12 +5,7 @@ import model.Game;
 import model.card.Card;
 
 public class Decoy extends InstantaneousAbility {
-    /**
-     * @param row
-     * @param game
-     * @param card
-     */
-    public Decoy(Row row, Game game, Card card) {
-        super(row, game, card);
+    public Decoy(){
+         super();
     }
 }

@@ -6,12 +6,4 @@ import model.ability.Ability;
 import model.card.Card;
 
 public abstract class InstantaneousAbility extends Ability {
-    /**
-     * @param row
-     * @param game
-     * @param card
-     */
-    public InstantaneousAbility(Row row, Game game, Card card) {
-        super(row, game, card);
-    }
 }
