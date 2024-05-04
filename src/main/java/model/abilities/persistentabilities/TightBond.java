@@ -20,12 +20,7 @@ public class TightBond extends PersistentAbility {
     public ArrayList<Card> getAffectedCards() {
         return AffectedCards;
     }
-    @Override
-    public void addToAffectedCards(Card card) {
-        AffectedCards.add(card);
-    }
-    @Override
-    public void affect(Card card) {
+    public static void affect(Card card) {
         card.setChangedPower(card.getChangedPower()+card.getPOWER());
     }
 
