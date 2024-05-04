@@ -1,5 +1,9 @@
 package model;
 
+import enums.Row;
+import model.card.Card;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Game {
@@ -7,6 +11,13 @@ public class Game {
     private final User PLAYER1;
     private final User PLAYER2;
     private final Date DATE;
+    private final ArrayList<Card> InGameCards = new ArrayList<>();
+    private final ArrayList<Card> player1InHandCards = new ArrayList<>();
+    private final ArrayList<Card> player2InHandCards = new ArrayList<>();
+    private final ArrayList<Card> player1Deck = new ArrayList<>();
+    private final ArrayList<Card> player2Deck = new ArrayList<>();
+    private final ArrayList<Card> player1GraveyardCards = new ArrayList<>();
+    private final ArrayList<Card> player2GraveyardCards = new ArrayList<>();
     private GameStatus status;
     private User winner;
 
@@ -44,6 +55,93 @@ public class Game {
 
     public void setWinner(User winner) {
         this.winner = winner;
+    }
+    public boolean moveCardToGraveyard(Card card) {
+        boolean res = InGameCards.remove(card);
+        if (res) {
+            if (Row.isPlayer1(card.getRow())) {
+                player1GraveyardCards.add(card);
+            } else if (Row.isPlayer2(card.getRow())) {
+                player2GraveyardCards.add(card);
+            }
+        }
+        return res;
+    }
+    public boolean moveCardBackToHand(Card card) {
+        boolean res = InGameCards.remove(card);
+        if (res) {
+            if (Row.isPlayer1(card.getRow())) {
+                player1InHandCards.add(card);
+            } else if (Row.isPlayer2(card.getRow())) {
+                player2InHandCards.add(card);
+            }
+        }
+        return res;
+    }
+    public boolean player1ResurrectCard(Card card, Row row) {
+        boolean res = player1GraveyardCards.remove(card);
+        if (res) {
+            card.setRow(row);
+            InGameCards.add(card);
+        }
+        return res;
+    }
+    public boolean player2ResurrectCard(Card card, Row row) {
+        boolean res = player2GraveyardCards.remove(card);
+        if (res) {
+            card.setRow(row);
+            InGameCards.add(card);
+        }
+        return res;
+    }
+    public void resetGraveyardToDeck(){
+        player1Deck.addAll(player1GraveyardCards);
+        player1GraveyardCards.clear();
+        player2Deck.addAll(player2GraveyardCards);
+        player2GraveyardCards.clear();
+    }
+    public boolean player1PlayCard(Card card, Row row) {
+        boolean res = player1InHandCards.remove(card);
+        if (res) {
+            card.setRow(row);
+            InGameCards.add(card);
+        }
+        return res;
+    }
+    public boolean player2PlayCard(Card card, Row row) {
+        boolean res = player2InHandCards.remove(card);
+        if (res) {
+            card.setRow(row);
+            InGameCards.add(card);
+        }
+        return res;
+    }
+    public ArrayList<Card> getInGameCards() {
+        return InGameCards;
+    }
+
+    public ArrayList<Card> getPlayer1InHandCards() {
+        return player1InHandCards;
+    }
+
+    public ArrayList<Card> getPlayer2InHandCards() {
+        return player2InHandCards;
+    }
+
+    public ArrayList<Card> getPlayer1Deck() {
+        return player1Deck;
+    }
+
+    public ArrayList<Card> getPlayer2Deck() {
+        return player2Deck;
+    }
+
+    public ArrayList<Card> getPlayer1GraveyardCards() {
+        return player1GraveyardCards;
+    }
+
+    public ArrayList<Card> getPlayer2GraveyardCards() {
+        return player2GraveyardCards;
     }
 
     public enum GameStatus {
