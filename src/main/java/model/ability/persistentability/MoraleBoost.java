@@ -1,6 +1,5 @@
-package model.ability.PersistentAbility;
+package model.ability.persistentability;
 
-import model.ability.Ability;
 import model.card.Card;
 
 import java.util.ArrayList;

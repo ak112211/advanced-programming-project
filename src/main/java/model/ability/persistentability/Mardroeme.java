@@ -1,21 +1,20 @@
-package model.ability.PersistentAbility;
+package model.ability.persistentability;
 
-import model.ability.Ability;
 import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
-public class TightBond extends PersistentAbility {
-    public static ArrayList<Card> AffectedCards = new ArrayList<>();
-    public TightBond(BiFunction<Card, Card, Boolean> doesAffect){
+public class Mardroeme extends PersistentAbility {
+    private static final ArrayList<Card> AffectedCards = new ArrayList<>();
+    public Mardroeme(BiFunction<Card, Card, Boolean> doesAffect){
         super(doesAffect);
     }
-    public TightBond(){
+    public Mardroeme(){
         super(CommandersHorn::doesAffectDefault);
     }
     public static boolean doesAffectDefault(Card abilityCard, Card card) {
-        return notSameCards(abilityCard, card) && sameName(abilityCard, card) && sameRow(abilityCard, card);
+        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getABILITY().equals(enums.cardsinformation.Ability.BERSERKER); // instanceof Berserker; TODO
     }
     @Override
     public ArrayList<Card> getAffectedCards() {
@@ -27,7 +26,6 @@ public class TightBond extends PersistentAbility {
     }
     @Override
     public void affect(Card card) {
-        card.setChangedPower(card.getChangedPower()+card.getPOWER());
+        //TODO
     }
-
 }
