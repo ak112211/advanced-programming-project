@@ -11,7 +11,7 @@ public class Game {
     private final User PLAYER1;
     private final User PLAYER2;
     private final Date DATE;
-    private final ArrayList<Card> InGameCards = new ArrayList<>();
+    private final ArrayList<Card> inGameCards = new ArrayList<>();
     private final ArrayList<Card> player1InHandCards = new ArrayList<>();
     private final ArrayList<Card> player2InHandCards = new ArrayList<>();
     private final ArrayList<Card> player1Deck = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Game {
         this.winner = winner;
     }
     public boolean moveCardToGraveyard(Card card) {
-        boolean res = InGameCards.remove(card);
+        boolean res = inGameCards.remove(card);
         if (res) {
             if (Row.isPlayer1(card.getRow())) {
                 player1GraveyardCards.add(card);
@@ -68,7 +68,7 @@ public class Game {
         return res;
     }
     public boolean moveCardBackToHand(Card card) {
-        boolean res = InGameCards.remove(card);
+        boolean res = inGameCards.remove(card);
         if (res) {
             if (Row.isPlayer1(card.getRow())) {
                 player1InHandCards.add(card);
@@ -82,7 +82,7 @@ public class Game {
         boolean res = player1GraveyardCards.remove(card);
         if (res) {
             card.setRow(row);
-            InGameCards.add(card);
+            inGameCards.add(card);
         }
         return res;
     }
@@ -90,7 +90,7 @@ public class Game {
         boolean res = player2GraveyardCards.remove(card);
         if (res) {
             card.setRow(row);
-            InGameCards.add(card);
+            inGameCards.add(card);
         }
         return res;
     }
@@ -104,7 +104,7 @@ public class Game {
         boolean res = player1InHandCards.remove(card);
         if (res) {
             card.setRow(row);
-            InGameCards.add(card);
+            inGameCards.add(card);
         }
         return res;
     }
@@ -112,12 +112,20 @@ public class Game {
         boolean res = player2InHandCards.remove(card);
         if (res) {
             card.setRow(row);
-            InGameCards.add(card);
+            inGameCards.add(card);
         }
         return res;
     }
+    public boolean changeCard(Card card1, Card card2) {
+        int i = inGameCards.indexOf(card1);
+        if (i == -1) {
+            return false;
+        }
+        inGameCards.set(i, card2);
+        return true;
+    }
     public ArrayList<Card> getInGameCards() {
-        return InGameCards;
+        return inGameCards;
     }
 
     public ArrayList<Card> getPlayer1InHandCards() {

@@ -2,6 +2,7 @@ package model.card;
 
 import enums.Row;
 import enums.cardsinformation.*;
+import model.abilities.Ability;
 
 public class Card {
     private final String NAME;
@@ -30,6 +31,7 @@ public class Card {
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
         this.POWER = power;
+        ability.setCard(this);
         this.ABILITY = ability;
         this.IS_HERO = isHero;
         this.FACTION = faction;
