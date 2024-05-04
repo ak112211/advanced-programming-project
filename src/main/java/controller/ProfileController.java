@@ -7,43 +7,43 @@ import view.ProfileMenu;
 import java.util.HashMap;
 
 public class ProfileController extends AppController {
-    
-    @Command(command = "show current menu")
-    public void showCurrentMenu() {
-        ProfileMenu.showCurrentMenu();
-
-    }
 
     @Command(command = "change username -u <username>")
-    public void changeUsername(String username) {
+    public String changeUsername(String username) {
         // Implementation to change the username
+        return null;
     }
 
     @Command(command = "change nickname -u <nickname>")
-    public void changeNickname(String nickname) {
+    public String changeNickname(String nickname) {
         // Implementation to change the nickname
+        return null;
     }
 
     @Command(command = "change email -e <email>")
-    public void changeEmail(String email) {
+    public String changeEmail(String email) {
         // Implementation to change the email
+        return null;
     }
 
-    @Command(command = "change password -p <new_password> -o <old_password>")
-    public void changePassword(String newPassword, String oldPassword) {
+    @Command(command = "change password -p <newPassword> -o <oldPassword>")
+    public String changePassword(String newPassword, String oldPassword) {
         // Implementation to change the password
+        return null;
     }
 
     @Command(command = "menu enter user info")
-    public void displayUserInfo() {
+    public String displayUserInfo() {
         // Implementation to display user information
         // Code to fetch and display user info from the database or any storage
+        return null;
     }
 
     @Command(command = "game history -n <n>")
-    public void displayGameHistory(int n) {
+    public String displayGameHistory(int n) {
         // Implementation to display game history
         // Code to fetch and display game history from the database or any storage
+        return null;
     }
 }
 
