@@ -1,4 +1,4 @@
-package enums.cardsinformation;
+package enums;
 
 public enum Row {
     WEATHER,
