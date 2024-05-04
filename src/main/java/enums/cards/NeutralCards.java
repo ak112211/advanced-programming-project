@@ -41,6 +41,6 @@ public enum NeutralCards {
     }
 
     public Card getCard() {
-        return new Card(name, type, noOfCardsInGame, power, ability, isHero, Faction.NEUTRAL, description);
+        return new Card(name, type, noOfCardsInGame, power, ability, isHero, null, description);
     }
 }

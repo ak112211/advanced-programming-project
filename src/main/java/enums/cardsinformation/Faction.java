@@ -5,6 +5,5 @@ public enum Faction {
     EMPIRE_NILFGAARDIAM,
     REALMS_NORTHERN,
     SCOIA_TAEL,
-    SKELLIGE,
-    NEUTRAL;
+    SKELLIGE;
 }
