@@ -11,5 +11,6 @@ public enum Ability {
     SCORCH,
     BERSERKER,
     MARDROEME,
-    TRANSFORMERS;
+    TRANSFORMERS,
+    NOTHING;
 }
