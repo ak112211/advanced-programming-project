@@ -6,6 +6,7 @@ public enum Type {
     RANGED_UNIT,
     SIEGE_UNIT,
     WEATHER,
-    AGILE_UNIT
+    AGILE_UNIT,
+    SPY_UNIT,
 }
 
