@@ -6,7 +6,7 @@ import model.Command;
 public abstract class AppController {
 
     @Command(command = "show current menu")
-    public String getCurrentMenu() {
+    public String showCurrentMenu() {
         return App.getMenu().name();
     }
 
