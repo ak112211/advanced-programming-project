@@ -1,6 +1,7 @@
 package enums.cardsinformation;
 
 public enum Description {
+    NOTHING(null),
     DESCRIPTION_ONE("Description for scenario one."),
     DESCRIPTION_TWO("Description for scenario two."),
     DESCRIPTION_THREE("Description for scenario three.");

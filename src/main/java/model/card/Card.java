@@ -8,16 +8,18 @@ public class Card {
     private final int NO_OF_CARDS_IN_GAME;
     private int power;
     private final Ability ABILITY;
+    private final boolean IS_HERO;
     private final Faction FACTION;
     private final Description DESCRIPTION;
 
-    public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability,
+    public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero,
                 Faction faction, Description description) {
         this.NAME = name;
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
         this.power = power;
         this.ABILITY = ability;
+        this.IS_HERO = isHero;
         this.FACTION = faction;
         this.DESCRIPTION = description;
     }
