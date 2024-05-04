@@ -1,7 +1,6 @@
-package model.ability.PersistentAbility;
+package model.abilities.persistentabilities;
 
 import enums.Row;
-import model.ability.Ability;
 import model.card.Card;
 
 import java.util.ArrayList;

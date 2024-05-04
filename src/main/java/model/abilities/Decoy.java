@@ -1,8 +1,4 @@
-package model.ability;
-
-import enums.Row;
-import model.Game;
-import model.card.Card;
+package model.abilities;
 
 public class Decoy extends InstantaneousAbility {
     public Decoy(){

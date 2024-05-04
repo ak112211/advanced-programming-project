@@ -1,25 +1,20 @@
-package model.ability.PersistentAbility;
+package model.abilities.persistentabilities;
 
-import enums.Row;
-import enums.cardsinformation.Type;
-import model.Game;
-import model.ability.Ability;
 import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
-public class CommandersHorn extends PersistentAbility {
+public class Mardroeme extends PersistentAbility {
     private static final ArrayList<Card> AffectedCards = new ArrayList<>();
-    public CommandersHorn(BiFunction<Card, Card, Boolean> doesAffect){
+    public Mardroeme(BiFunction<Card, Card, Boolean> doesAffect){
         super(doesAffect);
     }
-    public CommandersHorn(){
+    public Mardroeme(){
         super(CommandersHorn::doesAffectDefault);
     }
-
-    public static boolean doesAffectSpy(Card abilityCard, Card card){
-        return card.getTYPE().equals(Type.SPY_UNIT) && !AffectedCards.contains(card);
+    public static boolean doesAffectDefault(Card abilityCard, Card card) {
+        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getABILITY().equals(enums.cardsinformation.Ability.BERSERKER); // instanceof Berserker; TODO
     }
     @Override
     public ArrayList<Card> getAffectedCards() {
@@ -31,7 +26,6 @@ public class CommandersHorn extends PersistentAbility {
     }
     @Override
     public void affect(Card card) {
-        card.setChangedPower(card.getChangedPower()*2);
+        //TODO
     }
-
 }

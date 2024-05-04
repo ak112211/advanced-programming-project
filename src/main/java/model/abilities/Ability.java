@@ -1,4 +1,4 @@
-package model.ability;
+package model.abilities;
 
 import enums.Row;
 import enums.cardsinformation.Type;
