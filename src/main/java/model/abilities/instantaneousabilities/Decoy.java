@@ -5,6 +5,7 @@ import model.card.Card;
 
 public class Decoy extends InstantaneousAbility {
     public void affect(Game game, Card card){
-        game.moveCardBackToHand(card);
+        game.moveCard(card, game.getInGameCards(),
+                card.getRow().isPlayer1() ? game.getPlayer1Deck() : game.getPlayer2Deck());
     }
 }

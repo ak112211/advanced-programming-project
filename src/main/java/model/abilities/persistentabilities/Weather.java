@@ -28,7 +28,7 @@ public class Weather extends PersistentAbility {
         return AffectedCards;
     }
     public static void affect(Card card) {
-        if (card.getPOWER() != 0)
-            card.setChangedPower(card.getChangedPower()/ card.getPOWER()); // because of TightBond effect
+        if (card.getFIRST_POWER() != 0)
+            card.setPower(card.getPower()/ card.getFIRST_POWER()); // because of TightBond effect
     }
 }

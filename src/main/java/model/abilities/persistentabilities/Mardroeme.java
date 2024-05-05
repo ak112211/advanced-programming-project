@@ -1,6 +1,7 @@
 package model.abilities.persistentabilities;
 
 import model.App;
+import model.Game;
 import model.abilities.Berserker;
 import model.card.Card;
 
@@ -23,7 +24,7 @@ public class Mardroeme extends PersistentAbility {
     public ArrayList<Card> getAffectedCards() {
         return AffectedCards;
     }
-    public static void affect(Card card) {
-        // App.getGame().changeCard(card,enums.cards.SkelligeCards.) TODO
+    public static void affect(Card card, ArrayList<Card> inGameCards) {
+        ((Berserker) card.getABILITY()).affect(inGameCards);
     }
 }

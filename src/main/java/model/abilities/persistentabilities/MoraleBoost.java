@@ -21,7 +21,7 @@ public class MoraleBoost extends PersistentAbility {
         return AffectedCards;
     }
     public static void affect(Card card) {
-        card.setChangedPower(card.getChangedPower()+1);
+        card.setPower(card.getPower()+1);
     }
 
 

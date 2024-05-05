@@ -7,5 +7,7 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class Scorch extends InstantaneousAbility {
+    public Scorch() {
 
+    }
 }

@@ -26,7 +26,7 @@ public class CommandersHorn extends PersistentAbility {
         return AffectedCards;
     }
     public static void affect(Card card) {
-        card.setChangedPower(card.getChangedPower()*2);
+        card.setPower(card.getPower()*2);
     }
 
 }
