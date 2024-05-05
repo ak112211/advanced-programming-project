@@ -19,7 +19,7 @@ public class CommandersHorn extends PersistentAbility {
         return canBeAffected(card) && notSameCards(abilityCard, card) && sameRow(abilityCard, card) && !AffectedCards.contains(card);
     }
     public static boolean doesAffectSpy(Card abilityCard, Card card){
-        return card.getTYPE().equals(Type.SPY_UNIT) && !AffectedCards.contains(card);
+        return card.getTYPE() == Type.SPY_UNIT && !AffectedCards.contains(card);
     }
     @Override
     public ArrayList<Card> getAffectedCards() {

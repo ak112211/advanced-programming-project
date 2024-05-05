@@ -1,6 +1,7 @@
 package model.abilities.persistentabilities;
 
 import model.App;
+import model.abilities.Berserker;
 import model.card.Card;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class Mardroeme extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card abilityCard, Card card) {
-        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getABILITY().equals(enums.cardsinformation.Ability.BERSERKER); // instanceof Berserker; TODO
+        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getABILITY() instanceof Berserker;
     }
     @Override
     public ArrayList<Card> getAffectedCards() {

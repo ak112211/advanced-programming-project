@@ -18,10 +18,10 @@ public abstract class Ability {
 	}
 
 	public static boolean canBeAffected(Card card) {
-		return card.getTYPE().equals(Type.SPELL) && !card.getIS_HERO();
+		return card.getTYPE() == Type.SPELL && !card.getIS_HERO();
 	}
 	public static boolean sameRow(Card abilityCard, Card card) {
-		return abilityCard.getRow().equals(card.getRow());
+		return abilityCard.getRow() == card.getRow();
 	}
 	public static boolean notSameCards(Card abilityCard, Card card) {
 		return abilityCard == card;

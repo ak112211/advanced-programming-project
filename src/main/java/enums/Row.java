@@ -9,26 +9,26 @@ public enum Row {
     PLAYER2_RANGED,
     PLAYER1_SIEGE,
     PLAYER2_SIEGE;
-    public static boolean isPlayer1(Row row) {
-        return row.equals(Row.PLAYER1_SIEGE) ||
-                row.equals(Row.PLAYER1_RANGED) ||
-                row.equals(Row.PLAYER1_CLOSE_COMBAT) ||
-                row.equals(Row.PLAYER1_WEATHER);
+    public boolean isPlayer1() {
+        return this == Row.PLAYER1_SIEGE ||
+                this == Row.PLAYER1_RANGED ||
+                this == Row.PLAYER1_CLOSE_COMBAT ||
+                this == Row.PLAYER1_WEATHER;
     }
-    public static boolean isSiege(Row row) {
-        return row.equals(Row.PLAYER1_SIEGE) ||
-                row.equals(Row.PLAYER2_SIEGE);
+    public boolean isSiege() {
+        return this == Row.PLAYER1_SIEGE ||
+                this == Row.PLAYER2_SIEGE;
     }
-    public static boolean isRanged(Row row) {
-        return row.equals(Row.PLAYER1_RANGED) ||
-                row.equals(Row.PLAYER2_RANGED);
+    public boolean isRanged() {
+        return this == Row.PLAYER1_RANGED ||
+                this == Row.PLAYER2_RANGED;
     }
-    public static boolean isCloseCombat(Row row) {
-        return row.equals(Row.PLAYER1_CLOSE_COMBAT) ||
-                row.equals(Row.PLAYER2_CLOSE_COMBAT);
+    public boolean isCloseCombat() {
+        return this == Row.PLAYER1_CLOSE_COMBAT ||
+                this == Row.PLAYER2_CLOSE_COMBAT;
     }
-    public static boolean isWeather(Row row) {
-        return row.equals(Row.PLAYER1_WEATHER) ||
-                row.equals(Row.PLAYER2_WEATHER);
+    public boolean isWeather() {
+        return this == Row.PLAYER1_WEATHER ||
+                this == Row.PLAYER2_WEATHER;
     }
 }

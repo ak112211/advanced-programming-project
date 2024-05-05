@@ -59,7 +59,7 @@ public class Game {
     public boolean moveCardToGraveyard(Card card) {
         boolean res = inGameCards.remove(card);
         if (res) {
-            if (Row.isPlayer1(card.getRow())) {
+            if (card.getRow().isPlayer1()) {
                 player1GraveyardCards.add(card);
             } else {
                 player2GraveyardCards.add(card);
@@ -70,7 +70,7 @@ public class Game {
     public boolean moveCardBackToHand(Card card) {
         boolean res = inGameCards.remove(card);
         if (res) {
-            if (Row.isPlayer1(card.getRow())) {
+            if (card.getRow().isPlayer1()) {
                 player1InHandCards.add(card);
             } else {
                 player2InHandCards.add(card);
@@ -78,21 +78,17 @@ public class Game {
         }
         return res;
     }
-    public boolean player1ResurrectCard(Card card, Row row) {
-        boolean res = player1GraveyardCards.remove(card);
-        if (res) {
+    public boolean resurrectCard(Card card, Row row) {
+        if (player1GraveyardCards.remove(card)) {
             card.setRow(row);
             inGameCards.add(card);
-        }
-        return res;
-    }
-    public boolean player2ResurrectCard(Card card, Row row) {
-        boolean res = player2GraveyardCards.remove(card);
-        if (res) {
+        } else if (player2GraveyardCards.remove(card)) {
             card.setRow(row);
             inGameCards.add(card);
+        } else {
+            return false;
         }
-        return res;
+        return true;
     }
     public void resetGraveyardToDeck(){
         player1Deck.addAll(player1GraveyardCards);
@@ -110,6 +106,28 @@ public class Game {
     }
     public boolean player2PlayCard(Card card, Row row) {
         boolean res = player2InHandCards.remove(card);
+        if (res) {
+            card.setRow(row);
+            inGameCards.add(card);
+        }
+        return res;
+    }
+    public boolean player1PlayCardFromDeck(Card card, Row row) {
+        if (row == null) {
+            row = card.getTYPE().getRow(true);
+        }
+        boolean res = player1Deck.remove(card);
+        if (res) {
+            card.setRow(row);
+            inGameCards.add(card);
+        }
+        return res;
+    }
+    public boolean player2PlayCardFromDeck(Card card, Row row) {
+        if (row == null) {
+            row = card.getTYPE().getRow(false);
+        }
+        boolean res = player2Deck.remove(card);
         if (res) {
             card.setRow(row);
             inGameCards.add(card);

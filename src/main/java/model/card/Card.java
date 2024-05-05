@@ -25,6 +25,7 @@ public class Card {
     private final Faction FACTION;
     private final Description DESCRIPTION;
 
+
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero,
                 Faction faction, Description description) {
         this.NAME = name;

@@ -9,19 +9,7 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class Berserker extends Ability {
-    public Berserker(){
-         super();
-    }
+    private Card newCard;
 
-    public static class Scorch extends InstantaneousAbility {
-        public static ArrayList<Card> AffectedCards = new ArrayList<>();
-        /**
-         * @param row
-         * @param game
-         * @param card
-         */
-        public Scorch(Row row, Game game, Card card) {
-            super(row, game, card);
-        }
-    }
+
 }

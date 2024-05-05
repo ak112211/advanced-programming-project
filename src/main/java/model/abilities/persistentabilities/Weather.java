@@ -12,13 +12,13 @@ public class Weather extends PersistentAbility {
         super(doesAffect);
     }
     public static boolean doesAffectCloseCombat(Card abilityCard, Card card){
-        return (card.getRow().equals(Row.PLAYER1_CLOSE_COMBAT) || card.getRow().equals(Row.PLAYER2_CLOSE_COMBAT)) && !AffectedCards.contains(card);
+        return (card.getRow() == Row.PLAYER1_CLOSE_COMBAT || card.getRow() == Row.PLAYER2_CLOSE_COMBAT) && !AffectedCards.contains(card);
     }
     public static boolean doesAffectSiege(Card abilityCard, Card card){
-        return (card.getRow().equals(Row.PLAYER1_SIEGE) || card.getRow().equals(Row.PLAYER2_SIEGE)) && !AffectedCards.contains(card);
+        return (card.getRow() == Row.PLAYER1_SIEGE || card.getRow() == Row.PLAYER2_SIEGE) && !AffectedCards.contains(card);
     }
     public static boolean doesAffectRanged(Card abilityCard, Card card){
-        return (card.getRow().equals(Row.PLAYER1_RANGED) || card.getRow().equals(Row.PLAYER2_RANGED)) && !AffectedCards.contains(card);
+        return (card.getRow() == Row.PLAYER1_RANGED || card.getRow() == Row.PLAYER2_RANGED) && !AffectedCards.contains(card);
     }
     public static boolean doesAffectRangedSiege(Card abilityCard, Card card){
         return (doesAffectRanged(abilityCard, card) || doesAffectSiege(abilityCard, card)) && !AffectedCards.contains(card);
