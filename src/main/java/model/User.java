@@ -16,13 +16,14 @@ public class User {
     private String password;
     private int questionNumber;
     private String answer;
-    private Card playCard;
 
     private ArrayList<Game> games = new ArrayList<Game>();
     private Faction faction;
     private Leader leader;
     private Deck deck;
     private ArrayList<Deck> decks = new ArrayList<Deck>();
+    private Card playCard;
+    private int highScore = 0;
 
     public User(String username, String nickname, String email, String password) {
         this.username = username;
@@ -115,6 +116,23 @@ public class User {
 
     public Card getPlayCard() {
         return playCard;
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
+
+    private static void sortUsers() {
+
+    }
+
+    public int getRank() {
+        sortUsers();
+        return users.indexOf(this) + 1;
     }
 }
 

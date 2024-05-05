@@ -11,14 +11,6 @@ public class Card {
     private final int POWER;
     private int changedPower;
 
-    public Row getRow() {
-        return row;
-    }
-
-    public void setRow(Row row) {
-        this.row = row;
-    }
-
     private Row row;
     private final Ability ABILITY;
     private final boolean IS_HERO;
@@ -76,6 +68,14 @@ public class Card {
 
     public void setChangedPower(int power) {
         this.changedPower = power;
+    }
+
+    public Row getRow() {
+        return row;
+    }
+
+    public void setRow(Row row) {
+        this.row = row;
     }
 
 }
