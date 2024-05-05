@@ -21,7 +21,7 @@ public class TightBond extends PersistentAbility {
         return AffectedCards;
     }
     public static void affect(Card card) {
-        card.setChangedPower(card.getChangedPower()+card.getPOWER());
+        card.setPower(card.getPower()+card.getFIRST_POWER());
     }
 
 }

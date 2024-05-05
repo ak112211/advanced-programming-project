@@ -56,74 +56,31 @@ public class Game {
     public void setWinner(User winner) {
         this.winner = winner;
     }
+
+    public boolean moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
+        boolean res = cards1.remove(card);
+        if (res) {
+            cards2.add(card);
+        }
+        return res;
+    }
     public boolean moveCardToGraveyard(Card card) {
-        boolean res = inGameCards.remove(card);
-        if (res) {
-            if (Row.isPlayer1(card.getRow())) {
-                player1GraveyardCards.add(card);
-            } else if (Row.isPlayer2(card.getRow())) {
-                player2GraveyardCards.add(card);
-            }
-        }
-        return res;
-    }
-    public boolean moveCardBackToHand(Card card) {
-        boolean res = inGameCards.remove(card);
-        if (res) {
-            if (Row.isPlayer1(card.getRow())) {
-                player1InHandCards.add(card);
-            } else if (Row.isPlayer2(card.getRow())) {
-                player2InHandCards.add(card);
-            }
-        }
-        return res;
-    }
-    public boolean player1ResurrectCard(Card card, Row row) {
-        boolean res = player1GraveyardCards.remove(card);
-        if (res) {
-            card.setRow(row);
-            inGameCards.add(card);
-        }
-        return res;
-    }
-    public boolean player2ResurrectCard(Card card, Row row) {
-        boolean res = player2GraveyardCards.remove(card);
-        if (res) {
-            card.setRow(row);
-            inGameCards.add(card);
-        }
-        return res;
-    }
-    public void resetGraveyardToDeck(){
-        player1Deck.addAll(player1GraveyardCards);
-        player1GraveyardCards.clear();
-        player2Deck.addAll(player2GraveyardCards);
-        player2GraveyardCards.clear();
+        return moveCard(card, inGameCards,
+                card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
     }
     public boolean player1PlayCard(Card card, Row row) {
-        boolean res = player1InHandCards.remove(card);
-        if (res) {
-            card.setRow(row);
-            inGameCards.add(card);
+        if (row == null) {
+            row = card.getTYPE().getRow(true);
         }
-        return res;
+        return moveCard(card, player1InHandCards, inGameCards);
     }
     public boolean player2PlayCard(Card card, Row row) {
-        boolean res = player2InHandCards.remove(card);
-        if (res) {
-            card.setRow(row);
-            inGameCards.add(card);
+        if (row == null) {
+            row = card.getTYPE().getRow(false);
         }
-        return res;
+        return moveCard(card, player1InHandCards, inGameCards);
     }
-    public boolean changeCard(Card card1, Card card2) {
-        int i = inGameCards.indexOf(card1);
-        if (i == -1) {
-            return false;
-        }
-        inGameCards.set(i, card2);
-        return true;
-    }
+
     public ArrayList<Card> getInGameCards() {
         return inGameCards;
     }

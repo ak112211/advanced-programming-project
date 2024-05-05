@@ -26,13 +26,13 @@ public abstract class PersistentAbility extends Ability {
     public static void calculateChangedPower(ArrayList<Card> inGameCards){
         findAffectedCards(inGameCards);
         for (Card card : Mardroeme.AffectedCards){
-            Mardroeme.affect(card);
+            Mardroeme.affect(card, inGameCards);
         }
         if (!Mardroeme.AffectedCards.isEmpty()){
             findAffectedCards(inGameCards);
         }
         for (Card card : inGameCards){
-            card.setChangedPower(card.getPOWER());
+            card.setPower(card.getFIRST_POWER());
         }
         for (Card card : TightBond.AffectedCards){
             TightBond.affect(card);
