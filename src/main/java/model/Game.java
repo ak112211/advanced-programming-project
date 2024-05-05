@@ -61,7 +61,7 @@ public class Game {
         if (res) {
             if (Row.isPlayer1(card.getRow())) {
                 player1GraveyardCards.add(card);
-            } else if (Row.isPlayer2(card.getRow())) {
+            } else {
                 player2GraveyardCards.add(card);
             }
         }
@@ -72,7 +72,7 @@ public class Game {
         if (res) {
             if (Row.isPlayer1(card.getRow())) {
                 player1InHandCards.add(card);
-            } else if (Row.isPlayer2(card.getRow())) {
+            } else {
                 player2InHandCards.add(card);
             }
         }
