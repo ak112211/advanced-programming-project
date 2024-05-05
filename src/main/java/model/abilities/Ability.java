@@ -7,21 +7,7 @@ import model.card.Card;
 
 public abstract class Ability {
 
-	private Row row;
-	private Game game;
 	private Card card;
-
-	public void setRow(Row row) {
-		this.row = row;
-	}
-
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
-	}
 
 	public Card getCard() {
 		return card;
@@ -31,9 +17,6 @@ public abstract class Ability {
 		this.card = card;
 	}
 
-	public Row getRow() {
-		return row;
-	}
 	public static boolean canBeAffected(Card card) {
 		return card.getTYPE().equals(Type.SPELL) && !card.getIS_HERO();
 	}
