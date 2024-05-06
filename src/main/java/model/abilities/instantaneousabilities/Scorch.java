@@ -3,14 +3,11 @@ package model.abilities.instantaneousabilities;
 import enums.Row;
 import enums.cardsinformation.Type;
 import model.Game;
+import model.abilities.Ability;
 import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class Scorch extends InstantaneousAbility {
     Type type;
@@ -28,9 +25,12 @@ public class Scorch extends InstantaneousAbility {
         return inGameCards.stream().filter(card -> card.getRow()==row).toList();
     }
     public void affect(Game game) {
-        List<Card> cards = getCardsInRow(game.getInGameCards());
-        int maxPower = cards.stream().mapToInt(Card::getPower).max().orElse(0); // if it's empty maxPower value isn't important
-        cards.stream().filter(card -> card.getPower() == maxPower)
-                .forEach(game::moveCardToGraveyard);
+        List<Card> cards = getCardsInRow(game.getInGameCards()).stream()
+                .filter(Ability::canBeAffected).toList();
+        if (type != null && cards.stream().mapToInt(Card::getPower).sum() > 10){
+            int maxPower = cards.stream().mapToInt(Card::getPower).max().orElse(0); // if it's empty maxPower value isn't important
+            cards.stream().filter(card -> card.getPower() == maxPower)
+                    .forEach(game::moveCardToGraveyard);
+        }
     }
 }
