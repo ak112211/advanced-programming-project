@@ -1,6 +1,7 @@
 package model;
 
 import enums.Row;
+import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class Game {
     private final User PLAYER1;
     private final User PLAYER2;
     private final Date DATE;
+    private int player1Points, player2Points;
     private final ArrayList<Card> inGameCards = new ArrayList<>();
     private final ArrayList<Card> player1InHandCards = new ArrayList<>();
     private final ArrayList<Card> player2InHandCards = new ArrayList<>();
@@ -57,6 +59,14 @@ public class Game {
         this.winner = winner;
     }
 
+    public int getPlayer1Points() {
+        return player1Points;
+    }
+
+    public int getPlayer2Points() {
+        return player2Points;
+    }
+
     public boolean moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
         boolean res = cards1.remove(card);
         if (res) {
@@ -79,6 +89,18 @@ public class Game {
             row = card.getTYPE().getRow(false);
         }
         return moveCard(card, player1InHandCards, inGameCards);
+    }
+
+    public void calculatePoints() {
+        PersistentAbility.calculatePowers(inGameCards);
+        player1Points = inGameCards.stream()
+                .filter(card -> card.getRow().isPlayer1())
+                .mapToInt(Card::getPower)
+                .sum();
+        player1Points = inGameCards.stream()
+                .filter(card -> !card.getRow().isPlayer1())
+                .mapToInt(Card::getPower)
+                .sum();
     }
 
     public ArrayList<Card> getInGameCards() {

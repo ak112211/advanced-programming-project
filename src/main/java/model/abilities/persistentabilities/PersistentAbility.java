@@ -23,7 +23,7 @@ public abstract class PersistentAbility extends Ability {
             }
         }
     }
-    public static void calculateChangedPower(ArrayList<Card> inGameCards){
+    public static void calculatePowers(ArrayList<Card> inGameCards){
         findAffectedCards(inGameCards);
         for (Card card : Mardroeme.AffectedCards){
             Mardroeme.affect(card, inGameCards);
