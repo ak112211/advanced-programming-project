@@ -6,9 +6,12 @@ import model.card.Card;
 
 public class Medic extends InstantaneousAbility {
     public void affect(Game game, Card card, Row row){
+        if (row == null) {
+            row = card.getTYPE().getRow(getCard().getRow().isPlayer1());
+        }
         card.setRow(row);
         game.moveCard(card,
-                row.isPlayer1() ? game.getPlayer1GraveyardCards() : game.getPlayer2GraveyardCards(),
+                getCard().getRow().isPlayer1() ? game.getPlayer1GraveyardCards() : game.getPlayer2GraveyardCards(),
                 game.getInGameCards());
     }
 }
