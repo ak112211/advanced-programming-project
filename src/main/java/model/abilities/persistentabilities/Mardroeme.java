@@ -1,18 +1,12 @@
 package model.abilities.persistentabilities;
 
-import model.App;
-import model.Game;
 import model.abilities.Berserker;
 import model.card.Card;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 public class Mardroeme extends PersistentAbility {
     public static final ArrayList<Card> AffectedCards = new ArrayList<>();
-    public Mardroeme(BiFunction<Card, Card, Boolean> doesAffect){
-        super(doesAffect);
-    }
     public Mardroeme(){
         super(CommandersHorn::doesAffectDefault);
     }
