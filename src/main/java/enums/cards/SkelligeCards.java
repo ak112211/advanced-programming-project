@@ -33,7 +33,7 @@ public enum SkelligeCards {
     CLAN_TORDARROCH_ARMORSMITH("Clan Tordarroch Armorsmith", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false),
     CLAN_DIMUN_PIRATE("Clan Dimun Pirate", 6, 1, Type.RANGED_UNIT, new Scorch(), Description.KILLS_STRONGEST_OPPONENT, false),
     CLAN_BROKVAR_ARCHER("Clan Brokvar Archer", 6, 3, Type.RANGED_UNIT, null, Description.NOTHING, false),
-    ERMION("Ermion", 8, 1, Type.RANGED_UNIT, new Mardroeme(), Description.HERO_AND_MARDOEME, true),
+    ERMION("Ermion", 8, 1, Type.RANGED_UNIT, new Mardroeme(), Description.NOTHING, true),
     HJALMAR("Hjalmar", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true),
     YOUNG_BERSERKER("Young Berserker", 2, 3, Type.RANGED_UNIT, new Berserker(), Description.TRANSFORMS_TO_YOUNG_VIDKAARL, false),
     YOUNG_VIDKAARL("Young Vidkaarl", 8, 0, Type.RANGED_UNIT, new TightBond(), Description.PLAYED_WITH_YOUNG_BERSERKER, false),
