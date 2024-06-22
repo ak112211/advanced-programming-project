@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class Deck {
     private String name;
     private String fileAddress;
-    private ArrayList<Card> cards = new ArrayList<Card>();
+    private final ArrayList<Card> CARDS = new ArrayList<Card>();
 
     public ArrayList<Card> getCards() {
-        return cards;
+        return CARDS;
     }
 
     public String getName() {

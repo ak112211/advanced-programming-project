@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class User {
 
-    private static ArrayList<User> users = new ArrayList<User>();
+    private static final ArrayList<User> USERS = new ArrayList<User>();
 
     private String username;
     private String nickname;
@@ -30,7 +30,7 @@ public class User {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        users.add(this);
+        USERS.add(this);
     }
 
     public String getUsername() {
@@ -82,7 +82,7 @@ public class User {
     }
 
     public User getUserByUsername(String username) {
-        for (User user : users) {
+        for (User user : USERS) {
             if (user.username.equals(username)) {
                 return user;
             }
@@ -132,7 +132,7 @@ public class User {
 
     public int getRank() {
         sortUsers();
-        return users.indexOf(this) + 1;
+        return USERS.indexOf(this) + 1;
     }
 }
 

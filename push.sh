@@ -1,0 +1,1 @@
+git add . && git commit -m "$1" && git checkout master && git pull origin master && git merge mybranch -m "$1" && git push origin master && git checkout mybranch && git pull origin master

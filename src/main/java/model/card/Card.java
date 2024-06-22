@@ -8,21 +8,22 @@ public class Card {
     private final String NAME;
     private final Type TYPE;
     private final int NO_OF_CARDS_IN_GAME;
-    private final int POWER;
-    private int changedPower;
-
+    private final int FIRST_POWER;
+    private int power;
     private Row row;
     private final Ability ABILITY;
     private final boolean IS_HERO;
     private final Faction FACTION;
     private final Description DESCRIPTION;
 
+
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero,
                 Faction faction, Description description) {
         this.NAME = name;
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        this.POWER = power;
+        this.FIRST_POWER = power;
+        this.power = power;
         ability.setCard(this);
         this.ABILITY = ability;
         this.IS_HERO = isHero;
@@ -30,44 +31,44 @@ public class Card {
         this.DESCRIPTION = description;
     }
 
-    public String getNAME() {
+    public String getName() {
         return NAME;
     }
 
-    public Type getTYPE() {
+    public Type getType() {
         return TYPE;
     }
 
-    public int getNO_OF_CARDS_IN_GAME() {
+    public int getNoOfCardsInGame() {
         return NO_OF_CARDS_IN_GAME;
     }
 
-    public Ability getABILITY() {
+    public Ability getAbility() {
         return ABILITY;
     }
 
-    public Faction getFACTION() {
+    public Faction getFaction() {
         return FACTION;
     }
 
-    public Description getDESCRIPTION() {
+    public Description getDescription() {
         return DESCRIPTION;
     }
 
-    public int getPOWER() {
-        return POWER;
+    public int getFirstPower() {
+        return FIRST_POWER;
     }
 
-    public boolean getIS_HERO() {
+    public boolean isHero() {
         return IS_HERO;
     }
 
-    public int getChangedPower() {
-        return changedPower;
+    public int getPower() {
+        return power;
     }
 
-    public void setChangedPower(int power) {
-        this.changedPower = power;
+    public void setPower(int power) {
+        this.power = power;
     }
 
     public Row getRow() {
@@ -77,5 +78,4 @@ public class Card {
     public void setRow(Row row) {
         this.row = row;
     }
-
 }

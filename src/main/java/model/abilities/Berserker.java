@@ -1,25 +1,16 @@
 package model.abilities;
 
-import enums.Row;
-import model.Game;
 import model.card.Card;
-
 import java.util.ArrayList;
 
 public class Berserker extends Ability {
-    public Berserker(){
-         super();
+    private final Card newCard;
+    public Berserker (Card newCard){
+        this.newCard = newCard;
+    }
+    public void affect(ArrayList<Card> inGameCards){
+        int i = inGameCards.indexOf(getCard());
+        inGameCards.set(i, newCard);
     }
 
-    public static class Scorch extends InstantaneousAbility {
-        public static ArrayList<Card> AffectedCards = new ArrayList<>();
-        /**
-         * @param row
-         * @param game
-         * @param card
-         */
-        public Scorch(Row row, Game game, Card card) {
-            super(row, game, card);
-        }
-    }
 }

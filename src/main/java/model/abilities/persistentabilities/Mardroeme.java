@@ -1,28 +1,27 @@
 package model.abilities.persistentabilities;
 
-import model.App;
+import model.abilities.Berserker;
 import model.card.Card;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 public class Mardroeme extends PersistentAbility {
     public static final ArrayList<Card> AffectedCards = new ArrayList<>();
-    public Mardroeme(BiFunction<Card, Card, Boolean> doesAffect){
-        super(doesAffect);
-    }
-    public Mardroeme(){
+
+    public Mardroeme() {
         super(CommandersHorn::doesAffectDefault);
     }
 
     public static boolean doesAffectDefault(Card abilityCard, Card card) {
-        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getABILITY().equals(enums.cardsinformation.Ability.BERSERKER); // instanceof Berserker; TODO
+        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getAbility() instanceof Berserker;
     }
+
     @Override
     public ArrayList<Card> getAffectedCards() {
         return AffectedCards;
     }
-    public static void affect(Card card) {
-        // App.getGame().changeCard(card,enums.cards.SkelligeCards.) TODO
+
+    public static void affect(Card card, ArrayList<Card> inGameCards) {
+        ((Berserker) card.getAbility()).affect(inGameCards);
     }
 }
