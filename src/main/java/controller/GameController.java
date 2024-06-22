@@ -14,8 +14,13 @@ public class GameController extends AppController {
         return null;
     }
 
-    @Command(command = "in hand deck –option <cardNumber>")
-    public String showDeck() {
+    @Command(command = "in hand deck")
+    public String showInHandDeck() {
+        return null;
+    }
+
+    @Command(command = "in hand deck card -option <cardNumber>")
+    public String showInHandDeckCard(int cardNumber) {
         return null;
     }
 
