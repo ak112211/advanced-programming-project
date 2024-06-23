@@ -9,6 +9,7 @@ public class Leader {
     private final String DESCRIPTION;
     private int numberOfAction = 1;
 
+    private String imagePath;
     public Leader(String name, Faction faction, String description) {
         NAME = name;
         FACTION = faction;
@@ -33,5 +34,13 @@ public class Leader {
 
     public void setNumberOfAction(int numberOfAction) {
         this.numberOfAction = numberOfAction;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

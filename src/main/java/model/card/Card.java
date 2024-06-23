@@ -16,6 +16,7 @@ public class Card {
     private final Faction FACTION;
     private final Description DESCRIPTION;
 
+    private String imagePath;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero,
                 Faction faction, Description description) {
@@ -77,5 +78,13 @@ public class Card {
 
     public void setRow(Row row) {
         this.row = row;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

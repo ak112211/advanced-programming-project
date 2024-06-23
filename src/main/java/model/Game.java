@@ -1,8 +1,10 @@
 package model;
 
 import enums.Row;
+import javafx.scene.layout.Pane;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
+import model.card.Leader;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,21 +14,37 @@ public class Game {
     private final User PLAYER1;
     private final User PLAYER2;
     private final Date DATE;
+    public Pane gamePane;
     private int player1Points, player2Points;
-    private final ArrayList<Card> inGameCards = new ArrayList<>();
-    private final ArrayList<Card> player1InHandCards = new ArrayList<>();
-    private final ArrayList<Card> player2InHandCards = new ArrayList<>();
-    private final ArrayList<Card> player1Deck = new ArrayList<>();
-    private final ArrayList<Card> player2Deck = new ArrayList<>();
-    private final ArrayList<Card> player1GraveyardCards = new ArrayList<>();
-    private final ArrayList<Card> player2GraveyardCards = new ArrayList<>();
+    private Leader player1LeaderCard;
+    private Leader player2LeaderCard;
+    private ArrayList<Card> inGameCards = new ArrayList<>();
+    private ArrayList<Card> player1InHandCards = new ArrayList<>();
+    private ArrayList<Card> player2InHandCards = new ArrayList<>();
+    private ArrayList<Card>  player1Deck = new ArrayList<>();
+    private ArrayList<Card>  player2Deck = new ArrayList<>();
+    private ArrayList<Card> player1GraveyardCards = new ArrayList<>();
+    private ArrayList<Card> player2GraveyardCards = new ArrayList<>();
     private GameStatus status = GameStatus.PENDING;
     private User winner = null;
+    private static Game currentGame;
 
     public Game(User player1, User player2, Date date) {
         PLAYER1 = player1;
         PLAYER2 = player2;
+        player1Deck = player1.getDeck().getCards();
+        player2Deck = player2.getDeck().getCards();
+        player1LeaderCard = player1.getLeader();
+        player2LeaderCard = player2.getLeader();
         DATE = date;
+    }
+
+    public static void setCurrentGame(Game game) {
+        currentGame = game;
+    }
+
+    public static Game getCurrentGame() {
+        return currentGame;
     }
 
     public User getPlayer1() {
@@ -130,6 +148,21 @@ public class Game {
 
     public ArrayList<Card> getPlayer2GraveyardCards() {
         return player2GraveyardCards;
+    }
+
+    public void initializeGameObjects() {
+    }
+
+    public void initializeGameObjectsFromSaved() {
+
+    }
+
+    public Leader getPlayer1LeaderCard() {
+        return player1LeaderCard;
+    }
+
+    public Leader getPlayer2LeaderCard() {
+        return player2LeaderCard;
     }
 
     public enum GameStatus {

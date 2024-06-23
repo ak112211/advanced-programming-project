@@ -2,17 +2,10 @@ package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javafx.animation.Transition;
 import javafx.scene.input.KeyEvent;
-
-import model.Bomber;
 import model.Game;
-import model.Missile;
-
 import model.User;
 import util.GameSerializer;
-import view.animations.MissileAnimation;
-
 import java.io.FileWriter;
 import java.io.IOException;
 

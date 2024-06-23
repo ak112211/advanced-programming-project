@@ -139,6 +139,18 @@ public class User {
 
     }
 
+    public Leader getLeader() {
+        return leader;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public void setLeader(Leader leader) {
+        this.leader = leader;
+    }
+
     public int getRank() {
         sortUsers();
         return USERS.indexOf(this) + 1;
