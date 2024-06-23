@@ -251,14 +251,6 @@ public class GameLauncher extends Application {
         return this.gamePane;
     }
 
-    public double getFreezePoints() {
-        return freezePoints;
-    }
-
-    public void setFreezePoints(double freezePoints) {
-        this.freezePoints = freezePoints;
-    }
-
     public void setGame(Game loadedGame) {
         this.game = loadedGame;
     }
