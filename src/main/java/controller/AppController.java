@@ -1,21 +1,34 @@
 package controller;
 
-import model.App;
-import model.Command;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
-public abstract class AppController {
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Random;
 
-    @Command(command = "show current menu")
-    public String showCurrentMenu() {
-        return App.getMenu().name();
+public class AppController {
+    private static Stage stage;
+    public static void setStage (Stage stage) {
+        AppController.stage = stage;
     }
 
-    @Command(command = "exit")
-    public String exit() {
-        System.exit(0);
-        return null;
+    public static Stage getStage () {
+        return stage;
     }
 
-    @Command(command = "menu enter <menuName>")
-    public abstract String menuEnter(String menuName);
+    public static void loadScene(String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(AppController.class.getResource(fxmlPath)));
+            Stage stage = AppController.getStage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

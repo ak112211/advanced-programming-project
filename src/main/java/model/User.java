@@ -25,12 +25,21 @@ public class User {
     private Card playCard;
     private int highScore = 0;
 
+    private static User currentUser;
     public User(String username, String nickname, String email, String password) {
         this.username = username;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         USERS.add(this);
+    }
+
+    public static User getCurrentUser() {
+        return User.currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        User.currentUser = currentUser;
     }
 
     public String getUsername() {

@@ -1,97 +1,45 @@
 package controller;
 
-import model.Command;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import javafx.animation.Transition;
+import javafx.scene.input.KeyEvent;
 
-public class GameController extends AppController {
+import model.Bomber;
+import model.Game;
+import model.Missile;
 
-    @Override
-    public String menuEnter(String menuName) {
-        return null;
+import model.User;
+import util.GameSerializer;
+import view.animations.MissileAnimation;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class GameController {
+
+    public static Game game;
+
+    public static void handleKeyPress(KeyEvent event) {
+
     }
 
-    @Command(command = "veto card <cardNumber>")
-    public String vetoCard(int cardNumber) {
-        return null;
+
+
+    public static void saveGameState(Game game) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Game.class, new GameSerializer())
+                .create();
+
+        String gameState = gson.toJson(game, Game.class);
+        try (FileWriter writer = new FileWriter("game_state_" + User.getCurrentUser().getUsername() + ".json")) {
+            writer.write(gameState);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Command(command = "in hand deck")
-    public String showInHandDeck() {
-        return null;
-    }
 
-    @Command(command = "in hand deck card -option <cardNumber>")
-    public String showInHandDeckCard(int cardNumber) {
-        return null;
-    }
 
-    @Command(command = "remaining cards to play")
-    public String showRemainingCards() {
-        return null;
-    }
-
-    @Command(command = "out of play cards")
-    public String showOutOfPlayCards() {
-        return null;
-    }
-
-    @Command(command = "cards in -row <rowNumber>")
-    public String showRow() {
-        return null;
-    }
-
-    @Command(command = "spells in play")
-    public String showSpellsInPlay() {
-        return null;
-    }
-
-    @Command(command = "place -card <cardNumber> in -row <rowNumber>")
-    public String placeCardInRow(int cardNumber, int rowNumber) {
-        return null;
-    }
-
-    @Command(command = "show leader")
-    public String showLeader() {
-        return null;
-    }
-
-    @Command(command = "leader power play")
-    public String leaderAction() {
-        return null;
-    }
-
-    @Command(command = "show players info")
-    public String showPlayersInfo() {
-        return null;
-    }
-
-    @Command(command = "show players lives")
-    public String showPlayersLives() {
-        return null;
-    }
-
-    @Command(command = "show number of cards in hand")
-    public String showNumberOfCardsInHand() {
-        return null;
-    }
-
-    @Command(command = "show turn info")
-    public String showTurnInfo() {
-        return null;
-    }
-
-    @Command(command = "show total score")
-    public String showTotalScore() {
-        return null;
-    }
-
-    @Command(command = "show total score of row <rowNumber>")
-    public String showTotalScoreOfRow(int rowNumber) {
-        return null;
-    }
-
-    @Command(command = "pass round")
-    public String pass() {
-        return null;
-    }
 
 }
