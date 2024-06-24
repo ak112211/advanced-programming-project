@@ -23,7 +23,7 @@ public class GetCard {
         ArrayList<Card> cards = cardsPlace.getCards(game, game.isPlayer1Turn() ^ fromOwn);
         for (int i = 0; i <amount; i++) {
             game.moveCard(game.chooseCard(cards, true), cards,
-                    game.isPlayer1Turn() ? game.getPlayer1InHandCards() : game.getPlayer2InHandCards());
+                    CardsPlace.IN_HAND.getCards(game,game.isPlayer1Turn()));
         }
     }
 }

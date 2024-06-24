@@ -17,7 +17,7 @@ public class Scorch extends InstantaneousAbility {
     public Scorch(Type type) {
         this.type = type;
     }
-    private List<Card> getCardsInRow(ArrayList<Card> inGameCards) {
+    private List<Card> getCardsInRow(ArrayList<Card> inGameCards, boolean isPlayer1Turn) {
         if (type == null){
             inGameCards.remove(getCard()); // To Remove Scorch Card
             return inGameCards;
@@ -26,8 +26,8 @@ public class Scorch extends InstantaneousAbility {
         return inGameCards.stream().filter(card -> card.getRow()==row).toList();
     }
     public void affect(Game game) {
-        List<Card> cards = getCardsInRow(game.getInGameCards()).stream()
-                .filter(Ability::canBeAffected).toList();
+        List<Card> cards = getCardsInRow(game.getInGameCards(), game.isPlayer1Turn())
+                .stream().filter(Ability::canBeAffected).toList();
         if (type != null && cards.stream().mapToInt(Card::getPower).sum() > 10){
             int maxPower = cards.stream().mapToInt(Card::getPower).max().orElse(0); // if it's empty maxPower value isn't important
             cards.stream().filter(card -> card.getPower() == maxPower)

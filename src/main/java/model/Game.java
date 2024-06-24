@@ -178,10 +178,6 @@ public class Game {
         return currentPlayer;
     }
 
-    public boolean isPlayer1sTurn() {
-        return currentPlayer.equals(PLAYER1);
-    }
-
     public boolean isPlayer1Turn() {
         return currentPlayer.equals(PLAYER1);
     }

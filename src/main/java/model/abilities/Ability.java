@@ -16,7 +16,7 @@ public abstract class Ability {
     }
 
     public static boolean canBeAffected(Card card) {
-        return card.getType() == Type.SPELL && !card.isHero();
+        return card.getType() != Type.SPELL && card.getType() != Type.DECOY && !card.isHero();
     }
 
     public static boolean sameRow(Card abilityCard, Card card) {
