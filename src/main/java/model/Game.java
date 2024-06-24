@@ -158,6 +158,10 @@ public class Game {
 
     }
 
+    public Card chooseCard(ArrayList<Card> cards) {
+        return null; // TODO
+    }
+
     public Leader getPlayer1LeaderCard() {
         return player1LeaderCard;
     }
@@ -181,7 +185,6 @@ public class Game {
     public boolean isPlayer1Turn() {
         return currentPlayer.equals(PLAYER1);
     }
-
 
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
