@@ -158,7 +158,7 @@ public class Game {
 
     }
 
-    public Card chooseCard(ArrayList<Card> cards) {
+    public Card chooseCard(ArrayList<Card> cards, boolean onlyAffectables) {
         return null; // TODO
     }
 
