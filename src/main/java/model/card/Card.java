@@ -4,7 +4,9 @@ import enums.Row;
 import enums.cardsinformation.*;
 import model.abilities.Ability;
 
-public class Card {
+import java.awt.*;
+
+public class Card extends Rectangle {
     private final String NAME;
     private final Type TYPE;
     private final int NO_OF_CARDS_IN_GAME;
