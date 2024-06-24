@@ -19,7 +19,7 @@ public class Card {
     private String imagePath;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero,
-                Faction faction, Description description) {
+                Faction faction, Description description, String imagePath) {
         this.NAME = name;
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
@@ -28,6 +28,7 @@ public class Card {
         ability.setCard(this);
         this.ABILITY = ability;
         this.IS_HERO = isHero;
+        this.imagePath = imagePath;
         this.FACTION = faction;
         this.DESCRIPTION = description;
     }

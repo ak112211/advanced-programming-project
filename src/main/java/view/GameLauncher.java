@@ -36,12 +36,13 @@ public class GameLauncher extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-
+        this.game = Game.getCurrentGame();
         setupGamePane();
         setupPauseMenu();
         setupMessageDisplay();
         setupGame();
         setupScene();
+        startTurn(); // Start with Player 1's turn
     }
 
     public void showPause() {
@@ -123,8 +124,6 @@ public class GameLauncher extends Application {
 
     private void setupGame() {
         if (!loadFromSaved) {
-            game = new Game(User.getCurrentUser(), new User("Computer"), new Date());
-            Game.setCurrentGame(game);
             GameController.game = game;
             game.initializeGameObjects(); // Setup initial game objects
         } else {
@@ -162,14 +161,14 @@ public class GameLauncher extends Application {
         player1Board.getChildren().clear();
         player2Board.getChildren().clear();
 
-        for (Card card : game.getPlayer1BoardCards()) {
+        for (Card card : game.getPlayer1InHandCards()) {
             ImageView cardView = new ImageView(new Image(card.getImagePath()));
             cardView.setFitHeight(100);
             cardView.setFitWidth(70);
             player1Board.getChildren().add(cardView);
         }
 
-        for (Card card : game.getPlayer2BoardCards()) {
+        for (Card card : game.getPlayer2InHandCards()) {
             ImageView cardView = new ImageView(new Image(card.getImagePath()));
             cardView.setFitHeight(100);
             cardView.setFitWidth(70);
@@ -241,11 +240,40 @@ public class GameLauncher extends Application {
     }
 
     public void switchSides() {
-        gamePane.setRotate(gamePane.getRotate() + 180);
+        boolean isPlayer1Turn = game.isPlayer1Turn();
+        if (isPlayer1Turn) {
+            // Enable Player 2's hand and disable Player 1's hand
+            for (ImageView cardView : player2Hand.getChildren().filtered(node -> node instanceof ImageView).toArray(ImageView[]::new)) {
+                cardView.setDisable(false);
+            }
+            for (ImageView cardView : player1Hand.getChildren().filtered(node -> node instanceof ImageView).toArray(ImageView[]::new)) {
+                cardView.setDisable(true);
+            }
+            displayMessage("Turn of Player 2");
+        } else {
+            // Enable Player 1's hand and disable Player 2's hand
+            for (ImageView cardView : player1Hand.getChildren().filtered(node -> node instanceof ImageView).toArray(ImageView[]::new)) {
+                cardView.setDisable(false);
+            }
+            for (ImageView cardView : player2Hand.getChildren().filtered(node -> node instanceof ImageView).toArray(ImageView[]::new)) {
+                cardView.setDisable(true);
+            }
+            displayMessage("Turn of Player 1");
+        }
     }
 
     public void nextTurn() {
         switchSides();
+        if (!game.isPlayer1Turn()) {
+            // Logic for the computer's move
+            // Implement simple AI for the computer's move
+            Card computerCard = game.getPlayer2InHandCards().get(0); // Example: play the first card in hand
+            playCard(computerCard, false);
+        }
+    }
 
+    public void startTurn() {
+        switchSides();
+        game.setCurrentPlayer(game.isPlayer1Turn() ? game.getPlayer2() : game.getPlayer1());
     }
 }

@@ -10,8 +10,9 @@ public class Leader {
     private int numberOfAction = 1;
 
     private String imagePath;
-    public Leader(String name, Faction faction, String description) {
+    public Leader(String name, Faction faction, String description, String imagePath) {
         NAME = name;
+        imagePath = imagePath;
         FACTION = faction;
         DESCRIPTION = description;
     }
