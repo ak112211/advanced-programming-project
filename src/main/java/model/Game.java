@@ -13,6 +13,7 @@ public class Game {
 
     private final User PLAYER1;
     private final User PLAYER2;
+    private User currentPlayer;
     private final Date DATE;
     public Pane gamePane;
     private int player1Points, player2Points;
@@ -163,6 +164,14 @@ public class Game {
 
     public Leader getPlayer2LeaderCard() {
         return player2LeaderCard;
+    }
+
+    public void setCurrentPlayer(User currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public User getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public enum GameStatus {

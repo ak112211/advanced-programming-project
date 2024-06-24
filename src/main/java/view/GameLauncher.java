@@ -5,27 +5,20 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Game;
 import model.User;
 import model.card.Card;
-import util.GameSerializer;
 
 import java.util.Date;
 
 import static controller.AppController.loadScene;
-import static controller.GameController.*;
 
 public class GameLauncher extends Application {
     private Stage primaryStage;
@@ -33,18 +26,20 @@ public class GameLauncher extends Application {
     public Game game;
     private VBox exitMenu;
     private Text messageDisplay;
-    private HBox playerHand;
-    private HBox playerDeck;
+    private HBox player1Hand;
+    private HBox player2Hand;
+    private HBox player1Board;
+    private HBox player2Board;
     private VBox leaderCards;
-
     private boolean loadFromSaved = false;
+
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
+
         setupGamePane();
         setupPauseMenu();
         setupMessageDisplay();
-        setupScoreAndBombDisplay();
         setupGame();
         setupScene();
     }
@@ -97,28 +92,38 @@ public class GameLauncher extends Application {
             game.gamePane = gamePane;
         }
 
-        // Initialize player hand and deck areas
-        playerHand = new HBox(5);
-        playerHand.setAlignment(Pos.BOTTOM_CENTER);
-        playerHand.setPrefHeight(150);
-        playerHand.setLayoutY(650);
+        // Initialize player hand and board areas
+        player1Hand = new HBox(5);
+        player1Hand.setAlignment(Pos.BOTTOM_CENTER);
+        player1Hand.setPrefHeight(150);
+        player1Hand.setLayoutY(650);
 
-        playerDeck = new HBox(5);
-        playerDeck.setAlignment(Pos.BOTTOM_CENTER);
-        playerDeck.setPrefHeight(150);
-        playerDeck.setLayoutY(500);
+        player2Hand = new HBox(5);
+        player2Hand.setAlignment(Pos.TOP_CENTER);
+        player2Hand.setPrefHeight(150);
+        player2Hand.setLayoutY(0);
+
+        player1Board = new HBox(5);
+        player1Board.setAlignment(Pos.BOTTOM_CENTER);
+        player1Board.setPrefHeight(150);
+        player1Board.setLayoutY(500);
+
+        player2Board = new HBox(5);
+        player2Board.setAlignment(Pos.TOP_CENTER);
+        player2Board.setPrefHeight(150);
+        player2Board.setLayoutY(150);
 
         leaderCards = new VBox(5);
         leaderCards.setAlignment(Pos.CENTER_LEFT);
         leaderCards.setLayoutX(50);
         leaderCards.setLayoutY(300);
 
-        gamePane.getChildren().addAll(playerHand, playerDeck, leaderCards);
+        gamePane.getChildren().addAll(player1Hand, player2Hand, player1Board, player2Board, leaderCards);
     }
 
     private void setupGame() {
         if (!loadFromSaved) {
-            game = new Game(User.getCurrentUser(), new User("Player2"), new Date());
+            game = new Game(User.getCurrentUser(), new User("Computer"), new Date());
             Game.setCurrentGame(game);
             GameController.game = game;
             game.initializeGameObjects(); // Setup initial game objects
@@ -126,32 +131,53 @@ public class GameLauncher extends Application {
             game.initializeGameObjectsFromSaved(); // Setup initial game objects from saved state
         }
 
-        // Add cards to player hand and deck
+        // Add cards to player hand and board
         setupCardsInHand();
-        setupCardsInDeck();
+        setupCardsOnBoard();
         setupLeaderCards();
     }
 
     private void setupCardsInHand() {
+        player1Hand.getChildren().clear();
+        player2Hand.getChildren().clear();
+
         for (Card card : game.getPlayer1InHandCards()) {
             ImageView cardView = new ImageView(new Image(card.getImagePath()));
             cardView.setFitHeight(100);
             cardView.setFitWidth(70);
-            playerHand.getChildren().add(cardView);
+            cardView.setOnMouseClicked(event -> playCard(card, true));
+            player1Hand.getChildren().add(cardView);
         }
-    }
 
-    private void setupCardsInDeck() {
-        for (Card card : game.getPlayer1Deck()) {
+        for (Card card : game.getPlayer2InHandCards()) {
             ImageView cardView = new ImageView(new Image(card.getImagePath()));
             cardView.setFitHeight(100);
             cardView.setFitWidth(70);
-            playerDeck.getChildren().add(cardView);
+            cardView.setOnMouseClicked(event -> playCard(card, false));
+            player2Hand.getChildren().add(cardView);
+        }
+    }
+
+    private void setupCardsOnBoard() {
+        player1Board.getChildren().clear();
+        player2Board.getChildren().clear();
+
+        for (Card card : game.getPlayer1BoardCards()) {
+            ImageView cardView = new ImageView(new Image(card.getImagePath()));
+            cardView.setFitHeight(100);
+            cardView.setFitWidth(70);
+            player1Board.getChildren().add(cardView);
+        }
+
+        for (Card card : game.getPlayer2BoardCards()) {
+            ImageView cardView = new ImageView(new Image(card.getImagePath()));
+            cardView.setFitHeight(100);
+            cardView.setFitWidth(70);
+            player2Board.getChildren().add(cardView);
         }
     }
 
     private void setupLeaderCards() {
-        // Assuming you have methods getPlayer1LeaderCard and getPlayer2LeaderCard
         ImageView player1LeaderCard = new ImageView(new Image(game.getPlayer1LeaderCard().getImagePath()));
         player1LeaderCard.setFitHeight(100);
         player1LeaderCard.setFitWidth(70);
@@ -169,10 +195,6 @@ public class GameLauncher extends Application {
         primaryStage.setTitle("Gwent Game");
         primaryStage.setResizable(false);
         primaryStage.show();
-    }
-
-    public void setupScoreAndBombDisplay() {
-        // Implement score and bomb display setup
     }
 
     public void updateScore() {
@@ -204,5 +226,26 @@ public class GameLauncher extends Application {
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> messageDisplay.setVisible(false));
         pause.play();
+    }
+
+    private void playCard(Card card, boolean isPlayer1) {
+        if (isPlayer1) {
+            game.player1PlayCard(card, null);
+        } else {
+            game.player2PlayCard(card, null);
+        }
+        game.calculatePoints();
+        setupCardsOnBoard();
+        setupCardsInHand();
+        nextTurn();
+    }
+
+    public void switchSides() {
+        gamePane.setRotate(gamePane.getRotate() + 180);
+    }
+
+    public void nextTurn() {
+        switchSides();
+
     }
 }
