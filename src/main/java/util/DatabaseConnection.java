@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/UserDB";
@@ -105,6 +107,83 @@ public class DatabaseConnection {
                 }
             }
         }
+    }
+
+    public static int getDrawsCount(String username) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NULL";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.setString(2, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        }
+    }
+
+    public static int getWinsCount(String username) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Games WHERE winner = ?";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        }
+    }
+
+    public static int getLossesCount(String username) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NOT NULL AND winner <> ?";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.setString(2, username);
+            stmt.setString(3, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        }
+    }
+
+    public static List<String> getRecentGames(String username, int n) throws SQLException {
+        String query = "SELECT * FROM Games WHERE player1 = ? OR player2 = ? ORDER BY date DESC LIMIT ?";
+
+        List<String> games = new ArrayList<>();
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.setString(2, username);
+            stmt.setInt(3, n);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String opponent = rs.getString("player1").equals(username) ? rs.getString("player2") : rs.getString("player1");
+                    String date = rs.getString("date");
+                    int player1Round1 = rs.getInt("player1_round1");
+                    int player1Round2 = rs.getInt("player1_round2");
+                    int player1Round3 = rs.getInt("player1_round3");
+                    int player2Round1 = rs.getInt("player2_round1");
+                    int player2Round2 = rs.getInt("player2_round2");
+                    int player2Round3 = rs.getInt("player2_round3");
+                    int player1FinalScore = rs.getInt("player1_final_score");
+                    int player2FinalScore = rs.getInt("player2_final_score");
+                    String winner = rs.getString("winner");
+
+                    games.add(String.format("Opponent: %s, Date: %s, Rounds: [%d, %d, %d] - [%d, %d, %d], Final Scores: %d - %d, Winner: %s",
+                            opponent, date, player1Round1, player1Round2, player1Round3, player2Round1, player2Round2, player2Round3, player1FinalScore, player2FinalScore, winner));
+                }
+            }
+        }
+
+        return games;
     }
 
 }
