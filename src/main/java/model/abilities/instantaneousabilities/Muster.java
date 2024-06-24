@@ -18,7 +18,7 @@ public class Muster extends InstantaneousAbility {
     }
 
     public void affect(Game game) {
-        if (getCard().getRow().isPlayer1()) {
+        if (game.isPlayer1Turn()) {
             for (int i = 0; i < game.getPlayer1Deck().size(); ) {
                 Card card = game.getPlayer1Deck().get(i);
                 if (canMuster(card)) {
