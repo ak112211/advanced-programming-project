@@ -28,4 +28,8 @@ public class Deck {
     public void setFileAddress(String fileAddress) {
         this.fileAddress = fileAddress;
     }
+
+    public void addCard(Card card2) {
+        CARDS.add(card2);
+    }
 }
