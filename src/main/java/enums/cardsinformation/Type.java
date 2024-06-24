@@ -18,7 +18,8 @@ public enum Type {
                 case SIEGE_UNIT -> Row.PLAYER1_SIEGE;
                 case WEATHER -> Row.PLAYER1_WEATHER;
                 case SPY_UNIT -> Row.PLAYER2_CLOSE_COMBAT;
-                case SPELL, AGILE_UNIT -> Row.PLAYER1_CLOSE_COMBAT; // yejoorie vali khob
+                case AGILE_UNIT -> Row.PLAYER1_CLOSE_COMBAT; // yejoorie vali khob
+                case SPELL -> throw new RuntimeException("Spells don't have any default rows");
             };
         } else {
             return switch (this) {
@@ -27,7 +28,8 @@ public enum Type {
                 case SIEGE_UNIT -> Row.PLAYER2_SIEGE;
                 case WEATHER -> Row.PLAYER2_WEATHER;
                 case SPY_UNIT -> Row.PLAYER1_CLOSE_COMBAT;
-                case SPELL, AGILE_UNIT -> Row.PLAYER2_CLOSE_COMBAT; // yejoorie vali khob
+                case AGILE_UNIT -> Row.PLAYER2_CLOSE_COMBAT; // yejoorie vali khob
+                case SPELL -> throw new RuntimeException("Spells don't have any default rows");
             };
         }
     }
