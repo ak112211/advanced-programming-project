@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="view.ScoreboardController">
+    <Button text="Back to main menu" onAction="#back"/>
+    <TableView fx:id="scoreTable">
+        <columns>
+            <TableColumn fx:id="usernameColumn" text="Username" />
+            <TableColumn fx:id="scoreColumn" text="Score" />
+            <TableColumn fx:id="finalWaveColumn" text="Final Wave" />
+            <TableColumn fx:id="killsColumn" text="Kills" />
+            <TableColumn fx:id="difficultyColumn" text="Difficulty" />
+            <TableColumn fx:id="accuracyColumn" text="Accuracy" />
+        </columns>
+    </TableView>
+</VBox>

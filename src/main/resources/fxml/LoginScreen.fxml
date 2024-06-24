@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<VBox alignment="CENTER" prefHeight="286.0" prefWidth="221.0" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="view.LoginController">
+    <Text style="-fx-font-size: 24px;" text="Login" />
+    <TextField fx:id="usernameField" prefHeight="17.0" prefWidth="221.0" promptText="Username" />
+    <PasswordField fx:id="passwordField" promptText="Password" />
+    <Button onAction="#handleLogin" prefHeight="25.0" prefWidth="48.0" text="Login" />
+    <Button onAction="#handleGuestLogin" text="Play as Guest" />
+    <Button onAction="#handleRegister" text="Register" />  <!-- Button to switch to registration view -->
+</VBox>

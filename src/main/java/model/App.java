@@ -1,7 +1,7 @@
 package model;
 
 import controller.AppController;
-import controller.LoginController;
+import view.LoginController;
 import enums.Menu;
 
 public class App {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<VBox fx:controller="view.ProfileMenuController" spacing="10" xmlns:fx="http://javafx.com/fxml">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <Label text="Update Profile"/>
+    <TextField fx:id="usernameField" promptText="New Username"/>
+    <PasswordField fx:id="passwordField" promptText="New Password"/>
+    <Button text="Update" onAction="#handleUpdate"/>
+    <Button text="Delete Account" onAction="#handleDeleteAccount"/>
+    <Button text="Logout" onAction="#handleLogout"/>
+    <Button text="Avatar Settings" onAction="#handleAvatarSettings"/>
+    <Button text="Main Menu" onAction="#handleMain"/>
+</VBox>
