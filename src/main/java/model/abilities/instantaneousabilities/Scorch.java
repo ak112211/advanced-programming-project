@@ -19,6 +19,7 @@ public class Scorch extends InstantaneousAbility {
     }
     private List<Card> getCardsInRow(ArrayList<Card> inGameCards) {
         if (type == null){
+            inGameCards.remove(getCard()); // To Remove Scorch Card
             return inGameCards;
         }
         Row row = type.getRow(getCard().getRow().isPlayer1());
