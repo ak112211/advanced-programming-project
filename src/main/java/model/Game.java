@@ -117,7 +117,7 @@ public class Game {
                 .filter(card -> card.getRow().isPlayer1())
                 .mapToInt(Card::getPower)
                 .sum();
-        player1Points = inGameCards.stream()
+        player2Points = inGameCards.stream()
                 .filter(card -> !card.getRow().isPlayer1())
                 .mapToInt(Card::getPower)
                 .sum();
