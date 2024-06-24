@@ -2,6 +2,7 @@ package model.card;
 
 import enums.cardsinformation.Description;
 import enums.cardsinformation.Faction;
+import javafx.scene.shape.Rectangle;
 import model.abilities.Ability;
 
 import java.awt.*;
@@ -40,6 +41,10 @@ public class Leader extends Rectangle {
 
     public void setNumberOfAction(int numberOfAction) {
         this.numberOfAction = numberOfAction;
+    }
+
+    public Ability getABILITY() {
+        return ABILITY;
     }
 
     public String getImagePath() {

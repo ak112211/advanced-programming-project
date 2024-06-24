@@ -1,12 +1,16 @@
 package model.card;
-
+import javafx.scene.shape.Rectangle;
 import enums.Row;
 import enums.cardsinformation.*;
+import javafx.scene.input.DataFormat;
+import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
 
 import java.awt.*;
 
 public class Card extends Rectangle {
+    public static final DataFormat DATA_FORMAT = new DataFormat("model.card.Card");
+
     private final String NAME;
     private final Type TYPE;
     private final int NO_OF_CARDS_IN_GAME;
@@ -20,19 +24,22 @@ public class Card extends Rectangle {
 
     private String imagePath;
 
-    public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero,
-                Faction faction, Description description, String imagePath) {
+    public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath) {
         this.NAME = name;
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
         this.FIRST_POWER = power;
         this.power = power;
-        ability.setCard(this);
         this.ABILITY = ability;
         this.IS_HERO = isHero;
-        this.imagePath = imagePath;
         this.FACTION = faction;
         this.DESCRIPTION = description;
+        this.imagePath = imagePath;
+
+
+        this.setWidth(70);
+        this.setHeight(100);
+        this.setFill(new ImagePattern(new javafx.scene.image.Image(imagePath)));
     }
 
     public String getName() {
@@ -90,4 +97,5 @@ public class Card extends Rectangle {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
 }
