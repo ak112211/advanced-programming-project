@@ -174,6 +174,11 @@ public class Game {
         return currentPlayer;
     }
 
+    public boolean isPlayer1Turn() {
+        return currentPlayer.equals(PLAYER1);
+    }
+
+
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
     }
