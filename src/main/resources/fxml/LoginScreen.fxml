@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
-<VBox alignment="CENTER" prefHeight="286.0" prefWidth="221.0" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="view.LoginController">
-    <Text style="-fx-font-size: 24px;" text="Login" />
-    <TextField fx:id="usernameField" prefHeight="17.0" prefWidth="221.0" promptText="Username" />
-    <PasswordField fx:id="passwordField" promptText="Password" />
-    <Button onAction="#handleLogin" prefHeight="25.0" prefWidth="48.0" text="Login" />
-    <Button onAction="#handleGuestLogin" text="Play as Guest" />
-    <Button onAction="#handleRegister" text="Register" />  <!-- Button to switch to registration view -->
-</VBox>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane fx:id="loginForm" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.LoginController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Button text="Login" fx:id="loginButton" onAction="#handleLoginButtonAction" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+
+    <Button text="Forgot Password" fx:id="forgotPasswordButton" onAction="#handleForgotPasswordButtonAction" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+
+    <Button text="Register" fx:id="registerButton" onAction="#handleRegisterButtonAction" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+</GridPane>
