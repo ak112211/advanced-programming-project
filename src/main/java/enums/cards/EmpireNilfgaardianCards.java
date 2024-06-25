@@ -32,8 +32,13 @@ public enum EmpireNilfgaardianCards {
     SIEGE_TECHNICIAN("Siege Technician", 0, 1, Type.SIEGE_UNIT, new Medic(), Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_siege_support.jpg"),
     SWEERS("Sweers", 2, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_sweers.jpg"),
     VANHEMAR("Vanhemar", 4, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_vanhemar.jpg"),
-    VREEMDE("Vreemde", 2, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_vreemde.jpg");
-
+    VREEMDE("Vreemde", 2, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_vreemde.jpg"),
+    SHILARD_FITZ_OESTERLEN("Shilard Fitz-Oesterlen", 7, 1, Type.CLOSE_COMBAT_UNIT, new Spy(), Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_shilard.jpg"),
+    ASSIRE_VAR_ANAHID("Assire var Anahid", 6, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_assire.jpg"),
+    HEAVY_ZERRIKANIAN_FIRE_SCORPION("Heavy Zerrikanian Fire Scorpion", 10, 1, Type.SIEGE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_heavy_zerri.jpg"),
+    ALBRICH("Albrich", 2, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_albrich.jpg"),
+    LETHO_OF_GULET("Letho of Gulet", 10, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/nilfgaard_letho.jpg"),
+    RAINFARN("Rainfarn", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_rainfarn.jpg");
     private final String NAME;
     private final int POWER;
     private final int NO_OF_CARDS_IN_GAME;

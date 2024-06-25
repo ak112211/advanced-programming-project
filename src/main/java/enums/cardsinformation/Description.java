@@ -18,7 +18,11 @@ public enum Description {
     MUSTERED_BY_CERYS("Can be Mustered by Cerys."),
     KILLS_STRONGEST_OPPONENT("kills opponent card(s) with most power(does not matter in which row in this card)"),
     TRANSFORMS_TO_YOUNG_VIDKAARL("Transforms into Young Vidkaarl when Mardroeme is used.Young Vidkaarl has Tight Bond effect."),
-    PLAYED_WITH_YOUNG_BERSERKER("it can only be played when a young berserker transform into it.\n");
+    PLAYED_WITH_YOUNG_BERSERKER("it can only be played when a young berserker transform into it.\n"),
+    SETS_SIEGE_TO_ONE("Sets the power of all siege units of both sides to 1"),
+    SETS_SIEGE_AND_RANGED_TO_ONE("Sets the power of all siege and ranged units of both sides to 1\n"),
+    CANCELS_ALL_WEATHER_CARDS("Cancel all the weather cards"),
+    REMOVES_MAX_POWER_CARDS("Remove card(s) with the maximum power points in the field (ignores heroes)");
     private final String description;
 
     Description(String description) {

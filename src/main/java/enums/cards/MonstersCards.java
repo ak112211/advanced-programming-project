@@ -38,8 +38,13 @@ public enum MonstersCards {
     HARPY("Harpy", 2, 1, Type.AGILE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/monsters_harpy.jpg"),
     NEKKER("Nekker", 2, 3, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_nekker.jpg"),
     WYVERN("Wyvern", 2, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/monsters_wyvern.jpg"),
-    GHOUL("Harpy", 1, 3, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_ghoul.jpg");
-
+    GHOUL("Harpy", 1, 3, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_ghoul.jpg"),
+    IMLERITH("Imlerith", 10, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/monsters_imlerith.jpg"),
+    CRONE_BREWESS("Crone: Brewess", 6, 1, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_witch_velen.jpg"),
+    FRIGHTENER("Frightener", 5, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/monsters_frightener.jpg"),
+    BOTCHLING("Botchling", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/monsters_poroniec.jpg"),
+    CELAENO_HARPY("Celaeno Harpy", 2, 1, Type.AGILE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/monsters_celaeno_harpy.jpg"),
+    GARGOYLE("Gargoyle", 2, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/monsters_gargoyle.jpg");
     private final String NAME;
     private final int POWER;
     private final int NO_OF_CARDS_IN_GAME;
