@@ -8,9 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import util.DatabaseConnection;
-
-import java.sql.SQLException;
+import util.ServerConnection;
 
 public class ForgotPasswordController extends AppController {
 
@@ -47,20 +45,18 @@ public class ForgotPasswordController extends AppController {
     @FXML
     public void handleSubmitButtonAction(ActionEvent event) {
         String username = usernameField.getText();
+        String response = AppController.getServerConnection().sendRequest("isUsernameTaken " + username);
 
-        try {
-            if (!DatabaseConnection.isUsernameTaken(username)) {
-                showAlert("Error", "Invalid Username", "The entered username does not exist.");
-                return;
-            }
+        if ("false".equals(response)) {
+            showAlert("Error", "Invalid Username", "The entered username does not exist.");
+            return;
+        }
 
-            String securityQuestion = DatabaseConnection.getSecurityQuestion(username);
-            if (securityQuestion != null) {
-                securityQuestionField.setText(securityQuestion);
-                securityQuestionBox.setVisible(true);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        response = AppController.getServerConnection().sendRequest("getSecurityQuestion " + username);
+        if (response != null && !response.isEmpty()) {
+            securityQuestionField.setText(response);
+            securityQuestionBox.setVisible(true);
+        } else {
             showAlert("Error", "Database Error", "An error occurred while checking the username. Please try again.");
         }
     }
@@ -69,16 +65,12 @@ public class ForgotPasswordController extends AppController {
     public void handleValidateAnswerButtonAction(ActionEvent event) {
         String username = usernameField.getText();
         String answer = securityAnswerField.getText();
+        String response = AppController.getServerConnection().sendRequest("validateSecurityAnswer " + username + " " + answer);
 
-        try {
-            if (DatabaseConnection.validateSecurityAnswer(username, answer)) {
-                newPasswordBox.setVisible(true);
-            } else {
-                showAlert("Error", "Invalid Answer", "The entered answer is incorrect.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Error", "Database Error", "An error occurred while validating the answer. Please try again.");
+        if ("true".equals(response)) {
+            newPasswordBox.setVisible(true);
+        } else {
+            showAlert("Error", "Invalid Answer", "The entered answer is incorrect.");
         }
     }
 
@@ -93,21 +85,21 @@ public class ForgotPasswordController extends AppController {
             return;
         }
 
-        try {
-            DatabaseConnection.updatePassword(username, newPassword);
+        String response = AppController.getServerConnection().sendRequest("updatePassword " + username + " " + newPassword);
+        if ("success".equals(response)) {
             showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
-            // Navigate to the login screen
-        } catch (SQLException e) {
-            e.printStackTrace();
+            loadScene("/fxml/LoginScreen.fxml");
+        } else {
             showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
     }
 
     private void showAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
     }
+
 }

@@ -4,69 +4,44 @@ import controller.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import util.DatabaseConnection;
+import util.ServerConnection;
 
-import java.sql.SQLException;
+import static controller.AppController.loadScene;
 
-public class LoginController extends AppController {
+public class LoginController {
 
     @FXML
     private TextField usernameField;
-
     @FXML
     private PasswordField passwordField;
 
-    @FXML
-    private Button loginButton;
 
     @FXML
-    private Button forgotPasswordButton;
-
-    @FXML
-    private Button registerButton;
-
-    @FXML
-    public void handleLoginButtonAction(ActionEvent event) {
+    private void handleLoginButtonAction() {
         String username = usernameField.getText();
         String password = passwordField.getText();
-
-        try {
-            if (!DatabaseConnection.isUsernameTaken(username)) {
-                showAlert("Error", "Invalid Username", "The entered username does not exist.");
-                return;
-            }
-
-            if (!DatabaseConnection.checkPassword(username, password)) {
-                showAlert("Error", "Invalid Password", "The entered password is incorrect.");
-                return;
-            }
-
-            showAlert("Success", "Login Successful", "You have successfully logged in.");
-            // Navigate to the main menu
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Error", "Database Error", "An error occurred while logging in. Please try again.");
-        }
+        String request = String.format("login %s %s", username, password);
+        String response = AppController.getServerConnection().sendRequest(request);
+        showAlert(response);
     }
+
 
     @FXML
     public void handleForgotPasswordButtonAction(ActionEvent event) {
-        loadScene("/fxml/f.fxml");
+        loadScene("/fxml/forgot_password.fxml");
     }
 
     @FXML
     public void handleRegisterButtonAction(ActionEvent event) {
-        // Navigate to the registration screen
+        loadScene("/fxml/RegistrationScreen.fxml");
     }
 
-    private void showAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
         alert.showAndWait();
     }
+
 }

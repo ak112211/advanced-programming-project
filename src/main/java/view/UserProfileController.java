@@ -7,9 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.User;
-import util.DatabaseConnection;
 
-import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserProfileController extends AppController {
@@ -41,6 +40,7 @@ public class UserProfileController extends AppController {
     @FXML
     private TextField recentGamesField;
 
+
     @FXML
     public void initialize() {
         try {
@@ -50,10 +50,17 @@ public class UserProfileController extends AppController {
             highScoreLabel.setText(String.valueOf(currentUser.getHighScore()));
             rankLabel.setText(String.valueOf(currentUser.getRank()));
             gamesPlayedLabel.setText(String.valueOf(currentUser.getGames().size()));
-            drawsLabel.setText(String.valueOf(DatabaseConnection.getDrawsCount(currentUser.getUsername())));
-            winsLabel.setText(String.valueOf(DatabaseConnection.getWinsCount(currentUser.getUsername())));
-            lossesLabel.setText(String.valueOf(DatabaseConnection.getLossesCount(currentUser.getUsername())));
-        } catch (SQLException e) {
+
+            String drawsResponse = AppController.getServerConnection().sendRequest("getDrawsCount " + currentUser.getUsername());
+            drawsLabel.setText(drawsResponse);
+
+            String winsResponse = AppController.getServerConnection().sendRequest("getWinsCount " + currentUser.getUsername());
+            winsLabel.setText(winsResponse);
+
+            String lossesResponse = AppController.getServerConnection().sendRequest("getLossesCount " + currentUser.getUsername());
+            lossesLabel.setText(lossesResponse);
+
+        } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Database Error", "An error occurred while fetching the user profile. Please try again.");
         }
@@ -77,18 +84,18 @@ public class UserProfileController extends AppController {
         }
 
         try {
-            List<String> recentGames = DatabaseConnection.getRecentGames(User.getCurrentUser().getUsername(), n);
-            if (recentGames.isEmpty()) {
+            String response = AppController.getServerConnection().sendRequest("getRecentGames " + User.getCurrentUser().getUsername() + " " + n);
+            if (response.isEmpty()) {
                 showAlert("Information", "No Games Found", "No recent games found for the user.");
             } else {
-                // Show recent games (This can be improved by showing in a new window or a list view)
+                List<String> recentGames = Arrays.asList(response.split("\n"));
                 StringBuilder sb = new StringBuilder();
                 for (String game : recentGames) {
                     sb.append(game).append("\n");
                 }
                 showAlert("Recent Games", "Recent Games History", sb.toString());
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Database Error", "An error occurred while fetching the recent games. Please try again.");
         }

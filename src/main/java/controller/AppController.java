@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import util.ServerConnection;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.Random;
 
 public class AppController {
     private static Stage stage;
+    private static ServerConnection serverConnection;
     public static void setStage (Stage stage) {
         AppController.stage = stage;
     }
@@ -31,4 +33,11 @@ public class AppController {
         }
     }
 
+    public static void setServerConnection() {
+        serverConnection = new ServerConnection();
+    }
+
+    public static ServerConnection getServerConnection() {
+        return serverConnection;
+    }
 }
