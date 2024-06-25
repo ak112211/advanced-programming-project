@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
 <Pane fx:id="gamePane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
+    <background>
+        <Background>
+            <images>
+                <BackgroundImage>
+                    <image>
+                        <Image url="@/gwentImages/img/board.jpg"/>
+                    </image>
+                    <repeatX>NO_REPEAT</repeatX>
+                    <repeatY>NO_REPEAT</repeatY>
+                    <position>
+                        <BackgroundPosition />
+                    </position>
+                    <size>
+                        <BackgroundSize />
+                    </size>
+                </BackgroundImage>
+            </images>
+        </Background>
+    </background>
     <children>
         <Label fx:id="player1NameLabel" layoutX="10" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
         <Label fx:id="player2NameLabel" layoutX="1100" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
