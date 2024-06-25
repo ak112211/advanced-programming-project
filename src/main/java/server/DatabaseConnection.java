@@ -1,11 +1,19 @@
 package server;
 
+import enums.cardsinformation.Faction;
+import model.Deck;
+import model.Game;
+import model.User;
+import model.card.Card;
+import model.card.Leader;
+
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/UserDB";
+    private static final String URL = "jdbc:mysql://localhost:3306/gwent";
     private static final String USER = "root";
     private static final String PASSWORD = "your_password";
 
@@ -182,4 +190,142 @@ public class DatabaseConnection {
         return games;
     }
 
+    public static void saveGame(Game game) throws SQLException, IOException {
+        String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, game.getPlayer1().getUsername());
+            stmt.setString(2, game.getPlayer2().getUsername());
+            stmt.setTimestamp(3, new Timestamp(game.getDate().getTime()));
+            stmt.setString(4, game.getStatus().name());
+            stmt.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
+
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+            objOut.writeObject(game);
+            objOut.flush();
+            byte[] gameData = byteOut.toByteArray();
+
+            stmt.setBytes(6, gameData);
+            stmt.executeUpdate();
+        }
+    }
+
+    public static Game getGame(int gameId) throws SQLException, IOException, ClassNotFoundException {
+        String query = "SELECT game_data FROM Games WHERE game_id = ?";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, gameId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    byte[] gameData = rs.getBytes("game_data");
+                    ByteArrayInputStream byteIn = new ByteArrayInputStream(gameData);
+                    ObjectInputStream objIn = new ObjectInputStream(byteIn);
+                    return (Game) objIn.readObject();
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
+    public static void saveUser(User user) throws SQLException, IOException {
+        String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, faction, leader, deck, decks, play_card) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getNickname());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getPassword());
+            stmt.setInt(5, user.getQuestionNumber());
+            stmt.setString(6, user.getAnswer());
+            stmt.setInt(7, user.getHighScore());
+            stmt.setString(8, user.getFaction().toString());
+
+            ByteArrayOutputStream bos;
+            ObjectOutputStream oos;
+
+            // Serialize Leader
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(user.getLeader());
+            stmt.setBytes(9, bos.toByteArray());
+
+            // Serialize Deck
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(user.getDeck());
+            stmt.setBytes(10, bos.toByteArray());
+
+            // Serialize Decks
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(user.getDecks());
+            stmt.setBytes(11, bos.toByteArray());
+
+            // Serialize PlayCard
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(user.getPlayCard());
+            stmt.setBytes(12, bos.toByteArray());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    public static User getUser(String username) throws SQLException, IOException, ClassNotFoundException {
+        String query = "SELECT * FROM Users WHERE username = ?";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String nickname = rs.getString("nickname");
+                    String email = rs.getString("email");
+                    String password = rs.getString("password");
+                    int questionNumber = rs.getInt("question_number");
+                    String answer = rs.getString("answer");
+                    int highScore = rs.getInt("high_score");
+                    Faction faction = Faction.valueOf(rs.getString("faction"));
+
+                    ByteArrayInputStream bis;
+                    ObjectInputStream ois;
+
+                    // Deserialize Leader
+                    bis = new ByteArrayInputStream(rs.getBytes("leader"));
+                    ois = new ObjectInputStream(bis);
+                    Leader leader = (Leader) ois.readObject();
+
+                    // Deserialize Deck
+                    bis = new ByteArrayInputStream(rs.getBytes("deck"));
+                    ois = new ObjectInputStream(bis);
+                    Deck deck = (Deck) ois.readObject();
+
+                    // Deserialize Decks
+                    bis = new ByteArrayInputStream(rs.getBytes("decks"));
+                    ois = new ObjectInputStream(bis);
+                    ArrayList<Deck> decks = (ArrayList<Deck>) ois.readObject();
+
+                    // Deserialize PlayCard
+                    bis = new ByteArrayInputStream(rs.getBytes("play_card"));
+                    ois = new ObjectInputStream(bis);
+                    Card playCard = (Card) ois.readObject();
+
+                    User user = new User(username, nickname, email, password);
+                    user.setQuestionNumber(questionNumber);
+                    user.setAnswer(answer);
+                    user.setHighScore(highScore);
+                    user.setFaction(faction);
+                    user.setLeader(leader);
+                    user.setDeck(deck);
+                    user.getDecks().addAll(decks);
+                    user.setPlayCard(playCard);
+
+                    return user;
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
 }

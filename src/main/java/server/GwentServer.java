@@ -1,19 +1,20 @@
 package server;
 
+import model.Game;
+import model.User;
+
 import java.io.*;
-import java.net.*;
-import java.sql.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
 
 public class GwentServer {
 
     private static final int PORT = 5555;
-    private static Connection connection;
 
     public static void main(String[] args) {
-        try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/UserDB", "root", "your_password");
-            ServerSocket serverSocket = new ServerSocket(PORT);
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Gwent server started on port " + PORT);
 
             while (true) {
@@ -21,8 +22,7 @@ public class GwentServer {
                 System.out.println("New client connected: " + clientSocket.getInetAddress().getHostAddress());
                 new ClientHandler(clientSocket).start();
             }
-
-        } catch (SQLException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -47,7 +47,6 @@ public class GwentServer {
                     String response = handleRequest(inputLine);
                     out.println(response);
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -74,7 +73,7 @@ public class GwentServer {
                             if (DatabaseConnection.isUsernameTaken(username)) {
                                 return "Username is already taken.";
                             }
-                            DatabaseConnection.saveUser(username, nickname, email, password);
+                            DatabaseConnection.saveUser(new User(username, nickname, email, password));
                             return "User registered successfully.";
                         }
                         break;
@@ -146,15 +145,43 @@ public class GwentServer {
                             return String.join("\n", recentGames);
                         }
                         break;
+                    case "saveGame":
+                        if (parts.length == 2) {
+                            Game game = deserializeGame(parts[1]);
+                            DatabaseConnection.saveGame(game);
+                            return "Game saved successfully.";
+                        }
+                        break;
+                    case "getGame":
+                        if (parts.length == 2) {
+                            int gameId = Integer.parseInt(parts[1]);
+                            Game game = DatabaseConnection.getGame(gameId);
+                            return serializeGame(game);
+                        }
+                        break;
                     default:
                         return "Unknown command.";
                 }
-            } catch (SQLException e) {
+            } catch (SQLException | IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 return "Database error: " + e.getMessage();
             }
 
             return "Invalid request format.";
+        }
+
+        private Game deserializeGame(String serializedGame) throws IOException, ClassNotFoundException {
+            ByteArrayInputStream bis = new ByteArrayInputStream(serializedGame.getBytes());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return (Game) ois.readObject();
+        }
+
+        private String serializeGame(Game game) throws IOException {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(game);
+            oos.flush();
+            return bos.toString();
         }
     }
 }

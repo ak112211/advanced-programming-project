@@ -1,10 +1,12 @@
 package util;
 
+import model.Game;
+
 import java.io.*;
 import java.net.Socket;
 
 public class ServerConnection {
-    private static final String SERVER_ADDRESS = "localhost";
+    private static final String SERVER_ADDRESS = "192.168.1.112";
     private static final int SERVER_PORT = 5555;
 
     private Socket socket;
@@ -28,6 +30,31 @@ public class ServerConnection {
         } catch (IOException e) {
             e.printStackTrace();
             return "Error: Unable to process request.";
+        }
+    }
+
+    public void saveGame(Game game) {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(game);
+            oos.flush();
+            String serializedGame = bos.toString();
+            sendRequest("saveGame " + serializedGame);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Game getGame(int gameId) {
+        String response = sendRequest("getGame " + gameId);
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(response.getBytes());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return (Game) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

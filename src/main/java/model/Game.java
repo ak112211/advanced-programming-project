@@ -6,10 +6,11 @@ import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Game {
+public class Game implements Serializable {
 
     private final User PLAYER1;
     private final User PLAYER2;

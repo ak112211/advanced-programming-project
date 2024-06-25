@@ -4,9 +4,10 @@ import enums.cardsinformation.Faction;
 import model.card.Card;
 import model.card.Leader;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
 
     private static final ArrayList<User> USERS = new ArrayList<User>();
 
