@@ -159,6 +159,8 @@ public class GwentServer {
                             return serializeGame(game);
                         }
                         break;
+                    case "updateGame":
+                        return handleUpdateGame(request);
                     default:
                         return "Unknown command.";
                 }
@@ -182,6 +184,24 @@ public class GwentServer {
             oos.writeObject(game);
             oos.flush();
             return bos.toString();
+        }
+        private String handleUpdateGame(String request) throws IOException, SQLException, ClassNotFoundException {
+            // Assume the request is of the format: "updateGame gameData"
+            String gameData = request.substring(request.indexOf(" ") + 1);
+            ByteArrayInputStream byteIn = new ByteArrayInputStream(gameData.getBytes());
+            ObjectInputStream objIn = new ObjectInputStream(byteIn);
+            Game game = (Game) objIn.readObject();
+
+            // Process the game state
+            game.calculatePoints();
+            game.nextTurn();
+
+            // Serialize the updated game state and return it to the client
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+            objOut.writeObject(game);
+            objOut.flush();
+            return byteOut.toString();
         }
     }
 }

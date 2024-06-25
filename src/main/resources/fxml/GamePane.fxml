@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<Pane fx:id="gamePane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
+    <children>
+        <Label fx:id="player1NameLabel" layoutX="10" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
+        <Label fx:id="player2NameLabel" layoutX="1100" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
+        <Label fx:id="player1ScoreLabel" layoutX="10" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
+        <Label fx:id="player2ScoreLabel" layoutX="1100" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
+
+        <HBox fx:id="player1Hand" alignment="BOTTOM_CENTER" prefHeight="150" layoutY="650" spacing="5" />
+        <HBox fx:id="player2Hand" alignment="TOP_CENTER" prefHeight="150" layoutY="0" spacing="5" />
+
+        <VBox fx:id="player1CloseCombat" alignment="BOTTOM_CENTER" prefHeight="150" layoutY="500" spacing="5" />
+        <VBox fx:id="player2CloseCombat" alignment="TOP_CENTER" prefHeight="150" layoutY="150" spacing="5" />
+
+        <VBox fx:id="player1Ranged" alignment="BOTTOM_CENTER" prefHeight="150" layoutY="450" spacing="5" />
+        <VBox fx:id="player2Ranged" alignment="TOP_CENTER" prefHeight="150" layoutY="200" spacing="5" />
+
+        <VBox fx:id="player1Siege" alignment="BOTTOM_CENTER" prefHeight="150" layoutY="400" spacing="5" />
+        <VBox fx:id="player2Siege" alignment="TOP_CENTER" prefHeight="150" layoutY="250" spacing="5" />
+
+        <VBox fx:id="player1Score" alignment="CENTER_LEFT" layoutX="10" layoutY="200" spacing="5" />
+        <VBox fx:id="player2Score" alignment="CENTER_RIGHT" layoutX="1150" layoutY="200" spacing="5" />
+
+        <VBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="10" layoutY="300" spacing="5" />
+        <VBox fx:id="player2Graveyard" alignment="CENTER_RIGHT" layoutX="1150" layoutY="300" spacing="5" />
+
+        <VBox fx:id="player1Leader" alignment="CENTER_LEFT" layoutX="10" layoutY="400" spacing="5" />
+        <VBox fx:id="player2Leader" alignment="CENTER_RIGHT" layoutX="1150" layoutY="400" spacing="5" />
+
+        <Pane fx:id="overlayPane" prefWidth="1200" prefHeight="800" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
+    </children>
+</Pane>

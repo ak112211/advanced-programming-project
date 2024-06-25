@@ -9,6 +9,7 @@ import model.card.Leader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class Game implements Serializable {
 
@@ -16,15 +17,15 @@ public class Game implements Serializable {
     private final User PLAYER2;
     private User currentPlayer;
     private final Date DATE;
-    public Pane gamePane;
+    public transient Pane gamePane;
     private int player1Points, player2Points;
     private Leader player1LeaderCard;
     private Leader player2LeaderCard;
     private ArrayList<Card> inGameCards = new ArrayList<>();
     private ArrayList<Card> player1InHandCards = new ArrayList<>();
     private ArrayList<Card> player2InHandCards = new ArrayList<>();
-    private ArrayList<Card>  player1Deck = new ArrayList<>();
-    private ArrayList<Card>  player2Deck = new ArrayList<>();
+    private ArrayList<Card> player1Deck = new ArrayList<>();
+    private ArrayList<Card> player2Deck = new ArrayList<>();
     private ArrayList<Card> player1GraveyardCards = new ArrayList<>();
     private ArrayList<Card> player2GraveyardCards = new ArrayList<>();
     private GameStatus status = GameStatus.PENDING;
@@ -124,6 +125,58 @@ public class Game implements Serializable {
                 .sum();
     }
 
+    public void nextTurn() {
+        switchSides();
+    }
+
+    public void switchSides() {
+        currentPlayer = (currentPlayer.equals(PLAYER1)) ? PLAYER2 : PLAYER1;
+    }
+
+    public void initializeGameObjects() {
+    }
+
+    public void initializeGameObjectsFromSaved() {
+    }
+
+    public Card chooseCard(ArrayList<Card> cards, boolean onlyAffectables) {
+        return null; // TODO
+    }
+
+    public Leader getPlayer1LeaderCard() {
+        return player1LeaderCard;
+    }
+
+    public Leader getPlayer2LeaderCard() {
+        return player2LeaderCard;
+    }
+
+    public void setCurrentPlayer(User currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public User getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public boolean isPlayer1Turn() {
+        return currentPlayer.equals(PLAYER1);
+    }
+
+    public void vetoCard(Card card) {
+        player1InHandCards.remove(card);
+        Card newCard = player1Deck.get(new Random().nextInt(player1Deck.size()));
+        player1InHandCards.add(newCard);
+    }
+
+    public void passVeto() {
+        nextTurn();
+    }
+
+    public enum GameStatus {
+        PENDING, ACTIVE, COMPLETED
+    }
+
     public ArrayList<Card> getInGameCards() {
         return inGameCards;
     }
@@ -151,40 +204,4 @@ public class Game implements Serializable {
     public ArrayList<Card> getPlayer2GraveyardCards() {
         return player2GraveyardCards;
     }
-
-    public void initializeGameObjects() {
-    }
-
-    public void initializeGameObjectsFromSaved() {
-
-    }
-
-    public Card chooseCard(ArrayList<Card> cards, boolean onlyAffectables) {
-        return null; // TODO
-    }
-
-    public Leader getPlayer1LeaderCard() {
-        return player1LeaderCard;
-    }
-
-    public Leader getPlayer2LeaderCard() {
-        return player2LeaderCard;
-    }
-
-    public void setCurrentPlayer(User currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    public User getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public boolean isPlayer1Turn() {
-        return currentPlayer.equals(PLAYER1);
-    }
-
-    public enum GameStatus {
-        PENDING, ACTIVE, COMPLETED
-    }
 }
-
