@@ -1,13 +1,13 @@
 package view;
 
+import enums.Menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.App;
 
-public class RegisterController {
+public class RegisterMenuController {
 
     @FXML
     private TextField usernameField;
@@ -30,7 +30,7 @@ public class RegisterController {
         Tools.showAlert(response);
     }
 
-    public void handleBack(ActionEvent actionEvent) {
-        App.loadScene("/fxml/LoginScreen.fxml");
+    public void handleBack() {
+        App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 }

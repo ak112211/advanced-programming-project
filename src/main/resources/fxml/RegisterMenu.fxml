@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 
-<GridPane fx:id="registerForm" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterController">
+<GridPane fx:id="registerForm" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterMenuController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>

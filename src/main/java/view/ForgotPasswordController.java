@@ -1,8 +1,8 @@
 package view;
 
+import enums.Menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -61,7 +61,7 @@ public class ForgotPasswordController {
     }
 
     @FXML
-    public void handleValidateAnswerButtonAction(ActionEvent event) {
+    public void handleValidateAnswerButtonAction() {
         String username = usernameField.getText();
         String answer = securityAnswerField.getText();
         String response = App.getServerConnection().sendRequest("validateSecurityAnswer " + username + " " + answer);
@@ -74,7 +74,7 @@ public class ForgotPasswordController {
     }
 
     @FXML
-    public void handleSetPasswordButtonAction(ActionEvent event) {
+    public void handleSetPasswordButtonAction() {
         String username = usernameField.getText();
         String newPassword = newPasswordField.getText();
         String confirmNewPassword = confirmNewPasswordField.getText();
@@ -87,15 +87,15 @@ public class ForgotPasswordController {
         String response = App.getServerConnection().sendRequest("updatePassword " + username + " " + newPassword);
         if ("success".equals(response)) {
             Tools.showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
-            App.loadScene("/fxml/LoginScreen.fxml");
+            App.loadScene(Menu.LOGIN_MENU.getPath());
         } else {
             Tools.showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
     }
 
 
-    public void handleBack(ActionEvent actionEvent) {
-        App.loadScene("/fxml/LoginScreen.fxml");
+    public void handleBack() {
+        App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 
 }

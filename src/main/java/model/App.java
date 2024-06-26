@@ -1,5 +1,6 @@
 package model;
 
+import enums.Menu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import java.util.Objects;
 public class App {
     private static User user;
     private static Stage stage;
+    private static Menu menu;
     private static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
@@ -47,5 +49,13 @@ public class App {
 
     public static void setUser(User user) {
         App.user = user;
+    }
+
+    public static Menu getMenu() {
+        return menu;
+    }
+
+    public static void setMenu(Menu menu) {
+        App.menu = menu;
     }
 }

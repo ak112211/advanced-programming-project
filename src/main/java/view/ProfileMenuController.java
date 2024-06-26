@@ -1,13 +1,13 @@
 package view;
 
+import enums.Menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
 
-public class ProfileController {
+public class ProfileMenuController {
 
     @FXML
     private TextField currentUsernameField;
@@ -37,8 +37,8 @@ public class ProfileController {
         Tools.showAlert(response);
     }
 
-    public void handleBack(ActionEvent actionEvent) {
-        App.loadScene("/fxml/MainMenu.fxml");
+    public void handleBack() {
+        App.loadScene(Menu.MAIN_MENU.getPath());
     }
 
 }

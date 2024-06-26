@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainController" spacing="10" alignment="TOP_CENTER">
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" spacing="10" alignment="TOP_CENTER">
     <HBox spacing="10" alignment="CENTER">
         <Label text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
     </HBox>

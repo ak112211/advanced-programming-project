@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,7 +12,7 @@ import model.App;
 import java.util.Objects;
 
 public class MainApp extends Application {
-    public LoginController controller;
+    public LoginMenuController controller;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,7 +29,7 @@ public class MainApp extends Application {
         stage.getIcons().add(image);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/LoginScreen.fxml")));
+        Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(Menu.LOGIN_MENU.getPath())));
         controller = fxmlLoader.getController();
         stage.setScene(new Scene(pane));
         stage.show();

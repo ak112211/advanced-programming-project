@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainController {
+public class MainMenuController {
 
     @FXML
     private TextField friendUsernameField;

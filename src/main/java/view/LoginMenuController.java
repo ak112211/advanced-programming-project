@@ -1,13 +1,13 @@
 package view;
 
-import javafx.event.ActionEvent;
+import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
 
-public class LoginController {
+public class LoginMenuController {
 
     @FXML
     private TextField usernameField;
@@ -28,7 +28,7 @@ public class LoginController {
                 String serializedUser = responseParts[1];
                 User currentUser = User.deserializeUser(serializedUser);
                 User.setCurrentUser(currentUser);
-                App.loadScene("/fxml/MainMenu.fxml");
+                App.loadScene(Menu.MAIN_MENU.getPath());
             }
         } else {
             Tools.showAlert(response);
@@ -37,13 +37,13 @@ public class LoginController {
 
 
     @FXML
-    public void handleForgotPasswordButtonAction(ActionEvent event) {
-        App.loadScene("/fxml/forgot_password.fxml");
+    public void handleForgotPasswordButtonAction() {
+        App.loadScene(Menu.FORGET_PASSWORD_MENU.getPath());
     }
 
     @FXML
-    public void handleRegisterButtonAction(ActionEvent event) {
-        App.loadScene("/fxml/RegistrationScreen.fxml");
+    public void handleRegisterButtonAction() {
+        App.loadScene(Menu.REGISTER_MENU.getPath());
     }
 
 

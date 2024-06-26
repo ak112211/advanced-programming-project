@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -109,8 +110,8 @@ public class UserProfileController {
         alert.showAndWait();
     }
 
-    public void handleBack(ActionEvent actionEvent) {
-        App.loadScene("/fxml/MainMenu.fxml");
+    public void handleBack() {
+        App.loadScene(Menu.MAIN_MENU.getPath());
     }
 
 }
