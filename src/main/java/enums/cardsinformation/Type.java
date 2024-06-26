@@ -34,5 +34,13 @@ public enum Type {
             };
         }
     }
+
+    public boolean isUnit() {
+        return this == CLOSE_COMBAT_UNIT || this == RANGED_UNIT || this == SIEGE_UNIT || this == AGILE_UNIT || this == SPY_UNIT;
+    }
+
+    public boolean isSpecial() {
+        return this == SPELL || this == DECOY || this == WEATHER;
+    }
 }
 

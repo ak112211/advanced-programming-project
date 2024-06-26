@@ -1,45 +1,188 @@
 package view;
 
-import enums.cards.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import controller.AppController;
 import enums.cardsinformation.Faction;
+import enums.cards.*;
+import enums.leaders.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import model.User;
 import model.card.Card;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import model.card.Leader;
+import model.Deck;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 import static controller.AppController.loadScene;
 
 public class MainController {
-    @FXML private CheckBox multiplayerCheckBox;
-    @FXML private VBox friendsMenu;
-    @FXML private ListView<String> friendsListView;
-    @FXML private ListView<String> factionCardsListView;
-    @FXML private ListView<String> deckCardsListView;
-    @FXML private Label unitCardsLabel;
-    @FXML private Button startGameButton;
 
-    private int unitCardsCount = 0;
-    private List<Card> factionCards = new ArrayList<>();
-    private List<Card> deckCards = new ArrayList<>();
-    private Faction selectedFaction;
-    private String selectedLeader;
+    @FXML
+    private TextField friendUsernameField;
+    @FXML
+    private ListView<String> friendsListView;
+    @FXML
+    private ComboBox<Faction> factionComboBox;
+    @FXML
+    private ListView<Card> factionCardsListView;
+    @FXML
+    private ListView<Card> deckCardsListView;
+    @FXML
+    private ComboBox<Leader> leaderComboBox;
+    @FXML
+    private Label unitCardsLabel;
+    @FXML
+    private Label specialCardsLabel;
+    @FXML
+    private Button startGameButton;
+
+    private User currentUser;
+    private Deck currentDeck;
 
     @FXML
     private void initialize() {
-        // Load friends list (dummy data for now)
-        friendsListView.getItems().addAll("Friend1", "Friend2", "Friend3");
+        currentUser = User.getCurrentUser();
+        currentDeck = currentUser.getDeck(); // Assume currentUser has a getDeck() method
 
-        // Initialize faction cards (using dummy data for now)
-        loadFactionCards(Faction.EMPIRE_NILFGAARDIAM); // Default faction for demonstration
+        friendsListView.getItems().addAll(currentUser.getFriends());
+
+        factionComboBox.getItems().setAll(Faction.values());
+        factionComboBox.setValue(currentDeck.getFaction() != null ? currentDeck.getFaction() : Faction.REALMS_NORTHERN);
+
+        loadFactionCards(factionComboBox.getValue());
+        loadLeaders(factionComboBox.getValue());
+
+        leaderComboBox.setValue(currentDeck.getLeader() != null ? currentDeck.getLeader() : leaderComboBox.getItems().get(0));
+
+        deckCardsListView.getItems().addAll(currentDeck.getCards());
+
+        factionComboBox.setOnAction(event -> {
+            Faction selectedFaction = factionComboBox.getValue();
+            loadFactionCards(selectedFaction);
+            loadLeaders(selectedFaction);
+        });
+
+        factionCardsListView.setOnMouseClicked(event -> {
+            Card selectedCard = factionCardsListView.getSelectionModel().getSelectedItem();
+            if (selectedCard != null) {
+                addToDeck(selectedCard);
+            }
+        });
+
+        deckCardsListView.setOnMouseClicked(event -> {
+            Card selectedCard = deckCardsListView.getSelectionModel().getSelectedItem();
+            if (selectedCard != null) {
+                removeFromDeck(selectedCard);
+            }
+        });
+
+        updateCardCounts();
+    }
+
+    private void loadFactionCards(Faction faction) {
+        factionCardsListView.getItems().clear();
+        List<Card> factionCards = new ArrayList<>();
+        switch (faction) {
+            case EMPIRE_NILFGAARDIAM:
+                for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
+                    factionCards.add(cardEnum.getCard());
+                }
+                break;
+            case MONSTER:
+                for (MonstersCards cardEnum : MonstersCards.values()) {
+                    factionCards.add(cardEnum.getCard());
+                }
+                break;
+            case NEUTRAL:
+                for (NeutralCards cardEnum : NeutralCards.values()) {
+                    factionCards.add(cardEnum.getCard());
+                }
+                break;
+            case SCOIA_TAEL:
+                for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
+                    factionCards.add(cardEnum.getCard());
+                }
+                break;
+            case REALMS_NORTHERN:
+                for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
+                    factionCards.add(cardEnum.getCard());
+                }
+                break;
+            case SKELLIGE:
+                for (SkelligeCards cardEnum : SkelligeCards.values()) {
+                    factionCards.add(cardEnum.getCard());
+                }
+                break;
+        }
+        factionCardsListView.getItems().addAll(factionCards);
+    }
+
+    private void loadLeaders(Faction faction) {
+        leaderComboBox.getItems().clear();
+        List<Leader> leaders = new ArrayList<>();
+        switch (faction) {
+            case EMPIRE_NILFGAARDIAM:
+                for (EmpireNilfgaardianLeaders leaderEnum : EmpireNilfgaardianLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case MONSTER:
+                for (MonstersLeaders leaderEnum : MonstersLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case REALMS_NORTHERN:
+                for (RealmsNorthernLeaders leaderEnum : RealmsNorthernLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case SCOIA_TAEL:
+                for (ScoiaTaelLeaders leaderEnum : ScoiaTaelLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case SKELLIGE:
+                for (SkelligeLeaders leaderEnum : SkelligeLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+        }
+        leaderComboBox.getItems().addAll(leaders);
+    }
+
+    private void addToDeck(Card card) {
+        long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.equals(card)).count();
+        if (countInDeck < card.getNoOfCardsInGame() && deckCardsListView.getItems().size() < 22) {
+            deckCardsListView.getItems().add(card);
+            if (countInDeck + 1 == card.getNoOfCardsInGame()) {
+                factionCardsListView.getItems().remove(card);
+            }
+            updateCardCounts();
+        }
+    }
+
+    private void removeFromDeck(Card card) {
+        deckCardsListView.getItems().remove(card);
+        if (!factionCardsListView.getItems().contains(card)) {
+            factionCardsListView.getItems().add(card);
+        }
+        updateCardCounts();
+    }
+
+    private void updateCardCounts() {
+        long unitCardsCount = deckCardsListView.getItems().stream().filter(c -> c.getType().isUnit()).count();
+        long specialCardsCount = deckCardsListView.getItems().stream().filter(c -> c.getType().isSpecial()).count();
+        unitCardsLabel.setText("Unit Cards: " + unitCardsCount);
+        specialCardsLabel.setText("Special Cards: " + specialCardsCount);
+        startGameButton.setDisable(unitCardsCount < 22 || specialCardsCount > 10);
     }
 
     @FXML
@@ -49,55 +192,40 @@ public class MainController {
 
     @FXML
     private void goToUserProfile() {
-        loadScene("/fxml/ProfileMenu.fxml");
+        loadScene("/fxml/UserProfile.fxml");
     }
 
     @FXML
     private void goToAddFriends() {
-        loadScene("/fxml/AddFriends.fxml");
-    }
-
-    @FXML
-    private void toggleMultiplayer() {
-        friendsMenu.setVisible(multiplayerCheckBox.isSelected());
+        // Implement add friends navigation
     }
 
     @FXML
     private void sendPlayRequest() {
-        String selectedFriend = friendsListView.getSelectionModel().getSelectedItem();
-        if (selectedFriend != null) {
-            // Send play request to selected friend
-        }
+        // Implement send play request
     }
 
     @FXML
     private void uploadDeck() {
         FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(null);
-        if (file != null) {
-            try {
-                String content = new String(Files.readAllBytes(file.toPath()));
-                JSONObject deckJson = new JSONObject(content);
-                // Load deck from JSON
-                deckCards.clear();
+        fileChooser.setTitle("Open Deck File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON Files", "*.json")
+        );
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            Gson gson = new Gson();
+            try (FileReader reader = new FileReader(selectedFile)) {
+                Deck loadedDeck = gson.fromJson(reader, Deck.class);
+                currentDeck = loadedDeck;
+                factionComboBox.setValue(currentDeck.getFaction());
+                leaderComboBox.setValue(currentDeck.getLeader());
                 deckCardsListView.getItems().clear();
-
-                selectedFaction = Faction.valueOf(deckJson.getString("faction"));
-                selectedLeader = deckJson.getString("leader");
-
-                JSONArray deckArray = deckJson.getJSONArray("deckCards");
-                for (int i = 0; i < deckArray.length(); i++) {
-                    String cardName = deckArray.getString(i);
-                    Card card = getCardByNameAndFaction(cardName, selectedFaction);
-                    if (card != null) {
-                        deckCards.add(card);
-                        deckCardsListView.getItems().add(card.getName());
-                    }
-                }
-                unitCardsCount = (int) deckCards.stream().filter(card -> card.getType().equals("Unit")).count();
-                updateUnitCardsLabel();
+                deckCardsListView.getItems().addAll(currentDeck.getCards());
+                updateCardCounts();
+                showAlert("Deck loaded successfully.");
             } catch (IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to load deck: " + e.getMessage());
             }
         }
     }
@@ -105,188 +233,50 @@ public class MainController {
     @FXML
     private void downloadDeck() {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Deck File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON Files", "*.json")
+        );
         File file = fileChooser.showSaveDialog(null);
         if (file != null) {
-            try {
-                JSONObject deckJson = new JSONObject();
-                deckJson.put("faction", selectedFaction.name());
-                deckJson.put("leader", selectedLeader);
-
-                JSONArray deckArray = new JSONArray();
-                for (Card card : deckCards) {
-                    deckArray.put(card.getName());
-                }
-                deckJson.put("deckCards", deckArray);
-
-                Files.write(file.toPath(), deckJson.toString().getBytes());
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            try (FileWriter writer = new FileWriter(file)) {
+                gson.toJson(currentDeck, writer);
+                showAlert("Deck saved successfully.");
             } catch (IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to save deck: " + e.getMessage());
             }
         }
     }
 
     @FXML
-    private void chooseFaction() {
-        List<String> factionOptions = new ArrayList<>();
-        for (Faction faction : Faction.values()) {
-            factionOptions.add(faction.name());
+    private void handleSaveDeck() {
+        Faction selectedFaction = factionComboBox.getValue();
+        Leader selectedLeader = leaderComboBox.getValue();
+        List<Card> selectedDeck = new ArrayList<>(deckCardsListView.getItems());
+
+        if (selectedDeck.size() < 22) {
+            showAlert("Deck must contain at least 22 unit cards.");
+            return;
         }
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(factionOptions.get(0), factionOptions);
-        dialog.setTitle("Choose Faction");
-        dialog.setHeaderText("Select a faction for your deck");
-        dialog.setContentText("Faction:");
+        currentDeck.setFaction(selectedFaction);
+        currentDeck.setLeader(selectedLeader);
+        currentDeck.getCards().clear();
+        currentDeck.getCards().addAll(selectedDeck);
 
-        dialog.showAndWait().ifPresent(faction -> {
-            selectedFaction = Faction.valueOf(faction);
-            loadFactionCards(selectedFaction);
-            // Clear current deck as the faction has changed
-            deckCards.clear();
-            deckCardsListView.getItems().clear();
-            unitCardsCount = 0;
-            updateUnitCardsLabel();
-        });
-    }
-
-    private void loadFactionCards(Faction faction) {
-        factionCards.clear();
-        factionCardsListView.getItems().clear();
-        switch (faction) {
-            case EMPIRE_NILFGAARDIAM:
-                for (EmpireNilfgaardianCards card : EmpireNilfgaardianCards.values()) {
-                    factionCards.add(card.getCard());
-                    factionCardsListView.getItems().add(card.getCard().getName());
-                }
-                break;
-            case MONSTER:
-                for (MonstersCards card : MonstersCards.values()) {
-                    factionCards.add(card.getCard());
-                    factionCardsListView.getItems().add(card.getCard().getName());
-                }
-                break;
-            case NEUTRAL:
-                for (NeutralCards card : NeutralCards.values()) {
-                    factionCards.add(card.getCard());
-                    factionCardsListView.getItems().add(card.getCard().getName());
-                }
-                break;
-            case SCOIA_TAEL:
-                for (ScoiaTaelCards card : ScoiaTaelCards.values()) {
-                    factionCards.add(card.getCard());
-                    factionCardsListView.getItems().add(card.getCard().getName());
-                }
-                break;
-            case REALMS_NORTHERN:
-                for (RealmsNorthernCards card : RealmsNorthernCards.values()) {
-                    factionCards.add(card.getCard());
-                    factionCardsListView.getItems().add(card.getCard().getName());
-                }
-                break;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter(currentDeck.getName() + ".json")) {
+            gson.toJson(currentDeck, writer);
+            showAlert("Deck saved successfully.");
+        } catch (IOException e) {
+            showAlert("Failed to save deck: " + e.getMessage());
         }
     }
 
-    @FXML
-    private void chooseLeader() {
-        List<String> leaderOptions = new ArrayList<>();
-        for (Card leader : getLeadersForFaction(selectedFaction)) {
-            leaderOptions.add(leader.getName());
-        }
-
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(leaderOptions.get(0), leaderOptions);
-        dialog.setTitle("Choose Leader");
-        dialog.setHeaderText("Select a leader for your deck");
-        dialog.setContentText("Leader:");
-
-        dialog.showAndWait().ifPresent(leader -> {
-            selectedLeader = leader;
-            // Set selected leader (implementation depends on how you handle leaders in your model)
-        });
-    }
-
-    private List<Card> getLeadersForFaction(Faction faction) {
-        List<Card> leaders = new ArrayList<>();
-        // Assuming a method getLeaders() that returns a list of leaders for each faction
-        switch (faction) {
-            case EMPIRE_NILFGAARDIAM:
-                // Add Nilfgaardian leaders
-                break;
-            case MONSTER:
-                // Add Monster leaders
-                break;
-            case NEUTRAL:
-                // Add Neutral leaders
-                break;
-            case SCOIA_TAEL:
-                // Add Scoia'Tael leaders
-                break;
-            case REALMS_NORTHERN:
-                // Add Northern Realms leaders
-                break;
-        }
-        return leaders;
-    }
-
-    @FXML
-    private void addToDeck() {
-        String selectedCardName = factionCardsListView.getSelectionModel().getSelectedItem();
-        if (selectedCardName != null) {
-            for (Card card : factionCards) {
-                if (card.getName().equals(selectedCardName)) {
-                    deckCards.add(card);
-                    deckCardsListView.getItems().add(card.getName());
-                    if (card.getType().equals("Unit")) {
-                        unitCardsCount++;
-                    }
-                    updateUnitCardsLabel();
-                    break;
-                }
-            }
-        }
-    }
-
-    private void updateUnitCardsLabel() {
-        unitCardsLabel.setText("Unit Cards: " + unitCardsCount);
-        startGameButton.setDisable(unitCardsCount < 22);
-    }
-
-    private Card getCardByNameAndFaction(String cardName, Faction faction) {
-        switch (faction) {
-            case EMPIRE_NILFGAARDIAM:
-                for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
-                    if (cardEnum.getCard().getName().equals(cardName)) {
-                        return cardEnum.getCard();
-                    }
-                }
-                break;
-            case MONSTER:
-                for (MonstersCards cardEnum : MonstersCards.values()) {
-                    if (cardEnum.getCard().getName().equals(cardName)) {
-                        return cardEnum.getCard();
-                    }
-                }
-                break;
-            case NEUTRAL:
-                for (NeutralCards cardEnum : NeutralCards.values()) {
-                    if (cardEnum.getCard().getName().equals(cardName)) {
-                        return cardEnum.getCard();
-                    }
-                }
-                break;
-            case SCOIA_TAEL:
-                for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
-                    if (cardEnum.getCard().getName().equals(cardName)) {
-                        return cardEnum.getCard();
-                    }
-                }
-                break;
-            case REALMS_NORTHERN:
-                for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
-                    if (cardEnum.getCard().getName().equals(cardName)) {
-                        return cardEnum.getCard();
-                    }
-                }
-                break;
-        }
-        return null;
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

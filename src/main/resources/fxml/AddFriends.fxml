@@ -2,22 +2,15 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AddFriendsController" spacing="10" alignment="TOP_CENTER">
-    <HBox spacing="10" alignment="CENTER">
-        <Label text="Add Friends" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-    </HBox>
-    <HBox spacing="10" alignment="CENTER">
-        <Label text="Username:" />
-        <TextField fx:id="usernameField" promptText="Enter friend's username" />
-        <Button text="Add Friend" onAction="#addFriend" />
-    </HBox>
-    <HBox spacing="10" alignment="CENTER">
-        <Label text="Friends List:" />
-        <ListView fx:id="friendsListView" prefHeight="300" prefWidth="200" />
-    </HBox>
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Back to Main Menu" onAction="#goBackToMainMenu" />
-    </HBox>
-</VBox>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.AddFriendsController">
+    <children>
+        <VBox alignment="CENTER" spacing="10.0" layoutX="100.0" layoutY="50.0">
+            <Label text="Add Friends" style="-fx-font-size: 20px;"/>
+            <TextField fx:id="friendUsernameField" promptText="Enter friend's username"/>
+            <Button text="Add Friend" onAction="#handleAddFriend"/>
+            <Label text="Your Friends"/>
+            <ListView fx:id="friendsListView"/>
+        </VBox>
+    </children>
+</AnchorPane>

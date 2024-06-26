@@ -240,7 +240,7 @@ public class DatabaseConnection {
             stmt.setInt(5, user.getQuestionNumber());
             stmt.setString(6, user.getAnswer());
             stmt.setInt(7, user.getHighScore());
-            stmt.setString(8, user.getFaction().toString());
+            stmt.setString(8, user.getDeck().getFaction().toString());
 
             ByteArrayOutputStream bos;
             ObjectOutputStream oos;
@@ -248,7 +248,7 @@ public class DatabaseConnection {
             // Serialize Leader
             bos = new ByteArrayOutputStream();
             oos = new ObjectOutputStream(bos);
-            oos.writeObject(user.getLeader());
+            oos.writeObject(user.getDeck().getLeader());
             stmt.setBytes(9, bos.toByteArray());
 
             // Serialize Deck
@@ -315,8 +315,8 @@ public class DatabaseConnection {
                     user.setQuestionNumber(questionNumber);
                     user.setAnswer(answer);
                     user.setHighScore(highScore);
-                    user.setFaction(faction);
-                    user.setLeader(leader);
+                    user.getDeck().setFaction(faction);
+                    user.getDeck().setLeader(leader);
                     user.setDeck(deck);
                     user.getDecks().addAll(decks);
                     user.setPlayCard(playCard);

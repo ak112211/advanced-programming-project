@@ -2,6 +2,7 @@ package model.card;
 
 import enums.cardsinformation.Description;
 import enums.cardsinformation.Faction;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import model.abilities.Ability;
 
@@ -21,6 +22,10 @@ public class Leader extends Rectangle {
         FACTION = faction;
         DESCRIPTION = description;
         ABILITY = ability;
+
+        this.setWidth(70);
+        this.setHeight(100);
+        this.setFill(new ImagePattern(new javafx.scene.image.Image(imagePath)));
     }
 
     public String getName() {

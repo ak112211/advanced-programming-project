@@ -20,8 +20,6 @@ public class User implements Serializable {
     private String answer;
 
     private ArrayList<Game> games = new ArrayList<Game>();
-    private Faction faction;
-    private Leader leader;
     private Deck deck;
     private ArrayList<Deck> decks = new ArrayList<Deck>();
     private List<String> friends;
@@ -107,14 +105,6 @@ public class User implements Serializable {
         return games;
     }
 
-    public Faction getFaction() {
-        return faction;
-    }
-
-    public void setFaction(Faction faction) {
-        this.faction = faction;
-    }
-
     public Deck getDeck() {
         return deck;
     }
@@ -143,16 +133,8 @@ public class User implements Serializable {
 
     }
 
-    public Leader getLeader() {
-        return leader;
-    }
-
     public void setDeck(Deck deck) {
         this.deck = deck;
-    }
-
-    public void setLeader(Leader leader) {
-        this.leader = leader;
     }
 
     public int getRank() {

@@ -40,8 +40,8 @@ public class Game implements Serializable {
         PLAYER2 = player2;
         player1Deck = player1.getDeck().getCards();
         player2Deck = player2.getDeck().getCards();
-        player1LeaderCard = player1.getLeader();
-        player2LeaderCard = player2.getLeader();
+        player1LeaderCard = player1.getDeck().getLeader();
+        player2LeaderCard = player2.getDeck().getLeader();
         DATE = date;
     }
 

@@ -18,9 +18,9 @@
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Label text="Faction:" />
-        <Button text="Choose Faction" onAction="#chooseFaction" />
+        <ComboBox fx:id="factionComboBox" />
         <Label text="Leader:" />
-        <Button text="Choose Leader" onAction="#chooseLeader" />
+        <ComboBox fx:id="leaderComboBox" />
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Label text="Friends Menu:" />
@@ -43,6 +43,7 @@
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Label fx:id="unitCardsLabel" text="Unit Cards: 0" />
+        <Label fx:id="specialCardsLabel" text="Special Cards: 0" />
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="startGameButton" text="Start Game" disable="true" />
