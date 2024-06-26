@@ -103,17 +103,19 @@ public class Game implements Serializable {
 
     public boolean player1PlayCard(Card card, Row row) {
         if (row == null) {
-            row = card.getType().getRow(true);
+            card.setDefaultRow(true);
+        } else {
+            card.setRow(row);
         }
-        card.setRow(row);
         return moveCard(card, player1InHandCards, inGameCards);
     }
 
     public boolean player2PlayCard(Card card, Row row) {
         if (row == null) {
-            row = card.getType().getRow(false);
+            card.setDefaultRow(false);
+        } else {
+            card.setRow(row);
         }
-        card.setRow(row);
         return moveCard(card, player1InHandCards, inGameCards);
     }
 

@@ -99,5 +99,8 @@ public class Card extends Rectangle {
     public void setRow(Row row) {
         this.row = row;
     }
-    
+
+    public void setDefaultRow(boolean isPlayer1Turn) {
+        row = TYPE.getRow(isPlayer1Turn);
+    }
 }

@@ -26,7 +26,7 @@ public class Muster extends InstantaneousAbility {
             for (int i = 0; i < game.getPlayer1Deck().size(); ) {
                 Card card = game.getPlayer1Deck().get(i);
                 if (canMuster(card, myCardName)) {
-                    card.setRow(card.getType().getRow(true));
+                    card.setDefaultRow(true);
                     game.moveCard(card, game.getPlayer1Deck(), game.getInGameCards());
                 } else {
                     i++;
@@ -44,7 +44,7 @@ public class Muster extends InstantaneousAbility {
             for (int i = 0; i < game.getPlayer2Deck().size(); ) {
                 Card card = game.getPlayer2Deck().get(i);
                 if (canMuster(card, myCardName)) {
-                    card.setRow(card.getType().getRow(false));
+                    card.setDefaultRow(false);
                     game.moveCard(card, game.getPlayer2Deck(), game.getInGameCards());
                 } else {
                     i++;
