@@ -26,4 +26,8 @@ public enum CardsPlace {
             };
         }
     }
+
+    public ArrayList<Card> getPlayerCards(Game game) {
+        return getCards(game, game.isPlayer1Turn());
+    }
 }
