@@ -1,10 +1,13 @@
 package view;
 
 import controller.AppController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import model.User;
+
+import static controller.AppController.loadScene;
 
 public class ProfileController {
 
@@ -41,4 +44,9 @@ public class ProfileController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public void handleBack(ActionEvent actionEvent) {
+        loadScene("/fxml/MainMenu.fxml");
+    }
+
 }

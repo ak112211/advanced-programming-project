@@ -6,6 +6,7 @@ import controller.AppController;
 import enums.cardsinformation.Faction;
 import enums.cards.*;
 import enums.leaders.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -278,5 +279,8 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void toggleMultiplayer(ActionEvent actionEvent) {
     }
 }

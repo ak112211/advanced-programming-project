@@ -34,7 +34,6 @@
         <VBox spacing="10" alignment="TOP_CENTER">
             <Label text="Faction Cards:" />
             <ListView fx:id="factionCardsListView" prefHeight="300" prefWidth="200" />
-            <Button text="Add to Deck" onAction="#addToDeck" />
         </VBox>
         <VBox spacing="10" alignment="TOP_CENTER">
             <Label text="Deck Cards:" />
@@ -49,5 +48,6 @@
         <Button fx:id="startGameButton" text="Start Game" disable="true" />
         <Button text="Upload Deck" onAction="#uploadDeck" />
         <Button text="Download Deck" onAction="#downloadDeck" />
+        <Button text="Save Deck" onAction="#handleSaveDeck" />
     </HBox>
 </VBox>

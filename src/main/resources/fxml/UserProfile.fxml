@@ -37,6 +37,7 @@
 
     <Label text="Number of Recent Games:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
     <TextField fx:id="recentGamesField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
 
     <Button text="Show Recent Games" fx:id="showRecentGamesButton" onAction="#handleShowRecentGamesAction" GridPane.rowIndex="9" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
 </GridPane>

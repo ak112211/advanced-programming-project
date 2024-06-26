@@ -102,4 +102,8 @@ public class ForgotPasswordController extends AppController {
         alert.showAndWait();
     }
 
+    public void handleBack(ActionEvent actionEvent) {
+        loadScene("/fxml/LoginScreen.fxml");
+    }
+
 }

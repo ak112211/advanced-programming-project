@@ -108,4 +108,9 @@ public class UserProfileController extends AppController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    public void handleBack(ActionEvent actionEvent) {
+        loadScene("/fxml/MainMenu.fxml");
+    }
+
 }

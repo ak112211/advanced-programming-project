@@ -29,6 +29,7 @@
 
     <Label text="Confirm New Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
     <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
 
     <Button text="Update Profile" fx:id="updateButton" onAction="#handleUpdateButtonAction" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
 </GridPane>

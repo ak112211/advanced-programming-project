@@ -28,4 +28,7 @@
     <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
     <Button text="Register" fx:id="registerButton" onAction="#handleRegisterButtonAction" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
+
 </GridPane>
+

@@ -4,9 +4,13 @@ import enums.cardsinformation.Faction;
 import model.card.Card;
 import model.card.Leader;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class User implements Serializable {
 
@@ -150,6 +154,18 @@ public class User implements Serializable {
 
     public List<String> getFriends() {
         return friends;
+    }
+
+    public static User deserializeUser(String serializedUser) {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(serializedUser.getBytes());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return (User) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load user data.");
+            return null;
+        }
     }
 }
 
