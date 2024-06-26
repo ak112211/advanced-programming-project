@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class Spy extends InstantaneousAbility {
     public void affect(Game game, Card myCard) {
-        ArrayList<Card> deck = CardsPlace.DECK.getCards(game, game.isPlayer1Turn());
-        ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getCards(game, game.isPlayer1Turn());
+        ArrayList<Card> deck = CardsPlace.DECK.getPlayerCards(game);
+        ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getPlayerCards(game);
         for (int i = 0; i < 2; i++) {
             Card card = Game.chooseRandomCard(deck, false);
             if (card == null) {

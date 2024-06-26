@@ -2,6 +2,8 @@ package model.abilities.persistentabilities;
 
 import enums.Row;
 import enums.cardsinformation.Type;
+import model.Game;
+import model.abilities.passiveabilities.WeatherEndurance;
 import model.card.Card;
 
 import java.util.ArrayList;
@@ -9,32 +11,9 @@ import java.util.function.BiFunction;
 
 public class Weather extends PersistentAbility {
     public static ArrayList<Card> AffectedCards = new ArrayList<>();
-//    private Type type;
-//
-//    public Weather(Type type) {
-//        super(Weather::doesAffectDefault);
-//        this.type = type;
-//    }
-
-//    public static boolean doesAffectDefault(Card myCard, Card card) {
-//
-//    }
 
     public Weather(BiFunction<Card, Card, Boolean> doesAffect) {
         super(doesAffect);
-    }
-
-    public static Weather newInstance(Type type) {
-        if (type == Type.CLOSE_COMBAT_UNIT) {
-            return new Weather(Weather::doesAffectCloseCombat);
-        } else if (type == Type.RANGED_UNIT) {
-            return new Weather(Weather::doesAffectRanged);
-        } else if (type == Type.SIEGE_UNIT) {
-            return new Weather(Weather::doesAffectSiege);
-        } else if (type == Type.AGILE_UNIT) {
-            return new Weather(Weather::doesAffectRangedSiege);
-        }
-        throw new RuntimeException("");
     }
 
     public static boolean doesAffectCloseCombat(Card myCard, Card card) {
@@ -59,7 +38,11 @@ public class Weather extends PersistentAbility {
     }
 
     public static void affect(Card card) {
-        if (card.getFirstPower() != 0)
+        if (card.getFirstPower() != 0) {
             card.setPower(card.getPower() / card.getFirstPower()); // because of TightBond effect
+            if (WeatherEndurance.exists(Game.getCurrentGame())) {
+                card.setPower(card.getPower() * (card.getFirstPower() / 2));
+            }
+        }
     }
 }

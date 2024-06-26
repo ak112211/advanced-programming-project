@@ -7,7 +7,7 @@ import model.abilities.Ability;
 import model.abilities.instantaneousabilities.MoveAgileUnits;
 import model.abilities.instantaneousabilities.PlayCard;
 import model.abilities.instantaneousabilities.Scorch;
-import model.abilities.passiveabilities.GetACardAtStart;
+import model.abilities.openingabilities.GetACardAtStart;
 import model.card.Leader;
 
 public enum ScoiaTaelLeaders {

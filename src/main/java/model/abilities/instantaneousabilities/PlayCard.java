@@ -27,7 +27,7 @@ public class PlayCard extends InstantaneousAbility{
     public void affect(Game game, Card myCard) {
         Card card;
         if (cardsPlace != null) {
-            ArrayList<Card> cardsList = cardsPlace.getCards(game, game.isPlayer1Turn());
+            ArrayList<Card> cardsList = cardsPlace.getPlayerCards(game);
             int index = cardsList.stream().map(Card::getCardEnum).toList().indexOf(cardEnum);
             if (index == -1) {
                 return;

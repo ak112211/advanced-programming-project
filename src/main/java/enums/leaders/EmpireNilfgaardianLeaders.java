@@ -9,6 +9,7 @@ import model.abilities.instantaneousabilities.GetCard;
 import model.abilities.instantaneousabilities.PlayCard;
 import model.abilities.instantaneousabilities.SeeCards;
 import model.abilities.passiveabilities.CancelLeaderAbility;
+import model.abilities.passiveabilities.DisruptMedic;
 import model.card.Leader;
 
 public enum EmpireNilfgaardianLeaders {
@@ -16,7 +17,7 @@ public enum EmpireNilfgaardianLeaders {
     HIS_IMPERIAL_MAJESTY("His Imperial Majesty", new SeeCards(3), "View three random cards from the opponent's hand.", "/gwentImages/img/lg/nilfgaard_emhyr_copper.jpg"),
     EMPEROR_OF_NILFGAARD("Emperor of Nilfgaard", new CancelLeaderAbility(), "Cancels the opponent's leader ability.", "/gwentImages/img/lg/nilfgaard_emhyr_bronze.jpg"),
     THE_RELENTLESS("The Relentless", new GetCard(CardsPlace.GRAVEYARD, false, 1, false), "Take a card from the opponent's graveyard (cannot take a Hero card).", "/gwentImages/img/lg/nilfgaard_emhyr_gold.jpg"),
-    INVADER_OF_THE_NORTH("Invader of the North", null, "Revives a random card from both players' graveyards and returns them to play.", "/gwentImages/img/lg/nilfgaard_emhyr_invader_of_the_north.jpg");
+    INVADER_OF_THE_NORTH("Invader of the North", new DisruptMedic(), "Abilities that restore a unit to the battlefield restore a randomly-chosen unit. Affects both players.", "/gwentImages/img/lg/nilfgaard_emhyr_invader_of_the_north.jpg");
 
     private final String name;
     private final Ability ability;
