@@ -1,17 +1,17 @@
 package view;
 
-import controller.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.App;
 import model.User;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class UserProfileController extends AppController {
+public class UserProfileController {
 
     @FXML
     private Label usernameLabel;
@@ -51,13 +51,13 @@ public class UserProfileController extends AppController {
             rankLabel.setText(String.valueOf(currentUser.getRank()));
             gamesPlayedLabel.setText(String.valueOf(currentUser.getGames().size()));
 
-            String drawsResponse = AppController.getServerConnection().sendRequest("getDrawsCount " + currentUser.getUsername());
+            String drawsResponse = App.getServerConnection().sendRequest("getDrawsCount " + currentUser.getUsername());
             drawsLabel.setText(drawsResponse);
 
-            String winsResponse = AppController.getServerConnection().sendRequest("getWinsCount " + currentUser.getUsername());
+            String winsResponse = App.getServerConnection().sendRequest("getWinsCount " + currentUser.getUsername());
             winsLabel.setText(winsResponse);
 
-            String lossesResponse = AppController.getServerConnection().sendRequest("getLossesCount " + currentUser.getUsername());
+            String lossesResponse = App.getServerConnection().sendRequest("getLossesCount " + currentUser.getUsername());
             lossesLabel.setText(lossesResponse);
 
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class UserProfileController extends AppController {
         }
 
         try {
-            String response = AppController.getServerConnection().sendRequest("getRecentGames " + User.getCurrentUser().getUsername() + " " + n);
+            String response = App.getServerConnection().sendRequest("getRecentGames " + User.getCurrentUser().getUsername() + " " + n);
             if (response.isEmpty()) {
                 showAlert("Information", "No Games Found", "No recent games found for the user.");
             } else {
@@ -110,7 +110,7 @@ public class UserProfileController extends AppController {
     }
 
     public void handleBack(ActionEvent actionEvent) {
-        loadScene("/fxml/MainMenu.fxml");
+        App.loadScene("/fxml/MainMenu.fxml");
     }
 
 }

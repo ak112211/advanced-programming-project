@@ -1,14 +1,11 @@
 package view;
 
-import controller.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import util.ServerConnection;
-
-import static controller.AppController.loadScene;
+import model.App;
 
 public class RegisterController {
 
@@ -29,7 +26,7 @@ public class RegisterController {
         String email = emailField.getText();
         String password = passwordField.getText();
         String request = String.format("register %s %s %s %s", username, nickname, email, password);
-        String response = AppController.getServerConnection().sendRequest(request);
+        String response = App.getServerConnection().sendRequest(request);
         showAlert(response);
     }
 
@@ -40,6 +37,6 @@ public class RegisterController {
     }
 
     public void handleBack(ActionEvent actionEvent) {
-        loadScene("/fxml/LoginScreen.fxml");
+        App.loadScene("/fxml/LoginScreen.fxml");
     }
 }

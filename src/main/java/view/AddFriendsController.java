@@ -1,10 +1,10 @@
 package view;
 
-import controller.AppController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
+import model.App;
 import model.User;
 
 public class AddFriendsController {
@@ -32,7 +32,7 @@ public class AddFriendsController {
 
         // Send request to server to add friend
         String request = String.format("addFriend %s %s", currentUser.getUsername(), friendUsername);
-        String response = AppController.getServerConnection().sendRequest(request);
+        String response = App.getServerConnection().sendRequest(request);
 
         if (response.equals("Friend added successfully.")) {
             currentUser.addFriend(friendUsername);

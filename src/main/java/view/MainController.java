@@ -2,7 +2,6 @@ package view;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import controller.AppController;
 import enums.cardsinformation.Faction;
 import enums.cards.*;
 import enums.leaders.*;
@@ -10,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import model.App;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
@@ -21,8 +21,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static controller.AppController.loadScene;
 
 public class MainController {
 
@@ -188,12 +186,12 @@ public class MainController {
 
     @FXML
     private void goToProfile() {
-        loadScene("/fxml/ProfileMenu.fxml");
+        App.loadScene("/fxml/ProfileMenu.fxml");
     }
 
     @FXML
     private void goToUserProfile() {
-        loadScene("/fxml/UserProfile.fxml");
+        App.loadScene("/fxml/UserProfile.fxml");
     }
 
     @FXML

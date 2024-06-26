@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -8,9 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import util.ServerConnection;
+import model.App;
 
-public class ForgotPasswordController extends AppController {
+public class ForgotPasswordController {
 
     @FXML
     private TextField usernameField;
@@ -45,14 +44,14 @@ public class ForgotPasswordController extends AppController {
     @FXML
     public void handleSubmitButtonAction(ActionEvent event) {
         String username = usernameField.getText();
-        String response = AppController.getServerConnection().sendRequest("isUsernameTaken " + username);
+        String response = App.getServerConnection().sendRequest("isUsernameTaken " + username);
 
         if ("false".equals(response)) {
             showAlert("Error", "Invalid Username", "The entered username does not exist.");
             return;
         }
 
-        response = AppController.getServerConnection().sendRequest("getSecurityQuestion " + username);
+        response = App.getServerConnection().sendRequest("getSecurityQuestion " + username);
         if (response != null && !response.isEmpty()) {
             securityQuestionField.setText(response);
             securityQuestionBox.setVisible(true);
@@ -65,7 +64,7 @@ public class ForgotPasswordController extends AppController {
     public void handleValidateAnswerButtonAction(ActionEvent event) {
         String username = usernameField.getText();
         String answer = securityAnswerField.getText();
-        String response = AppController.getServerConnection().sendRequest("validateSecurityAnswer " + username + " " + answer);
+        String response = App.getServerConnection().sendRequest("validateSecurityAnswer " + username + " " + answer);
 
         if ("true".equals(response)) {
             newPasswordBox.setVisible(true);
@@ -85,10 +84,10 @@ public class ForgotPasswordController extends AppController {
             return;
         }
 
-        String response = AppController.getServerConnection().sendRequest("updatePassword " + username + " " + newPassword);
+        String response = App.getServerConnection().sendRequest("updatePassword " + username + " " + newPassword);
         if ("success".equals(response)) {
             showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
-            loadScene("/fxml/LoginScreen.fxml");
+            App.loadScene("/fxml/LoginScreen.fxml");
         } else {
             showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
@@ -103,7 +102,7 @@ public class ForgotPasswordController extends AppController {
     }
 
     public void handleBack(ActionEvent actionEvent) {
-        loadScene("/fxml/LoginScreen.fxml");
+        App.loadScene("/fxml/LoginScreen.fxml");
     }
 
 }

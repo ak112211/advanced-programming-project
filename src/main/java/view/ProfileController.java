@@ -1,13 +1,11 @@
 package view;
 
-import controller.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import model.App;
 import model.User;
-
-import static controller.AppController.loadScene;
 
 public class ProfileController {
 
@@ -35,7 +33,7 @@ public class ProfileController {
         String nickname = nicknameField.getText();
         String email = emailField.getText();
         String request = String.format("updateProfile %s %s %s %s", currentUsername, newUsername, nickname, email);
-        String response = AppController.getServerConnection().sendRequest(request);
+        String response = App.getServerConnection().sendRequest(request);
         showAlert(response);
     }
 
@@ -46,7 +44,7 @@ public class ProfileController {
     }
 
     public void handleBack(ActionEvent actionEvent) {
-        loadScene("/fxml/MainMenu.fxml");
+        App.loadScene("/fxml/MainMenu.fxml");
     }
 
 }

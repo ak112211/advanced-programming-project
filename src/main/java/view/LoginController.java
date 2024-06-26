@@ -1,15 +1,12 @@
 package view;
 
-import controller.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import model.App;
 import model.User;
-import util.ServerConnection;
-
-import static controller.AppController.loadScene;
 
 public class LoginController {
 
@@ -24,7 +21,7 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String request = String.format("login %s %s", username, password);
-        String response = AppController.getServerConnection().sendRequest(request);
+        String response = App.getServerConnection().sendRequest(request);
 
         if (response.startsWith("Login successful.")) {
             String[] responseParts = response.split("\\|");
@@ -32,7 +29,7 @@ public class LoginController {
                 String serializedUser = responseParts[1];
                 User currentUser = User.deserializeUser(serializedUser);
                 User.setCurrentUser(currentUser);
-                loadScene("/fxml/MainMenu.fxml");
+                App.loadScene("/fxml/MainMenu.fxml");
             }
         } else {
             showAlert(response);
@@ -42,12 +39,12 @@ public class LoginController {
 
     @FXML
     public void handleForgotPasswordButtonAction(ActionEvent event) {
-        loadScene("/fxml/forgot_password.fxml");
+        App.loadScene("/fxml/forgot_password.fxml");
     }
 
     @FXML
     public void handleRegisterButtonAction(ActionEvent event) {
-        loadScene("/fxml/RegistrationScreen.fxml");
+        App.loadScene("/fxml/RegistrationScreen.fxml");
     }
 
     private void showAlert(String message) {
