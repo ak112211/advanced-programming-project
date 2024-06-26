@@ -2,6 +2,7 @@ package model.abilities.instantaneousabilities;
 
 import enums.cardsinformation.CardsPlace;
 import model.Game;
+import model.abilities.passiveabilities.DisruptMedic;
 import model.card.Card;
 
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ public class ChooseAndPlayCard extends InstantaneousAbility{
     }
 
     public void affect(Game game, Card myCard) {
-        ArrayList<Card> cardsList = cardsPlace.getCards(game, game.isPlayer1Turn());
+        ArrayList<Card> cardsList = cardsPlace.getPlayerCards(game);
         List<Card> chooseCardsList = cardsList.stream().filter(function).toList();
-        Card card = game.chooseCard(chooseCardsList, true);
+        Card card = game.chooseCard(chooseCardsList, true, DisruptMedic.exists(game));
         game.moveCard(card, cardsList, game.getInGameCards());
     }
 }

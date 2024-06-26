@@ -131,6 +131,18 @@ public class Game implements Serializable {
         return false;
     }
 
+    public void player1GetRandomCard() {
+        if (!player1Deck.isEmpty()) {
+            moveCard(chooseRandomCard(player1Deck,false), player1Deck, player1InHandCards);
+        }
+    }
+
+    public void player2GetRandomCard() {
+        if (!player2Deck.isEmpty()) {
+            moveCard(chooseRandomCard(player2Deck,false), player2Deck, player2InHandCards);
+        }
+    }
+
     public void calculatePoints() {
         PersistentAbility.calculatePowers(inGameCards);
         player1Points = inGameCards.stream()
@@ -205,10 +217,16 @@ public class Game implements Serializable {
         return currentPlayer.equals(PLAYER1);
     }
 
-    public void vetoCard(Card card) {
-        player1InHandCards.remove(card);
-        Card newCard = player1Deck.get(new Random().nextInt(player1Deck.size()));
-        player1InHandCards.add(newCard);
+    public void player1VetoCard() {
+        Card chosenCard = chooseCard(player1InHandCards, false);
+        player1GetRandomCard();
+        moveCard(chosenCard, player1InHandCards, player1Deck);
+    }
+
+    public void player2VetoCard() {
+        Card chosenCard = chooseCard(player2InHandCards, false);
+        player2GetRandomCard();
+        moveCard(chosenCard, player2InHandCards, player2Deck);
     }
 
     public void passVeto() {

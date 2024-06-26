@@ -23,7 +23,7 @@ public class GetCard extends InstantaneousAbility{
         ArrayList<Card> cardList = cardsPlace.getCards(game, game.isPlayer1Turn() == fromOwn);
         for (int i = 0; i <amount; i++) {
             game.moveCard(game.chooseCard(cardList, true, random), cardList,
-                    CardsPlace.IN_HAND.getCards(game,game.isPlayer1Turn()));
+                    CardsPlace.IN_HAND.getPlayerCards(game));
         }
     }
 }
