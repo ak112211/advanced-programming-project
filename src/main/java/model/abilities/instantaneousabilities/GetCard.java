@@ -6,7 +6,7 @@ import model.card.Card;
 
 import java.util.ArrayList;
 
-public class GetCard {
+public class GetCard extends InstantaneousAbility{
     CardsPlace cardsPlace;
     boolean fromOwn;
     int amount;
@@ -19,7 +19,7 @@ public class GetCard {
         this.random = random;
     }
 
-    public void affect(Game game) {
+    public void affect(Game game, Card myCard) {
         ArrayList<Card> cards = cardsPlace.getCards(game, game.isPlayer1Turn() ^ fromOwn);
         for (int i = 0; i <amount; i++) {
             game.moveCard(game.chooseCard(cards, true), cards,

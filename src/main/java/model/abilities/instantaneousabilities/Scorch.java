@@ -12,21 +12,25 @@ import java.util.List;
 public class Scorch extends InstantaneousAbility {
     Type type;
     /**
-    @param type selects which row should it remove, type=null means it can affect every rows
+    @param type selects which row should it remove,
+    type=null means it can affect every rows,
+    type=SPY_UNIT means it can affect only enemy
      */
     public Scorch(Type type) {
         this.type = type;
     }
-    private List<Card> getCardsInRow(ArrayList<Card> inGameCards, boolean isPlayer1Turn) {
+    private List<Card> getCardsInRow(ArrayList<Card> inGameCards, boolean isPlayer1Turn, Card myCard) {
         if (type == null){
-            inGameCards.remove(getCard()); // To Remove Scorch Card
+            inGameCards.remove(myCard); // To Remove Scorch Card
             return inGameCards;
+        } else if (type == Type.SPY_UNIT) {
+            return inGameCards.stream().filter(card -> card.getRow().isPlayer1() == isPlayer1Turn).toList();
         }
-        Row row = type.getRow(getCard().getRow().isPlayer1());
+        Row row = type.getRow(myCard.getRow().isPlayer1());
         return inGameCards.stream().filter(card -> card.getRow()==row).toList();
     }
-    public void affect(Game game) {
-        List<Card> cards = getCardsInRow(game.getInGameCards(), game.isPlayer1Turn())
+    public void affect(Game game, Card myCard) {
+        List<Card> cards = getCardsInRow(game.getInGameCards(), game.isPlayer1Turn(), myCard)
                 .stream().filter(Ability::canBeAffected).toList();
         if (type != null && cards.stream().mapToInt(Card::getPower).sum() > 10){
             int maxPower = cards.stream().mapToInt(Card::getPower).max().orElse(0); // if it's empty maxPower value isn't important

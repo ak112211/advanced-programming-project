@@ -10,7 +10,7 @@ import model.abilities.persistentabilities.MoraleBoost;
 import model.abilities.persistentabilities.TightBond;
 import model.card.Card;
 
-public enum RealmsNorthernCards {
+public enum RealmsNorthernCards implements CardEnum {
     BALLISTA("Ballista", 6, 2, Type.SIEGE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/realms_ballista.jpg"),
     BLUE_STRIPES_COMMANDO("Blue Stripes Commando", 4, 3, Type.CLOSE_COMBAT_UNIT, new TightBond(), Description.NOTHING, false, "/gwentImages/img/lg/realms_blue_stripes.jpg"),
     CATAPULT("Catapult", 8, 2, Type.SIEGE_UNIT, new TightBond(), Description.NOTHING, false, "/gwentImages/img/lg/realms_catapult_1.jpg"),

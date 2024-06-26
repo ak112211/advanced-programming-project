@@ -9,7 +9,7 @@ import model.abilities.instantaneousabilities.Spy;
 import model.abilities.persistentabilities.TightBond;
 import model.card.Card;
 
-public enum EmpireNilfgaardianCards {
+public enum EmpireNilfgaardianCards implements CardEnum {
     IMPERA_BRIGADE_GUARD("Imperal Brigade Guard", 3, 4, Type.CLOSE_COMBAT_UNIT, new TightBond(), Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_imperal_brigade.jpg"),
     STEFAN_SKELLEN("Stefan Skellen", 9, 1, Type.CLOSE_COMBAT_UNIT, new Spy(), Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_stefan.jpg"),
     YOUNG_EMISSARY("Young Emissary", 5, 2, Type.CLOSE_COMBAT_UNIT, new TightBond(), Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_young_emissary.jpg"),

@@ -10,7 +10,7 @@ import model.abilities.instantaneousabilities.Scorch;
 import model.abilities.persistentabilities.MoraleBoost;
 import model.card.Card;
 
-public enum ScoiaTaelCards {
+public enum ScoiaTaelCards implements CardEnum {
     ELVEN_SKIRMISHER("Elven Skirmisher", 2, 3, Type.RANGED_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/scoiatael_elf_skirmisher.jpg"),
     IORVETH("Iorveth", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/scoiatael_iorveth.jpg"),
     YAEVINN("Yaevinn", 6, 1, Type.AGILE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/scoiatael_yaevinn.jpg"),
@@ -30,7 +30,7 @@ public enum ScoiaTaelCards {
     VRIHEDD_BRIGADE_VETERAN("Vrihedd Brigade Veteran", 5, 2, Type.AGILE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/scoiatael_vrihedd_brigade.jpg"),
     MILVA("Milva", 10, 1, Type.RANGED_UNIT, new MoraleBoost(), Description.NOTHING, false, "/gwentImages/img/lg/scoiatael_milva.jpg"),
     SEASENTHESSIS("Seasenthessis", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/scoiatael_saskia.jpg"),
-    SCHIRRU("Schirru", 8, 1, Type.SIEGE_UNIT, new Scorch(), Description.KILLS_STRONGEST_ENEMY, false, "/gwentImages/img/lg/scoiatael_schirru.jpg"),
+    SCHIRRU("Schirru", 8, 1, Type.SIEGE_UNIT, new Scorch(Type.SIEGE_UNIT), Description.KILLS_STRONGEST_ENEMY, false, "/gwentImages/img/lg/scoiatael_schirru.jpg"),
     BARCLAY_ELS("Barclay Els", 6, 1, Type.AGILE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/scoiatael_barclay.jpg"),
     EITHNE("Eithne", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/scoiatael_eithne.jpg"),
     ISENGRIM_FAOILTIARNA("Isengrim Faoiltiarna", 10, 1, Type.CLOSE_COMBAT_UNIT, new MoraleBoost(), Description.NOTHING, true, "/gwentImages/img/lg/scoiatael_isengrim.jpg");

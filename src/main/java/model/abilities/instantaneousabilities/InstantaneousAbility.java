@@ -5,5 +5,5 @@ import model.abilities.Ability;
 import model.card.Card;
 
 public abstract class InstantaneousAbility extends Ability {
-    public abstract void affect(Game game);
+    public abstract void affect(Game game, Card myCard);
 }

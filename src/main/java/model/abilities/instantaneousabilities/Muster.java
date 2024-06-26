@@ -13,15 +13,15 @@ public class Muster extends InstantaneousAbility {
         this.cardNames = Arrays.stream(cards).map(Card::getName).toList();
     }
 
-    private boolean canMuster(Card card) {
-        return !(sameName(getCard(), card) || cardNames.contains(card.getName()));
+    private boolean canMuster(Card card, Card myCard) {
+        return sameName(myCard, card) || cardNames.contains(card.getName());
     }
 
-    public void affect(Game game) {
+    public void affect(Game game, Card myCard) {
         if (game.isPlayer1Turn()) {
             for (int i = 0; i < game.getPlayer1Deck().size(); ) {
                 Card card = game.getPlayer1Deck().get(i);
-                if (canMuster(card)) {
+                if (canMuster(card, myCard)) {
                     card.setRow(card.getType().getRow(true));
                     game.moveCard(card, game.getPlayer1Deck(), game.getInGameCards());
                 } else {
@@ -30,7 +30,7 @@ public class Muster extends InstantaneousAbility {
             }
             for (int i = 0; i < game.getPlayer1InHandCards().size(); ) {
                 Card card = game.getPlayer1InHandCards().get(i);
-                if (canMuster(card)) {
+                if (canMuster(card, myCard)) {
                     game.player1PlayCard(card, null);
                 } else {
                     i++;
@@ -39,7 +39,7 @@ public class Muster extends InstantaneousAbility {
         } else {
             for (int i = 0; i < game.getPlayer2Deck().size(); ) {
                 Card card = game.getPlayer2Deck().get(i);
-                if (canMuster(card)) {
+                if (canMuster(card, myCard)) {
                     card.setRow(card.getType().getRow(false));
                     game.moveCard(card, game.getPlayer2Deck(), game.getInGameCards());
                 } else {
@@ -48,7 +48,7 @@ public class Muster extends InstantaneousAbility {
             }
             for (int i = 0; i < game.getPlayer2InHandCards().size(); ) {
                 Card card = game.getPlayer2InHandCards().get(i);
-                if (canMuster(card)) {
+                if (canMuster(card, myCard)) {
                     game.player2PlayCard(card, null);
                 } else {
                     i++;
