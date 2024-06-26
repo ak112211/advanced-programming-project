@@ -99,5 +99,5 @@ public class Card extends Rectangle {
     public void setRow(Row row) {
         this.row = row;
     }
-    ""
+    
 }
