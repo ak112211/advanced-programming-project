@@ -36,8 +36,8 @@ public class TestCases {
         // Setup leaders and decks for both players (mocking simple decks for testing)
         Leader leader1 = SkelligeLeaders.CRACH_AN_CRAITE.getLeader();
         Leader leader2 = SkelligeLeaders.KING_BRAN.getLeader();
-        player1.setLeader(leader1);
-        player2.setLeader(leader2);
+        player1.getDeck().setLeader(leader1);
+        player2.getDeck().setLeader(leader2);
 
         Deck deck1 = new Deck();
         Deck deck2 = new Deck();
