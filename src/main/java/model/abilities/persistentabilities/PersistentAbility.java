@@ -21,7 +21,7 @@ public abstract class PersistentAbility extends Ability {
         Weather.AffectedCards.clear();
         for (Card card : inGameCards) {
             if (card.getAbility() instanceof PersistentAbility) {
-                ((PersistentAbility) card.getAbility()).addToAffectedCards(inGameCards);
+                ((PersistentAbility) card.getAbility()).addToAffectedCards(inGameCards, card);
             }
         }
     }
@@ -53,15 +53,15 @@ public abstract class PersistentAbility extends Ability {
 
     public abstract ArrayList<Card> getAffectedCards();
 
-    public void addToAffectedCardsForEachCard(Card card) {
-        if (doesAffect.apply(this.getCard(), card)) {
+    public void addToAffectedCardsForEachCard(Card card, Card myCard) {
+        if (doesAffect.apply(myCard, card)) {
             getAffectedCards().add(card);
         }
     }
 
-    public void addToAffectedCards(ArrayList<Card> inGameCards) {
+    public void addToAffectedCards(ArrayList<Card> inGameCards, Card myCard) {
         for (Card card : inGameCards) {
-            addToAffectedCardsForEachCard(card);
+            addToAffectedCardsForEachCard(card, myCard);
         }
     }
 

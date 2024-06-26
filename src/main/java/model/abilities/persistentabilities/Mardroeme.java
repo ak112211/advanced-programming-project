@@ -9,11 +9,11 @@ public class Mardroeme extends PersistentAbility {
     public static final ArrayList<Card> AffectedCards = new ArrayList<>();
 
     public Mardroeme() {
-        super(CommandersHorn::doesAffectDefault);
+        super(Mardroeme::doesAffectDefault);
     }
 
-    public static boolean doesAffectDefault(Card abilityCard, Card card) {
-        return sameRow(abilityCard, card) && !AffectedCards.contains(card) && card.getAbility() instanceof Berserker;
+    public static boolean doesAffectDefault(Card myCard, Card card) {
+        return sameRow(myCard, card) && !AffectedCards.contains(card) && card.getAbility() instanceof Berserker;
     }
 
     @Override

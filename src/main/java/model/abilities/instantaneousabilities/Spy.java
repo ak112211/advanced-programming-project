@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Spy extends InstantaneousAbility {
-    public void affect(Game game) {
+    public void affect(Game game, Card myCard) {
         ArrayList<Card> deck = CardsPlace.DECK.getCards(game, game.isPlayer1Turn());
         ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getCards(game, game.isPlayer1Turn());
         Random rand = new Random();

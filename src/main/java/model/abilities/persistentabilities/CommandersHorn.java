@@ -17,11 +17,11 @@ public class CommandersHorn extends PersistentAbility {
         super(CommandersHorn::doesAffectDefault);
     }
 
-    public static boolean doesAffectDefault(Card abilityCard, Card card) {
-        return canBeAffected(card) && notSameCards(abilityCard, card) && sameRow(abilityCard, card) && !AffectedCards.contains(card);
+    public static boolean doesAffectDefault(Card myCard, Card card) {
+        return canBeAffected(card) && notSameCards(myCard, card) && sameRow(myCard, card) && !AffectedCards.contains(card);
     }
 
-    public static boolean doesAffectSpy(Card abilityCard, Card card) {
+    public static boolean doesAffectSpy(Card myCard, Card card) {
         return card.getType() == Type.SPY_UNIT && !AffectedCards.contains(card);
     }
 

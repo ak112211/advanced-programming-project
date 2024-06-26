@@ -8,11 +8,11 @@ public class TightBond extends PersistentAbility {
     public static ArrayList<Card> AffectedCards = new ArrayList<>();
 
     public TightBond() {
-        super(CommandersHorn::doesAffectDefault);
+        super(TightBond::doesAffectDefault);
     }
 
-    public static boolean doesAffectDefault(Card abilityCard, Card card) {
-        return notSameCards(abilityCard, card) && sameName(abilityCard, card) && sameRow(abilityCard, card);
+    public static boolean doesAffectDefault(Card myCard, Card card) {
+        return notSameCards(myCard, card) && sameName(myCard, card) && sameRow(myCard, card);
     }
 
     @Override

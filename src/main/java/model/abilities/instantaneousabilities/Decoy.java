@@ -8,7 +8,7 @@ public class Decoy extends InstantaneousAbility {
     public void setReturnCard(Card card) {
         returnCard = card;
     }
-    public void affect(Game game){
+    public void affect(Game game, Card myCard){
         game.moveCard(returnCard, game.getInGameCards(),
                 game.isPlayer1Turn() ? game.getPlayer1Deck() : game.getPlayer2Deck());
     }

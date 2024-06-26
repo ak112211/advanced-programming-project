@@ -9,11 +9,11 @@ import model.abilities.instantaneousabilities.Scorch;
 import model.abilities.persistentabilities.MoraleBoost;
 import model.card.Card;
 
-public enum MonstersCards {
+public enum MonstersCards implements CardEnum {
     DRAUG("Draug", 10, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/monsters_draug.jpg"),
     LESHEN("Leshen", 10, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/monsters_leshen.jpg"),
     KAYRAN("Kayran", 8, 1, Type.AGILE_UNIT, new MoraleBoost(), Description.NOTHING, true, "/gwentImages/img/lg/monsters_kayran.jpg"),
-    TOAD("Toad", 7, 1, Type.RANGED_UNIT, new Scorch(), Description.KILLS_UNITS, false, "/gwentImages/img/lg/monsters_toad.jpg"),
+    TOAD("Toad", 7, 1, Type.RANGED_UNIT, new Scorch(Type.RANGED_UNIT), Description.KILLS_UNITS, false, "/gwentImages/img/lg/monsters_toad.jpg"),
     ARACHAS_BEHEMOTH("Arachas Behemoth", 6, 1, Type.SIEGE_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_arachas.jpg"),
     CRONE_WEAVESS("Crone: Weavess", 6, 1, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_witch_velen_1.jpg"),
     CRONE_WHISPESS("Crone: Whispess", 6, 1, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/monsters_witch_velen_2.jpg"),

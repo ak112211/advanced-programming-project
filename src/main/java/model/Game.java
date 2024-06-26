@@ -103,6 +103,7 @@ public class Game implements Serializable {
         if (row == null) {
             row = card.getType().getRow(true);
         }
+        card.setRow(row);
         return moveCard(card, player1InHandCards, inGameCards);
     }
 
@@ -110,6 +111,7 @@ public class Game implements Serializable {
         if (row == null) {
             row = card.getType().getRow(false);
         }
+        card.setRow(row);
         return moveCard(card, player1InHandCards, inGameCards);
     }
 
