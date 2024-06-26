@@ -22,6 +22,6 @@ public class Mardroeme extends PersistentAbility {
     }
 
     public static void affect(Card card, ArrayList<Card> inGameCards) {
-        ((Berserker) card.getAbility()).affect(inGameCards);
+        ((Berserker) card.getAbility()).affect(inGameCards, card);
     }
 }

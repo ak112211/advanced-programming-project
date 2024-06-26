@@ -32,7 +32,7 @@ public class Scorch extends InstantaneousAbility {
     public void affect(Game game, Card myCard) {
         List<Card> cards = getCardsInRow(game.getInGameCards(), game.isPlayer1Turn(), myCard)
                 .stream().filter(Ability::canBeAffected).toList();
-        if (type != null && cards.stream().mapToInt(Card::getPower).sum() > 10){
+        if (type == null || type == Type.SPY_UNIT || cards.stream().mapToInt(Card::getPower).sum() > 10){
             int maxPower = cards.stream().mapToInt(Card::getPower).max().orElse(0); // if it's empty maxPower value isn't important
             cards.stream().filter(card -> card.getPower() == maxPower)
                     .forEach(game::moveCardToGraveyard);
