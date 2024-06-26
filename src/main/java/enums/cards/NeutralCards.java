@@ -50,6 +50,6 @@ public enum NeutralCards implements CardEnum {
     }
 
     public Card getCard() {
-        return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.NEUTRAL, DESCRIPTION, IMAGE_PATH);
+        return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.NEUTRAL, DESCRIPTION, IMAGE_PATH, this);
     }
 }

@@ -2,15 +2,18 @@ package model;
 
 import enums.Row;
 import javafx.scene.layout.Pane;
+import model.abilities.Ability;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class Game {
-
+    private static final Random RANDOM = new Random();
     private final User PLAYER1;
     private final User PLAYER2;
     private User currentPlayer;
@@ -22,8 +25,8 @@ public class Game {
     private ArrayList<Card> inGameCards = new ArrayList<>();
     private ArrayList<Card> player1InHandCards = new ArrayList<>();
     private ArrayList<Card> player2InHandCards = new ArrayList<>();
-    private ArrayList<Card>  player1Deck = new ArrayList<>();
-    private ArrayList<Card>  player2Deck = new ArrayList<>();
+    private ArrayList<Card> player1Deck = new ArrayList<>();
+    private ArrayList<Card> player2Deck = new ArrayList<>();
     private ArrayList<Card> player1GraveyardCards = new ArrayList<>();
     private ArrayList<Card> player2GraveyardCards = new ArrayList<>();
     private GameStatus status = GameStatus.PENDING;
@@ -160,8 +163,32 @@ public class Game {
 
     }
 
-    public Card chooseCard(ArrayList<Card> cards, boolean onlyAffectables) {
+    public Card chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
+        if (onlyAffectables) {
+            cards = cards.stream().filter(Ability::canBeAffected).toList();
+        }
+        if (cards.isEmpty()) {
+            return null;
+        }
         return null; // TODO
+    }
+
+    public static Card chooseRandomCard(List<Card> cards, boolean onlyAffectables) {
+        if (onlyAffectables) {
+            cards = cards.stream().filter(Ability::canBeAffected).toList();
+        }
+        if (cards.isEmpty()) {
+            return null;
+        }
+        return cards.get(RANDOM.nextInt(cards.size()));
+    }
+
+    public Card chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
+        if (random) {
+            return chooseRandomCard(cards, onlyAffectables);
+        } else {
+            return chooseCard(cards, onlyAffectables);
+        }
     }
 
     public Leader getPlayer1LeaderCard() {

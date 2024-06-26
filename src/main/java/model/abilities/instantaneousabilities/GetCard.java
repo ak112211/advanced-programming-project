@@ -7,10 +7,10 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class GetCard extends InstantaneousAbility{
-    CardsPlace cardsPlace;
-    boolean fromOwn;
-    int amount;
-    boolean random;
+    private final CardsPlace cardsPlace;
+    private final boolean fromOwn;
+    private final int amount;
+    private final boolean random;
 
     public GetCard(CardsPlace cardsPlace, boolean fromOwn, int amount, boolean random) {
         this.cardsPlace = cardsPlace;
@@ -20,9 +20,9 @@ public class GetCard extends InstantaneousAbility{
     }
 
     public void affect(Game game, Card myCard) {
-        ArrayList<Card> cards = cardsPlace.getCards(game, game.isPlayer1Turn() ^ fromOwn);
+        ArrayList<Card> cardList = cardsPlace.getCards(game, game.isPlayer1Turn() == fromOwn);
         for (int i = 0; i <amount; i++) {
-            game.moveCard(game.chooseCard(cards, true), cards,
+            game.moveCard(game.chooseCard(cardList, true, random), cardList,
                     CardsPlace.IN_HAND.getCards(game,game.isPlayer1Turn()));
         }
     }
