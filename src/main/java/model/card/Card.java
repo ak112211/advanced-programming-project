@@ -1,4 +1,6 @@
 package model.card;
+
+import enums.cards.CardEnum;
 import javafx.scene.shape.Rectangle;
 import enums.Row;
 import enums.cardsinformation.*;
@@ -21,10 +23,10 @@ public class Card extends Rectangle {
     private final boolean IS_HERO;
     private final Faction FACTION;
     private final Description DESCRIPTION;
+    private final String IMAGE_PATH;
+    private final CardEnum CARDE_NUM;
 
-    private String imagePath;
-
-    public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath) {
+    public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
         this.NAME = name;
         this.TYPE = type;
         this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
@@ -34,8 +36,8 @@ public class Card extends Rectangle {
         this.IS_HERO = isHero;
         this.FACTION = faction;
         this.DESCRIPTION = description;
-        this.imagePath = imagePath;
-
+        this.IMAGE_PATH = imagePath;
+        this.CARDE_NUM = cardEnum;
 
         this.setWidth(70);
         this.setHeight(100);
@@ -74,6 +76,14 @@ public class Card extends Rectangle {
         return IS_HERO;
     }
 
+    public String getImagePath() {
+        return IMAGE_PATH;
+    }
+
+    public CardEnum getCardEnum() {
+        return CARDE_NUM;
+    }
+
     public int getPower() {
         return power;
     }
@@ -89,13 +99,5 @@ public class Card extends Rectangle {
     public void setRow(Row row) {
         this.row = row;
     }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
+    ""
 }

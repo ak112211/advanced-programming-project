@@ -2,6 +2,7 @@ package model;
 
 import enums.Row;
 import javafx.scene.layout.Pane;
+import model.abilities.Ability;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
@@ -9,10 +10,11 @@ import model.card.Leader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class Game implements Serializable {
-
+    private static final Random RANDOM = new Random();
     private final User PLAYER1;
     private final User PLAYER2;
     private User currentPlayer;
@@ -141,8 +143,32 @@ public class Game implements Serializable {
     public void initializeGameObjectsFromSaved() {
     }
 
-    public Card chooseCard(ArrayList<Card> cards, boolean onlyAffectables) {
+    public Card chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
+        if (onlyAffectables) {
+            cards = cards.stream().filter(Ability::canBeAffected).toList();
+        }
+        if (cards.isEmpty()) {
+            return null;
+        }
         return null; // TODO
+    }
+
+    public static Card chooseRandomCard(List<Card> cards, boolean onlyAffectables) {
+        if (onlyAffectables) {
+            cards = cards.stream().filter(Ability::canBeAffected).toList();
+        }
+        if (cards.isEmpty()) {
+            return null;
+        }
+        return cards.get(RANDOM.nextInt(cards.size()));
+    }
+
+    public Card chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
+        if (random) {
+            return chooseRandomCard(cards, onlyAffectables);
+        } else {
+            return chooseCard(cards, onlyAffectables);
+        }
     }
 
     public Leader getPlayer1LeaderCard() {
@@ -175,10 +201,6 @@ public class Game implements Serializable {
         nextTurn();
     }
 
-    public enum GameStatus {
-        PENDING, ACTIVE, COMPLETED
-    }
-
     public ArrayList<Card> getInGameCards() {
         return inGameCards;
     }
@@ -205,5 +227,9 @@ public class Game implements Serializable {
 
     public ArrayList<Card> getPlayer2GraveyardCards() {
         return player2GraveyardCards;
+    }
+
+    public enum GameStatus {
+        PENDING, ACTIVE, COMPLETED
     }
 }

@@ -11,9 +11,11 @@ public class Spy extends InstantaneousAbility {
     public void affect(Game game, Card myCard) {
         ArrayList<Card> deck = CardsPlace.DECK.getCards(game, game.isPlayer1Turn());
         ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getCards(game, game.isPlayer1Turn());
-        Random rand = new Random();
         for (int i = 0; i < 2; i++) {
-            Card card = deck.get(rand.nextInt(deck.size()));
+            Card card = Game.chooseRandomCard(deck, false);
+            if (card == null) {
+                return;
+            }
             game.moveCard(card, deck, inHandCards);
         }
     }
