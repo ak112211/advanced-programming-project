@@ -1,59 +1,49 @@
 package view;
 
+import controller.AppController;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ListView;
 import model.User;
-import java.util.List;
 
 public class AddFriendsController {
 
     @FXML
-    private TextField usernameField;
+    private TextField friendUsernameField;
     @FXML
     private ListView<String> friendsListView;
 
     private User currentUser;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         currentUser = User.getCurrentUser();
-        loadFriends();
+        friendsListView.getItems().addAll(currentUser.getFriends());
     }
 
     @FXML
-    private void addFriend() {
-        String username = usernameField.getText();
-        if (username.isEmpty()) {
-            showError("Username cannot be empty.");
+    private void handleAddFriend() {
+        String friendUsername = friendUsernameField.getText();
+        if (friendUsername.isEmpty()) {
+            showAlert("Please enter a friend's username.");
             return;
         }
 
-        if (username.equals(currentUser.getUsername())) {
-            showError("You cannot add yourself as a friend.");
-            return;
+        // Send request to server to add friend
+        String request = String.format("addFriend %s %s", currentUser.getUsername(), friendUsername);
+        String response = AppController.getServerConnection().sendRequest(request);
+
+        if (response.equals("Friend added successfully.")) {
+            currentUser.addFriend(friendUsername);
+            friendsListView.getItems().add(friendUsername);
         }
-        /*
-        if (currentUser.addFriend(username)) {
-            friendsListView.getItems().add(username);
-            usernameField.clear();
-        } else {
-            showError("Failed to add friend. Username may be invalid or already a friend.");
-        }
-        */
+        showAlert(response);
     }
 
-    @FXML
-    private void goBackToMainMenu() {
-        // Implement navigation back to main menu
-    }
-
-    private void loadFriends() {
-        List<String> friends = currentUser.getFriends();
-        friendsListView.getItems().setAll(friends);
-    }
-
-    private void showError(String message) {
-        // Implement error display (e.g., using an alert dialog)
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

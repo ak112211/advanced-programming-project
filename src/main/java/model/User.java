@@ -160,8 +160,10 @@ public class User implements Serializable {
         return USERS.indexOf(this) + 1;
     }
 
-    public void addFriend(String username) {
-        friends.add(username);
+    public void addFriend(String friendUsername) {
+        if (!friends.contains(friendUsername)) {
+            friends.add(friendUsername);
+        }
     }
 
     public List<String> getFriends() {
