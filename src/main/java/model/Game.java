@@ -1,6 +1,7 @@
 package model;
 
 import enums.Row;
+import enums.cardsinformation.Type;
 import javafx.scene.layout.Pane;
 import model.abilities.Ability;
 import model.abilities.persistentabilities.PersistentAbility;
@@ -88,17 +89,20 @@ public class Game implements Serializable {
         return player2Points;
     }
 
-    public boolean moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
-        boolean res = cards1.remove(card);
-        if (res) {
-            cards2.add(card);
+    public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
+        if (!cards1.remove(card)) {
+            throw new RuntimeException("Card doesn't exist there");
         }
-        return res;
+        cards2.add(card);
     }
 
-    public boolean moveCardToGraveyard(Card card) {
-        return moveCard(card, inGameCards,
-                card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
+    public void moveCardToGraveyard(Card card) {
+        moveCard(card, inGameCards, card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
+    }
+
+    public boolean canPlay(Card card) {
+        return card.getType() != Type.SPELL ||
+                inGameCards.stream().noneMatch(inGameCard -> card.same(inGameCard) && card.sameRow(inGameCard));
     }
 
     public boolean player1PlayCard(Card card, Row row) {
@@ -107,7 +111,11 @@ public class Game implements Serializable {
         } else {
             card.setRow(row);
         }
-        return moveCard(card, player1InHandCards, inGameCards);
+        if (canPlay(card)) {
+            moveCard(card, player1InHandCards, inGameCards);
+            return true;
+        }
+        return false;
     }
 
     public boolean player2PlayCard(Card card, Row row) {
@@ -116,7 +124,11 @@ public class Game implements Serializable {
         } else {
             card.setRow(row);
         }
-        return moveCard(card, player1InHandCards, inGameCards);
+        if (canPlay(card)) {
+            moveCard(card, player2InHandCards, inGameCards);
+            return true;
+        }
+        return false;
     }
 
     public void calculatePoints() {
