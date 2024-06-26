@@ -6,6 +6,7 @@ import model.card.Leader;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
 
@@ -23,6 +24,8 @@ public class User implements Serializable {
     private Leader leader;
     private Deck deck;
     private ArrayList<Deck> decks = new ArrayList<Deck>();
+    private List<String> friends;
+
     private Card playCard;
     private int highScore = 0;
 
@@ -155,6 +158,14 @@ public class User implements Serializable {
     public int getRank() {
         sortUsers();
         return USERS.indexOf(this) + 1;
+    }
+
+    public void addFriend(String username) {
+        friends.add(username);
+    }
+
+    public List<String> getFriends() {
+        return friends;
     }
 }
 

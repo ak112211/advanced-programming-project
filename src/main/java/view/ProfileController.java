@@ -4,6 +4,7 @@ import controller.AppController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import model.User;
 
 public class ProfileController {
 
@@ -15,6 +16,14 @@ public class ProfileController {
     private TextField nicknameField;
     @FXML
     private TextField emailField;
+
+    @FXML
+    private void initialize() {
+        User currentUser = User.getCurrentUser();
+        currentUsernameField.setText(currentUser.getUsername());
+        nicknameField.setText(currentUser.getNickname());
+        emailField.setText(currentUser.getEmail());
+    }
 
     @FXML
     private void handleUpdateButtonAction() {
@@ -32,5 +41,4 @@ public class ProfileController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }
