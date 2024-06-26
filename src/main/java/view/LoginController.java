@@ -2,7 +2,6 @@ package view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.App;
@@ -32,7 +31,7 @@ public class LoginController {
                 App.loadScene("/fxml/MainMenu.fxml");
             }
         } else {
-            showAlert(response);
+            Tools.showAlert(response);
         }
     }
 
@@ -47,10 +46,5 @@ public class LoginController {
         App.loadScene("/fxml/RegistrationScreen.fxml");
     }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
 }

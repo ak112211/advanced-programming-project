@@ -34,13 +34,7 @@ public class ProfileController {
         String email = emailField.getText();
         String request = String.format("updateProfile %s %s %s %s", currentUsername, newUsername, nickname, email);
         String response = App.getServerConnection().sendRequest(request);
-        showAlert(response);
-    }
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Tools.showAlert(response);
     }
 
     public void handleBack(ActionEvent actionEvent) {

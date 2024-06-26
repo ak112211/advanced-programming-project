@@ -47,7 +47,7 @@ public class ForgotPasswordController {
         String response = App.getServerConnection().sendRequest("isUsernameTaken " + username);
 
         if ("false".equals(response)) {
-            showAlert("Error", "Invalid Username", "The entered username does not exist.");
+            Tools.showAlert("Error", "Invalid Username", "The entered username does not exist.");
             return;
         }
 
@@ -56,7 +56,7 @@ public class ForgotPasswordController {
             securityQuestionField.setText(response);
             securityQuestionBox.setVisible(true);
         } else {
-            showAlert("Error", "Database Error", "An error occurred while checking the username. Please try again.");
+            Tools.showAlert("Error", "Database Error", "An error occurred while checking the username. Please try again.");
         }
     }
 
@@ -69,7 +69,7 @@ public class ForgotPasswordController {
         if ("true".equals(response)) {
             newPasswordBox.setVisible(true);
         } else {
-            showAlert("Error", "Invalid Answer", "The entered answer is incorrect.");
+            Tools.showAlert("Error", "Invalid Answer", "The entered answer is incorrect.");
         }
     }
 
@@ -80,26 +80,19 @@ public class ForgotPasswordController {
         String confirmNewPassword = confirmNewPasswordField.getText();
 
         if (!newPassword.equals(confirmNewPassword)) {
-            showAlert("Error", "Password Mismatch", "Password and its confirmation do not match.");
+            Tools.showAlert("Error", "Password Mismatch", "Password and its confirmation do not match.");
             return;
         }
 
         String response = App.getServerConnection().sendRequest("updatePassword " + username + " " + newPassword);
         if ("success".equals(response)) {
-            showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
+            Tools.showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
             App.loadScene("/fxml/LoginScreen.fxml");
         } else {
-            showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
+            Tools.showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
     }
 
-    private void showAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
 
     public void handleBack(ActionEvent actionEvent) {
         App.loadScene("/fxml/LoginScreen.fxml");

@@ -1,9 +1,8 @@
 package view;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import model.App;
 import model.User;
 
@@ -26,7 +25,7 @@ public class AddFriendsController {
     private void handleAddFriend() {
         String friendUsername = friendUsernameField.getText();
         if (friendUsername.isEmpty()) {
-            showAlert("Please enter a friend's username.");
+            Tools.showAlert("Please enter a friend's username.");
             return;
         }
 
@@ -38,12 +37,8 @@ public class AddFriendsController {
             currentUser.addFriend(friendUsername);
             friendsListView.getItems().add(friendUsername);
         }
-        showAlert(response);
+        Tools.showAlert(response);
     }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 }

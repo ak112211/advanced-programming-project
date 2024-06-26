@@ -222,9 +222,9 @@ public class MainController {
                 deckCardsListView.getItems().clear();
                 deckCardsListView.getItems().addAll(currentDeck.getCards());
                 updateCardCounts();
-                showAlert("Deck loaded successfully.");
+                Tools.showAlert("Deck loaded successfully.");
             } catch (IOException e) {
-                showAlert("Failed to load deck: " + e.getMessage());
+                Tools.showAlert("Failed to load deck: " + e.getMessage());
             }
         }
     }
@@ -241,9 +241,9 @@ public class MainController {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             try (FileWriter writer = new FileWriter(file)) {
                 gson.toJson(currentDeck, writer);
-                showAlert("Deck saved successfully.");
+                Tools.showAlert("Deck saved successfully.");
             } catch (IOException e) {
-                showAlert("Failed to save deck: " + e.getMessage());
+                Tools.showAlert("Failed to save deck: " + e.getMessage());
             }
         }
     }
@@ -255,7 +255,7 @@ public class MainController {
         List<Card> selectedDeck = new ArrayList<>(deckCardsListView.getItems());
 
         if (selectedDeck.size() < 22) {
-            showAlert("Deck must contain at least 22 unit cards.");
+            Tools.showAlert("Deck must contain at least 22 unit cards.");
             return;
         }
 
@@ -267,16 +267,10 @@ public class MainController {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(currentDeck.getName() + ".json")) {
             gson.toJson(currentDeck, writer);
-            showAlert("Deck saved successfully.");
+            Tools.showAlert("Deck saved successfully.");
         } catch (IOException e) {
-            showAlert("Failed to save deck: " + e.getMessage());
+            Tools.showAlert("Failed to save deck: " + e.getMessage());
         }
-    }
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     public void toggleMultiplayer(ActionEvent actionEvent) {

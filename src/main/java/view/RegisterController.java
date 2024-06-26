@@ -27,13 +27,7 @@ public class RegisterController {
         String password = passwordField.getText();
         String request = String.format("register %s %s %s %s", username, nickname, email, password);
         String response = App.getServerConnection().sendRequest(request);
-        showAlert(response);
-    }
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Tools.showAlert(response);
     }
 
     public void handleBack(ActionEvent actionEvent) {

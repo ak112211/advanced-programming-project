@@ -88,7 +88,7 @@ public class UserProfileController {
             if (response.isEmpty()) {
                 showAlert("Information", "No Games Found", "No recent games found for the user.");
             } else {
-                List<String> recentGames = Arrays.asList(response.split("\n"));
+                String[] recentGames = response.split("\n");
                 StringBuilder sb = new StringBuilder();
                 for (String game : recentGames) {
                     sb.append(game).append("\n");
