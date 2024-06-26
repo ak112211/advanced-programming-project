@@ -8,8 +8,6 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
 
-import java.awt.*;
-
 public class Card extends Rectangle {
     public static final DataFormat DATA_FORMAT = new DataFormat("model.card.Card");
 
@@ -24,7 +22,7 @@ public class Card extends Rectangle {
     private final Faction FACTION;
     private final Description DESCRIPTION;
     private final String IMAGE_PATH;
-    private final CardEnum CARDE_NUM;
+    private final CardEnum CARD_ENUM;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
         this.NAME = name;
@@ -37,7 +35,7 @@ public class Card extends Rectangle {
         this.FACTION = faction;
         this.DESCRIPTION = description;
         this.IMAGE_PATH = imagePath;
-        this.CARDE_NUM = cardEnum;
+        this.CARD_ENUM = cardEnum;
 
         this.setWidth(70);
         this.setHeight(100);
@@ -81,7 +79,7 @@ public class Card extends Rectangle {
     }
 
     public CardEnum getCardEnum() {
-        return CARDE_NUM;
+        return CARD_ENUM;
     }
 
     public int getPower() {
@@ -102,5 +100,13 @@ public class Card extends Rectangle {
 
     public void setDefaultRow(boolean isPlayer1Turn) {
         row = TYPE.getRow(isPlayer1Turn);
+    }
+
+    public boolean same(Card card) {
+        return CARD_ENUM.equals(card.CARD_ENUM);
+    }
+
+    public boolean sameRow(Card card) {
+        return row.equals(card.row);
     }
 }
