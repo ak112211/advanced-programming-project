@@ -25,7 +25,7 @@ public enum SkelligeCards implements CardEnum {
     CLAN_AN_CRAITE("Clan An Craite", 6, 3, Type.CLOSE_COMBAT_UNIT, new TightBond(), Description.NOTHING, false, "/gwentImages/img/lg/skellige_craite_warrior.jpg"),
     BLUEBOY_LUGOS("Blueboy Lugos", 6, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_blueboy.jpg"),
     MADMAN_LUGOS("Madman Lugos", 6, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_madmad_lugos.jpg"),
-    CERYS("Cerys", 10, 1, Type.CLOSE_COMBAT_UNIT, new Muster(), Description.SUMMONS_SHIELD_MAIDEN, true, "/gwentImages/img/lg/skellige_cerys.jpg"),
+    CERYS("Cerys", 10, 1, Type.CLOSE_COMBAT_UNIT, new Muster("Clan Drummond Shieldmaiden"), Description.SUMMONS_SHIELD_MAIDEN, true, "/gwentImages/img/lg/skellige_cerys.jpg"),
     KAMBI("Kambi", 11, 1, Type.CLOSE_COMBAT_UNIT, new SummonAvenger(null), Description.TURNS_INTO_STRONGER_CARD, true, "/gwentImages/img/lg/skellige_kambi.jpg"),
     BIRNA_BRAN("Birna Bran", 2, 1, Type.CLOSE_COMBAT_UNIT, new Medic(), Description.NOTHING, false, "/gwentImages/img/lg/skellige_birna.jpg"),
     CLAN_DRUMMOND_SHIELDMAIDEN("Clan Drummond Shieldmaiden", 4, 3, Type.CLOSE_COMBAT_UNIT, new TightBond(), Description.MUSTERED_BY_CERYS, false, "/gwentImages/img/lg/skellige_shield_maiden.jpg"),

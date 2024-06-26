@@ -5,23 +5,27 @@ import model.card.Card;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Muster extends InstantaneousAbility {
-    private final List<String> cardNames;
+    private final String[] musterCardNames;
 
-    public Muster(Card... cards) {
-        this.cardNames = Arrays.stream(cards).map(Card::getName).toList();
+    public Muster(String... cardNames) {
+        this.musterCardNames = cardNames;
     }
 
-    private boolean canMuster(Card card, Card myCard) {
-        return sameName(myCard, card) || cardNames.contains(card.getName());
+    private boolean canMuster(Card card, String myCardName) {
+        String cardName = card.getName().split(":")[0];
+        return Stream.concat(Arrays.stream(musterCardNames), Stream.of(myCardName))
+                .anyMatch(name -> name.equals(cardName));
     }
 
     public void affect(Game game, Card myCard) {
+        String myCardName = myCard.getName().split(":")[0];
         if (game.isPlayer1Turn()) {
             for (int i = 0; i < game.getPlayer1Deck().size(); ) {
                 Card card = game.getPlayer1Deck().get(i);
-                if (canMuster(card, myCard)) {
+                if (canMuster(card, myCardName)) {
                     card.setRow(card.getType().getRow(true));
                     game.moveCard(card, game.getPlayer1Deck(), game.getInGameCards());
                 } else {
@@ -30,7 +34,7 @@ public class Muster extends InstantaneousAbility {
             }
             for (int i = 0; i < game.getPlayer1InHandCards().size(); ) {
                 Card card = game.getPlayer1InHandCards().get(i);
-                if (canMuster(card, myCard)) {
+                if (canMuster(card, myCardName)) {
                     game.player1PlayCard(card, null);
                 } else {
                     i++;
@@ -39,7 +43,7 @@ public class Muster extends InstantaneousAbility {
         } else {
             for (int i = 0; i < game.getPlayer2Deck().size(); ) {
                 Card card = game.getPlayer2Deck().get(i);
-                if (canMuster(card, myCard)) {
+                if (canMuster(card, myCardName)) {
                     card.setRow(card.getType().getRow(false));
                     game.moveCard(card, game.getPlayer2Deck(), game.getInGameCards());
                 } else {
@@ -48,7 +52,7 @@ public class Muster extends InstantaneousAbility {
             }
             for (int i = 0; i < game.getPlayer2InHandCards().size(); ) {
                 Card card = game.getPlayer2InHandCards().get(i);
-                if (canMuster(card, myCard)) {
+                if (canMuster(card, myCardName)) {
                     game.player2PlayCard(card, null);
                 } else {
                     i++;

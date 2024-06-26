@@ -23,7 +23,7 @@ public enum NeutralCards implements CardEnum {
     DANDELION("Dandelion", 2, 1, Type.CLOSE_COMBAT_UNIT, new CommandersHorn(), Description.NOTHING, false, "/gwentImages/img/lg/neutral_dandelion.jpg"),
     COW("Cow", 0, 1, Type.RANGED_UNIT, new SummonAvenger(null), Description.BECOMES_STRONGER_NEXT_ROUND, false, "/gwentImages/img/lg/neutral_cow.jpg"),
     EMIEL_REGIS("Emiel Regis", 5, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/neutral_emiel.jpg"),
-    GAUNTER_ODIMM("Gaunter O’Dimm", 2, 1, Type.SIEGE_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/neutral_gaunter_odimm.jpg"),
+    GAUNTER_ODIMM("Gaunter O’Dimm", 2, 1, Type.SIEGE_UNIT, new Muster("Gaunter O’Dimm"), Description.NOTHING, false, "/gwentImages/img/lg/neutral_gaunter_odimm.jpg"),
     GAUNTER_ODIMM_DARKNESS("Gaunter O’DImm Darkness", 4, 3, Type.RANGED_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/neutral_gaunter_odimm_darkness.jpg"),
     GERALT_OF_RIVIA("Geralt of Rivia", 15, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/neutral_geralt.jpg"),
     MYSTERIOUS_ELF("Mysterious Elf", 0, 1, Type.CLOSE_COMBAT_UNIT, new Spy(), Description.NOTHING, true, "/gwentImages/img/lg/neutral_mysterious_elf.jpg"),
