@@ -1,7 +1,6 @@
 package view;
 
 import enums.Menu;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -10,8 +9,6 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-
-import static view.Tools.showAlert;
 
 public class RegisterMenuController {
 
@@ -24,7 +21,7 @@ public class RegisterMenuController {
     @FXML
     private PasswordField passwordField;
     @FXML
-    public PasswordField confirmPasswordField;
+    private PasswordField confirmPasswordField;
 
 
     @FXML
@@ -33,17 +30,20 @@ public class RegisterMenuController {
         String nickname = nicknameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
 
         try {
             if (DatabaseConnection.isUsernameTaken(username)) {
-                showAlert("Username is already taken.");
+                Tools.showAlert("Username is already taken.");
+            } else if (!confirmPassword.equals(password)) {
+                Tools.showAlert("Those passwords didn’t match. Try again.");
             } else {
                 User user = new User(username, nickname, email, password);
                 DatabaseConnection.saveUser(user);
-                showAlert("User registered successfully.");
+                Tools.showAlert("User registered successfully.");
             }
         } catch (SQLException e) {
-            showAlert("Error registering user: " + e.getMessage());
+            Tools.showAlert("Error registering user: " + e.getMessage());
         }
     }
 

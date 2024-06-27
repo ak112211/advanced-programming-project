@@ -12,8 +12,6 @@ import java.util.List;
 
 public class User implements Serializable {
 
-    private static final ArrayList<User> USERS = new ArrayList<>();
-
     private String username;
     private String nickname;
     private String email;
@@ -36,7 +34,6 @@ public class User implements Serializable {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        USERS.add(this);
     }
 
     public static User getCurrentUser() {
@@ -95,15 +92,6 @@ public class User implements Serializable {
         this.answer = answer;
     }
 
-    public User getUserByUsername(String username) {
-        for (User user : USERS) {
-            if (user.username.equals(username)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
     public ArrayList<Game> getGames() {
         return games;
     }
@@ -152,11 +140,6 @@ public class User implements Serializable {
         this.deck = deck;
     }
 
-    public int getRank() {
-        sortUsers();
-        return USERS.indexOf(this) + 1;
-    }
-
     public void addFriend(String friendUsername) {
         if (!friends.contains(friendUsername)) {
             friends.add(friendUsername);
@@ -165,6 +148,11 @@ public class User implements Serializable {
 
     public List<String> getFriends() {
         return friends;
+    }
+
+    public int getRank() {
+        // TODO:
+        return 1;
     }
 
     public static User deserializeUser(String serializedUser) {

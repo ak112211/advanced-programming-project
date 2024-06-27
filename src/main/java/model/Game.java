@@ -23,7 +23,6 @@ public class Game implements Serializable {
     private final User PLAYER2;
     private User currentPlayer;
     private final Date DATE;
-    public transient Pane gamePane;
     private int player1Points, player2Points;
     private final Leader PLAYER1_LEADER_CARD;
     private final Leader PLAYER2_LEADER_CARD;

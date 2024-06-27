@@ -1,9 +1,7 @@
 package view;
 
 import enums.Menu;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.App;
@@ -11,7 +9,6 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProfileMenuController {
@@ -70,7 +67,7 @@ public class ProfileMenuController {
     }
 
     @FXML
-    private void handleShowRecentGamesAction(ActionEvent event) {
+    private void handleShowRecentGamesAction() {
         String nStr = recentGamesField.getText();
         int n = 5; // default value
         if (!nStr.isEmpty()) {

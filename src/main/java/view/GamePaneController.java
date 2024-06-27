@@ -2,7 +2,6 @@ package view;
 
 import enums.Row;
 import enums.cardsinformation.Faction;
-import enums.leaders.EmpireNilfgaardianLeaders;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.SkelligeLeaders;
 import javafx.animation.PauseTransition;
@@ -12,7 +11,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.Deck;
@@ -22,7 +23,9 @@ import model.card.Card;
 import model.card.Leader;
 
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 public class GamePaneController implements Initializable {
     @FXML
