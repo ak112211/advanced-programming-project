@@ -44,7 +44,7 @@ public class TestCases {
 
         // Add cards to the decks from SkelligeCards enum
         Card card1 = SkelligeCards.BERSERKER.getCard();
-        Card card2 = SkelligeCards.VIDKAARL.getCard();
+        Card card2 = SkelligeCards.VILDKAARL.getCard();
 
         deck1.addCard(card1);
         deck1.addCard(card2);
