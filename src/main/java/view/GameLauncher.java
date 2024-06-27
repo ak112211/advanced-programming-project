@@ -16,7 +16,7 @@ public class GameLauncher extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GamePane.fxml"));
             Pane gamePane = loader.load();
 
-            Scene scene = new Scene(gamePane, 1200, 800);
+            Scene scene = new Scene(gamePane, 1280, 720);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Gwent Game");
             primaryStage.setResizable(false);
