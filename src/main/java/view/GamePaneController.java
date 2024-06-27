@@ -1,6 +1,10 @@
 package view;
 
 import enums.Row;
+import enums.cardsinformation.Faction;
+import enums.leaders.EmpireNilfgaardianLeaders;
+import enums.leaders.MonstersLeaders;
+import enums.leaders.SkelligeLeaders;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,16 +14,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
 
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class GamePaneController implements Initializable {
     @FXML
@@ -62,7 +64,7 @@ public class GamePaneController implements Initializable {
     private VBox player1Leader;
     @FXML
     private VBox player2Leader;
-    private Text messageDisplay;
+    private Text messageDisplay = new Text();
     private Game game;
     private Card selectedCard;
 
@@ -70,10 +72,22 @@ public class GamePaneController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         game = Game.getCurrentGame();
         if (game == null) {
-            game = new Game(
-                    new User("username1", "nickname1", "email1", "password1"),
-                    new User("username2", "nickname2", "email2", "password2"));
+            Deck deck1 = new Deck();
+            Deck deck2 = new Deck();
+            deck1.setFaction(Faction.SKELLIGE);
+            deck2.setFaction(Faction.MONSTER);
+            deck1.addCards(deck1.getFaction().getAllCards());
+            deck2.addCards(deck2.getFaction().getAllCards());
+            deck1.setLeader(SkelligeLeaders.CRACH_AN_CRAITE.getLeader());
+            deck2.setLeader(MonstersLeaders.BRINGER_OF_DEATH.getLeader());
+
+            User user1 = new User("username1", "nickname1", "email1", "password1");
+            User user2 = new User("username2", "nickname2", "email2", "password2");
+            user1.setDeck(deck1);
+            user2.setDeck(deck2);
+            game = new Game(user1, user2);
         }
+        game.initializeGameObjects();
         setupGame();
         startTurn(); // Start with Player 1's turn
     }

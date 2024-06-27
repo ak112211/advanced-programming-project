@@ -1,12 +1,15 @@
 package model.card;
 
 import enums.cards.CardEnum;
+import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import enums.Row;
 import enums.cardsinformation.*;
 import javafx.scene.input.DataFormat;
 import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
+
+import java.util.Objects;
 
 public class Card extends Rectangle {
     public static final DataFormat DATA_FORMAT = new DataFormat("model.card.Card");
@@ -39,7 +42,7 @@ public class Card extends Rectangle {
 
         this.setWidth(70);
         this.setHeight(100);
-        this.setFill(new ImagePattern(new javafx.scene.image.Image(imagePath)));
+        this.setFill(new ImagePattern(new Image(Objects.requireNonNull(getClass().getResource(imagePath)).toExternalForm())));
     }
 
     public String getName() {

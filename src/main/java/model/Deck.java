@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Deck implements Serializable {
     private String name;
@@ -35,8 +36,12 @@ public class Deck implements Serializable {
         this.fileAddress = fileAddress;
     }
 
-    public void addCard(Card card2) {
-        CARDS.add(card2);
+    public void addCard(Card card) {
+        CARDS.add(card);
+    }
+
+    public void addCards(List<Card> cards) {
+        CARDS.addAll(cards);
     }
 
     public Leader getLeader() {
