@@ -40,9 +40,27 @@ public class Card extends Rectangle {
         IMAGE_PATH = imagePath;
         CARD_ENUM = cardEnum;
 
+        setBigImage();
+    }
+
+    public void setSmallImage() {
+        this.setArcWidth(5);
+        this.setArcHeight(5);
+        this.setWidth(53);
+        this.setHeight(79);
+        this.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("lg", "sm")))
+                        .toExternalForm())));
+    }
+
+    public void setBigImage() {
+        this.setArcWidth(10);
+        this.setArcHeight(10);
         this.setWidth(70);
         this.setHeight(100);
-        this.setFill(new ImagePattern(new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)))));
+        this.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                        .toExternalForm())));
     }
 
     public String getName() {
