@@ -1,7 +1,6 @@
 package model.card;
 
 import enums.cards.CardEnum;
-import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import enums.Row;
 import enums.cardsinformation.*;
@@ -40,20 +39,7 @@ public class Card extends Rectangle {
 
         this.setWidth(70);
         this.setHeight(100);
-        this.setImage(imagePath);
-    }
-
-    private void setImage(String imagePath) {
-        try {
-            Image image = new Image(getClass().getResourceAsStream(imagePath));
-            if (image.isError()) {
-                System.err.println("Error loading image: " + imagePath);
-            }
-            this.setFill(new ImagePattern(image));
-        } catch (Exception e) {
-            System.err.println("Invalid URL or resource not found: " + imagePath);
-            e.printStackTrace();
-        }
+        this.setFill(new ImagePattern(new javafx.scene.image.Image(imagePath)));
     }
 
     public String getName() {

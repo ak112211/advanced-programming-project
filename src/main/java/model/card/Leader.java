@@ -2,7 +2,6 @@ package model.card;
 
 import enums.cardsinformation.Description;
 import enums.cardsinformation.Faction;
-import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import model.abilities.Ability;
@@ -26,20 +25,7 @@ public class Leader extends Rectangle {
 
         this.setWidth(70);
         this.setHeight(100);
-        this.setImage(imagePath);
-    }
-
-    private void setImage(String imagePath) {
-        try {
-            javafx.scene.image.Image image = new Image(getClass().getResourceAsStream(imagePath));
-            if (image.isError()) {
-                System.err.println("Error loading image: " + imagePath);
-            }
-            this.setFill(new ImagePattern(image));
-        } catch (Exception e) {
-            System.err.println("Invalid URL or resource not found: " + imagePath);
-            e.printStackTrace();
-        }
+        this.setFill(new ImagePattern(new javafx.scene.image.Image(imagePath)));
     }
 
     public String getName() {

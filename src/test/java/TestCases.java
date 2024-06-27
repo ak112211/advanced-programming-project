@@ -55,7 +55,7 @@ public class TestCases {
         player1.setDeck(deck1);
         player2.setDeck(deck2);
 
-        game = new Game(player1, player2, new Date());
+        game = new Game(player1, player2);
         game.initializeGameObjects();
         game.setCurrentPlayer(player1);
     }
