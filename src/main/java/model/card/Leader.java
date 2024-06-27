@@ -25,9 +25,27 @@ public class Leader extends Rectangle {
         ABILITY = ability;
         LEADER_ENUM = leaderEnum;
 
+        setBigImage();
+    }
+
+    public void setSmallImage() {
+        this.setArcWidth(10);
+        this.setArcHeight(10);
+        this.setWidth(68);
+        this.setHeight(90);
+        this.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("lg", "sm")))
+                        .toExternalForm())));
+    }
+
+    public void setBigImage() {
+        this.setArcWidth(10);
+        this.setArcHeight(10);
         this.setWidth(70);
         this.setHeight(100);
-        this.setFill(new ImagePattern(new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)))));
+        this.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                        .toExternalForm())));
     }
 
     public String getName() {

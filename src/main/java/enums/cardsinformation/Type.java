@@ -7,7 +7,6 @@ public enum Type {
     RANGED_UNIT,
     SIEGE_UNIT,
     AGILE_UNIT,
-    SPY_UNIT,
     DECOY,
     WEATHER,
     SPELL;
@@ -18,9 +17,8 @@ public enum Type {
                 case RANGED_UNIT -> Row.PLAYER1_RANGED;
                 case SIEGE_UNIT -> Row.PLAYER1_SIEGE;
                 case WEATHER -> Row.PLAYER1_WEATHER;
-                case SPY_UNIT -> Row.PLAYER2_CLOSE_COMBAT;
                 case AGILE_UNIT -> Row.PLAYER1_CLOSE_COMBAT; // yejoorie vali khob
-                case SPELL, DECOY -> throw new RuntimeException("Spells don't have default row");
+                case SPELL, DECOY -> throw new UnsupportedOperationException("Spells don't have default row");
             };
         } else {
             return switch (this) {
@@ -28,15 +26,14 @@ public enum Type {
                 case RANGED_UNIT -> Row.PLAYER2_RANGED;
                 case SIEGE_UNIT -> Row.PLAYER2_SIEGE;
                 case WEATHER -> Row.PLAYER2_WEATHER;
-                case SPY_UNIT -> Row.PLAYER1_CLOSE_COMBAT;
                 case AGILE_UNIT -> Row.PLAYER2_CLOSE_COMBAT; // yejoorie vali khob
-                case SPELL, DECOY -> throw new RuntimeException("Spells don't have default row");
+                case SPELL, DECOY -> throw new UnsupportedOperationException("Spells don't have default row");
             };
         }
     }
 
     public boolean isUnit() {
-        return this == CLOSE_COMBAT_UNIT || this == RANGED_UNIT || this == SIEGE_UNIT || this == AGILE_UNIT || this == SPY_UNIT;
+        return this == CLOSE_COMBAT_UNIT || this == RANGED_UNIT || this == SIEGE_UNIT || this == AGILE_UNIT;
     }
 
     public boolean isSpecial() {
