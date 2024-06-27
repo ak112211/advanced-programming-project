@@ -23,6 +23,8 @@ public class RegisterMenuController {
     private TextField emailField;
     @FXML
     private PasswordField passwordField;
+    @FXML
+    public PasswordField confirmPasswordField;
 
 
     @FXML
@@ -45,7 +47,8 @@ public class RegisterMenuController {
         }
     }
 
-    public void handleBack() {
+    @FXML
+    private void handleBack() {
         App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 }

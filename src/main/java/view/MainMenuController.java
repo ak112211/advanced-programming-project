@@ -191,7 +191,7 @@ public class MainMenuController {
 
     @FXML
     private void goToUserProfile() {
-        App.loadScene("/fxml/UserProfile.fxml");
+        App.loadScene("/fxml/ProfileMenu.fxml");
     }
 
     @FXML

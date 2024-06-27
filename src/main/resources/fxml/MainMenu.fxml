@@ -2,52 +2,50 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" spacing="10" alignment="TOP_CENTER">
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        <Label text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Profile" onAction="#goToProfile" />
-        <Button text="User Profile" onAction="#goToUserProfile" />
-        <Button text="Add Friends" onAction="#goToAddFriends" />
+        <Button text="Profile" onAction="#goToProfile"/>
+        <Button text="User Profile" onAction="#goToUserProfile"/>
+        <Button text="Add Friends" onAction="#goToAddFriends"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <CheckBox fx:id="multiplayerCheckBox" text="Multiplayer" onAction="#toggleMultiplayer" />
+        <CheckBox fx:id="multiplayerCheckBox" text="Multiplayer" onAction="#toggleMultiplayer"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Faction:" />
-        <ComboBox fx:id="factionComboBox" />
-        <Label text="Leader:" />
-        <ComboBox fx:id="leaderComboBox" />
+        <Label text="Faction:"/>
+        <ComboBox fx:id="factionComboBox"/>
+        <Label text="Leader:"/>
+        <ComboBox fx:id="leaderComboBox"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Friends Menu:" />
+        <Label text="Friends Menu:"/>
         <VBox fx:id="friendsMenu" spacing="10" visible="false">
-            <Label text="Choose a friend to play with:" />
-            <ListView fx:id="friendsListView" prefHeight="100" prefWidth="200" />
-            <Button text="Send Play Request" onAction="#sendPlayRequest" />
+            <Label text="Choose a friend to play with:"/>
+            <ListView fx:id="friendsListView" prefHeight="100" prefWidth="200"/>
+            <Button text="Send Play Request" onAction="#sendPlayRequest"/>
         </VBox>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <VBox spacing="10" alignment="TOP_CENTER">
-            <Label text="Faction Cards:" />
-            <ListView fx:id="factionCardsListView" prefHeight="300" prefWidth="200" />
+            <Label text="Faction Cards:"/>
+            <ListView fx:id="factionCardsListView" prefHeight="300" prefWidth="200"/>
         </VBox>
         <VBox spacing="10" alignment="TOP_CENTER">
-            <Label text="Deck Cards:" />
-            <ListView fx:id="deckCardsListView" prefHeight="300" prefWidth="200" />
+            <Label text="Deck Cards:"/>
+            <ListView fx:id="deckCardsListView" prefHeight="300" prefWidth="200"/>
         </VBox>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label fx:id="unitCardsLabel" text="Unit Cards: 0" />
-        <Label fx:id="specialCardsLabel" text="Special Cards: 0" />
+        <Label fx:id="unitCardsLabel" text="Unit Cards: 0"/>
+        <Label fx:id="specialCardsLabel" text="Special Cards: 0"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="startGameButton" text="Start Game" disable="true" />
-        <Button text="Upload Deck" onAction="#uploadDeck" />
-        <Button text="Download Deck" onAction="#downloadDeck" />
-        <Button text="Save Deck" onAction="#handleSaveDeck" />
+        <Button fx:id="startGameButton" text="Start Game" disable="true"/>
+        <Button text="Upload Deck" onAction="#uploadDeck"/>
+        <Button text="Download Deck" onAction="#downloadDeck"/>
+        <Button text="Save Deck" onAction="#handleSaveDeck"/>
     </HBox>
 </VBox>
