@@ -14,8 +14,7 @@ public class App {
     private static User user;
     private static Stage stage;
     private static Menu menu;
-    private static ServerConnection serverConnection;
-
+    
     public static void setStage(Stage stage) {
         App.stage = stage;
     }
@@ -33,14 +32,6 @@ public class App {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void setServerConnection() {
-        serverConnection = new ServerConnection();
-    }
-
-    public static ServerConnection getServerConnection() {
-        return serverConnection;
     }
 
     public static User getUser() {

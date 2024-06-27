@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
+import util.DatabaseConnection;
 
 public class ProfileMenuController {
 
@@ -32,13 +33,25 @@ public class ProfileMenuController {
         String newUsername = newUsernameField.getText();
         String nickname = nicknameField.getText();
         String email = emailField.getText();
-        String request = String.format("updateProfile %s %s %s %s", currentUsername, newUsername, nickname, email);
-        String response = App.getServerConnection().sendRequest(request);
-        Tools.showAlert(response);
+
+        // Check for empty fields and validate input
+        if (currentUsername.isEmpty() || newUsername.isEmpty() || nickname.isEmpty() || email.isEmpty()) {
+            Tools.showAlert("Error", "Input Error", "Please fill in all fields.");
+            return;
+        }
+
+        // Update profile in the database
+        boolean isProfileUpdated = DatabaseConnection.updateUserProfile(currentUsername, newUsername, nickname, email);
+
+        if (isProfileUpdated) {
+            Tools.showAlert("Success", "Profile Updated", "Your profile has been updated successfully.");
+        } else {
+            Tools.showAlert("Error", "Database Error", "An error occurred while updating the profile. Please try again.");
+        }
     }
 
+    @FXML
     public void handleBack() {
         App.loadScene(Menu.MAIN_MENU.getPath());
     }
-
 }

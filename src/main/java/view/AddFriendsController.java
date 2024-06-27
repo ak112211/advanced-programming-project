@@ -5,6 +5,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
+import util.DatabaseConnection;
+
+import java.sql.SQLException;
 
 public class AddFriendsController {
 
@@ -22,22 +25,29 @@ public class AddFriendsController {
     }
 
     @FXML
-    private void handleAddFriend() {
+    private void handleAddFriend() throws SQLException {
         String friendUsername = friendUsernameField.getText();
         if (friendUsername.isEmpty()) {
-            Tools.showAlert("Please enter a friend's username.");
+            Tools.showAlert("Error", "Input Error", "Please enter a friend's username.");
             return;
         }
 
-        // Send request to server to add friend
-        String request = String.format("addFriend %s %s", currentUser.getUsername(), friendUsername);
-        String response = App.getServerConnection().sendRequest(request);
+        // Check if the friend exists in the database
+        boolean isFriendExist = DatabaseConnection.isUsernameTaken(friendUsername);
+        if (!isFriendExist) {
+            Tools.showAlert("Error", "User Not Found", "The entered friend's username does not exist.");
+            return;
+        }
 
-        if (response.equals("Friend added successfully.")) {
+        // Add friend to the database
+        boolean isFriendAdded = DatabaseConnection.addFriend(currentUser.getUsername(), friendUsername);
+        if (isFriendAdded) {
             currentUser.addFriend(friendUsername);
             friendsListView.getItems().add(friendUsername);
+            Tools.showAlert("Success", "Friend Added", "Friend added successfully.");
+        } else {
+            Tools.showAlert("Error", "Database Error", "An error occurred while adding the friend. Please try again.");
         }
-        Tools.showAlert(response);
     }
 
 

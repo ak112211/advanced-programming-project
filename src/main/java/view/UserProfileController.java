@@ -8,7 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
+import util.DatabaseConnection;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,14 +54,14 @@ public class UserProfileController {
             rankLabel.setText(String.valueOf(currentUser.getRank()));
             gamesPlayedLabel.setText(String.valueOf(currentUser.getGames().size()));
 
-            String drawsResponse = App.getServerConnection().sendRequest("getDrawsCount " + currentUser.getUsername());
-            drawsLabel.setText(drawsResponse);
+            int drawsResponse = DatabaseConnection.getDrawsCount(currentUser.getUsername());
+            drawsLabel.setText(String.valueOf(drawsResponse));
 
-            String winsResponse = App.getServerConnection().sendRequest("getWinsCount " + currentUser.getUsername());
-            winsLabel.setText(winsResponse);
+            int winsResponse = DatabaseConnection.getWinsCount(currentUser.getUsername());
+            winsLabel.setText(String.valueOf(winsResponse));
 
-            String lossesResponse = App.getServerConnection().sendRequest("getLossesCount " + currentUser.getUsername());
-            lossesLabel.setText(lossesResponse);
+            int lossesResponse = DatabaseConnection.getLossesCount(currentUser.getUsername());
+            lossesLabel.setText(String.valueOf(lossesResponse));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,18 +87,18 @@ public class UserProfileController {
         }
 
         try {
-            String response = App.getServerConnection().sendRequest("getRecentGames " + User.getCurrentUser().getUsername() + " " + n);
-            if (response.isEmpty()) {
+            String username = User.getCurrentUser().getUsername();
+            List<String> recentGames = DatabaseConnection.getRecentGames(username, n);
+            if (recentGames.isEmpty()) {
                 showAlert("Information", "No Games Found", "No recent games found for the user.");
             } else {
-                String[] recentGames = response.split("\n");
                 StringBuilder sb = new StringBuilder();
                 for (String game : recentGames) {
                     sb.append(game).append("\n");
                 }
                 showAlert("Recent Games", "Recent Games History", sb.toString());
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Database Error", "An error occurred while fetching the recent games. Please try again.");
         }

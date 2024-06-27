@@ -1,5 +1,6 @@
-package server;
+package util;
 
+import com.google.gson.Gson;
 import enums.cardsinformation.Faction;
 import model.Deck;
 import model.Game;
@@ -16,6 +17,7 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gwent";
     private static final String USER = "root";
     private static final String PASSWORD = System.getenv("DB_PASSWORD");
+    private static final Gson gson = new Gson();
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
@@ -60,27 +62,37 @@ public class DatabaseConnection {
         }
     }
 
-    public static void updatePassword(String username, String newPassword) throws SQLException {
-        String query = "UPDATE Users SET password = ? WHERE username = ?";
-
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newPassword);
-            stmt.setString(2, username);
-            stmt.executeUpdate();
+    public static boolean updatePassword(String username, String newPassword) {
+        String query = "UPDATE users SET password = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, newPassword);
+            preparedStatement.setString(2, username);
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
-    public static void updateUserProfile(String currentUsername, String newUsername, String nickname, String email) throws SQLException {
-        String query = "UPDATE Users SET username = ?, nickname = ?, email = ? WHERE username = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newUsername);
-            stmt.setString(2, nickname);
-            stmt.setString(3, email);
-            stmt.setString(4, currentUsername);
-            stmt.executeUpdate();
+    public static boolean updateUserProfile(String currentUsername, String newUsername, String nickname, String email) {
+        String query = "UPDATE users SET username = ?, nickname = ?, email = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, newUsername);
+            preparedStatement.setString(2, nickname);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, currentUsername);
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
     }
+
 
     public static String getSecurityQuestion(String username) throws SQLException {
         String query = "SELECT security_question FROM Users WHERE username = ?";
@@ -229,8 +241,8 @@ public class DatabaseConnection {
         }
     }
 
-    public static void saveUser(User user) throws SQLException, IOException {
-        String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, faction, leader, deck, decks, play_card) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static void saveUser(User user) throws SQLException {
+        String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, faction, leader, deck, decks, play_card, friends) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, user.getUsername());
@@ -240,40 +252,18 @@ public class DatabaseConnection {
             stmt.setInt(5, user.getQuestionNumber());
             stmt.setString(6, user.getAnswer());
             stmt.setInt(7, user.getHighScore());
-            stmt.setString(8, user.getDeck().getFaction().toString());
-
-            ByteArrayOutputStream bos;
-            ObjectOutputStream oos;
-
-            // Serialize Leader
-            bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(user.getDeck().getLeader());
-            stmt.setBytes(9, bos.toByteArray());
-
-            // Serialize Deck
-            bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(user.getDeck());
-            stmt.setBytes(10, bos.toByteArray());
-
-            // Serialize Decks
-            bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(user.getDecks());
-            stmt.setBytes(11, bos.toByteArray());
-
-            // Serialize PlayCard
-            bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(user.getPlayCard());
-            stmt.setBytes(12, bos.toByteArray());
+            stmt.setString(8, user.getDeck().getFaction() != null ? user.getDeck().getFaction().toString() : null);
+            stmt.setString(9, gson.toJson(user.getDeck().getLeader()));
+            stmt.setString(10, gson.toJson(user.getDeck()));
+            stmt.setString(11, gson.toJson(user.getDecks()));
+            stmt.setString(12, gson.toJson(user.getPlayCard()));
+            stmt.setString(13, gson.toJson(user.getFriends()));
 
             stmt.executeUpdate();
         }
     }
 
-    public static User getUser(String username) throws SQLException, IOException, ClassNotFoundException {
+    public static User getUser(String username) throws SQLException {
         String query = "SELECT * FROM Users WHERE username = ?";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -286,40 +276,20 @@ public class DatabaseConnection {
                     int questionNumber = rs.getInt("question_number");
                     String answer = rs.getString("answer");
                     int highScore = rs.getInt("high_score");
-                    Faction faction = Faction.valueOf(rs.getString("faction"));
 
-                    ByteArrayInputStream bis;
-                    ObjectInputStream ois;
+                    Deck deck = gson.fromJson(rs.getString("deck"), Deck.class);
+                    ArrayList<Deck> decks = gson.fromJson(rs.getString("decks"), ArrayList.class);
+                    Card playCard = gson.fromJson(rs.getString("play_card"), Card.class);
+                    List<String> friends = gson.fromJson(rs.getString("friends"), ArrayList.class);
 
-                    // Deserialize Leader
-                    bis = new ByteArrayInputStream(rs.getBytes("leader"));
-                    ois = new ObjectInputStream(bis);
-                    Leader leader = (Leader) ois.readObject();
-
-                    // Deserialize Deck
-                    bis = new ByteArrayInputStream(rs.getBytes("deck"));
-                    ois = new ObjectInputStream(bis);
-                    Deck deck = (Deck) ois.readObject();
-
-                    // Deserialize Decks
-                    bis = new ByteArrayInputStream(rs.getBytes("decks"));
-                    ois = new ObjectInputStream(bis);
-                    ArrayList<Deck> decks = (ArrayList<Deck>) ois.readObject();
-
-                    // Deserialize PlayCard
-                    bis = new ByteArrayInputStream(rs.getBytes("play_card"));
-                    ois = new ObjectInputStream(bis);
-                    Card playCard = (Card) ois.readObject();
-
-                    User user = new User(username, nickname, email, password);
+                    User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
                     user.setQuestionNumber(questionNumber);
-                    user.setAnswer(answer);
+                    user.setAnswer(answer != null ? answer : "");
                     user.setHighScore(highScore);
-                    user.getDeck().setFaction(faction);
-                    user.getDeck().setLeader(leader);
-                    user.setDeck(deck);
-                    user.getDecks().addAll(decks);
+                    user.setDeck(deck != null ? deck : new Deck());
+                    user.setDecks(decks != null ? decks : new ArrayList<>());
                     user.setPlayCard(playCard);
+                    user.setFriends(friends != null ? friends : new ArrayList<>());
 
                     return user;
                 } else {
@@ -327,5 +297,19 @@ public class DatabaseConnection {
                 }
             }
         }
+    }
+
+    public static boolean addFriend(String username, String friendUsername) {
+        String query = "INSERT INTO friends (username, friend_username) VALUES (?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, friendUsername);
+            int rowsInserted = preparedStatement.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

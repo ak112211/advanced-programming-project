@@ -8,6 +8,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import model.App;
+import util.DatabaseConnection;
+
+import java.sql.SQLException;
 
 public class ForgotPasswordController {
 
@@ -42,18 +45,20 @@ public class ForgotPasswordController {
     private Button setPasswordButton;
 
     @FXML
-    public void handleSubmitButtonAction(ActionEvent event) {
+    public void handleSubmitButtonAction(ActionEvent event) throws SQLException {
         String username = usernameField.getText();
-        String response = App.getServerConnection().sendRequest("isUsernameTaken " + username);
 
-        if ("false".equals(response)) {
+        // Check if the username exists using DatabaseUtils.isUserTaken method
+        boolean isUserTaken = DatabaseConnection.isUsernameTaken(username);
+        if (!isUserTaken) {
             Tools.showAlert("Error", "Invalid Username", "The entered username does not exist.");
             return;
         }
 
-        response = App.getServerConnection().sendRequest("getSecurityQuestion " + username);
-        if (response != null && !response.isEmpty()) {
-            securityQuestionField.setText(response);
+        // Retrieve the security question using DatabaseUtils.getSecurityQuestion method
+        String securityQuestion = DatabaseConnection.getSecurityQuestion(username);
+        if (securityQuestion != null && !securityQuestion.isEmpty()) {
+            securityQuestionField.setText(securityQuestion);
             securityQuestionBox.setVisible(true);
         } else {
             Tools.showAlert("Error", "Database Error", "An error occurred while checking the username. Please try again.");
@@ -61,12 +66,13 @@ public class ForgotPasswordController {
     }
 
     @FXML
-    public void handleValidateAnswerButtonAction() {
+    public void handleValidateAnswerButtonAction() throws SQLException {
         String username = usernameField.getText();
         String answer = securityAnswerField.getText();
-        String response = App.getServerConnection().sendRequest("validateSecurityAnswer " + username + " " + answer);
 
-        if ("true".equals(response)) {
+        boolean isValidAnswer = DatabaseConnection.validateSecurityAnswer(username, answer);
+
+        if (isValidAnswer) {
             newPasswordBox.setVisible(true);
         } else {
             Tools.showAlert("Error", "Invalid Answer", "The entered answer is incorrect.");
@@ -74,7 +80,7 @@ public class ForgotPasswordController {
     }
 
     @FXML
-    public void handleSetPasswordButtonAction() {
+    public void handleSetPasswordButtonAction() throws SQLException {
         String username = usernameField.getText();
         String newPassword = newPasswordField.getText();
         String confirmNewPassword = confirmNewPasswordField.getText();
@@ -84,14 +90,17 @@ public class ForgotPasswordController {
             return;
         }
 
-        String response = App.getServerConnection().sendRequest("updatePassword " + username + " " + newPassword);
-        if ("success".equals(response)) {
+        // Update the password using DatabaseUtils method
+        boolean isPasswordUpdated = DatabaseConnection.updatePassword(username, newPassword);
+
+        if (isPasswordUpdated) {
             Tools.showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
             App.loadScene(Menu.LOGIN_MENU.getPath());
         } else {
             Tools.showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
     }
+
 
 
     public void handleBack() {

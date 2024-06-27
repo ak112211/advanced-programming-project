@@ -12,24 +12,28 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-    <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+    <Label text="Current Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="currentUsernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-    <Label text="Nickname:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-    <TextField fx:id="nicknameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    <Label text="New Username:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="newUsernameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-    <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-    <TextField fx:id="emailField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <Label text="Nickname:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="nicknameField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-    <Label text="Old Password:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-    <PasswordField fx:id="oldPasswordField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="emailField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-    <Label text="New Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-    <PasswordField fx:id="newPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    <Label text="Old Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="oldPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-    <Label text="Confirm New Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-    <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
+    <Label text="New Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="newPasswordField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-    <Button text="Update Profile" fx:id="updateButton" onAction="#handleUpdateButtonAction" GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+    <Label text="Confirm New Password:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
+
+    <Button text="Update Profile" fx:id="updateButton" onAction="#handleUpdateButtonAction" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
 </GridPane>

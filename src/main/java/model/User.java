@@ -117,6 +117,18 @@ public class User implements Serializable {
         return decks;
     }
 
+    public void setDecks(ArrayList<Deck> decks) {
+        this.decks = decks;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
+
+    public void setGames(ArrayList<Game> games) {
+        this.games = games;
+    }
+
     public void setPlayCard(Card playCard) {
         this.playCard = playCard;
     }

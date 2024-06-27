@@ -22,7 +22,6 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
         stage.setResizable(false);
         stage.centerOnScreen();
-        App.setServerConnection();
         App.setStage(stage);
 
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/icon.png")));

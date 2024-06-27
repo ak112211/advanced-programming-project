@@ -6,6 +6,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
+import util.DatabaseConnection;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import static view.Tools.showAlert;
 
 public class LoginMenuController {
 
@@ -19,19 +25,18 @@ public class LoginMenuController {
     private void handleLoginButtonAction() {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        String request = String.format("login %s %s", username, password);
-        String response = App.getServerConnection().sendRequest(request);
 
-        if (response.startsWith("Login successful.")) {
-            String[] responseParts = response.split("\\|");
-            if (responseParts.length > 1) {
-                String serializedUser = responseParts[1];
-                User currentUser = User.deserializeUser(serializedUser);
-                User.setCurrentUser(currentUser);
+        try {
+            if (DatabaseConnection.checkPassword(username, password)) {
+                User user = DatabaseConnection.getUser(username);
+                User.setCurrentUser(user);
                 App.loadScene(Menu.MAIN_MENU.getPath());
+                showAlert("Login successful. Welcome " + user.getNickname() + "!");
+            } else {
+                showAlert("Invalid username or password.");
             }
-        } else {
-            Tools.showAlert(response);
+        } catch (SQLException e) {
+            showAlert("Error during login: " + e.getMessage());
         }
     }
 
