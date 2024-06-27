@@ -28,21 +28,39 @@ public class Card extends Rectangle {
     private final CardEnum CARD_ENUM;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
-        this.NAME = name;
-        this.TYPE = type;
-        this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        this.FIRST_POWER = power;
+        NAME = name;
+        TYPE = type;
+        NO_OF_CARDS_IN_GAME = noOfCardsInGame;
+        FIRST_POWER = power;
         this.power = power;
-        this.ABILITY = ability;
-        this.IS_HERO = isHero;
-        this.FACTION = faction;
-        this.DESCRIPTION = description;
-        this.IMAGE_PATH = imagePath;
-        this.CARD_ENUM = cardEnum;
+        ABILITY = ability;
+        IS_HERO = isHero;
+        FACTION = faction;
+        DESCRIPTION = description;
+        IMAGE_PATH = imagePath;
+        CARD_ENUM = cardEnum;
 
+        setBigImage();
+    }
+
+    public void setSmallImage() {
+        this.setArcWidth(5);
+        this.setArcHeight(5);
+        this.setWidth(53);
+        this.setHeight(79);
+        this.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("lg", "sm")))
+                        .toExternalForm())));
+    }
+
+    public void setBigImage() {
+        this.setArcWidth(10);
+        this.setArcHeight(10);
         this.setWidth(70);
         this.setHeight(100);
-        this.setFill(new ImagePattern(new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)))));
+        this.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                        .toExternalForm())));
     }
 
     public String getName() {

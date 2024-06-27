@@ -5,7 +5,7 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class MoraleBoost extends PersistentAbility {
-    public static ArrayList<Card> AffectedCards = new ArrayList<>();
+    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public MoraleBoost() {
         super(MoraleBoost::doesAffectDefault);
@@ -17,7 +17,7 @@ public class MoraleBoost extends PersistentAbility {
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AffectedCards;
+        return AFFECTED_CARDS;
     }
 
     public static void affect(Card card) {

@@ -1,5 +1,6 @@
 package util;
 
+import com.google.gson.Gson;
 import model.Deck;
 import model.Game;
 import model.User;
@@ -14,6 +15,7 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gwent";
     private static final String USER = "root";
     private static final String PASSWORD = System.getenv("DB_PASSWORD");
+    private static final Gson GSON = new Gson();
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
@@ -22,22 +24,22 @@ public class DatabaseConnection {
     public static void saveUser(String username, String nickname, String email, String password) throws SQLException {
         String query = "INSERT INTO Users (username, nickname, email, password) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            stmt.setString(2, nickname);
-            stmt.setString(3, email);
-            stmt.setString(4, password);
-            stmt.executeUpdate();
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, nickname);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, password);
+            preparedStatement.executeUpdate();
         }
     }
 
     public static boolean isUsernameTaken(String username) throws SQLException {
         String query = "SELECT username FROM Users WHERE username = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next();
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
             }
         }
     }
@@ -45,11 +47,11 @@ public class DatabaseConnection {
     public static boolean checkPassword(String username, String password) throws SQLException {
         String query = "SELECT password FROM Users WHERE username = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String storedPassword = rs.getString("password");
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("password");
                     return storedPassword.equals(password);
                 } else {
                     return false;
@@ -72,6 +74,7 @@ public class DatabaseConnection {
         return false;
     }
 
+
     public static boolean updateUserProfile(String currentUsername, String newUsername, String nickname, String email) {
         String query = "UPDATE users SET username = ?, nickname = ?, email = ? WHERE username = ?";
         try (Connection connection = getConnection();
@@ -88,14 +91,15 @@ public class DatabaseConnection {
         return false;
     }
 
+
     public static String getSecurityQuestion(String username) throws SQLException {
         String query = "SELECT security_question FROM Users WHERE username = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("security_question");
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("security_question");
                 } else {
                     return null;
                 }
@@ -106,11 +110,11 @@ public class DatabaseConnection {
     public static boolean validateSecurityAnswer(String username, String answer) throws SQLException {
         String query = "SELECT security_answer FROM Users WHERE username = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String storedAnswer = rs.getString("security_answer");
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String storedAnswer = resultSet.getString("security_answer");
                     return storedAnswer.equals(answer);
                 } else {
                     return false;
@@ -122,12 +126,12 @@ public class DatabaseConnection {
     public static int getDrawsCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NULL";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            stmt.setString(2, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
                 }
                 return 0;
             }
@@ -137,11 +141,11 @@ public class DatabaseConnection {
     public static int getWinsCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE winner = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
                 }
                 return 0;
             }
@@ -151,13 +155,13 @@ public class DatabaseConnection {
     public static int getLossesCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NOT NULL AND winner <> ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            stmt.setString(2, username);
-            stmt.setString(3, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
                 }
                 return 0;
             }
@@ -169,23 +173,23 @@ public class DatabaseConnection {
 
         List<String> games = new ArrayList<>();
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            stmt.setString(2, username);
-            stmt.setInt(3, n);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    String opponent = rs.getString("player1").equals(username) ? rs.getString("player2") : rs.getString("player1");
-                    String date = rs.getString("date");
-                    int player1Round1 = rs.getInt("player1_round1");
-                    int player1Round2 = rs.getInt("player1_round2");
-                    int player1Round3 = rs.getInt("player1_round3");
-                    int player2Round1 = rs.getInt("player2_round1");
-                    int player2Round2 = rs.getInt("player2_round2");
-                    int player2Round3 = rs.getInt("player2_round3");
-                    int player1FinalScore = rs.getInt("player1_final_score");
-                    int player2FinalScore = rs.getInt("player2_final_score");
-                    String winner = rs.getString("winner");
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            preparedStatement.setInt(3, n);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String opponent = resultSet.getString("player1").equals(username) ? resultSet.getString("player2") : resultSet.getString("player1");
+                    String date = resultSet.getString("date");
+                    int player1Round1 = resultSet.getInt("player1_round1");
+                    int player1Round2 = resultSet.getInt("player1_round2");
+                    int player1Round3 = resultSet.getInt("player1_round3");
+                    int player2Round1 = resultSet.getInt("player2_round1");
+                    int player2Round2 = resultSet.getInt("player2_round2");
+                    int player2Round3 = resultSet.getInt("player2_round3");
+                    int player1FinalScore = resultSet.getInt("player1_final_score");
+                    int player2FinalScore = resultSet.getInt("player2_final_score");
+                    String winner = resultSet.getString("winner");
 
                     games.add(String.format("Opponent: %s, Date: %s, Rounds: [%d, %d, %d] - [%d, %d, %d], Final Scores: %d - %d, Winner: %s",
                             opponent, date, player1Round1, player1Round2, player1Round3, player2Round1, player2Round2, player2Round3, player1FinalScore, player2FinalScore, winner));
@@ -199,12 +203,12 @@ public class DatabaseConnection {
     public static void saveGame(Game game) throws SQLException, IOException {
         String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, game.getPlayer1().getUsername());
-            stmt.setString(2, game.getPlayer2().getUsername());
-            stmt.setTimestamp(3, new Timestamp(game.getDate().getTime()));
-            stmt.setString(4, game.getStatus().name());
-            stmt.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, game.getPlayer1().getUsername());
+            preparedStatement.setString(2, game.getPlayer2().getUsername());
+            preparedStatement.setTimestamp(3, new Timestamp(game.getDate().getTime()));
+            preparedStatement.setString(4, game.getStatus().name());
+            preparedStatement.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
 
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
             ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
@@ -212,19 +216,19 @@ public class DatabaseConnection {
             objOut.flush();
             byte[] gameData = byteOut.toByteArray();
 
-            stmt.setBytes(6, gameData);
-            stmt.executeUpdate();
+            preparedStatement.setBytes(6, gameData);
+            preparedStatement.executeUpdate();
         }
     }
 
     public static Game getGame(int gameId) throws SQLException, IOException, ClassNotFoundException {
         String query = "SELECT game_data FROM Games WHERE game_id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, gameId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    byte[] gameData = rs.getBytes("game_data");
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, gameId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    byte[] gameData = resultSet.getBytes("game_data");
                     ByteArrayInputStream byteIn = new ByteArrayInputStream(gameData);
                     ObjectInputStream objIn = new ObjectInputStream(byteIn);
                     return (Game) objIn.readObject();
@@ -238,48 +242,43 @@ public class DatabaseConnection {
     public static void saveUser(User user) throws SQLException {
         String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, faction, leader, deck, decks, play_card, friends) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getNickname());
-            stmt.setString(3, user.getEmail());
-            stmt.setString(4, user.getPassword());
-            stmt.setInt(5, user.getQuestionNumber());
-            stmt.setString(6, user.getAnswer());
-            stmt.setInt(7, user.getHighScore());
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getNickname());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setInt(5, user.getQuestionNumber());
+            preparedStatement.setString(6, user.getAnswer());
+            preparedStatement.setInt(7, user.getHighScore());
+            preparedStatement.setString(8, user.getDeck().getFaction() != null ? user.getDeck().getFaction().toString() : null);
+            preparedStatement.setString(9, GSON.toJson(user.getDeck().getLeader()));
+            preparedStatement.setString(10, GSON.toJson(user.getDeck()));
+            preparedStatement.setString(11, GSON.toJson(user.getDecks()));
+            preparedStatement.setString(12, GSON.toJson(user.getPlayCard()));
+            preparedStatement.setString(13, GSON.toJson(user.getFriends()));
 
-            // Serialize the objects to byte arrays
-            stmt.setBytes(8, serializeObject(null));
-            stmt.setBytes(9, serializeObject(null));
-            stmt.setBytes(10, serializeObject(user.getDeck()));
-            stmt.setBytes(11, serializeObject(user.getDecks()));
-            stmt.setBytes(12, serializeObject(user.getPlayCard()));
-            stmt.setBytes(13, serializeObject(user.getFriends()));
-
-            stmt.executeUpdate();
-        } catch (IOException e) {
-            e.printStackTrace();
+            preparedStatement.executeUpdate();
         }
     }
 
-    public static User getUser(String username) throws SQLException, IOException, ClassNotFoundException {
+    public static User getUser(String username) throws SQLException {
         String query = "SELECT * FROM Users WHERE username = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String nickname = rs.getString("nickname");
-                    String email = rs.getString("email");
-                    String password = rs.getString("password");
-                    int questionNumber = rs.getInt("question_number");
-                    String answer = rs.getString("answer");
-                    int highScore = rs.getInt("high_score");
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nickname = resultSet.getString("nickname");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                    int questionNumber = resultSet.getInt("question_number");
+                    String answer = resultSet.getString("answer");
+                    int highScore = resultSet.getInt("high_score");
 
-                    // Deserialize the objects from byte arrays with null checks
-                    Deck deck = rs.getBytes("deck") != null ? (Deck) deserializeObject(rs.getBytes("deck")) : null;
-                    ArrayList<Deck> decks = rs.getBytes("decks") != null ? (ArrayList<Deck>) deserializeObject(rs.getBytes("decks")) : null;
-                    Card playCard = rs.getBytes("play_card") != null ? (Card) deserializeObject(rs.getBytes("play_card")) : null;
-                    List<String> friends = rs.getBytes("friends") != null ? (List<String>) deserializeObject(rs.getBytes("friends")) : null;
+                    Deck deck = GSON.fromJson(resultSet.getString("deck"), Deck.class);
+                    ArrayList<Deck> decks = GSON.fromJson(resultSet.getString("decks"), ArrayList.class);
+                    Card playCard = GSON.fromJson(resultSet.getString("play_card"), Card.class);
+                    List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
                     User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
                     user.setQuestionNumber(questionNumber);
@@ -310,26 +309,5 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
         return false;
-    }
-
-    private static byte[] serializeObject(Object obj) throws IOException {
-        if (obj == null) {
-            return null;
-        }
-        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-             ObjectOutputStream objOut = new ObjectOutputStream(byteOut)) {
-            objOut.writeObject(obj);
-            return byteOut.toByteArray();
-        }
-    }
-
-    private static Object deserializeObject(byte[] bytes) throws IOException, ClassNotFoundException {
-        if (bytes == null) {
-            return null;
-        }
-        try (ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
-             ObjectInputStream objIn = new ObjectInputStream(byteIn)) {
-            return objIn.readObject();
-        }
     }
 }

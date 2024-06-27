@@ -37,10 +37,6 @@ public class LoginMenuController {
             }
         } catch (SQLException e) {
             showAlert("Error during login: " + e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 

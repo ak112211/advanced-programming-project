@@ -4,53 +4,41 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="gamePane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
-    <background>
-        <Background>
-            <images>
-                <BackgroundImage>
-                    <image>
-                        <Image url="@../gwentImages/img/board.jpg" />
-                    </image>
-                    <repeatX>NO_REPEAT</repeatX>
-                    <repeatY>NO_REPEAT</repeatY>
-                    <position>
-                        <BackgroundPosition />
-                    </position>
-                    <size>
-                        <BackgroundSize />
-                    </size>
-                </BackgroundImage>
-            </images>
-        </Background>
-    </background>
+<Pane fx:id="gamePane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="view.GamePaneController">
     <children>
+        <ImageView fx:id="background" fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
+           <image>
+              <Image url="@../gwentImages/img/board.jpg" />
+           </image>
+        </ImageView>
         <Label fx:id="player1NameLabel" layoutX="10" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
         <Label fx:id="player2NameLabel" layoutX="1100" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
         <Label fx:id="player1ScoreLabel" layoutX="10" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
         <Label fx:id="player2ScoreLabel" layoutX="1100" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
 
-        <HBox fx:id="player1Hand" alignment="BOTTOM_CENTER" layoutY="650" prefHeight="150" spacing="5" />
-        <HBox fx:id="player2Hand" alignment="TOP_CENTER" layoutY="0" prefHeight="150" spacing="5" />
+        <HBox fx:id="player1Hand" alignment="TOP_CENTER" layoutX="385" layoutY="564" prefHeight="79" prefWidth="623" spacing="3" />
+        <HBox fx:id="player2Hand" alignment="TOP_CENTER" layoutX="385" layoutY="-25" prefHeight="79" prefWidth="623" spacing="3" />
 
-        <VBox fx:id="player1CloseCombat" alignment="BOTTOM_CENTER" layoutY="500" prefHeight="150" spacing="5" />
-        <VBox fx:id="player2CloseCombat" alignment="TOP_CENTER" layoutY="150" prefHeight="150" spacing="5" />
+        <HBox fx:id="player1CloseCombat" alignment="TOP_CENTER" layoutX="475.0" layoutY="294.0" prefHeight="79" prefWidth="533" spacing="3" />
+        <HBox fx:id="player2CloseCombat" alignment="TOP_CENTER" layoutX="475" layoutY="190" prefHeight="79" prefWidth="533" spacing="3" />
 
-        <VBox fx:id="player1Ranged" alignment="BOTTOM_CENTER" layoutY="450" prefHeight="150" spacing="5" />
-        <VBox fx:id="player2Ranged" alignment="TOP_CENTER" layoutY="200" prefHeight="150" spacing="5" />
+        <HBox fx:id="player1Ranged" alignment="TOP_CENTER" layoutX="475.0" layoutY="381.0" prefHeight="79" prefWidth="533" spacing="3" />
+        <HBox fx:id="player2Ranged" alignment="TOP_CENTER" layoutX="475" layoutY="103" prefHeight="79" prefWidth="533" spacing="3" />
 
-        <VBox fx:id="player1Siege" alignment="BOTTOM_CENTER" layoutY="400" prefHeight="150" spacing="5" />
-        <VBox fx:id="player2Siege" alignment="TOP_CENTER" layoutY="250" prefHeight="150" spacing="5" />
+        <HBox fx:id="player1Siege" alignment="TOP_CENTER" layoutX="475.0" layoutY="471.0" prefHeight="79" prefWidth="533" spacing="3" />
+        <HBox fx:id="player2Siege" alignment="TOP_CENTER" layoutX="475.0" layoutY="16" prefHeight="79" prefWidth="533.0" spacing="3" />
 
-        <VBox fx:id="player1Score" alignment="CENTER_LEFT" layoutX="10" layoutY="200" spacing="5" />
-        <VBox fx:id="player2Score" alignment="CENTER_RIGHT" layoutX="1150" layoutY="200" spacing="5" />
+        <VBox fx:id="player1Score" alignment="CENTER_LEFT" layoutX="10" layoutY="200" spacing="3" />
+        <VBox fx:id="player2Score" alignment="CENTER_RIGHT" layoutX="1150" layoutY="200" spacing="3" />
 
-        <VBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="10" layoutY="300" spacing="5" />
-        <VBox fx:id="player2Graveyard" alignment="CENTER_RIGHT" layoutX="1150" layoutY="300" spacing="5" />
+        <VBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="10" layoutY="300" spacing="3" />
+        <VBox fx:id="player2Graveyard" alignment="CENTER_RIGHT" layoutX="1150" layoutY="300" spacing="3" />
 
-        <VBox fx:id="player1Leader" alignment="CENTER_LEFT" layoutX="10" layoutY="400" spacing="5" />
-        <VBox fx:id="player2Leader" alignment="CENTER_RIGHT" layoutX="1150" layoutY="400" spacing="5" />
+        <VBox fx:id="player1Leader" alignment="CENTER_LEFT" layoutX="10" layoutY="400" spacing="3" />
+        <VBox fx:id="player2Leader" alignment="CENTER_RIGHT" layoutX="1150" layoutY="400" spacing="3" />
 
-        <Pane fx:id="overlayPane" prefHeight="800" prefWidth="1200" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
+        <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);"
+              visible="false"/>
     </children>
 </Pane>

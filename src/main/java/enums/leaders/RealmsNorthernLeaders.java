@@ -8,7 +8,7 @@ import model.abilities.instantaneousabilities.PlayCard;
 import model.abilities.instantaneousabilities.Scorch;
 import model.card.Leader;
 
-public enum RealmsNorthernLeaders implements LeaderEnum {
+public enum RealmsNorthernLeaders {
     THE_SIEGEMASTER("The Siegemaster", new PlayCard(null, NeutralCards.IMPENETRABLE_FOG), "Select and play an Impenetrable Fog card from your deck. If no such card is in your deck, the turn passes to the opponent without any effect.", "/gwentImages/img/lg/realms_foltest_silver.jpg"),
     THE_STEEL_FORGED("The Steel-Forged", new PlayCard(null, NeutralCards.CLEAR_WEATHER), "Removes the effects of Impenetrable Fog, Biting Frost, and Torrential Rain.", "/gwentImages/img/lg/realms_foltest_gold.jpg"),
     KING_OF_TEMERIA("King of Temeria", new PlayCard(null, NeutralCards.COMMANDERS_HORN, Type.SIEGE_UNIT), "Doubles the power of your siege units unless there is a Commander's Horn in that row.", "/gwentImages/img/lg/realms_foltest_copper.jpg"),
@@ -28,6 +28,6 @@ public enum RealmsNorthernLeaders implements LeaderEnum {
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.REALMS_NORTHERN, description, imagePath, this);
+        return new Leader(name, ability, Faction.REALMS_NORTHERN, description, imagePath);
     }
 }

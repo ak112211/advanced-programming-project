@@ -5,7 +5,7 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class TightBond extends PersistentAbility {
-    public static ArrayList<Card> AffectedCards = new ArrayList<>();
+    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public TightBond() {
         super(TightBond::doesAffectDefault);
@@ -17,7 +17,7 @@ public class TightBond extends PersistentAbility {
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AffectedCards;
+        return AFFECTED_CARDS;
     }
 
     public static void affect(Card card) {

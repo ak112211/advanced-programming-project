@@ -1,9 +1,7 @@
 package view;
 
 import enums.Menu;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -16,36 +14,21 @@ public class ForgotPasswordController {
 
     @FXML
     private TextField usernameField;
-
     @FXML
     private VBox securityQuestionBox;
-
     @FXML
     private TextField securityQuestionField;
-
     @FXML
     private TextField securityAnswerField;
-
     @FXML
     private VBox newPasswordBox;
-
     @FXML
     private PasswordField newPasswordField;
-
     @FXML
     private PasswordField confirmNewPasswordField;
 
     @FXML
-    private Button submitButton;
-
-    @FXML
-    private Button validateAnswerButton;
-
-    @FXML
-    private Button setPasswordButton;
-
-    @FXML
-    public void handleSubmitButtonAction(ActionEvent event) throws SQLException {
+    private void handleSubmitButtonAction() throws SQLException {
         String username = usernameField.getText();
 
         // Check if the username exists using DatabaseUtils.isUserTaken method
@@ -66,7 +49,7 @@ public class ForgotPasswordController {
     }
 
     @FXML
-    public void handleValidateAnswerButtonAction() throws SQLException {
+    private void handleValidateAnswerButtonAction() throws SQLException {
         String username = usernameField.getText();
         String answer = securityAnswerField.getText();
 
@@ -80,7 +63,7 @@ public class ForgotPasswordController {
     }
 
     @FXML
-    public void handleSetPasswordButtonAction() throws SQLException {
+    private void handleSetPasswordButtonAction() throws SQLException {
         String username = usernameField.getText();
         String newPassword = newPasswordField.getText();
         String confirmNewPassword = confirmNewPasswordField.getText();
@@ -101,9 +84,8 @@ public class ForgotPasswordController {
         }
     }
 
-
-
-    public void handleBack() {
+    @FXML
+    private void handleBack() {
         App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 

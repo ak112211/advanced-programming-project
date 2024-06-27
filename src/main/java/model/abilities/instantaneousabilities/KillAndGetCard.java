@@ -6,19 +6,20 @@ import model.card.Card;
 
 import java.util.ArrayList;
 
-public class KillAndGetCard extends InstantaneousAbility{
-    private final int killAmount;
+public class KillAndGetCard extends InstantaneousAbility {
+    private final int KILL_AMOUNT;
+
     public KillAndGetCard(int killAmount) {
-        this.killAmount = killAmount;
+        KILL_AMOUNT = killAmount;
     }
 
     public void affect(Game game, Card myCard) {
         ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getPlayerCards(game);
         ArrayList<Card> graveyard = CardsPlace.GRAVEYARD.getPlayerCards(game);
-        if (inHandCards.size() < killAmount) {
+        if (inHandCards.size() < KILL_AMOUNT) {
             return;
         }
-        for (int i = 0 ; i < killAmount; i++) {
+        for (int i = 0; i < KILL_AMOUNT; i++) {
             Card card = game.chooseCard(inHandCards, false);
             game.moveCard(card, inHandCards, graveyard);
         }

@@ -6,16 +6,16 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class SummonAvenger extends EjectAbility {
-    private static final ArrayList<Card> cardList = new ArrayList<>();
-    private final CardEnum newCardEnum;
+    private static final ArrayList<Card> CARDS = new ArrayList<>();
+    private final CardEnum NEW_CARD_ENUM;
 
     public SummonAvenger(CardEnum newCardEnum) {
-        this.newCardEnum = newCardEnum;
+        this.NEW_CARD_ENUM = newCardEnum;
     }
 
     public void Affect(Card myCard) {
-        Card newCard = newCardEnum.getCard();
+        Card newCard = NEW_CARD_ENUM.getCard();
         newCard.setDefaultRow(myCard.getRow().isPlayer1());
-        cardList.add(newCard);
+        CARDS.add(newCard);
     }
 }
