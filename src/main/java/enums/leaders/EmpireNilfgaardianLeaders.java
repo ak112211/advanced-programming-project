@@ -3,7 +3,6 @@ package enums.leaders;
 import enums.cards.NeutralCards;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
-import enums.cardsinformation.Type;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.GetCard;
 import model.abilities.instantaneousabilities.PlayCard;
@@ -12,7 +11,7 @@ import model.abilities.passiveabilities.CancelLeaderAbility;
 import model.abilities.passiveabilities.DisruptMedic;
 import model.card.Leader;
 
-public enum EmpireNilfgaardianLeaders {
+public enum EmpireNilfgaardianLeaders implements LeaderEnum {
     THE_WHITE_FLAME("The White Flame", new PlayCard(CardsPlace.DECK, NeutralCards.TORRENTIAL_RAIN), "Select and play a Torrential Rain card from your deck.", "/gwentImages/img/lg/nilfgaard_emhyr_silver.jpg"),
     HIS_IMPERIAL_MAJESTY("His Imperial Majesty", new SeeCards(3), "View three random cards from the opponent's hand.", "/gwentImages/img/lg/nilfgaard_emhyr_copper.jpg"),
     EMPEROR_OF_NILFGAARD("Emperor of Nilfgaard", new CancelLeaderAbility(), "Cancels the opponent's leader ability.", "/gwentImages/img/lg/nilfgaard_emhyr_bronze.jpg"),
@@ -32,6 +31,6 @@ public enum EmpireNilfgaardianLeaders {
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.EMPIRE_NILFGAARDIAM, description, imagePath);
+        return new Leader(name, ability, Faction.EMPIRE_NILFGAARDIAM, description, imagePath, this);
     }
 }

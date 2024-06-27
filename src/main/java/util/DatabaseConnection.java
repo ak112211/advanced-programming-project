@@ -1,12 +1,9 @@
 package util;
 
-import com.google.gson.Gson;
-import enums.cardsinformation.Faction;
 import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
-import model.card.Leader;
 
 import java.io.*;
 import java.sql.*;
@@ -17,7 +14,6 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gwent";
     private static final String USER = "root";
     private static final String PASSWORD = System.getenv("DB_PASSWORD");
-    private static final Gson gson = new Gson();
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
@@ -76,7 +72,6 @@ public class DatabaseConnection {
         return false;
     }
 
-
     public static boolean updateUserProfile(String currentUsername, String newUsername, String nickname, String email) {
         String query = "UPDATE users SET username = ?, nickname = ?, email = ? WHERE username = ?";
         try (Connection connection = getConnection();
@@ -92,7 +87,6 @@ public class DatabaseConnection {
         }
         return false;
     }
-
 
     public static String getSecurityQuestion(String username) throws SQLException {
         String query = "SELECT security_question FROM Users WHERE username = ?";
@@ -252,18 +246,22 @@ public class DatabaseConnection {
             stmt.setInt(5, user.getQuestionNumber());
             stmt.setString(6, user.getAnswer());
             stmt.setInt(7, user.getHighScore());
-            stmt.setString(8, user.getDeck().getFaction() != null ? user.getDeck().getFaction().toString() : null);
-            stmt.setString(9, gson.toJson(user.getDeck().getLeader()));
-            stmt.setString(10, gson.toJson(user.getDeck()));
-            stmt.setString(11, gson.toJson(user.getDecks()));
-            stmt.setString(12, gson.toJson(user.getPlayCard()));
-            stmt.setString(13, gson.toJson(user.getFriends()));
+
+            // Serialize the objects to byte arrays
+            stmt.setBytes(8, serializeObject(null));
+            stmt.setBytes(9, serializeObject(null));
+            stmt.setBytes(10, serializeObject(user.getDeck()));
+            stmt.setBytes(11, serializeObject(user.getDecks()));
+            stmt.setBytes(12, serializeObject(user.getPlayCard()));
+            stmt.setBytes(13, serializeObject(user.getFriends()));
 
             stmt.executeUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static User getUser(String username) throws SQLException {
+    public static User getUser(String username) throws SQLException, IOException, ClassNotFoundException {
         String query = "SELECT * FROM Users WHERE username = ?";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -277,10 +275,11 @@ public class DatabaseConnection {
                     String answer = rs.getString("answer");
                     int highScore = rs.getInt("high_score");
 
-                    Deck deck = gson.fromJson(rs.getString("deck"), Deck.class);
-                    ArrayList<Deck> decks = gson.fromJson(rs.getString("decks"), ArrayList.class);
-                    Card playCard = gson.fromJson(rs.getString("play_card"), Card.class);
-                    List<String> friends = gson.fromJson(rs.getString("friends"), ArrayList.class);
+                    // Deserialize the objects from byte arrays with null checks
+                    Deck deck = rs.getBytes("deck") != null ? (Deck) deserializeObject(rs.getBytes("deck")) : null;
+                    ArrayList<Deck> decks = rs.getBytes("decks") != null ? (ArrayList<Deck>) deserializeObject(rs.getBytes("decks")) : null;
+                    Card playCard = rs.getBytes("play_card") != null ? (Card) deserializeObject(rs.getBytes("play_card")) : null;
+                    List<String> friends = rs.getBytes("friends") != null ? (List<String>) deserializeObject(rs.getBytes("friends")) : null;
 
                     User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
                     user.setQuestionNumber(questionNumber);
@@ -311,5 +310,26 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static byte[] serializeObject(Object obj) throws IOException {
+        if (obj == null) {
+            return null;
+        }
+        try (ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+             ObjectOutputStream objOut = new ObjectOutputStream(byteOut)) {
+            objOut.writeObject(obj);
+            return byteOut.toByteArray();
+        }
+    }
+
+    private static Object deserializeObject(byte[] bytes) throws IOException, ClassNotFoundException {
+        if (bytes == null) {
+            return null;
+        }
+        try (ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
+             ObjectInputStream objIn = new ObjectInputStream(byteIn)) {
+            return objIn.readObject();
+        }
     }
 }

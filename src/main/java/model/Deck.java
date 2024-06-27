@@ -1,11 +1,15 @@
 package model;
 
 import enums.cardsinformation.Faction;
+import model.abilities.Ability;
 import model.card.Card;
 import model.card.Leader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.Serializable;
+import util.CardSerializer;
+import util.LeaderSerializer;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +65,40 @@ public class Deck implements Serializable {
     }
 
     public String toJson() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .setPrettyPrinting()
+                .create();
         return gson.toJson(this);
+    }
+
+    public static Deck fromJson(String json) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .create();
+        return gson.fromJson(json, Deck.class);
+    }
+
+    public void saveToFile(String filePath) throws IOException {
+        try (Writer writer = new FileWriter(filePath)) {
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardSerializer())
+                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                    .setPrettyPrinting()
+                    .create();
+            gson.toJson(this, writer);
+        }
+    }
+
+    public static Deck loadFromFile(String filePath) throws IOException {
+        try (Reader reader = new FileReader(filePath)) {
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardSerializer())
+                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                    .create();
+            return gson.fromJson(reader, Deck.class);
+        }
     }
 }

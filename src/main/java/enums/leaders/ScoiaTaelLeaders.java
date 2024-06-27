@@ -10,7 +10,7 @@ import model.abilities.instantaneousabilities.Scorch;
 import model.abilities.openingabilities.GetACardAtStart;
 import model.card.Leader;
 
-public enum ScoiaTaelLeaders {
+public enum ScoiaTaelLeaders implements LeaderEnum {
     QUEEN_OF_DOL_BLATHANNA("Queen of Dol Blathanna", new Scorch(Type.CLOSE_COMBAT_UNIT), "Destroys the strongest close combat unit if the opponent's close combat units have a total power greater than 10.", "/gwentImages/img/lg/scoiatael_francesca_silver.jpg"),
     THE_BEAUTIFUL("The Beautiful", new PlayCard(null, NeutralCards.COMMANDERS_HORN, Type.RANGED_UNIT), "Doubles the power of your ranged units unless there is a Commander's Horn in that row.", "/gwentImages/img/lg/scoiatael_francesca_gold.jpg"),
     DAISY_OF_THE_VALLEY("Daisy of the Valley", new GetACardAtStart(), "Draw one extra random card at the start of the game.", "/gwentImages/img/lg/scoiatael_francesca_copper.jpg"),
@@ -30,6 +30,6 @@ public enum ScoiaTaelLeaders {
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.SCOIA_TAEL, description, imagePath);
+        return new Leader(name, ability, Faction.SCOIA_TAEL, description, imagePath, this);
     }
 }

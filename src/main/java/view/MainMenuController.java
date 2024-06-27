@@ -1,7 +1,5 @@
 package view;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import enums.cardsinformation.Faction;
 import enums.cards.*;
 import enums.leaders.*;
@@ -21,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainMenuController {
 
@@ -49,15 +48,29 @@ public class MainMenuController {
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
-        currentDeck = currentUser.getDeck(); // Assume currentUser has a getDeck() method
+        currentDeck = currentUser.getDeck();
+
+        // Create a new deck if the current deck is null
+        if (currentDeck == null) {
+            currentDeck = new Deck();
+            currentUser.setDeck(currentDeck);
+        }
 
         friendsListView.getItems().addAll(currentUser.getFriends());
 
         factionComboBox.getItems().setAll(Faction.values());
+        factionComboBox.getItems().remove(Faction.NEUTRAL); // Remove neutral faction
         factionComboBox.setValue(currentDeck.getFaction() != null ? currentDeck.getFaction() : Faction.REALMS_NORTHERN);
 
+        currentDeck.setFaction(Faction.REALMS_NORTHERN);
         loadFactionCards(factionComboBox.getValue());
         loadLeaders(factionComboBox.getValue());
+
+        // Randomly select a leader if none is set
+        if (currentDeck.getLeader() == null) {
+            Leader randomLeader = getRandomLeader(factionComboBox.getValue());
+            currentDeck.setLeader(randomLeader);
+        }
 
         leaderComboBox.setValue(currentDeck.getLeader() != null ? currentDeck.getLeader() : leaderComboBox.getItems().get(0));
 
@@ -65,8 +78,12 @@ public class MainMenuController {
 
         factionComboBox.setOnAction(event -> {
             Faction selectedFaction = factionComboBox.getValue();
+            deckCardsListView.getItems().clear();
             loadFactionCards(selectedFaction);
             loadLeaders(selectedFaction);
+            Leader randomLeader = getRandomLeader(factionComboBox.getValue());
+            currentDeck.setLeader(randomLeader);
+            updateCardCounts();
         });
 
         factionCardsListView.setOnMouseClicked(event -> {
@@ -89,6 +106,8 @@ public class MainMenuController {
     private void loadFactionCards(Faction faction) {
         factionCardsListView.getItems().clear();
         List<Card> factionCards = new ArrayList<>();
+
+        // Add faction-specific cards
         switch (faction) {
             case EMPIRE_NILFGAARDIAM:
                 for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
@@ -97,11 +116,6 @@ public class MainMenuController {
                 break;
             case MONSTER:
                 for (MonstersCards cardEnum : MonstersCards.values()) {
-                    factionCards.add(cardEnum.getCard());
-                }
-                break;
-            case NEUTRAL:
-                for (NeutralCards cardEnum : NeutralCards.values()) {
                     factionCards.add(cardEnum.getCard());
                 }
                 break;
@@ -121,6 +135,11 @@ public class MainMenuController {
                 }
                 break;
         }
+
+        for (NeutralCards cardEnum : NeutralCards.values()) {
+            factionCards.add(cardEnum.getCard());
+        }
+
         factionCardsListView.getItems().addAll(factionCards);
     }
 
@@ -155,12 +174,52 @@ public class MainMenuController {
                 break;
         }
         leaderComboBox.getItems().addAll(leaders);
+
+        // Randomly select a leader if none is set
+        if (currentDeck.getLeader() == null && !leaders.isEmpty()) {
+            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()));
+            currentDeck.setLeader(randomLeader);
+        }
+    }
+
+    private Leader getRandomLeader(Faction faction) {
+        List<Leader> leaders = new ArrayList<>();
+        switch (faction) {
+            case EMPIRE_NILFGAARDIAM:
+                for (EmpireNilfgaardianLeaders leaderEnum : EmpireNilfgaardianLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case MONSTER:
+                for (MonstersLeaders leaderEnum : MonstersLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case REALMS_NORTHERN:
+                for (RealmsNorthernLeaders leaderEnum : RealmsNorthernLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case SCOIA_TAEL:
+                for (ScoiaTaelLeaders leaderEnum : ScoiaTaelLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+            case SKELLIGE:
+                for (SkelligeLeaders leaderEnum : SkelligeLeaders.values()) {
+                    leaders.add(leaderEnum.getLeader());
+                }
+                break;
+        }
+        return leaders.get(new Random().nextInt(leaders.size()));
     }
 
     private void addToDeck(Card card) {
         long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.equals(card)).count();
         if (countInDeck < card.getNoOfCardsInGame() && deckCardsListView.getItems().size() < 22) {
             deckCardsListView.getItems().add(card);
+            currentDeck.getCards().remove(card);
+
             if (countInDeck + 1 == card.getNoOfCardsInGame()) {
                 factionCardsListView.getItems().remove(card);
             }
@@ -170,6 +229,7 @@ public class MainMenuController {
 
     private void removeFromDeck(Card card) {
         deckCardsListView.getItems().remove(card);
+        currentDeck.getCards().remove(card);
         if (!factionCardsListView.getItems().contains(card)) {
             factionCardsListView.getItems().add(card);
         }
@@ -213,10 +273,14 @@ public class MainMenuController {
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-            Gson gson = new Gson();
             try (FileReader reader = new FileReader(selectedFile)) {
-                Deck loadedDeck = gson.fromJson(reader, Deck.class);
-                currentDeck = loadedDeck;
+                StringBuilder jsonBuilder = new StringBuilder();
+                int i;
+                while ((i = reader.read()) != -1) {
+                    jsonBuilder.append((char) i);
+                }
+                currentDeck = Deck.fromJson(jsonBuilder.toString());
+                System.out.println(currentDeck.getCards().size());
                 factionComboBox.setValue(currentDeck.getFaction());
                 leaderComboBox.setValue(currentDeck.getLeader());
                 deckCardsListView.getItems().clear();
@@ -238,12 +302,12 @@ public class MainMenuController {
         );
         File file = fileChooser.showSaveDialog(null);
         if (file != null) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             try (FileWriter writer = new FileWriter(file)) {
-                gson.toJson(currentDeck, writer);
+                writer.write(currentDeck.toJson());
                 Tools.showAlert("Deck saved successfully.");
             } catch (IOException e) {
                 Tools.showAlert("Failed to save deck: " + e.getMessage());
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -264,9 +328,8 @@ public class MainMenuController {
         currentDeck.getCards().clear();
         currentDeck.getCards().addAll(selectedDeck);
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(currentDeck.getName() + ".json")) {
-            gson.toJson(currentDeck, writer);
+            writer.write(currentDeck.toJson());
             Tools.showAlert("Deck saved successfully.");
         } catch (IOException e) {
             Tools.showAlert("Failed to save deck: " + e.getMessage());

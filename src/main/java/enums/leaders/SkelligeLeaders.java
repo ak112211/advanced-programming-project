@@ -6,7 +6,7 @@ import model.abilities.instantaneousabilities.ResetGraveyardToDeck;
 import model.abilities.passiveabilities.WeatherEndurance;
 import model.card.Leader;
 
-public enum SkelligeLeaders {
+public enum SkelligeLeaders implements LeaderEnum {
     CRACH_AN_CRAITE("Crach an Craite", new ResetGraveyardToDeck(), "Shuffle all dead cards back into both players' decks.", "/gwentImages/img/lg/skellige_crach_an_craite.jpg"),
     KING_BRAN("King Bran", new WeatherEndurance(), "Units only lose half their power due to weather effects.", "/gwentImages/img/lg/skellige_king_bran.jpg");
 
@@ -23,6 +23,6 @@ public enum SkelligeLeaders {
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.SKELLIGE, description, imagePath);
+        return new Leader(name, ability, Faction.SKELLIGE, description, imagePath, this);
     }
 }
