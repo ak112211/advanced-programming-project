@@ -17,8 +17,8 @@ import model.card.Card;
 
 public enum SkelligeCards implements CardEnum {
     MARDROEME("Mardroeme", 0, 3, Type.SPELL, new Mardroeme(), Description.Mardroeme, false, "/gwentImages/img/lg/special_mardroeme.jpg"),
-    VIDKAARL("Vidkaarl", 14, 0, Type.CLOSE_COMBAT_UNIT, new MoraleBoost(), Description.PLAYED_WITH_BERSERKER, false, "/gwentImages/img/lg/skellige_vildkaarl.jpg"),
-    BERSERKER("Berserker", 4, 1, Type.CLOSE_COMBAT_UNIT, new Berserker(SkelligeCards.VIDKAARL), Description.TRANSFORMS_TO_VIDKAARL, false, "/gwentImages/img/lg/skellige_berserker.jpg"),
+    VILDKAARL("Vildkaarl", 14, 0, Type.CLOSE_COMBAT_UNIT, new MoraleBoost(), Description.PLAYED_WITH_BERSERKER, false, "/gwentImages/img/lg/skellige_vildkaarl.jpg"),
+    BERSERKER("Berserker", 4, 1, Type.CLOSE_COMBAT_UNIT, new Berserker(SkelligeCards.VILDKAARL), Description.TRANSFORMS_TO_VILDKAARL, false, "/gwentImages/img/lg/skellige_berserker.jpg"),
     SVANRIGE("Svanrige", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_svanrige.jpg"),
     UDALRYK("Udalryk", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_udalryk.jpg"),
     DONAR_AN_HINDAR("Donar an Hindar", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_donar.jpg"),
@@ -34,8 +34,8 @@ public enum SkelligeCards implements CardEnum {
     CLAN_BROKVAR_ARCHER("Clan Brokvar Archer", 6, 3, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_brokva_archer.jpg"),
     ERMION("Ermion", 8, 1, Type.RANGED_UNIT, new Mardroeme(), Description.NOTHING, true, "/gwentImages/img/lg/skellige_ermion.jpg"),
     HJALMAR("Hjalmar", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/skellige_hjalmar.jpg"),
-    YOUNG_VIDKAARL("Young Vidkaarl", 8, 0, Type.RANGED_UNIT, new TightBond(), Description.PLAYED_WITH_YOUNG_BERSERKER, false, "/gwentImages/img/lg/skellige_young_vildkaarl.jpg"),
-    YOUNG_BERSERKER("Young Berserker", 2, 3, Type.RANGED_UNIT, new Berserker(SkelligeCards.YOUNG_VIDKAARL), Description.TRANSFORMS_TO_YOUNG_VIDKAARL, false, "/gwentImages/img/lg/skellige_young_berserker.jpg"),
+    YOUNG_VILDKAARL("Young Vildkaarl", 8, 0, Type.RANGED_UNIT, new TightBond(), Description.PLAYED_WITH_YOUNG_BERSERKER, false, "/gwentImages/img/lg/skellige_young_vildkaarl.jpg"),
+    YOUNG_BERSERKER("Young Berserker", 2, 3, Type.RANGED_UNIT, new Berserker(SkelligeCards.YOUNG_VILDKAARL), Description.TRANSFORMS_TO_YOUNG_VILDKAARL, false, "/gwentImages/img/lg/skellige_young_berserker.jpg"),
     LIGHT_LONGSHIP("Light Longship", 4, 3, Type.RANGED_UNIT, new Muster(), Description.NOTHING, false, "/gwentImages/img/lg/skellige_light_longship.jpg"),
     HOLGER_BLACKHAND("Holger Blackhand", 4, 1, Type.SIEGE_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_holger.jpg"),
     WAR_LONGSHIP("War Longship", 6, 3, Type.SIEGE_UNIT, new TightBond(), Description.NOTHING, false, "/gwentImages/img/lg/skellige_war_longship.jpg"),
