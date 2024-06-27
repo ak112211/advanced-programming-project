@@ -5,26 +5,12 @@
 <?import javafx.scene.layout.*?>
 
 <Pane fx:id="gamePane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
-    <background>
-        <Background>
-            <images>
-                <BackgroundImage>
-                    <image>
-                        <Image url="@../gwentImages/img/board.jpg" />
-                    </image>
-                    <repeatX>NO_REPEAT</repeatX>
-                    <repeatY>NO_REPEAT</repeatY>
-                    <position>
-                        <BackgroundPosition />
-                    </position>
-                    <size>
-                        <BackgroundSize />
-                    </size>
-                </BackgroundImage>
-            </images>
-        </Background>
-    </background>
     <children>
+      <ImageView fx:id="background" fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../gwentImages/img/board.jpg" />
+         </image>
+      </ImageView>
         <Label fx:id="player1NameLabel" layoutX="10" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
         <Label fx:id="player2NameLabel" layoutX="1100" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
         <Label fx:id="player1ScoreLabel" layoutX="10" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
@@ -51,6 +37,6 @@
         <VBox fx:id="player1Leader" alignment="CENTER_LEFT" layoutX="10" layoutY="400" spacing="5" />
         <VBox fx:id="player2Leader" alignment="CENTER_RIGHT" layoutX="1150" layoutY="400" spacing="5" />
 
-        <Pane fx:id="overlayPane" prefHeight="800" prefWidth="1200" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
+        <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
     </children>
 </Pane>

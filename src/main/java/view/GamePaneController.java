@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -26,6 +27,8 @@ import java.util.*;
 public class GamePaneController implements Initializable {
     @FXML
     private Pane gamePane;
+    @FXML
+    private ImageView background;
     @FXML
     private Pane overlayPane;
     @FXML
@@ -70,6 +73,8 @@ public class GamePaneController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        background.fitHeightProperty().bind(gamePane.heightProperty());
+        background.fitWidthProperty().bind(gamePane.widthProperty());
         game = Game.getCurrentGame();
         if (game == null) {
             Deck deck1 = new Deck();
