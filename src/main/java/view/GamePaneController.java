@@ -22,47 +22,70 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class GamePaneController implements Initializable {
-    @FXML private Pane gamePane;
-    @FXML private Pane overlayPane;
-    @FXML private Label player1NameLabel;
-    @FXML private Label player2NameLabel;
-    @FXML private Label player1ScoreLabel;
-    @FXML private Label player2ScoreLabel;
-    @FXML private HBox player1Hand;
-    @FXML private HBox player2Hand;
-    @FXML private VBox player1CloseCombat;
-    @FXML private VBox player2CloseCombat;
-    @FXML private VBox player1Ranged;
-    @FXML private VBox player2Ranged;
-    @FXML private VBox player1Siege;
-    @FXML private VBox player2Siege;
-    @FXML private VBox player1Score;
-    @FXML private VBox player2Score;
-    @FXML private VBox player1Graveyard;
-    @FXML private VBox player2Graveyard;
-    @FXML private VBox player1Leader;
-    @FXML private VBox player2Leader;
+    @FXML
+    private Pane gamePane;
+    @FXML
+    private Pane overlayPane;
+    @FXML
+    private Label player1NameLabel;
+    @FXML
+    private Label player2NameLabel;
+    @FXML
+    private Label player1ScoreLabel;
+    @FXML
+    private Label player2ScoreLabel;
+    @FXML
+    private HBox player1Hand;
+    @FXML
+    private HBox player2Hand;
+    @FXML
+    private VBox player1CloseCombat;
+    @FXML
+    private VBox player2CloseCombat;
+    @FXML
+    private VBox player1Ranged;
+    @FXML
+    private VBox player2Ranged;
+    @FXML
+    private VBox player1Siege;
+    @FXML
+    private VBox player2Siege;
+    @FXML
+    private VBox player1Score;
+    @FXML
+    private VBox player2Score;
+    @FXML
+    private VBox player1Graveyard;
+    @FXML
+    private VBox player2Graveyard;
+    @FXML
+    private VBox player1Leader;
+    @FXML
+    private VBox player2Leader;
     private Text messageDisplay;
     private Game game;
     private Card selectedCard;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.game = Game.getCurrentGame();
+        game = Game.getCurrentGame();
+        if (game == null) {
+            game = new Game(
+                    new User("username1", "nickname1", "email1", "password1"),
+                    new User("username2", "nickname2", "email2", "password2"));
+        }
         setupGame();
         startTurn(); // Start with Player 1's turn
     }
 
     private void setupGame() {
-        if (game != null) {
-            player1NameLabel.setText(game.getPlayer1().getUsername());
-            player2NameLabel.setText(game.getPlayer2().getUsername());
-            updateScore();
-            setupCardsInHand();
-            setupCardsOnBoard();
-            setupLeaderCards();
-            showVetoOverlay(); // Show the veto overlay at the beginning of the game
-        }
+        player1NameLabel.setText(game.getPlayer1().getUsername());
+        player2NameLabel.setText(game.getPlayer2().getUsername());
+        updateScore();
+        setupCardsInHand();
+        setupCardsOnBoard();
+        setupLeaderCards();
+        showVetoOverlay(); // Show the veto overlay at the beginning of the game
     }
 
     private void setupCardsInHand() {

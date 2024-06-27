@@ -37,14 +37,14 @@ public class Game implements Serializable {
     private User winner = null;
     private static Game currentGame;
 
-    public Game(User player1, User player2, Date date) {
+    public Game(User player1, User player2) {
         PLAYER1 = player1;
         PLAYER2 = player2;
         player1Deck = player1.getDeck().getCards();
         player2Deck = player2.getDeck().getCards();
         player1LeaderCard = player1.getDeck().getLeader();
         player2LeaderCard = player2.getDeck().getLeader();
-        DATE = date;
+        DATE = new Date(System.currentTimeMillis());
     }
 
     public void initializeGameObjects() {
