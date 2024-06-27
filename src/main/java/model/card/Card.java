@@ -28,17 +28,17 @@ public class Card extends Rectangle {
     private final CardEnum CARD_ENUM;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
-        this.NAME = name;
-        this.TYPE = type;
-        this.NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        this.FIRST_POWER = power;
+        NAME = name;
+        TYPE = type;
+        NO_OF_CARDS_IN_GAME = noOfCardsInGame;
+        FIRST_POWER = power;
         this.power = power;
-        this.ABILITY = ability;
-        this.IS_HERO = isHero;
-        this.FACTION = faction;
-        this.DESCRIPTION = description;
-        this.IMAGE_PATH = imagePath;
-        this.CARD_ENUM = cardEnum;
+        ABILITY = ability;
+        IS_HERO = isHero;
+        FACTION = faction;
+        DESCRIPTION = description;
+        IMAGE_PATH = imagePath;
+        CARD_ENUM = cardEnum;
 
         this.setWidth(70);
         this.setHeight(100);

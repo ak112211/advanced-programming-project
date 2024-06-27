@@ -4,19 +4,18 @@ import model.Game;
 import model.card.Card;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class Muster extends InstantaneousAbility {
-    private final String[] musterCardNames;
+    private final String[] MUSTER_CARDS_NAME;
 
     public Muster(String... cardNames) {
-        this.musterCardNames = cardNames;
+        MUSTER_CARDS_NAME = cardNames;
     }
 
     private boolean canMuster(Card card, String myCardName) {
         String cardName = card.getName().split(":")[0];
-        return Stream.concat(Arrays.stream(musterCardNames), Stream.of(myCardName))
+        return Stream.concat(Arrays.stream(MUSTER_CARDS_NAME), Stream.of(myCardName))
                 .anyMatch(name -> name.equals(cardName));
     }
 

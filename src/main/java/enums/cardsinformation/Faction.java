@@ -13,18 +13,19 @@ public enum Faction {
     REALMS_NORTHERN(RealmsNorthernCards.values()),
     SCOIA_TAEL(ScoiaTaelCards.values()),
     NEUTRAL(NeutralCards.values()),
-    SKELLIGE(SkelligeCards.values()),;
+    SKELLIGE(SkelligeCards.values()),
+    ;
 
-    final CardEnum[] cardEnums;
+    private final CardEnum[] CARDS_ENUM;
 
-    Faction (CardEnum[] cardEnums) {
-        this.cardEnums = cardEnums;
+    Faction(CardEnum[] cardEnums) {
+        CARDS_ENUM = cardEnums;
     }
 
     public List<Card> getAllCards() {
         if (this == NEUTRAL) {
             throw new RuntimeException("Can't get cards of neutral faction");
         }
-        return Stream.concat(Arrays.stream(cardEnums),Arrays.stream(NEUTRAL.cardEnums)).map(CardEnum::getCard).toList();
+        return Stream.concat(Arrays.stream(CARDS_ENUM), Arrays.stream(NEUTRAL.CARDS_ENUM)).map(CardEnum::getCard).toList();
     }
 }

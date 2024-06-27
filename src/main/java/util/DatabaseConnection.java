@@ -1,12 +1,10 @@
 package util;
 
 import com.google.gson.Gson;
-import enums.cardsinformation.Faction;
 import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
-import model.card.Leader;
 
 import java.io.*;
 import java.sql.*;
@@ -17,7 +15,7 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gwent";
     private static final String USER = "root";
     private static final String PASSWORD = System.getenv("DB_PASSWORD");
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
@@ -253,11 +251,11 @@ public class DatabaseConnection {
             preparedStatement.setString(6, user.getAnswer());
             preparedStatement.setInt(7, user.getHighScore());
             preparedStatement.setString(8, user.getDeck().getFaction() != null ? user.getDeck().getFaction().toString() : null);
-            preparedStatement.setString(9, gson.toJson(user.getDeck().getLeader()));
-            preparedStatement.setString(10, gson.toJson(user.getDeck()));
-            preparedStatement.setString(11, gson.toJson(user.getDecks()));
-            preparedStatement.setString(12, gson.toJson(user.getPlayCard()));
-            preparedStatement.setString(13, gson.toJson(user.getFriends()));
+            preparedStatement.setString(9, GSON.toJson(user.getDeck().getLeader()));
+            preparedStatement.setString(10, GSON.toJson(user.getDeck()));
+            preparedStatement.setString(11, GSON.toJson(user.getDecks()));
+            preparedStatement.setString(12, GSON.toJson(user.getPlayCard()));
+            preparedStatement.setString(13, GSON.toJson(user.getFriends()));
 
             preparedStatement.executeUpdate();
         }
@@ -277,10 +275,10 @@ public class DatabaseConnection {
                     String answer = resultSet.getString("answer");
                     int highScore = resultSet.getInt("high_score");
 
-                    Deck deck = gson.fromJson(resultSet.getString("deck"), Deck.class);
-                    ArrayList<Deck> decks = gson.fromJson(resultSet.getString("decks"), ArrayList.class);
-                    Card playCard = gson.fromJson(resultSet.getString("play_card"), Card.class);
-                    List<String> friends = gson.fromJson(resultSet.getString("friends"), ArrayList.class);
+                    Deck deck = GSON.fromJson(resultSet.getString("deck"), Deck.class);
+                    ArrayList<Deck> decks = GSON.fromJson(resultSet.getString("decks"), ArrayList.class);
+                    Card playCard = GSON.fromJson(resultSet.getString("play_card"), Card.class);
+                    List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
                     User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
                     user.setQuestionNumber(questionNumber);

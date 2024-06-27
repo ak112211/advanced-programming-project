@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public class CommandersHorn extends PersistentAbility {
-    public static final ArrayList<Card> AffectedCards = new ArrayList<>();
+    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public CommandersHorn(BiFunction<Card, Card, Boolean> doesAffect) {
         super(doesAffect);
@@ -18,16 +18,16 @@ public class CommandersHorn extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return canBeAffected(card) && notSameCards(myCard, card) && sameRow(myCard, card) && !AffectedCards.contains(card);
+        return canBeAffected(card) && notSameCards(myCard, card) && sameRow(myCard, card) && !AFFECTED_CARDS.contains(card);
     }
 
     public static boolean doesAffectSpy(Card myCard, Card card) {
-        return card.getType() == Type.SPY_UNIT && !AffectedCards.contains(card);
+        return card.getType() == Type.SPY_UNIT && !AFFECTED_CARDS.contains(card);
     }
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AffectedCards;
+        return AFFECTED_CARDS;
     }
 
     public static void affect(Card card) {

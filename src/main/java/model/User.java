@@ -1,8 +1,6 @@
 package model;
 
-import enums.cardsinformation.Faction;
 import model.card.Card;
-import model.card.Leader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,7 +12,7 @@ import java.util.List;
 
 public class User implements Serializable {
 
-    private static final ArrayList<User> USERS = new ArrayList<User>();
+    private static final ArrayList<User> USERS = new ArrayList<>();
 
     private String username;
     private String nickname;
@@ -23,15 +21,16 @@ public class User implements Serializable {
     private int questionNumber;
     private String answer;
 
-    private ArrayList<Game> games = new ArrayList<Game>();
+    private ArrayList<Game> games = new ArrayList<>();
     private Deck deck;
-    private ArrayList<Deck> decks = new ArrayList<Deck>();
+    private ArrayList<Deck> decks = new ArrayList<>();
     private List<String> friends;
 
     private Card playCard;
     private int highScore = 0;
 
     private static User currentUser;
+
     public User(String username, String nickname, String email, String password) {
         this.username = username;
         this.nickname = nickname;

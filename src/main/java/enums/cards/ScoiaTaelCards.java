@@ -56,6 +56,6 @@ public enum ScoiaTaelCards implements CardEnum {
     }
 
     public Card getCard() {
-        return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.SKELLIGE, DESCRIPTION, IMAGE_PATH, this);
+        return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.SCOIA_TAEL, DESCRIPTION, IMAGE_PATH, this);
     }
 }

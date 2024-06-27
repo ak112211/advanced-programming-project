@@ -17,19 +17,19 @@ public enum ScoiaTaelLeaders {
     PUREBLOOD_ELF("Pureblood Elf", new PlayCard(null, NeutralCards.BITING_FROST), "Select and play a Biting Frost card from your deck.", "/gwentImages/img/lg/scoiatael_francesca_bronze.jpg"),
     HOPE_OF_THE_AEN_SEIDHE("Hope of the Aen Seidhe", new MoveAgileUnits(), "Move all agile units to the row where they have the highest power. Units already in the optimal row do not move.", "/gwentImages/img/lg/scoiatael_francesca_hope_of_the_aen_seidhe.jpg");
 
-    private final String name;
-    private final Ability ability;
-    private final String description;
-    private final String imagePath;
+    private final String NAME;
+    private final Ability ABILITY;
+    private final String DESCRIPTION;
+    private final String IMAGE_PATH;
 
     ScoiaTaelLeaders(String name, Ability ability, String description, String imagePath) {
-        this.name = name;
-        this.ability = ability;
-        this.description = description;
-        this.imagePath = imagePath;
+        NAME = name;
+        ABILITY = ability;
+        DESCRIPTION = description;
+        IMAGE_PATH = imagePath;
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.SCOIA_TAEL, description, imagePath);
+        return new Leader(NAME, ABILITY, Faction.SCOIA_TAEL, DESCRIPTION, IMAGE_PATH);
     }
 }

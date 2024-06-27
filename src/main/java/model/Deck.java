@@ -5,6 +5,7 @@ import model.card.Card;
 import model.card.Leader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Deck implements Serializable {
     private String fileAddress;
     private Faction faction;
     private Leader leader;
-    private final ArrayList<Card> CARDS = new ArrayList<Card>();
+    private final ArrayList<Card> CARDS = new ArrayList<>();
 
     public ArrayList<Card> getCards() {
         return CARDS;

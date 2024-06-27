@@ -3,7 +3,6 @@ package enums.leaders;
 import enums.cards.NeutralCards;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
-import enums.cardsinformation.Type;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.GetCard;
 import model.abilities.instantaneousabilities.PlayCard;
@@ -19,19 +18,19 @@ public enum EmpireNilfgaardianLeaders {
     THE_RELENTLESS("The Relentless", new GetCard(CardsPlace.GRAVEYARD, false, 1, false), "Take a card from the opponent's graveyard (cannot take a Hero card).", "/gwentImages/img/lg/nilfgaard_emhyr_gold.jpg"),
     INVADER_OF_THE_NORTH("Invader of the North", new DisruptMedic(), "Abilities that restore a unit to the battlefield restore a randomly-chosen unit. Affects both players.", "/gwentImages/img/lg/nilfgaard_emhyr_invader_of_the_north.jpg");
 
-    private final String name;
-    private final Ability ability;
-    private final String description;
-    private final String imagePath;
+    private final String NAME;
+    private final Ability ABILITY;
+    private final String DESCRIPTION;
+    private final String IMAGE_PATH;
 
     EmpireNilfgaardianLeaders(String name, Ability ability, String description, String imagePath) {
-        this.name = name;
-        this.ability = ability;
-        this.description = description;
-        this.imagePath = imagePath;
+        NAME = name;
+        ABILITY = ability;
+        DESCRIPTION = description;
+        IMAGE_PATH = imagePath;
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.EMPIRE_NILFGAARDIAM, description, imagePath);
+        return new Leader(NAME, ABILITY, Faction.EMPIRE_NILFGAARDIAM, DESCRIPTION, IMAGE_PATH);
     }
 }

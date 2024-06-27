@@ -1,7 +1,6 @@
 package enums.leaders;
 
 import enums.cards.NeutralCards;
-import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import model.abilities.Ability;
@@ -16,19 +15,19 @@ public enum RealmsNorthernLeaders {
     LORD_COMMANDER_OF_THE_NORTH("Lord Commander of the North", new Scorch(Type.SIEGE_UNIT), "Destroys the strongest siege unit if the opponent's siege units have a total power greater than 10.", "/gwentImages/img/lg/realms_foltest_bronze.jpg"),
     SON_OF_MEDELL("Son of Medell", new Scorch(Type.RANGED_UNIT), "Destroys the strongest ranged unit if the opponent's ranged units have a total power greater than 10.", "/gwentImages/img/lg/realms_foltest_son_of_medell.jpg");
 
-    private final String name;
-    private final String description;
-    private final String imagePath;
-    private Ability ability;
+    private final String NAME;
+    private final String DESCRIPTION;
+    private final String IMAGE_PATH;
+    private final Ability ABILITY;
 
     RealmsNorthernLeaders(String name, Ability ability, String description, String imagePath) {
-        this.name = name;
-        this.description = description;
-        this.ability = ability;
-        this.imagePath = imagePath;
+        NAME = name;
+        DESCRIPTION = description;
+        ABILITY = ability;
+        IMAGE_PATH = imagePath;
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.REALMS_NORTHERN, description, imagePath);
+        return new Leader(NAME, ABILITY, Faction.REALMS_NORTHERN, DESCRIPTION, IMAGE_PATH);
     }
 }
