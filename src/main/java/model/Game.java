@@ -4,6 +4,7 @@ import enums.Row;
 import enums.cardsinformation.Type;
 import javafx.scene.layout.Pane;
 import model.abilities.Ability;
+import model.abilities.openingabilities.OpeningAbility;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
@@ -29,26 +30,32 @@ public class Game implements Serializable {
     private ArrayList<Card> inGameCards = new ArrayList<>();
     private ArrayList<Card> player1InHandCards = new ArrayList<>();
     private ArrayList<Card> player2InHandCards = new ArrayList<>();
-    private ArrayList<Card> player1Deck = new ArrayList<>();
-    private ArrayList<Card> player2Deck = new ArrayList<>();
+    private ArrayList<Card> player1Deck;
+    private ArrayList<Card> player2Deck;
     private ArrayList<Card> player1GraveyardCards = new ArrayList<>();
     private ArrayList<Card> player2GraveyardCards = new ArrayList<>();
     private GameStatus status = GameStatus.PENDING;
     private User winner = null;
     private static Game currentGame;
 
-    public Game(User player1, User player2, Date date) {
+    public Game(User player1, User player2) {
         PLAYER1 = player1;
         PLAYER2 = player2;
         player1Deck = player1.getDeck().getCards();
         player2Deck = player2.getDeck().getCards();
         player1LeaderCard = player1.getDeck().getLeader();
         player2LeaderCard = player2.getDeck().getLeader();
-        DATE = date;
+        DATE = new Date(System.currentTimeMillis());
     }
 
     public void initializeGameObjects() {
-        //TODO
+        player1Deck = PLAYER1.getDeck().getCards();
+        player2Deck = PLAYER2.getDeck().getCards();
+        for (int i = 0; i < STARTING_HAND_SIZE ; i++) {
+            player1GetRandomCard();
+            player2GetRandomCard();
+        }
+        OpeningAbility.StartRound(this);
     }
 
     public void initializeGameObjectsFromSaved() {

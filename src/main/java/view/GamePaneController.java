@@ -1,6 +1,10 @@
 package view;
 
 import enums.Row;
+import enums.cardsinformation.Faction;
+import enums.leaders.EmpireNilfgaardianLeaders;
+import enums.leaders.MonstersLeaders;
+import enums.leaders.SkelligeLeaders;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,59 +14,92 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
 
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class GamePaneController implements Initializable {
-    @FXML private Pane gamePane;
-    @FXML private Pane overlayPane;
-    @FXML private Label player1NameLabel;
-    @FXML private Label player2NameLabel;
-    @FXML private Label player1ScoreLabel;
-    @FXML private Label player2ScoreLabel;
-    @FXML private HBox player1Hand;
-    @FXML private HBox player2Hand;
-    @FXML private VBox player1CloseCombat;
-    @FXML private VBox player2CloseCombat;
-    @FXML private VBox player1Ranged;
-    @FXML private VBox player2Ranged;
-    @FXML private VBox player1Siege;
-    @FXML private VBox player2Siege;
-    @FXML private VBox player1Score;
-    @FXML private VBox player2Score;
-    @FXML private VBox player1Graveyard;
-    @FXML private VBox player2Graveyard;
-    @FXML private VBox player1Leader;
-    @FXML private VBox player2Leader;
-    private Text messageDisplay;
+    @FXML
+    private Pane gamePane;
+    @FXML
+    private Pane overlayPane;
+    @FXML
+    private Label player1NameLabel;
+    @FXML
+    private Label player2NameLabel;
+    @FXML
+    private Label player1ScoreLabel;
+    @FXML
+    private Label player2ScoreLabel;
+    @FXML
+    private HBox player1Hand;
+    @FXML
+    private HBox player2Hand;
+    @FXML
+    private VBox player1CloseCombat;
+    @FXML
+    private VBox player2CloseCombat;
+    @FXML
+    private VBox player1Ranged;
+    @FXML
+    private VBox player2Ranged;
+    @FXML
+    private VBox player1Siege;
+    @FXML
+    private VBox player2Siege;
+    @FXML
+    private VBox player1Score;
+    @FXML
+    private VBox player2Score;
+    @FXML
+    private VBox player1Graveyard;
+    @FXML
+    private VBox player2Graveyard;
+    @FXML
+    private VBox player1Leader;
+    @FXML
+    private VBox player2Leader;
+    private Text messageDisplay = new Text();
     private Game game;
     private Card selectedCard;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.game = Game.getCurrentGame();
+        game = Game.getCurrentGame();
+        if (game == null) {
+            Deck deck1 = new Deck();
+            Deck deck2 = new Deck();
+            deck1.setFaction(Faction.SKELLIGE);
+            deck2.setFaction(Faction.MONSTER);
+            deck1.addCards(deck1.getFaction().getAllCards());
+            deck2.addCards(deck2.getFaction().getAllCards());
+            deck1.setLeader(SkelligeLeaders.CRACH_AN_CRAITE.getLeader());
+            deck2.setLeader(MonstersLeaders.BRINGER_OF_DEATH.getLeader());
+
+            User user1 = new User("username1", "nickname1", "email1", "password1");
+            User user2 = new User("username2", "nickname2", "email2", "password2");
+            user1.setDeck(deck1);
+            user2.setDeck(deck2);
+            game = new Game(user1, user2);
+        }
+        game.initializeGameObjects();
         setupGame();
         startTurn(); // Start with Player 1's turn
     }
 
     private void setupGame() {
-        if (game != null) {
-            player1NameLabel.setText(game.getPlayer1().getUsername());
-            player2NameLabel.setText(game.getPlayer2().getUsername());
-            updateScore();
-            setupCardsInHand();
-            setupCardsOnBoard();
-            setupLeaderCards();
-            showVetoOverlay(); // Show the veto overlay at the beginning of the game
-        }
+        player1NameLabel.setText(game.getPlayer1().getUsername());
+        player2NameLabel.setText(game.getPlayer2().getUsername());
+        updateScore();
+        setupCardsInHand();
+        setupCardsOnBoard();
+        setupLeaderCards();
+        showVetoOverlay(); // Show the veto overlay at the beginning of the game
     }
 
     private void setupCardsInHand() {
