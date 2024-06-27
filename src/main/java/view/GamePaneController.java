@@ -2,7 +2,6 @@ package view;
 
 import enums.Row;
 import enums.cardsinformation.Faction;
-import enums.leaders.EmpireNilfgaardianLeaders;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.SkelligeLeaders;
 import javafx.animation.PauseTransition;
@@ -12,7 +11,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.Deck;
@@ -23,6 +24,7 @@ import model.card.Leader;
 
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class GamePaneController implements Initializable {
     @FXML
@@ -44,17 +46,17 @@ public class GamePaneController implements Initializable {
     @FXML
     private HBox player2Hand;
     @FXML
-    private VBox player1CloseCombat;
+    private HBox player1CloseCombat;
     @FXML
-    private VBox player2CloseCombat;
+    private HBox player2CloseCombat;
     @FXML
-    private VBox player1Ranged;
+    private HBox player1Ranged;
     @FXML
-    private VBox player2Ranged;
+    private HBox player2Ranged;
     @FXML
-    private VBox player1Siege;
+    private HBox player1Siege;
     @FXML
-    private VBox player2Siege;
+    private HBox player2Siege;
     @FXML
     private VBox player1Score;
     @FXML
@@ -105,6 +107,7 @@ public class GamePaneController implements Initializable {
         setupCardsOnBoard();
         setupLeaderCards();
         showVetoOverlay(); // Show the veto overlay at the beginning of the game
+        //gamePane.getChildren().remove(overlayPane);
     }
 
     private void setupCardsInHand() {
@@ -121,12 +124,15 @@ public class GamePaneController implements Initializable {
     }
 
     private Card createCardView(Card card, boolean isPlayer1) {
+        card.setSmallImage();
         card.setOnMouseClicked(event -> {
+            System.out.println("clicked");
             if (card.equals(game.getPlayer1LeaderCard()) || card.equals(game.getPlayer2LeaderCard())) {
                 showLeaderCardOverlay(card);
             } else if (game.isPlayer1Turn() == isPlayer1) {
                 selectCard(card, isPlayer1);
                 showHandCardOverlay(card);
+                System.out.println("clicked");
                 // Listen for clicks on row areas to place the card
                 player1CloseCombat.setOnMouseClicked(rowClickEvent -> placeCard(card, Row.PLAYER1_CLOSE_COMBAT));
                 player1Ranged.setOnMouseClicked(rowClickEvent -> placeCard(card, Row.PLAYER1_RANGED));
@@ -153,7 +159,7 @@ public class GamePaneController implements Initializable {
         player2Siege.getChildren().clear();
 
         for (Card card : game.getInGameCards()) {
-            VBox targetBox = getRowBox(card.getRow());
+            HBox targetBox = getRowBox(card.getRow());
             if (targetBox != null) {
                 targetBox.getChildren().add(card);
             }
@@ -176,7 +182,7 @@ public class GamePaneController implements Initializable {
         player2ScoreLabel.setText("Score: " + game.getPlayer2Points());
     }
 
-    private VBox getRowBox(Row row) {
+    private HBox getRowBox(Row row) {
         switch (row) {
             case PLAYER1_CLOSE_COMBAT:
                 return player1CloseCombat;
@@ -216,7 +222,7 @@ public class GamePaneController implements Initializable {
         }
     }
 
-    private void highlightRow(VBox player1Row, VBox player2Row) {
+    private void highlightRow(HBox player1Row, HBox player2Row) {
         if (game.isPlayer1Turn()) {
             player1Row.setStyle("-fx-background-color: rgba(0, 255, 0, 0.3);");
         } else {
@@ -334,7 +340,7 @@ public class GamePaneController implements Initializable {
     }
 
     private void passVeto() {
-        nextTurn();
+        // nextTurn(); // ridam dahane in khat
         overlayPane.setVisible(false);
         overlayPane.getChildren().clear();
     }

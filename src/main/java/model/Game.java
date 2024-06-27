@@ -56,6 +56,7 @@ public class Game implements Serializable {
             player2GetRandomCard();
         }
         OpeningAbility.StartRound(this);
+        currentPlayer = PLAYER1;
     }
 
     public void initializeGameObjectsFromSaved() {
