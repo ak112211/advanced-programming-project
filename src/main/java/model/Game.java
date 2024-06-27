@@ -45,48 +45,12 @@ public class Game implements Serializable {
         DATE = date;
     }
 
-    public static void setCurrentGame(Game game) {
-        currentGame = game;
+    public void initializeGameObjects() {
+        //TODO
     }
 
-    public static Game getCurrentGame() {
-        return currentGame;
-    }
-
-    public User getPlayer1() {
-        return PLAYER1;
-    }
-
-    public User getPlayer2() {
-        return PLAYER2;
-    }
-
-    public Date getDate() {
-        return DATE;
-    }
-
-    public GameStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(GameStatus status) {
-        this.status = status;
-    }
-
-    public User getWinner() {
-        return winner;
-    }
-
-    public void setWinner(User winner) {
-        this.winner = winner;
-    }
-
-    public int getPlayer1Points() {
-        return player1Points;
-    }
-
-    public int getPlayer2Points() {
-        return player2Points;
+    public void initializeGameObjectsFromSaved() {
+        //TODO
     }
 
     public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
@@ -133,13 +97,13 @@ public class Game implements Serializable {
 
     public void player1GetRandomCard() {
         if (!player1Deck.isEmpty()) {
-            moveCard(chooseRandomCard(player1Deck,false), player1Deck, player1InHandCards);
+            moveCard(chooseRandomCard(player1Deck, false), player1Deck, player1InHandCards);
         }
     }
 
     public void player2GetRandomCard() {
         if (!player2Deck.isEmpty()) {
-            moveCard(chooseRandomCard(player2Deck,false), player2Deck, player2InHandCards);
+            moveCard(chooseRandomCard(player2Deck, false), player2Deck, player2InHandCards);
         }
     }
 
@@ -161,12 +125,6 @@ public class Game implements Serializable {
 
     public void switchSides() {
         currentPlayer = (currentPlayer.equals(PLAYER1)) ? PLAYER2 : PLAYER1;
-    }
-
-    public void initializeGameObjects() {
-    }
-
-    public void initializeGameObjectsFromSaved() {
     }
 
     public Card chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
@@ -197,26 +155,6 @@ public class Game implements Serializable {
         }
     }
 
-    public Leader getPlayer1LeaderCard() {
-        return player1LeaderCard;
-    }
-
-    public Leader getPlayer2LeaderCard() {
-        return player2LeaderCard;
-    }
-
-    public void setCurrentPlayer(User currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    public User getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public boolean isPlayer1Turn() {
-        return currentPlayer.equals(PLAYER1);
-    }
-
     public void player1VetoCard() {
         Card chosenCard = chooseCard(player1InHandCards, false);
         player1GetRandomCard();
@@ -231,6 +169,72 @@ public class Game implements Serializable {
 
     public void passVeto() {
         nextTurn();
+    }
+
+    // Getters and setters:
+
+    public static void setCurrentGame(Game game) {
+        currentGame = game;
+    }
+
+    public static Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public void setCurrentPlayer(User currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public User getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public boolean isPlayer1Turn() {
+        return currentPlayer.equals(PLAYER1);
+    }
+
+    public User getPlayer1() {
+        return PLAYER1;
+    }
+
+    public User getPlayer2() {
+        return PLAYER2;
+    }
+
+    public Date getDate() {
+        return DATE;
+    }
+
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GameStatus status) {
+        this.status = status;
+    }
+
+    public User getWinner() {
+        return winner;
+    }
+
+    public void setWinner(User winner) {
+        this.winner = winner;
+    }
+
+    public int getPlayer1Points() {
+        return player1Points;
+    }
+
+    public int getPlayer2Points() {
+        return player2Points;
+    }
+
+    public Leader getPlayer1LeaderCard() {
+        return player1LeaderCard;
+    }
+
+    public Leader getPlayer2LeaderCard() {
+        return player2LeaderCard;
     }
 
     public ArrayList<Card> getInGameCards() {
