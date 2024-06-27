@@ -1,5 +1,6 @@
 package model.card;
 
+import enums.leaders.LeaderEnum;
 import enums.cardsinformation.Faction;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
@@ -14,15 +15,15 @@ public class Leader extends Rectangle {
     private final String DESCRIPTION;
     private final Ability ABILITY;
     private int numberOfAction = 1;
-
-    private final String IMAGE_PATH;
-
-    public Leader(String name, Ability ability, Faction faction, String description, String imagePath) {
+    private final LeaderEnum LEADER_ENUM;
+    private String imagePath;
+    public Leader(String name, Ability ability, Faction faction, String description, String imagePath, LeaderEnum leaderEnum) {
         NAME = name;
-        IMAGE_PATH = imagePath;
+        imagePath = imagePath;
         FACTION = faction;
         DESCRIPTION = description;
         ABILITY = ability;
+        LEADER_ENUM = leaderEnum;
 
         this.setWidth(70);
         this.setHeight(100);
@@ -54,7 +55,14 @@ public class Leader extends Rectangle {
     }
 
     public String getImagePath() {
-        return IMAGE_PATH;
+        return imagePath;
     }
 
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public LeaderEnum getLeaderEnum() {
+        return LEADER_ENUM;
+    }
 }
