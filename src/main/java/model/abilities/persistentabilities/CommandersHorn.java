@@ -1,6 +1,7 @@
 package model.abilities.persistentabilities;
 
 import enums.cardsinformation.Type;
+import model.abilities.instantaneousabilities.Spy;
 import model.card.Card;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class CommandersHorn extends PersistentAbility {
     }
 
     public static boolean doesAffectSpy(Card myCard, Card card) {
-        return card.getType() == Type.SPY_UNIT && !AFFECTED_CARDS.contains(card);
+        return card.getAbility() instanceof Spy && !AFFECTED_CARDS.contains(card);
     }
 
     @Override

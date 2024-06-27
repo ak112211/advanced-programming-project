@@ -49,7 +49,7 @@ public class Card extends Rectangle {
         this.setWidth(53);
         this.setHeight(79);
         this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("lg", "sm")))
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("/lg/", "/sm/")))
                         .toExternalForm())));
     }
 
@@ -61,6 +61,18 @@ public class Card extends Rectangle {
         this.setFill(new ImagePattern(new Image(
                 Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
                         .toExternalForm())));
+    }
+
+    public Rectangle getBigRectangle() {
+        Rectangle rectangle = new Rectangle();
+        rectangle.setArcWidth(10);
+        rectangle.setArcHeight(10);
+        rectangle.setWidth(70);
+        rectangle.setHeight(100);
+        rectangle.setFill(new ImagePattern(new Image(
+                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                        .toExternalForm())));
+        return rectangle;
     }
 
     public String getName() {
