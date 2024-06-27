@@ -16,6 +16,8 @@ import java.util.Random;
 
 public class Game implements Serializable {
     private static final Random RANDOM = new Random();
+    private static final int VETO_TIMES = 2;
+    private static final int STARTING_HAND_SIZE = 10;
     private final User PLAYER1;
     private final User PLAYER2;
     private User currentPlayer;
@@ -53,20 +55,60 @@ public class Game implements Serializable {
         //TODO
     }
 
-    public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
-        if (!cards1.remove(card)) {
-            throw new RuntimeException("Card doesn't exist there");
-        }
-        cards2.add(card);
+    public void nextTurn() {
+        switchSides();
     }
 
-    public void moveCardToGraveyard(Card card) {
-        moveCard(card, inGameCards, card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
+    public void switchSides() {
+        currentPlayer = (currentPlayer.equals(PLAYER1)) ? PLAYER2 : PLAYER1;
+    }
+
+    public void player1VetoCard() {
+        for (int i = 0; i < VETO_TIMES; i++) {
+            Card chosenCard = chooseCardOrPass(player1InHandCards);
+            if (chosenCard == null) {
+                return;
+            }
+            player1GetRandomCard();
+            moveCard(chosenCard, player1InHandCards, player1Deck);
+        }
+    }
+
+    public void player2VetoCard() {
+        for (int i = 0; i < VETO_TIMES; i++) {
+            Card chosenCard = chooseCardOrPass(player2InHandCards);
+            if (chosenCard == null) {
+                return;
+            }
+            player2GetRandomCard();
+            moveCard(chosenCard, player2InHandCards, player2Deck);
+        }
+    }
+
+    public void calculatePoints() {
+        PersistentAbility.calculatePowers(inGameCards);
+        player1Points = inGameCards.stream()
+                .filter(card -> card.getRow().isPlayer1())
+                .mapToInt(Card::getPower)
+                .sum();
+        player2Points = inGameCards.stream()
+                .filter(card -> !card.getRow().isPlayer1())
+                .mapToInt(Card::getPower)
+                .sum();
     }
 
     public boolean canPlay(Card card) {
         return card.getType() != Type.SPELL ||
                 inGameCards.stream().noneMatch(inGameCard -> card.same(inGameCard) && card.sameRow(inGameCard));
+    }
+
+    // Functions that move a card:
+
+    public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
+        if (!cards1.remove(card)) {
+            throw new RuntimeException("Card doesn't exist there");
+        }
+        cards2.add(card);
     }
 
     public boolean player1PlayCard(Card card, Row row) {
@@ -107,34 +149,18 @@ public class Game implements Serializable {
         }
     }
 
-    public void calculatePoints() {
-        PersistentAbility.calculatePowers(inGameCards);
-        player1Points = inGameCards.stream()
-                .filter(card -> card.getRow().isPlayer1())
-                .mapToInt(Card::getPower)
-                .sum();
-        player2Points = inGameCards.stream()
-                .filter(card -> !card.getRow().isPlayer1())
-                .mapToInt(Card::getPower)
-                .sum();
+    public void moveCardToGraveyard(Card card) {
+        moveCard(card, inGameCards, card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
     }
 
-    public void nextTurn() {
-        switchSides();
-    }
+    // Functions that choose a card:
 
-    public void switchSides() {
-        currentPlayer = (currentPlayer.equals(PLAYER1)) ? PLAYER2 : PLAYER1;
-    }
-
-    public Card chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
-        if (onlyAffectables) {
-            cards = cards.stream().filter(Ability::canBeAffected).toList();
+    public Card chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
+        if (random) {
+            return chooseRandomCard(cards, onlyAffectables);
+        } else {
+            return chooseCard(cards, onlyAffectables);
         }
-        if (cards.isEmpty()) {
-            return null;
-        }
-        return null; // TODO
     }
 
     public static Card chooseRandomCard(List<Card> cards, boolean onlyAffectables) {
@@ -147,31 +173,24 @@ public class Game implements Serializable {
         return cards.get(RANDOM.nextInt(cards.size()));
     }
 
-    public Card chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
-        if (random) {
-            return chooseRandomCard(cards, onlyAffectables);
-        } else {
-            return chooseCard(cards, onlyAffectables);
+    public Card chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
+        if (onlyAffectables) {
+            cards = cards.stream().filter(Ability::canBeAffected).toList();
         }
+        if (cards.isEmpty()) {
+            return null;
+        }
+        return null; // TODO
     }
 
-    public void player1VetoCard() {
-        Card chosenCard = chooseCard(player1InHandCards, false);
-        player1GetRandomCard();
-        moveCard(chosenCard, player1InHandCards, player1Deck);
+    public Card chooseCardOrPass(List<Card> cards) {
+        if (cards.isEmpty()) {
+            return null;
+        }
+        return null; // TODO
     }
 
-    public void player2VetoCard() {
-        Card chosenCard = chooseCard(player2InHandCards, false);
-        player2GetRandomCard();
-        moveCard(chosenCard, player2InHandCards, player2Deck);
-    }
-
-    public void passVeto() {
-        nextTurn();
-    }
-
-    // Getters and setters:
+    // Getter and setter functions:
 
     public static void setCurrentGame(Game game) {
         currentGame = game;
