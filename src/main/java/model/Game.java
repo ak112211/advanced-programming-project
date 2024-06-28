@@ -1,5 +1,7 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.Type;
 import javafx.scene.layout.Pane;
@@ -9,6 +11,9 @@ import model.abilities.openingabilities.OpeningAbility;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
+import util.CardSerializer;
+import util.DeckDeserializer;
+import util.LeaderSerializer;
 
 import java.io.Serializable;
 import java.util.*;
@@ -294,5 +299,23 @@ public class Game implements Serializable {
 
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
+    }
+
+    public String toJson() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .setPrettyPrinting()
+                .create();
+        return gson.toJson(this);
+    }
+
+    public static Game fromJson(String json) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .registerTypeAdapter(Deck.class, new DeckDeserializer())
+                .create();
+        return gson.fromJson(json, Game.class);
     }
 }

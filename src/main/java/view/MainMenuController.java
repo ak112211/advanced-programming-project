@@ -40,6 +40,10 @@ public class MainMenuController {
     @FXML
     public Text cardDescriptionText;
     @FXML
+    public ListView<String> savedGamesListView;
+    @FXML
+    public Button continueButton;
+    @FXML
     private TextField friendUsernameField;
     @FXML
     private ListView<String> friendsListView;
@@ -63,6 +67,7 @@ public class MainMenuController {
     private User currentUser;
     private Deck currentDeck;
     private Deck player2Deck;
+    private Game game;
     private List<Leader> leaders = new ArrayList<>();
 
     private boolean isPlayer2Turn = false;
@@ -71,6 +76,23 @@ public class MainMenuController {
     private void initialize() {
         currentUser = User.getCurrentUser();
         currentDeck = currentUser.getDeck();
+        if (currentUser.getGames() != null) {
+            for (Game game : currentUser.getGames()) {
+                savedGamesListView.getItems().add(game.getDate().toString());
+            }
+        } else {
+            savedGamesListView.setVisible(false);
+        }
+        savedGamesListView.setOnMouseClicked(event -> {
+            String selectedDate = savedGamesListView.getSelectionModel().getSelectedItem();
+            game = currentUser.getGames().stream()
+                    .filter(c -> c.getDate().toString().equals(selectedDate))
+                    .findFirst()
+                    .orElse(null);
+        });
+
+
+        continueButton.setDisable(true);
         friendsMenu.setDisable(true);
 
         setup();
@@ -407,8 +429,11 @@ public class MainMenuController {
 
         User player2 = new User("Player2", null, null, null);
         player2.setDeck(player2Deck);
-        Game game = new Game(currentUser, new User("Player2", null, null, null)); // Assuming "Player2" is a placeholder user
+        if (game == null) {
+            game = new Game(currentUser, new User("Player2", null, null, null)); // Assuming "Player2" is a placeholder user
+        }
         Game.setCurrentGame(game);
         new GameLauncher().start(App.getStage());
     }
+
 }

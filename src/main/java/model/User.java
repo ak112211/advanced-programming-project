@@ -155,17 +155,6 @@ public class User implements Serializable {
         return 1;
     }
 
-    public static User deserializeUser(String serializedUser) {
-        try {
-            ByteArrayInputStream bis = new ByteArrayInputStream(serializedUser.getBytes());
-            ObjectInputStream ois = new ObjectInputStream(bis);
-            return (User) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Failed to load user data.");
-            return null;
-        }
-    }
 }
 
 

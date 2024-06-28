@@ -1,10 +1,12 @@
 package util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
+import model.card.Leader;
 
 import java.io.*;
 import java.sql.*;
@@ -250,12 +252,17 @@ public class DatabaseConnection {
             preparedStatement.setInt(5, user.getQuestionNumber());
             preparedStatement.setString(6, user.getAnswer());
             preparedStatement.setInt(7, user.getHighScore());
-            preparedStatement.setString(8, user.getDeck().getFaction() != null ? user.getDeck().getFaction().toString() : null);
-            preparedStatement.setString(9, GSON.toJson(user.getDeck().getLeader()));
-            preparedStatement.setString(10, GSON.toJson(user.getDeck()));
-            preparedStatement.setString(11, GSON.toJson(user.getDecks()));
-            preparedStatement.setString(12, GSON.toJson(user.getPlayCard()));
-            preparedStatement.setString(13, GSON.toJson(user.getFriends()));
+            preparedStatement.setString(8, user.getDeck().toJson());
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardSerializer())
+                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                    .setPrettyPrinting()
+                    .create();
+
+            preparedStatement.setString(9, gson.toJson(user.getDecks()));
+            preparedStatement.setString(10, null);
+            preparedStatement.setString(11, GSON.toJson(user.getFriends()));
+            preparedStatement.setString(12, gson.toJson(user.getGames()));
 
             preparedStatement.executeUpdate();
         }
@@ -275,15 +282,23 @@ public class DatabaseConnection {
                     String answer = resultSet.getString("answer");
                     int highScore = resultSet.getInt("high_score");
 
-                    Deck deck = GSON.fromJson(resultSet.getString("deck"), Deck.class);
-                    ArrayList<Deck> decks = GSON.fromJson(resultSet.getString("decks"), ArrayList.class);
-                    Card playCard = GSON.fromJson(resultSet.getString("play_card"), Card.class);
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(Card.class, new CardSerializer())
+                            .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                            .registerTypeAdapter(Deck.class, new DeckDeserializer())
+                            .create();
+                    Deck deck = Deck.fromJson(resultSet.getString("deck"));
+                    ArrayList<Deck> decks = gson.fromJson(resultSet.getString("decks"), ArrayList.class);
+                    ArrayList<Game> games = gson.fromJson(resultSet.getString("games"), ArrayList.class);
+
+                    Card playCard = null;
                     List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
                     User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
                     user.setQuestionNumber(questionNumber);
                     user.setAnswer(answer != null ? answer : "");
                     user.setHighScore(highScore);
+                    user.setGames(games);
                     user.setDeck(deck != null ? deck : new Deck());
                     user.setDecks(decks != null ? decks : new ArrayList<>());
                     user.setPlayCard(playCard);

@@ -33,6 +33,14 @@
                 <Button text="Send Play Request" onAction="#sendPlayRequest" />
             </VBox>
         </HBox>
+        <HBox fx:id="savedGamesMenu" spacing="10" alignment="CENTER">
+            <Label text="Saved Games Menu:" />
+            <VBox spacing="10" visible="false">
+                <Label text="Choose a friend to play with:" />
+                <ListView fx:id="savedGamesListView" prefHeight="100" prefWidth="200" />
+                <Button fx:id="continueButton" text="continue game" onAction="#startGame" />
+            </VBox>
+        </HBox>
         <HBox spacing="10" alignment="CENTER">
             <VBox spacing="10" alignment="TOP_CENTER">
                 <Label text="Faction Cards:" />
