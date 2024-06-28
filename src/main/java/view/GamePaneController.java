@@ -147,15 +147,23 @@ public class GamePaneController implements Initializable {
             Game.setCurrentGame(game);
         }
         game.initializeGameObjects();
-        setupGame();
-    }
-
-    private void setupGame() {
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
+        initializeCards();
         setupLeaderCards();
         showVetoOverlay(); // Show the veto overlay at the beginning of the game
         startTurn();
+    }
+
+    private void initializeCards() {
+        game.getPlayer1Deck().forEach(this::createCardView);
+        game.getPlayer1InHandCards().forEach(this::createCardView);
+        game.getPlayer1GraveyardCards().forEach(this::createCardView);
+        game.getPlayer1LeaderCard().setSmallImage();
+        game.getPlayer2Deck().forEach(this::createCardView);
+        game.getPlayer2InHandCards().forEach(this::createCardView);
+        game.getPlayer2GraveyardCards().forEach(this::createCardView);
+        game.getPlayer2LeaderCard().setSmallImage();
     }
 
     private void setupCardsOnBoard() {
@@ -180,11 +188,9 @@ public class GamePaneController implements Initializable {
         player2Leader.getChildren().clear();
 
         Leader player1LeaderCard = game.getPlayer1LeaderCard();
-        player1LeaderCard.setSmallImage();
         player1Leader.getChildren().add(player1LeaderCard);
 
         Leader player2LeaderCard = game.getPlayer2LeaderCard();
-        player2LeaderCard.setSmallImage();
         player2Leader.getChildren().add(player2LeaderCard);
     }
 
@@ -193,11 +199,11 @@ public class GamePaneController implements Initializable {
         player2Hand.getChildren().clear();
 
         for (Card card : game.getPlayer1InHandCards()) {
-            player1Hand.getChildren().add(createCardView(card));
+            player1Hand.getChildren().add(card);
         }
 
         for (Card card : game.getPlayer2InHandCards()) {
-            player2Hand.getChildren().add(createCardView(card));
+            player2Hand.getChildren().add(card);
         }
     }
 
