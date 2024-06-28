@@ -5,6 +5,7 @@ import model.Game;
 import model.card.Card;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class GetCard extends InstantaneousAbility {
     private final CardsPlace CARDS_PLACE;
@@ -22,7 +23,11 @@ public class GetCard extends InstantaneousAbility {
     public void affect(Game game, Card myCard) {
         ArrayList<Card> cardList = CARDS_PLACE.getCards(game, game.isPlayer1Turn() == FROM_OWN);
         for (int i = 0; i < AMOUNT; i++) {
-            game.moveCard(game.chooseCard(cardList, true, RANDOM), cardList,
+            Optional<Card> card = game.chooseCard(cardList, true, RANDOM);
+            if (card.isEmpty()) {
+                return;
+            }
+            game.moveCard(card.get(), cardList,
                     CardsPlace.IN_HAND.getPlayerCards(game));
         }
     }

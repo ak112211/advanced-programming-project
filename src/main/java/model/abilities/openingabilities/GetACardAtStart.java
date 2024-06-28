@@ -13,7 +13,10 @@ public class GetACardAtStart extends OpeningAbility {
         if (CancelLeaderAbility.exists(game)) {
             return;
         }
-        ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getCards(game, isPlayer1);
-        game.moveCard(Game.chooseRandomCard(inHandCards, false), inHandCards, game.getInGameCards());
+        if (isPlayer1) {
+            game.player1GetRandomCard();
+        } else {
+            game.player2GetRandomCard();
+        }
     }
 }

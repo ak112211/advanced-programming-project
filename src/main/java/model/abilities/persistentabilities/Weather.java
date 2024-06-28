@@ -28,7 +28,7 @@ public class Weather extends PersistentAbility {
     }
 
     public static boolean doesAffectRangedSiege(Card myCard, Card card) {
-        return (doesAffectRanged(myCard, card) || doesAffectSiege(myCard, card)) && !AFFECTED_CARDS.contains(card);
+        return (doesAffectRanged(myCard, card) || doesAffectSiege(myCard, card));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Weather extends PersistentAbility {
 
     public static void affect(Card card) {
         if (card.getFirstPower() != 0) {
-            card.setPower(card.getPower() / card.getFirstPower()); // because of TightBond effect
+            card.setPower(card.getPower() / card.getFirstPower()); // because of TightBond effect that made impact before weather
             if (WeatherEndurance.exists(Game.getCurrentGame())) {
                 card.setPower(card.getPower() * (card.getFirstPower() / 2));
             }

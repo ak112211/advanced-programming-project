@@ -11,10 +11,7 @@ import model.card.Card;
 import model.card.Leader;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Game implements Serializable {
     private static final Random RANDOM = new Random();
@@ -73,23 +70,23 @@ public class Game implements Serializable {
 
     public void player1VetoCard() {
         for (int i = 0; i < VETO_TIMES; i++) {
-            Card chosenCard = chooseCardOrPass(PLAYER1_IN_HAND_CARDS);
+            Optional<Card> chosenCard = chooseCardOrPass(PLAYER1_IN_HAND_CARDS);
             if (chosenCard == null) {
                 return;
             }
             player1GetRandomCard();
-            moveCard(chosenCard, PLAYER1_IN_HAND_CARDS, player1Deck);
+            moveCard(chosenCard.orElseThrow(), PLAYER1_IN_HAND_CARDS, player1Deck);
         }
     }
 
     public void player2VetoCard() {
         for (int i = 0; i < VETO_TIMES; i++) {
-            Card chosenCard = chooseCardOrPass(PLAYER2_IN_HAND_CARDS);
+            Optional<Card> chosenCard = chooseCardOrPass(PLAYER2_IN_HAND_CARDS);
             if (chosenCard == null) {
                 return;
             }
             player2GetRandomCard();
-            moveCard(chosenCard, PLAYER2_IN_HAND_CARDS, player2Deck);
+            moveCard(chosenCard.orElseThrow(), PLAYER2_IN_HAND_CARDS, player2Deck);
         }
     }
 
@@ -150,13 +147,13 @@ public class Game implements Serializable {
 
     public void player1GetRandomCard() {
         if (!player1Deck.isEmpty()) {
-            moveCard(chooseRandomCard(player1Deck, false), player1Deck, PLAYER1_IN_HAND_CARDS);
+            moveCard(chooseRandomCard(player1Deck, false).orElseThrow(), player1Deck, PLAYER1_IN_HAND_CARDS);
         }
     }
 
     public void player2GetRandomCard() {
         if (!player2Deck.isEmpty()) {
-            moveCard(chooseRandomCard(player2Deck, false), player2Deck, PLAYER2_IN_HAND_CARDS);
+            moveCard(chooseRandomCard(player2Deck, false).orElseThrow(), player2Deck, PLAYER2_IN_HAND_CARDS);
         }
     }
 
@@ -166,7 +163,7 @@ public class Game implements Serializable {
 
     // Functions that choose a card:
 
-    public Card chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
+    public Optional<Card> chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
         if (random) {
             return chooseRandomCard(cards, onlyAffectables);
         } else {
@@ -174,29 +171,29 @@ public class Game implements Serializable {
         }
     }
 
-    public static Card chooseRandomCard(List<Card> cards, boolean onlyAffectables) {
+    public static Optional<Card> chooseRandomCard(List<Card> cards, boolean onlyAffectables) {
         if (onlyAffectables) {
             cards = cards.stream().filter(Ability::canBeAffected).toList();
         }
         if (cards.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return cards.get(RANDOM.nextInt(cards.size()));
+        return Optional.of(cards.get(RANDOM.nextInt(cards.size())));
     }
 
-    public Card chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
+    public Optional<Card> chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
         if (onlyAffectables) {
             cards = cards.stream().filter(Ability::canBeAffected).toList();
         }
         if (cards.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
-        return null; // TODO
+        return Optional.empty(); // TODO
     }
 
-    public Card chooseCardOrPass(List<Card> cards) {
+    public Optional<Card> chooseCardOrPass(List<Card> cards) {
         if (cards.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         return null; // TODO
     }

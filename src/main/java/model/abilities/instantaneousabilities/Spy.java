@@ -5,6 +5,7 @@ import model.Game;
 import model.card.Card;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 
 public class Spy extends InstantaneousAbility {
@@ -12,11 +13,11 @@ public class Spy extends InstantaneousAbility {
         ArrayList<Card> deck = CardsPlace.DECK.getPlayerCards(game);
         ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getPlayerCards(game);
         for (int i = 0; i < 2; i++) {
-            Card card = Game.chooseRandomCard(deck, false);
-            if (card == null) {
+            Optional<Card> card = Game.chooseRandomCard(deck, false);
+            if (card.isEmpty()) {
                 return;
             }
-            game.moveCard(card, deck, inHandCards);
+            game.moveCard(card.get(), deck, inHandCards);
         }
     }
 }

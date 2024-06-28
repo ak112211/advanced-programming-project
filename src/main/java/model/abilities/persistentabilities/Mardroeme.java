@@ -13,7 +13,7 @@ public class Mardroeme extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return sameRow(myCard, card) && !AFFECTED_CARDS.contains(card) && card.getAbility() instanceof Berserker;
+        return card.getAbility() instanceof Berserker && sameRow(myCard, card) && !AFFECTED_CARDS.contains(card) ;
     }
 
     @Override

@@ -25,6 +25,7 @@ import javafx.util.Duration;
 import model.Deck;
 import model.Game;
 import model.User;
+import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Decoy;
 import model.abilities.instantaneousabilities.Spy;
 import model.card.Card;
@@ -33,6 +34,7 @@ import model.card.Leader;
 import java.net.URL;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class GamePaneController implements Initializable {
     @FXML
@@ -271,6 +273,7 @@ public class GamePaneController implements Initializable {
         updateScore();
         setupCardsInHand();
         setupCardsOnBoard();
+        clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         if (game.isPlayer1Turn()) {
             // Enable Player 2's hand and disable Player 1's hand
             for (Node card : player1Hand.getChildren()) {
@@ -297,8 +300,8 @@ public class GamePaneController implements Initializable {
         selectedCard = card;
 
         // Highlighting and setting mouse handler for possible rows
-        boolean isPlayer1 = game.isPlayer1Turn() ^ card.getAbility() instanceof Spy;
         clearHighlights();
+        boolean isPlayer1 = game.isPlayer1Turn() ^ card.getAbility() instanceof Spy;
         try {
             highlightRow(GET_ROW_BOX.get(card.getType().getRow(isPlayer1)),
                     card.getType().getRow(isPlayer1), card);
@@ -321,29 +324,38 @@ public class GamePaneController implements Initializable {
                     highlightRow(player2SiegeSpell, Row.PLAYER2_SIEGE, card);
                 }
             } else if (card.getType() == Type.DECOY) {
-                if (isPlayer1) {
-                    player1CloseCombat.getChildren().forEach(inGameCard -> highlightCard((Card) inGameCard, card));
-                    player1Ranged.getChildren().forEach(inGameCard -> highlightCard((Card) inGameCard, card));
-                    player1Siege.getChildren().forEach(inGameCard -> highlightCard((Card) inGameCard, card));
-                } else {
-                    player2CloseCombat.getChildren().forEach(inGameCard -> highlightCard((Card) inGameCard, card));
-                    player2Ranged.getChildren().forEach(inGameCard -> highlightCard((Card) inGameCard, card));
-                    player2Siege.getChildren().forEach(inGameCard -> highlightCard((Card) inGameCard, card));
-                }
+                (isPlayer1 ?
+                        Stream.concat(player1CloseCombat.getChildren().stream(),
+                                Stream.concat(player1Ranged.getChildren().stream(), player1Siege.getChildren().stream())) :
+                        Stream.concat(player2CloseCombat.getChildren().stream(),
+                                Stream.concat(player2Ranged.getChildren().stream(), player2Siege.getChildren().stream()))
+                ).filter(inGameCard -> Ability.canBeAffected((Card) inGameCard))
+                        .forEach(inGameCard -> highlightCard((Card) inGameCard, card));
             }
         }
     }
 
     private void highlightRow(HBox rowBox, Row row, Card card) {
         rowBox.setStyle("-fx-background-color: rgba(255, 255, 150, 0.2);");
-        rowBox.setOnMouseClicked(rowClickEvent -> placeCard(card, row));
+        rowBox.setOnMouseClicked(rowClickEvent -> {
+            try {
+                playCard(card, row);
+            } catch (IllegalArgumentException e) {
+                System.out.println(card.getType() + card.getName() + row);
+            }
+        });
     }
 
     private void highlightCard(Card inGameCard, Card card) {
         inGameCard.setStroke(Paint.valueOf("FFFFA0B0"));
         inGameCard.setStrokeWidth(2);
         inGameCard.setOnMouseClicked(rowClickEvent -> {
-            placeCard(card, inGameCard.getRow());
+            try {
+                playCard(card, inGameCard.getRow());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.out.println(card.getType() + card.getName() + inGameCard.getRow());
+            }
             ((Decoy) card.getAbility()).setReturnCard(inGameCard);
         });
     }
@@ -388,15 +400,10 @@ public class GamePaneController implements Initializable {
         player2CloseCombat.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
         player2Ranged.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
         player2Siege.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-    }
-
-    private void placeCard(Card card, Row row) {
-        playCard(card, row);
-        clearHighlights(); // Clear any row highlights after placing the card
+        weather.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
     }
 
     private void playCard(Card card, Row row) {
-        clearHighlights(); // Clear any row highlights before placing the card
         if (row.isPlayer1() ^ card.getAbility() instanceof Spy) {
             game.player1PlayCard(card, row);
         } else {

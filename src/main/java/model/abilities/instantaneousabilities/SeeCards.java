@@ -18,8 +18,8 @@ public class SeeCards extends InstantaneousAbility {
         ArrayList<Card> enemyInHandCards = CardsPlace.IN_HAND.getCards(game, !game.isPlayer1Turn());
         HashSet<Card> cardsToBeSeen = new HashSet<>();
         while (cardsToBeSeen.size() < AMOUNT && cardsToBeSeen.size() < enemyInHandCards.size()) {
-            cardsToBeSeen.add(Game.chooseRandomCard(enemyInHandCards, false));
+            cardsToBeSeen.add(Game.chooseRandomCard(enemyInHandCards, false).orElseThrow());
         }
-        game.chooseCard(cardsToBeSeen.stream().toList(), false);
+        game.chooseCardOrPass(cardsToBeSeen.stream().toList());
     }
 }

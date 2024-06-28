@@ -60,7 +60,7 @@ public abstract class PersistentAbility extends Ability {
     }
 
     public void addToAffectedCards(ArrayList<Card> inGameCards, Card myCard) {
-        for (Card card : inGameCards) {
+        for (Card card : inGameCards.stream().filter(Ability::canBeAffected).toList()) {
             addToAffectedCardsForEachCard(card, myCard);
         }
     }

@@ -5,6 +5,7 @@ import model.Game;
 import model.card.Card;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class KillAndGetCard extends InstantaneousAbility {
     private final int KILL_AMOUNT;
@@ -20,8 +21,7 @@ public class KillAndGetCard extends InstantaneousAbility {
             return;
         }
         for (int i = 0; i < KILL_AMOUNT; i++) {
-            Card card = game.chooseCard(inHandCards, false);
-            game.moveCard(card, inHandCards, graveyard);
+            game.moveCard(game.chooseCard(inHandCards, false).orElseThrow(), inHandCards, graveyard);
         }
         if (game.isPlayer1Turn()) {
             game.player1GetRandomCard();

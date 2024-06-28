@@ -12,7 +12,7 @@ public class MoraleBoost extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return canBeAffected(card) && notSameCards(myCard, card) && sameRow(myCard, card);
+        return notSameCards(myCard, card) && sameRow(myCard, card);
     }
 
     @Override
