@@ -1,6 +1,7 @@
 package model.card;
 
-import enums.leaders.LeaderEnum;
+import enums.cards.*;
+import enums.leaders.*;
 import enums.cardsinformation.Faction;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
@@ -65,4 +66,38 @@ public class Leader extends Rectangle {
     public LeaderEnum getLeaderEnum() {
         return LEADER_ENUM;
     }
+
+    public static Leader getLeaderFromType(String type) {
+        for (
+                RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        for (
+                ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        for (
+                MonstersLeaders cardEnum : MonstersLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        for (
+                EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        return null;
+    }
+
 }

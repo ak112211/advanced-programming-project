@@ -1,6 +1,6 @@
 package model.card;
 
-import enums.cards.CardEnum;
+import enums.cards.*;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import enums.Row;
@@ -129,5 +129,35 @@ public class Card extends Rectangle {
 
     public boolean sameRow(Card card) {
         return row.equals(card.row);
+    }
+    
+    public static Card getCardFromType(String type) {
+        for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getCard();
+            }
+        }
+        for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getCard();
+            }        }
+        for (MonstersCards cardEnum : MonstersCards.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getCard();
+            }        }
+        for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getCard();
+            }        }
+        for (SkelligeCards cardEnum : SkelligeCards.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getCard();
+            }        }
+        for (NeutralCards cardEnum : NeutralCards.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getCard();
+            }
+        }
+        return null;
     }
 }

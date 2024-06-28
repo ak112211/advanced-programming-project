@@ -18,31 +18,6 @@ public class LeaderSerializer implements JsonSerializer<Leader>, JsonDeserialize
     @Override
     public Leader deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        for (RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("LEADER_ENUM").toString())) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("LEADER_ENUM").toString())) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (MonstersLeaders cardEnum : MonstersLeaders.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("LEADER_ENUM").toString())) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("LEADER_ENUM").toString())) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("LEADER_ENUM").toString())) {
-                return cardEnum.getLeader();
-            }
-        }
-        return null;
+        return Leader.getLeaderFromType(jsonObject.get("LEADER_ENUM").toString());
     }
 }

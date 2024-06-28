@@ -21,33 +21,6 @@ public class CardSerializer implements JsonSerializer<Card>, JsonDeserializer<Ca
     @Override
     public Card deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("CARD_ENUM").toString())) {
-                return cardEnum.getCard();
-            }
-        }
-        for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("CARD_ENUM").toString())) {
-                return cardEnum.getCard();
-            }        }
-        for (MonstersCards cardEnum : MonstersCards.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("CARD_ENUM").toString())) {
-                return cardEnum.getCard();
-            }        }
-        for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("CARD_ENUM").toString())) {
-                return cardEnum.getCard();
-            }        }
-        for (SkelligeCards cardEnum : SkelligeCards.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("CARD_ENUM").toString())) {
-                return cardEnum.getCard();
-            }        }
-        for (NeutralCards cardEnum : NeutralCards.values()) {
-            if (cardEnum.toString().equals(jsonObject.get("CARD_ENUM").toString())) {
-                return cardEnum.getCard();
-            }
-        }
-
-        return null;
+        return Card.getCardFromType(jsonObject.get("CARD_ENUM").toString());
     }
 }

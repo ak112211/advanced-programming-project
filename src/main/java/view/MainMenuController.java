@@ -44,6 +44,7 @@ public class MainMenuController {
 
     private User currentUser;
     private Deck currentDeck;
+    List<Leader> leaders = new ArrayList<>();
 
     @FXML
     private void initialize() {
@@ -145,34 +146,7 @@ public class MainMenuController {
 
     private void loadLeaders(Faction faction) {
         leaderComboBox.getItems().clear();
-        List<Leader> leaders = new ArrayList<>();
-        switch (faction) {
-            case EMPIRE_NILFGAARDIAM:
-                for (EmpireNilfgaardianLeaders leaderEnum : EmpireNilfgaardianLeaders.values()) {
-                    leaders.add(leaderEnum.getLeader());
-                }
-                break;
-            case MONSTER:
-                for (MonstersLeaders leaderEnum : MonstersLeaders.values()) {
-                    leaders.add(leaderEnum.getLeader());
-                }
-                break;
-            case REALMS_NORTHERN:
-                for (RealmsNorthernLeaders leaderEnum : RealmsNorthernLeaders.values()) {
-                    leaders.add(leaderEnum.getLeader());
-                }
-                break;
-            case SCOIA_TAEL:
-                for (ScoiaTaelLeaders leaderEnum : ScoiaTaelLeaders.values()) {
-                    leaders.add(leaderEnum.getLeader());
-                }
-                break;
-            case SKELLIGE:
-                for (SkelligeLeaders leaderEnum : SkelligeLeaders.values()) {
-                    leaders.add(leaderEnum.getLeader());
-                }
-                break;
-        }
+        setUpLeaders(faction);
         leaderComboBox.getItems().addAll(leaders);
 
         // Randomly select a leader if none is set
@@ -183,7 +157,11 @@ public class MainMenuController {
     }
 
     private Leader getRandomLeader(Faction faction) {
-        List<Leader> leaders = new ArrayList<>();
+        setUpLeaders(faction);
+        return leaders.get(new Random().nextInt(leaders.size()));
+    }
+
+    private void setUpLeaders(Faction faction) {
         switch (faction) {
             case EMPIRE_NILFGAARDIAM:
                 for (EmpireNilfgaardianLeaders leaderEnum : EmpireNilfgaardianLeaders.values()) {
@@ -211,14 +189,13 @@ public class MainMenuController {
                 }
                 break;
         }
-        return leaders.get(new Random().nextInt(leaders.size()));
     }
 
     private void addToDeck(Card card) {
         long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.equals(card)).count();
         if (countInDeck < card.getNoOfCardsInGame() && deckCardsListView.getItems().size() < 22) {
             deckCardsListView.getItems().add(card);
-            currentDeck.getCards().remove(card);
+            currentDeck.getCards().add(card);
 
             if (countInDeck + 1 == card.getNoOfCardsInGame()) {
                 factionCardsListView.getItems().remove(card);
@@ -328,7 +305,7 @@ public class MainMenuController {
         currentDeck.getCards().clear();
         currentDeck.getCards().addAll(selectedDeck);
 
-        try (FileWriter writer = new FileWriter(currentDeck.getName() + ".json")) {
+        try (FileWriter writer = new FileWriter(currentDeck.getFaction() + ".json")) {
             writer.write(currentDeck.toJson());
             Tools.showAlert("Deck saved successfully.");
         } catch (IOException e) {

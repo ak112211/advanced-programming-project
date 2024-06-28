@@ -1,12 +1,12 @@
 package model;
 
 import enums.cardsinformation.Faction;
-import model.abilities.Ability;
 import model.card.Card;
 import model.card.Leader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import util.CardSerializer;
+import util.DeckDeserializer;
 import util.LeaderSerializer;
 
 import java.io.*;
@@ -14,30 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Deck implements Serializable {
-    private String name;
-    private String fileAddress;
     private Faction faction;
     private Leader leader;
     private final ArrayList<Card> CARDS = new ArrayList<Card>();
 
     public ArrayList<Card> getCards() {
         return CARDS;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFileAddress() {
-        return fileAddress;
-    }
-
-    public void setFileAddress(String fileAddress) {
-        this.fileAddress = fileAddress;
     }
 
     public void addCard(Card card2) {
@@ -77,6 +59,7 @@ public class Deck implements Serializable {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Card.class, new CardSerializer())
                 .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .registerTypeAdapter(Deck.class, new DeckDeserializer())
                 .create();
         return gson.fromJson(json, Deck.class);
     }
@@ -97,6 +80,7 @@ public class Deck implements Serializable {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Card.class, new CardSerializer())
                     .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                    .registerTypeAdapter(Deck.class, new DeckDeserializer())
                     .create();
             return gson.fromJson(reader, Deck.class);
         }
