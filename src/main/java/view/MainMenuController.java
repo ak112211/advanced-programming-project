@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import model.App;
+import model.Game;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
@@ -397,4 +398,17 @@ public class MainMenuController {
     }
 
 
+    @FXML
+    public void startGame(ActionEvent actionEvent) {
+        if (currentDeck == null || player2Deck == null || currentDeck.getCards().size() < 22 || player2Deck.getCards().size() < 22) {
+            Tools.showAlert("Error", "Deck Error", "Both players must have at least 22 unit cards to start the game.");
+            return;
+        }
+
+        User player2 = new User("Player2", null, null, null);
+        player2.setDeck(player2Deck);
+        Game game = new Game(currentUser, new User("Player2", null, null, null)); // Assuming "Player2" is a placeholder user
+        Game.setCurrentGame(game);
+        new GameLauncher().start(App.getStage());
+    }
 }

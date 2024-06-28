@@ -48,7 +48,7 @@
             <Label fx:id="specialCardsLabel" text="Special Cards: 0" />
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Button fx:id="startGameButton" text="Start Game" disable="true" />
+            <Button fx:id="startGameButton" onAction="#startGame" text="Start Game" disable="true" />
             <Button text="Upload Deck" onAction="#uploadDeck" />
             <Button text="Download Deck" onAction="#downloadDeck" />
             <Button text="Save Deck" onAction="#handleSaveDeck" />
