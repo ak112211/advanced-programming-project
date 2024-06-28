@@ -2,6 +2,7 @@ package view;
 
 import enums.Menu;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.App;
@@ -16,6 +17,8 @@ public class LoginMenuController {
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;
+    @FXML
+    private CheckBox showPasswordCheckBox;
 
 
     @FXML
@@ -49,5 +52,9 @@ public class LoginMenuController {
         App.loadScene(Menu.REGISTER_MENU.getPath());
     }
 
+    @FXML
+    private void handleShowPassword() {
+        passwordField.setVisible(showPasswordCheckBox.isSelected());
+    }
 
 }

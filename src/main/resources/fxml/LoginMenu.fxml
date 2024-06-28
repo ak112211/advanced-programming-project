@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 
+<?import javafx.scene.control.CheckBox?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.LoginMenuController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
@@ -17,6 +18,10 @@
 
     <Label text="Password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
     <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Show Password:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="showPasswordCheckBox" GridPane.columnIndex="1"
+              onMouseClicked="#handleShowPassword"/>
 
     <Button text="Login" onAction="#handleLoginButtonAction" GridPane.rowIndex="2"
             GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
