@@ -3,8 +3,7 @@ package view;
 import enums.Menu;
 import enums.SecurityQuestion;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import model.App;
@@ -12,11 +11,13 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static view.Tools.showAlert;
 
 public class RegisterMenuController {
 
@@ -30,6 +31,8 @@ public class RegisterMenuController {
     private TextField passwordField;
     @FXML
     private TextField confirmPasswordField;
+    @FXML
+    private CheckBox showPasswordCheckBox;
     @FXML
     private ComboBox<SecurityQuestion> securityQuestionComboBox;
     @FXML
@@ -50,40 +53,33 @@ public class RegisterMenuController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
         SecurityQuestion securityQuestion = securityQuestionComboBox.getValue();
-        String securityAnswer = securityAnswerField.getText();
-        String securityAnswerConfirm = securityAnswerConfirmField.getText();
+        String securityAnswer = securityAnswerField.getText().trim();
+        String securityAnswerConfirm = securityAnswerConfirmField.getText().trim();
 
         try {
             if (DatabaseConnection.isUsernameTaken(username)) {
                 String newUsername = suggestNewUsername(username);
-                showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
+                Tools.showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
             } else if (!isValidUsername(username)) {
-                showAlert("Error", "Invalid Username", "Invalid username. Only letters, numbers, and '-' are allowed.");
+                Tools.showAlert("Error", "Invalid Username", "Invalid username. Only letters, numbers, and '-' are allowed.");
             } else if (!isValidEmail(email)) {
-                showAlert("Error", "Invalid Email", "Invalid email address.");
+                Tools.showAlert("Error", "Invalid Email", "Invalid email address.");
             } else if (!isValidPassword(password) && !password.equals("random")) {
-                showAlert("Error", "Weak Password", "Invalid password. Password must be at least 8 characters long, include uppercase, lowercase, numbers, and special characters.");
+                Tools.showAlert("Error", "Weak Password", "Invalid password. Password must be at least 8 characters long, include uppercase, lowercase, numbers, and special characters.");
             } else if (!password.equals(confirmPassword)) {
-                showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
+                Tools.showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
             } else if (securityQuestion == null || securityAnswer.isEmpty() || !securityAnswer.equals(securityAnswerConfirm)) {
-                showAlert("Error", "Security Question", "Security question must be selected and answers must match.");
+                Tools.showAlert("Error", "Security Question", "Security question must be selected and answers must match.");
             } else {
-                if ("random".equalsIgnoreCase(password)) {
-                    password = generateRandomPassword();
-                    boolean userAcceptedRandomPassword = confirmPasswordUsage(password);
-                    if (!userAcceptedRandomPassword) {
-                        return;
-                    }
-                }
 
                 User user = new User(username, nickname, email, password);
                 user.setQuestionNumber(securityQuestion.getNumber());
                 user.setAnswer(securityAnswer);
                 DatabaseConnection.saveUser(user);
-                showAlert("Success", "Registration Successful", "User registered successfully.");
+                Tools.showAlert("Success", "Registration Successful", "User registered successfully.");
             }
         } catch (SQLException e) {
-            showAlert("Error", "Registration Failed", "Error registering user: " + e.getMessage());
+            Tools.showAlert("Error", "Registration Failed", "Error registering user: " + e.getMessage());
         }
     }
 
@@ -97,6 +93,12 @@ public class RegisterMenuController {
         String password = generateRandomPassword();
         passwordField.setText(password);
         confirmPasswordField.setText(password);
+    }
+
+    @FXML
+    private void handleShowPassword() {
+        passwordField.setVisible(showPasswordCheckBox.isSelected());
+        confirmPasswordField.setVisible(showPasswordCheckBox.isSelected());
     }
 
     private String suggestNewUsername(String username) {
@@ -162,21 +164,6 @@ public class RegisterMenuController {
             password.append(allChars.charAt(random.nextInt(allChars.length())));
         }
         return password;
-    }
-
-    private boolean confirmPasswordUsage(String password) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm Password");
-        alert.setHeaderText("Random Password Generated");
-        alert.setContentText("A random strong password has been generated: " + password + "\nDo you want to use this password?");
-
-        ButtonType buttonTypeYes = new ButtonType("Yes");
-        ButtonType buttonTypeNo = new ButtonType("No");
-
-        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == buttonTypeYes;
     }
 
 }

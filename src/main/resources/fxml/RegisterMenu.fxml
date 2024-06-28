@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 
+<?import javafx.scene.control.CheckBox?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterMenuController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
@@ -28,19 +29,23 @@
     <Label text="Confirm Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
     <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-    <Label text="Security Question:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-    <ComboBox fx:id="securityQuestionComboBox" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    <Label text="Show Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <CheckBox fx:id="showPasswordCheckBox" GridPane.rowIndex="5" GridPane.columnIndex="1"
+              onMouseClicked="#handleShowPassword"/>
 
-    <Label text="Security Answer:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-    <TextField fx:id="securityAnswerField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+    <Label text="Security Question:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="securityQuestionComboBox" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
-    <Label text="Confirm Security Answer:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-    <TextField fx:id="securityAnswerConfirmField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+    <Label text="Security Answer:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <TextField fx:id="securityAnswerField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
-    <Button text="Register" onAction="#handleRegisterButtonAction" GridPane.rowIndex="8"
+    <Label text="Confirm Security Answer:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <TextField fx:id="securityAnswerConfirmField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+    <Button text="Register" onAction="#handleRegisterButtonAction" GridPane.rowIndex="9"
             GridPane.columnIndex="0" GridPane.halignment="RIGHT"/>
-    <Button text="Back" onAction="#handleBack" GridPane.rowIndex="8" GridPane.columnIndex="0"
+    <Button text="Back" onAction="#handleBack" GridPane.rowIndex="9" GridPane.columnIndex="0"
             GridPane.halignment="LEFT"/>
-    <Button text="Random Password" onAction="#handleRandomPassword" GridPane.rowIndex="8" GridPane.columnIndex="1"
+    <Button text="Random Password" onAction="#handleRandomPassword" GridPane.rowIndex="9" GridPane.columnIndex="1"
             GridPane.halignment="CENTER"/>
 </GridPane>
