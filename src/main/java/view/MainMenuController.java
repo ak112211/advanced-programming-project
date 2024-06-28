@@ -241,9 +241,6 @@ public class MainMenuController {
             } else {
                 player2Deck.getCards().add(card);
             }
-            if (countInDeck + 1 == card.getNoOfCardsInGame()) {
-                factionCardsListView.getItems().remove(card);
-            }
             updateCardCounts();
         }
     }
@@ -254,9 +251,6 @@ public class MainMenuController {
             currentDeck.getCards().remove(card);
         } else {
             player2Deck.getCards().remove(card);
-        }
-        if (!factionCardsListView.getItems().contains(card)) {
-            factionCardsListView.getItems().add(card);
         }
         updateCardCounts();
     }
