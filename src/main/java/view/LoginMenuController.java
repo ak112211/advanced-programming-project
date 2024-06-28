@@ -17,14 +17,6 @@ public class LoginMenuController {
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;
-    @FXML
-    private CheckBox showPasswordCheckBox;
-
-    @FXML
-    private void initialize() {
-        passwordField.setVisible(false);
-        showPasswordCheckBox.setSelected(false);
-    }
 
     @FXML
     private void handleLoginButtonAction() {
@@ -56,10 +48,4 @@ public class LoginMenuController {
     private void handleRegisterButtonAction() {
         App.loadScene(Menu.REGISTER_MENU.getPath());
     }
-
-    @FXML
-    private void handleShowPassword() {
-        passwordField.setVisible(showPasswordCheckBox.isSelected());
-    }
-
 }
