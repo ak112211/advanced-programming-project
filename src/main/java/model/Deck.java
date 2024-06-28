@@ -16,18 +16,18 @@ import java.util.List;
 public class Deck implements Serializable {
     private Faction faction;
     private Leader leader;
-    private final ArrayList<Card> CARDS = new ArrayList<Card>();
+    private ArrayList<Card> cards = new ArrayList<Card>();
 
     public ArrayList<Card> getCards() {
-        return CARDS;
+        return cards;
     }
 
     public void addCard(Card card2) {
-        CARDS.add(card2);
+        cards.add(card2);
     }
 
     public void addCards(List<Card> cards) {
-        CARDS.addAll(cards);
+        cards.addAll(cards);
     }
 
     public Leader getLeader() {
@@ -84,5 +84,11 @@ public class Deck implements Serializable {
                     .create();
             return gson.fromJson(reader, Deck.class);
         }
+    }
+
+
+    public void setCards(ArrayList<Card> cards) {
+        this.cards.clear();
+        this.cards.addAll(cards);
     }
 }

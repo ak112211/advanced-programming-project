@@ -69,7 +69,7 @@ public class MainMenuController {
 
         // Randomly select a leader if none is set
         if (currentDeck.getLeader() == null) {
-            Leader randomLeader = getRandomLeader(factionComboBox.getValue());
+            Leader randomLeader = getRandomLeader();
             currentDeck.setLeader(randomLeader);
         }
 
@@ -82,9 +82,14 @@ public class MainMenuController {
             deckCardsListView.getItems().clear();
             loadFactionCards(selectedFaction);
             loadLeaders(selectedFaction);
-            Leader randomLeader = getRandomLeader(factionComboBox.getValue());
+            Leader randomLeader = getRandomLeader();
+            currentDeck.setFaction(selectedFaction);
             currentDeck.setLeader(randomLeader);
             updateCardCounts();
+        });
+
+        leaderComboBox.setOnAction(event -> {
+            currentDeck.setLeader(leaderComboBox.getValue());
         });
 
         factionCardsListView.setOnMouseClicked(event -> {
@@ -146,19 +151,19 @@ public class MainMenuController {
 
     private void loadLeaders(Faction faction) {
         leaderComboBox.getItems().clear();
+        leaders.clear();
         setUpLeaders(faction);
         leaderComboBox.getItems().addAll(leaders);
 
         // Randomly select a leader if none is set
         if (currentDeck.getLeader() == null && !leaders.isEmpty()) {
-            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()));
+            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()-1));
             currentDeck.setLeader(randomLeader);
         }
     }
 
-    private Leader getRandomLeader(Faction faction) {
-        setUpLeaders(faction);
-        return leaders.get(new Random().nextInt(leaders.size()));
+    private Leader getRandomLeader() {
+        return leaders.get(new Random().nextInt(leaders.size()-1));
     }
 
     private void setUpLeaders(Faction faction) {
@@ -193,7 +198,7 @@ public class MainMenuController {
 
     private void addToDeck(Card card) {
         long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.equals(card)).count();
-        if (countInDeck < card.getNoOfCardsInGame() && deckCardsListView.getItems().size() < 22) {
+        if (countInDeck < card.getNoOfCardsInGame()) {
             deckCardsListView.getItems().add(card);
             currentDeck.getCards().add(card);
 

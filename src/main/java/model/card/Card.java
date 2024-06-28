@@ -157,19 +157,23 @@ public class Card extends Rectangle {
         for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getCard();
-            }        }
+            }
+        }
         for (MonstersCards cardEnum : MonstersCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getCard();
-            }        }
+            }
+        }
         for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getCard();
-            }        }
+            }
+        }
         for (SkelligeCards cardEnum : SkelligeCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getCard();
-            }        }
+            }
+        }
         for (NeutralCards cardEnum : NeutralCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getCard();
