@@ -5,20 +5,14 @@ import enums.cards.*;
 import enums.leaders.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import model.App;
 import model.User;
 import model.card.Card;
@@ -38,6 +32,12 @@ public class MainMenuController {
 
     @FXML
     public HBox friendsMenu;
+    @FXML
+    public VBox cardDisplayVBox;
+    @FXML
+    public ImageView cardImageView;
+    @FXML
+    public Text cardDescriptionText;
     @FXML
     private TextField friendUsernameField;
     @FXML
@@ -64,7 +64,7 @@ public class MainMenuController {
     private Deck player2Deck;
     private List<Leader> leaders = new ArrayList<>();
 
-    private boolean isPlayer2Turn;
+    private boolean isPlayer2Turn = false;
 
     @FXML
     private void initialize() {
@@ -72,59 +72,32 @@ public class MainMenuController {
         currentDeck = currentUser.getDeck();
         friendsMenu.setDisable(true);
 
-        if (currentDeck == null) {
-            currentDeck = new Deck();
-            currentUser.setDeck(currentDeck);
-            currentDeck.setFaction(Faction.REALMS_NORTHERN);
-            Leader randomLeader = getRandomLeader();
-            currentDeck.setLeader(randomLeader);
-        }
-
-        if (isMulti) {
-            friendsListView.getItems().addAll(currentUser.getFriends());
-        }
-        factionComboBox.getItems().setAll(Faction.values());
-        factionComboBox.getItems().remove(Faction.NEUTRAL);
-
-        loadFactionCards(factionComboBox.getValue());
-        loadLeaders(factionComboBox.getValue());
-
-        if (!isPlayer2Turn) {
-            leaderComboBox.setValue(currentDeck.getLeader() != null ? currentDeck.getLeader() : leaderComboBox.getItems().get(0));
-            factionComboBox.setValue(currentDeck.getFaction() != null ? currentDeck.getFaction() : Faction.REALMS_NORTHERN);
-
-            deckCardsListView.getItems().addAll(currentDeck.getCards());
-        } else {
-            leaderComboBox.setValue(player2Deck.getLeader() != null ? player2Deck.getLeader() : leaderComboBox.getItems().get(0));
-            factionComboBox.setValue(player2Deck.getFaction() != null ? player2Deck.getFaction() : Faction.REALMS_NORTHERN);
-            deckCardsListView.getItems().addAll(player2Deck.getCards());
-        }
-
+        setup();
 
         factionComboBox.setOnAction(event -> {
-            Faction selectedFaction = factionComboBox.getValue();
-            deckCardsListView.getItems().clear();
-            loadFactionCards(selectedFaction);
-            loadLeaders(selectedFaction);
-            Leader randomLeader = getRandomLeader();
-            if (!isPlayer2Turn) {
+            if (currentDeck.getFaction() != null && factionComboBox.getValue() != null)  {
+                currentDeck.getCards().clear();
+                deckCardsListView.getItems().clear();
+                Faction selectedFaction = factionComboBox.getValue();
                 currentDeck.setFaction(selectedFaction);
-                currentDeck.setLeader(randomLeader);
-            } else {
-                player2Deck.setFaction(selectedFaction);
-                player2Deck.setLeader(randomLeader);
+                loadLeaders(currentDeck.getFaction());
+                loadFactionCards(currentDeck.getFaction());
             }
-            updateCardCounts();
         });
 
         leaderComboBox.setOnAction(event -> {
-            if (!isPlayer2Turn) {
-                currentDeck.setLeader(leaderComboBox.getValue());
-                showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
+            if (currentDeck.getLeader() != null && leaderComboBox.getValue() != null && player2Deck!= null) {
+                if (!isPlayer2Turn) {
+                    currentDeck.setLeader(leaderComboBox.getValue());
+                    loadFactionCards(currentDeck.getFaction());
 
-            } else {
-                player2Deck.setLeader(leaderComboBox.getValue());
-                showBigImage(player2Deck.getLeader().getImagePath(), player2Deck.getLeader().getDescription());
+                    showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
+                } else {
+                    player2Deck.setLeader(leaderComboBox.getValue());
+                    loadFactionCards(player2Deck.getFaction());
+
+                    showBigImage(player2Deck.getLeader().getImagePath(), player2Deck.getLeader().getDescription());
+                }
 
             }
         });
@@ -132,6 +105,7 @@ public class MainMenuController {
         factionCardsListView.setOnMouseClicked(event -> {
             Card selectedCard = factionCardsListView.getSelectionModel().getSelectedItem();
             if (selectedCard != null) {
+                loadFactionCards(currentDeck.getFaction());
                 addToDeck(selectedCard);
                 showBigImage(selectedCard.getImagePath(), selectedCard.getDescription().getDescription());
             }
@@ -140,11 +114,48 @@ public class MainMenuController {
         deckCardsListView.setOnMouseClicked(event -> {
             Card selectedCard = deckCardsListView.getSelectionModel().getSelectedItem();
             if (selectedCard != null) {
+                loadFactionCards(currentDeck.getFaction());
                 removeFromDeck(selectedCard);
             }
         });
 
         updateCardCounts();
+    }
+
+    private void setup() {
+
+        factionComboBox.getItems().setAll(Faction.values());
+        factionComboBox.getItems().remove(Faction.NEUTRAL);
+        if (!isPlayer2Turn) {
+            currentDeck = new Deck();
+            currentUser.setDeck(currentDeck);
+            currentDeck.setFaction(Faction.REALMS_NORTHERN);
+            loadLeaders(currentDeck.getFaction());
+            factionComboBox.setValue(currentDeck.getFaction());
+            loadFactionCards(factionComboBox.getValue());
+            loadLeaders(factionComboBox.getValue());
+            deckCardsListView.getItems().addAll(currentDeck.getCards());
+        } else {
+            player2Deck = new Deck();
+            player2Deck.setFaction(Faction.EMPIRE_NILFGAARDIAM);
+            loadLeaders(player2Deck.getFaction());
+            factionComboBox.setValue(player2Deck.getFaction());
+            loadFactionCards(factionComboBox.getValue());
+            loadLeaders(factionComboBox.getValue());
+            deckCardsListView.getItems().addAll(player2Deck.getCards());
+        }
+    }
+
+    @FXML
+    private void changeTurn(ActionEvent event) {
+        isPlayer2Turn = !isPlayer2Turn;
+        deckCardsListView.getItems().clear();
+        factionCardsListView.getItems().clear();
+        setup();
+    }
+
+    public void hideCardDisplay() {
+        cardDisplayVBox.setVisible(false);
     }
 
     private void loadFactionCards(Faction faction) {
@@ -191,15 +202,14 @@ public class MainMenuController {
         leaders.clear();
         setUpLeaders(faction);
         leaderComboBox.getItems().addAll(leaders);
+        Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()));
+        leaderComboBox.setValue(randomLeader);
+        currentDeck.setLeader(randomLeader);
 
-        if (currentDeck.getLeader() == null && !leaders.isEmpty()) {
-            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size() - 1));
-            currentDeck.setLeader(randomLeader);
-        }
     }
 
     private Leader getRandomLeader() {
-        return leaders.get(new Random().nextInt(leaders.size() - 1));
+        return leaders.get(new Random().nextInt(leaders.size()));
     }
 
     private void setUpLeaders(Faction faction) {
@@ -233,7 +243,7 @@ public class MainMenuController {
     }
 
     private void addToDeck(Card card) {
-        long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.equals(card)).count();
+        long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.getName().equals(card.getName())).count();
         if (countInDeck < card.getNoOfCardsInGame()) {
             deckCardsListView.getItems().add(card);
             if (!isPlayer2Turn) {
@@ -267,24 +277,13 @@ public class MainMenuController {
     }
 
     @FXML
-    private void changeTurn(ActionEvent event) {
-        isPlayer2Turn = !isPlayer2Turn;
-        leaders.clear();
-        player2Deck = new Deck();
-        player2Deck.setFaction(Faction.REALMS_NORTHERN);
-        Leader randomLeader = getRandomLeader();
-        player2Deck.setLeader(randomLeader);
-        initialize();
-    }
-
-    @FXML
     private void goToProfile() {
         App.loadScene("/fxml/ProfileMenu.fxml");
     }
 
     @FXML
     private void goToUserProfile() {
-        App.loadScene("/fxml/ProfileMenu.fxml");
+        App.loadScene("/fxml/UserProfile.fxml");
     }
 
     @FXML
@@ -317,25 +316,12 @@ public class MainMenuController {
                 leaderComboBox.setValue(currentDeck.getLeader());
                 deckCardsListView.getItems().clear();
                 deckCardsListView.getItems().addAll(currentDeck.getCards());
-                removeFullyAddedCards();
                 updateCardCounts();
                 Tools.showAlert("Deck loaded successfully.");
             } catch (IOException e) {
                 Tools.showAlert("Failed to load deck: " + e.getMessage());
             }
         }
-    }
-
-    private void removeFullyAddedCards() {
-        List<Card> factionCards = factionCardsListView.getItems();
-        List<Card> cardsToRemove = new ArrayList<>();
-        for (Card factionCard : factionCards) {
-            long countInDeck = currentDeck.getCards().stream().filter(c -> c.equals(factionCard)).count();
-            if (countInDeck >= factionCard.getNoOfCardsInGame()) {
-                cardsToRemove.add(factionCard);
-            }
-        }
-        factionCardsListView.getItems().removeAll(cardsToRemove);
     }
 
     @FXML
@@ -383,8 +369,7 @@ public class MainMenuController {
 
     public void toggleMultiplayer(ActionEvent actionEvent) {
         isMulti = !isMulti;
-        if (isMulti)
-            friendsMenu.setDisable(false);
+        friendsMenu.setDisable(!isMulti);
     }
 
     private void showBigImage(String imagePath, String description) {
@@ -392,29 +377,24 @@ public class MainMenuController {
             return;
         }
 
-        Stage stage = new Stage();
-        StackPane root = new StackPane();
-        VBox vbox = new VBox(10); // 10 is the spacing between the image and the text
-        vbox.setAlignment(Pos.CENTER);
-
-        ImageView imageView = new ImageView(new Image(
+        // Load the image and set it in the ImageView
+        Image image = new Image(
                 Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm()));
-        imageView.setPreserveRatio(true);
-        imageView.setFitWidth(200);
-        imageView.setFitHeight(400); // adjust the size as needed
+                        .toExternalForm());
+        cardImageView.setImage(image);
 
-        Text descriptionText = new Text(description);
-        descriptionText.setWrappingWidth(200); // wrapping width to fit the text within the given width
-        descriptionText.setTextAlignment(TextAlignment.CENTER);
+        // Set the description text
+        cardDescriptionText.setText(description);
 
-        vbox.getChildren().addAll(imageView, descriptionText);
-        root.getChildren().add(vbox);
+        // Ensure the VBox containing the image and description is visible
+        cardDisplayVBox.setVisible(true);
 
-        Scene scene = new Scene(root, 450, 450); // adjust the size as needed
-        stage.setScene(scene);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.show();
+        cardDisplayVBox.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            if (!cardDisplayVBox.contains(event.getScreenX(), event.getScreenY())) {
+                hideCardDisplay();
+            }
+        });
     }
+
 
 }
