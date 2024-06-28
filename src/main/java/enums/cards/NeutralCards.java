@@ -19,7 +19,7 @@ public enum NeutralCards implements CardEnum {
     CLEAR_WEATHER("Clear Weather", 0, 3, Type.WEATHER, new ClearWeather(), Description.CANCELS_ALL_WEATHER_CARDS, false, "/gwentImages/img/lg/weather_clear.jpg"),
     SCORCH("Scorch", 0, 3, Type.SPELL, new Scorch(null), Description.REMOVES_MAX_POWER_CARDS, false, "/gwentImages/img/lg/special_scorch.jpg"),
     COMMANDERS_HORN("Commander’s Horn", 0, 3, Type.SPELL, new CommandersHorn(), Description.DOUBLES_POWER_IN_ROW, false, "/gwentImages/img/lg/special_horn.jpg"),
-    DECOY("Decoy", 0, 3, Type.SPELL, new Decoy(), Description.DECOY_CARD, false, "/gwentImages/img/lg/special_decoy.jpg"),
+    DECOY("Decoy", 0, 3, Type.DECOY, new Decoy(), Description.DECOY_CARD, false, "/gwentImages/img/lg/special_decoy.jpg"),
     DANDELION("Dandelion", 2, 1, Type.CLOSE_COMBAT_UNIT, new CommandersHorn(), Description.NOTHING, false, "/gwentImages/img/lg/neutral_dandelion.jpg"),
     COW("Cow", 0, 1, Type.RANGED_UNIT, new SummonAvenger(null), Description.BECOMES_STRONGER_NEXT_ROUND, false, "/gwentImages/img/lg/neutral_cow.jpg"),
     EMIEL_REGIS("Emiel Regis", 5, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/neutral_emiel.jpg"),

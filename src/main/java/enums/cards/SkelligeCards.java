@@ -30,7 +30,7 @@ public enum SkelligeCards implements CardEnum {
     BIRNA_BRAN("Birna Bran", 2, 1, Type.CLOSE_COMBAT_UNIT, new Medic(), Description.NOTHING, false, "/gwentImages/img/lg/skellige_birna.jpg"),
     CLAN_DRUMMOND_SHIELDMAIDEN("Clan Drummond Shieldmaiden", 4, 3, Type.CLOSE_COMBAT_UNIT, new TightBond(), Description.MUSTERED_BY_CERYS, false, "/gwentImages/img/lg/skellige_shield_maiden.jpg"),
     CLAN_TORDARROCH_ARMORSMITH("Clan Tordarroch Armorsmith", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_tordarroch.jpg"),
-    CLAN_DIMUN_PIRATE("Clan Dimun Pirate", 6, 1, Type.RANGED_UNIT, new Scorch(Type.SPY_UNIT), Description.KILLS_STRONGEST_OPPONENT, false, "/gwentImages/img/lg/skellige_dimun_pirate.jpg"),
+    CLAN_DIMUN_PIRATE("Clan Dimun Pirate", 6, 1, Type.RANGED_UNIT, new Scorch(Type.AGILE_UNIT), Description.KILLS_STRONGEST_OPPONENT, false, "/gwentImages/img/lg/skellige_dimun_pirate.jpg"),
     CLAN_BROKVAR_ARCHER("Clan Brokvar Archer", 6, 3, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/skellige_brokva_archer.jpg"),
     ERMION("Ermion", 8, 1, Type.RANGED_UNIT, new Mardroeme(), Description.NOTHING, true, "/gwentImages/img/lg/skellige_ermion.jpg"),
     HJALMAR("Hjalmar", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/skellige_hjalmar.jpg"),
