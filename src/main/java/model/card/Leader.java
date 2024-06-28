@@ -17,10 +17,10 @@ public class Leader extends Rectangle {
     private final Ability ABILITY;
     private int numberOfAction = 1;
     private final LeaderEnum LEADER_ENUM;
-    private String imagePath;
+    private final String IMAGE_PATH;
     public Leader(String name, Ability ability, Faction faction, String description, String imagePath, LeaderEnum leaderEnum) {
         NAME = name;
-        imagePath = imagePath;
+        IMAGE_PATH = imagePath;
         FACTION = faction;
         DESCRIPTION = description;
         ABILITY = ability;
@@ -74,11 +74,7 @@ public class Leader extends Rectangle {
     }
 
     public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+        return IMAGE_PATH;
     }
 
     public LeaderEnum getLeaderEnum() {

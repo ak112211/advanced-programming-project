@@ -4,6 +4,7 @@ import enums.Row;
 import enums.cardsinformation.Type;
 import javafx.scene.layout.Pane;
 import model.abilities.Ability;
+import model.abilities.instantaneousabilities.InstantaneousAbility;
 import model.abilities.openingabilities.OpeningAbility;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
@@ -113,9 +114,12 @@ public class Game implements Serializable {
 
     public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
         if (!cards1.remove(card)) {
-            throw new RuntimeException("Card doesn't exist there");
+            throw new IllegalArgumentException("Card doesn't exist there");
         }
         cards2.add(card);
+        if (cards2 == IN_GAME_CARDS && card.getAbility() instanceof InstantaneousAbility) {
+            ((InstantaneousAbility) card.getAbility()).affect(this, card);
+        }
     }
 
     public boolean player1PlayCard(Card card, Row row) {

@@ -48,9 +48,14 @@ public class Card extends Rectangle {
         this.setArcHeight(5);
         this.setWidth(53);
         this.setHeight(79);
-        this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("/lg/", "/sm/")))
-                        .toExternalForm())));
+        try {
+            this.setFill(new ImagePattern(new Image(
+                    Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("/lg/", "/sm/")))
+                            .toExternalForm())));
+        } catch (RuntimeException e){
+            System.out.println("couldn't find " + IMAGE_PATH.replaceFirst("/lg/", "/sm/"));
+        }
+
     }
 
     public void setBigImage() {
