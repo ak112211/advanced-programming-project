@@ -5,8 +5,20 @@ import enums.cards.*;
 import enums.leaders.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.App;
 import model.User;
 import model.card.Card;
@@ -19,10 +31,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class MainMenuController {
 
+    @FXML
+    public HBox friendsMenu;
     @FXML
     private TextField friendUsernameField;
     @FXML
@@ -41,41 +56,50 @@ public class MainMenuController {
     private Label specialCardsLabel;
     @FXML
     private Button startGameButton;
-
+    @FXML
+    private Button choosePlayer2DeckButton;
+    private boolean isMulti;
     private User currentUser;
     private Deck currentDeck;
-    List<Leader> leaders = new ArrayList<>();
+    private Deck player2Deck;
+    private List<Leader> leaders = new ArrayList<>();
+
+    private boolean isPlayer2Turn;
 
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
         currentDeck = currentUser.getDeck();
+        friendsMenu.setDisable(true);
 
-        // Create a new deck if the current deck is null
         if (currentDeck == null) {
             currentDeck = new Deck();
             currentUser.setDeck(currentDeck);
-        }
-
-        friendsListView.getItems().addAll(currentUser.getFriends());
-
-        factionComboBox.getItems().setAll(Faction.values());
-        factionComboBox.getItems().remove(Faction.NEUTRAL); // Remove neutral faction
-        factionComboBox.setValue(currentDeck.getFaction() != null ? currentDeck.getFaction() : Faction.REALMS_NORTHERN);
-
-        currentDeck.setFaction(Faction.REALMS_NORTHERN);
-        loadFactionCards(factionComboBox.getValue());
-        loadLeaders(factionComboBox.getValue());
-
-        // Randomly select a leader if none is set
-        if (currentDeck.getLeader() == null) {
+            currentDeck.setFaction(Faction.REALMS_NORTHERN);
             Leader randomLeader = getRandomLeader();
             currentDeck.setLeader(randomLeader);
         }
 
-        leaderComboBox.setValue(currentDeck.getLeader() != null ? currentDeck.getLeader() : leaderComboBox.getItems().get(0));
+        if (isMulti) {
+            friendsListView.getItems().addAll(currentUser.getFriends());
+        }
+        factionComboBox.getItems().setAll(Faction.values());
+        factionComboBox.getItems().remove(Faction.NEUTRAL);
 
-        deckCardsListView.getItems().addAll(currentDeck.getCards());
+        loadFactionCards(factionComboBox.getValue());
+        loadLeaders(factionComboBox.getValue());
+
+        if (!isPlayer2Turn) {
+            leaderComboBox.setValue(currentDeck.getLeader() != null ? currentDeck.getLeader() : leaderComboBox.getItems().get(0));
+            factionComboBox.setValue(currentDeck.getFaction() != null ? currentDeck.getFaction() : Faction.REALMS_NORTHERN);
+
+            deckCardsListView.getItems().addAll(currentDeck.getCards());
+        } else {
+            leaderComboBox.setValue(player2Deck.getLeader() != null ? player2Deck.getLeader() : leaderComboBox.getItems().get(0));
+            factionComboBox.setValue(player2Deck.getFaction() != null ? player2Deck.getFaction() : Faction.REALMS_NORTHERN);
+            deckCardsListView.getItems().addAll(player2Deck.getCards());
+        }
+
 
         factionComboBox.setOnAction(event -> {
             Faction selectedFaction = factionComboBox.getValue();
@@ -83,19 +107,33 @@ public class MainMenuController {
             loadFactionCards(selectedFaction);
             loadLeaders(selectedFaction);
             Leader randomLeader = getRandomLeader();
-            currentDeck.setFaction(selectedFaction);
-            currentDeck.setLeader(randomLeader);
+            if (!isPlayer2Turn) {
+                currentDeck.setFaction(selectedFaction);
+                currentDeck.setLeader(randomLeader);
+            } else {
+                player2Deck.setFaction(selectedFaction);
+                player2Deck.setLeader(randomLeader);
+            }
             updateCardCounts();
         });
 
         leaderComboBox.setOnAction(event -> {
-            currentDeck.setLeader(leaderComboBox.getValue());
+            if (!isPlayer2Turn) {
+                currentDeck.setLeader(leaderComboBox.getValue());
+                showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
+
+            } else {
+                player2Deck.setLeader(leaderComboBox.getValue());
+                showBigImage(player2Deck.getLeader().getImagePath(), player2Deck.getLeader().getDescription());
+
+            }
         });
 
         factionCardsListView.setOnMouseClicked(event -> {
             Card selectedCard = factionCardsListView.getSelectionModel().getSelectedItem();
             if (selectedCard != null) {
                 addToDeck(selectedCard);
+                showBigImage(selectedCard.getImagePath(), selectedCard.getDescription().getDescription());
             }
         });
 
@@ -113,7 +151,6 @@ public class MainMenuController {
         factionCardsListView.getItems().clear();
         List<Card> factionCards = new ArrayList<>();
 
-        // Add faction-specific cards
         switch (faction) {
             case EMPIRE_NILFGAARDIAM:
                 for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
@@ -155,15 +192,14 @@ public class MainMenuController {
         setUpLeaders(faction);
         leaderComboBox.getItems().addAll(leaders);
 
-        // Randomly select a leader if none is set
         if (currentDeck.getLeader() == null && !leaders.isEmpty()) {
-            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()-1));
+            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size() - 1));
             currentDeck.setLeader(randomLeader);
         }
     }
 
     private Leader getRandomLeader() {
-        return leaders.get(new Random().nextInt(leaders.size()-1));
+        return leaders.get(new Random().nextInt(leaders.size() - 1));
     }
 
     private void setUpLeaders(Faction faction) {
@@ -200,8 +236,11 @@ public class MainMenuController {
         long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.equals(card)).count();
         if (countInDeck < card.getNoOfCardsInGame()) {
             deckCardsListView.getItems().add(card);
-            currentDeck.getCards().add(card);
-
+            if (!isPlayer2Turn) {
+                currentDeck.getCards().add(card);
+            } else {
+                player2Deck.getCards().add(card);
+            }
             if (countInDeck + 1 == card.getNoOfCardsInGame()) {
                 factionCardsListView.getItems().remove(card);
             }
@@ -211,7 +250,11 @@ public class MainMenuController {
 
     private void removeFromDeck(Card card) {
         deckCardsListView.getItems().remove(card);
-        currentDeck.getCards().remove(card);
+        if (!isPlayer2Turn) {
+            currentDeck.getCards().remove(card);
+        } else {
+            player2Deck.getCards().remove(card);
+        }
         if (!factionCardsListView.getItems().contains(card)) {
             factionCardsListView.getItems().add(card);
         }
@@ -223,7 +266,21 @@ public class MainMenuController {
         long specialCardsCount = deckCardsListView.getItems().stream().filter(c -> c.getType().isSpecial()).count();
         unitCardsLabel.setText("Unit Cards: " + unitCardsCount);
         specialCardsLabel.setText("Special Cards: " + specialCardsCount);
-        startGameButton.setDisable(unitCardsCount < 22 || specialCardsCount > 10);
+
+        boolean validDeck = unitCardsCount >= 22 && specialCardsCount <= 10;
+        choosePlayer2DeckButton.setDisable(!validDeck);
+        startGameButton.setDisable(player2Deck == null || !validDeck);
+    }
+
+    @FXML
+    private void changeTurn(ActionEvent event) {
+        isPlayer2Turn = !isPlayer2Turn;
+        leaders.clear();
+        player2Deck = new Deck();
+        player2Deck.setFaction(Faction.REALMS_NORTHERN);
+        Leader randomLeader = getRandomLeader();
+        player2Deck.setLeader(randomLeader);
+        initialize();
     }
 
     @FXML
@@ -238,7 +295,7 @@ public class MainMenuController {
 
     @FXML
     private void goToAddFriends() {
-        // Implement add friends navigation
+        App.loadScene("/fxml/AddFriendsMenu.fxml");
     }
 
     @FXML
@@ -262,17 +319,29 @@ public class MainMenuController {
                     jsonBuilder.append((char) i);
                 }
                 currentDeck = Deck.fromJson(jsonBuilder.toString());
-                System.out.println(currentDeck.getCards().size());
                 factionComboBox.setValue(currentDeck.getFaction());
                 leaderComboBox.setValue(currentDeck.getLeader());
                 deckCardsListView.getItems().clear();
                 deckCardsListView.getItems().addAll(currentDeck.getCards());
+                removeFullyAddedCards();
                 updateCardCounts();
                 Tools.showAlert("Deck loaded successfully.");
             } catch (IOException e) {
                 Tools.showAlert("Failed to load deck: " + e.getMessage());
             }
         }
+    }
+
+    private void removeFullyAddedCards() {
+        List<Card> factionCards = factionCardsListView.getItems();
+        List<Card> cardsToRemove = new ArrayList<>();
+        for (Card factionCard : factionCards) {
+            long countInDeck = currentDeck.getCards().stream().filter(c -> c.equals(factionCard)).count();
+            if (countInDeck >= factionCard.getNoOfCardsInGame()) {
+                cardsToRemove.add(factionCard);
+            }
+        }
+        factionCardsListView.getItems().removeAll(cardsToRemove);
     }
 
     @FXML
@@ -319,5 +388,39 @@ public class MainMenuController {
     }
 
     public void toggleMultiplayer(ActionEvent actionEvent) {
+        isMulti = !isMulti;
+        if (isMulti)
+            friendsMenu.setDisable(false);
     }
+
+    private void showBigImage(String imagePath, String description) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return;
+        }
+
+        Stage stage = new Stage();
+        StackPane root = new StackPane();
+        VBox vbox = new VBox(10); // 10 is the spacing between the image and the text
+        vbox.setAlignment(Pos.CENTER);
+
+        ImageView imageView = new ImageView(new Image(
+                Objects.requireNonNull(getClass().getResource(imagePath))
+                        .toExternalForm()));
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(400); // adjust the size as needed
+
+        Text descriptionText = new Text(description);
+        descriptionText.setWrappingWidth(200); // wrapping width to fit the text within the given width
+        descriptionText.setTextAlignment(TextAlignment.CENTER);
+
+        vbox.getChildren().addAll(imageView, descriptionText);
+        root.getChildren().add(vbox);
+
+        Scene scene = new Scene(root, 450, 450); // adjust the size as needed
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.show();
+    }
+
 }

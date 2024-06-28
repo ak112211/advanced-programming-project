@@ -22,9 +22,9 @@
         <Label text="Leader:" />
         <ComboBox fx:id="leaderComboBox" />
     </HBox>
-    <HBox spacing="10" alignment="CENTER">
+    <HBox  fx:id="friendsMenu"  spacing="10" alignment="CENTER">
         <Label text="Friends Menu:" />
-        <VBox fx:id="friendsMenu" spacing="10" visible="false">
+        <VBox spacing="10" visible="false">
             <Label text="Choose a friend to play with:" />
             <ListView fx:id="friendsListView" prefHeight="100" prefWidth="200" />
             <Button text="Send Play Request" onAction="#sendPlayRequest" />
@@ -49,5 +49,6 @@
         <Button text="Upload Deck" onAction="#uploadDeck" />
         <Button text="Download Deck" onAction="#downloadDeck" />
         <Button text="Save Deck" onAction="#handleSaveDeck" />
+        <Button fx:id="choosePlayer2DeckButton" text="Change turn" onAction="#changeTurn" disable="true" />
     </HBox>
 </VBox>
