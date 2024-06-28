@@ -12,8 +12,7 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,6 +87,18 @@ public class RegisterMenuController {
         }
     }
 
+    @FXML
+    private void handleBack() {
+        App.loadScene(Menu.LOGIN_MENU.getPath());
+    }
+
+    @FXML
+    private void handleRandomPassword() {
+        String password = generateRandomPassword();
+        passwordField.setText(password);
+        confirmPasswordField.setText(password);
+    }
+
     private String suggestNewUsername(String username) {
         return username + new Random().nextInt(1000);
     }
@@ -111,16 +122,31 @@ public class RegisterMenuController {
             return false;
         }
         boolean hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
-        for (char ch : password.toCharArray()) {
-            if (Character.isUpperCase(ch)) hasUpper = true;
-            else if (Character.isLowerCase(ch)) hasLower = true;
-            else if (Character.isDigit(ch)) hasDigit = true;
-            else if (!Character.isLetterOrDigit(ch)) hasSpecial = true;
+        for (char character : password.toCharArray()) {
+            if (Character.isUpperCase(character)) hasUpper = true;
+            else if (Character.isLowerCase(character)) hasLower = true;
+            else if (Character.isDigit(character)) hasDigit = true;
+            else if (!Character.isLetterOrDigit(character)) hasSpecial = true;
         }
         return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 
     private String generateRandomPassword() {
+        StringBuilder password = getInitialPassword();
+        char[] passwordArray = password.toString().toCharArray();
+        List<Character> passwordList = new ArrayList<>();
+        for (char character : passwordArray) {
+            passwordList.add(character);
+        }
+        Collections.shuffle(passwordList);
+        password = new StringBuilder();
+        for (char character : passwordList) {
+            password.append(character);
+        }
+        return password.toString();
+    }
+
+    private static StringBuilder getInitialPassword() {
         String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lower = "abcdefghijklmnopqrstuvwxyz";
         String digits = "0123456789";
@@ -132,10 +158,10 @@ public class RegisterMenuController {
         password.append(lower.charAt(random.nextInt(lower.length())));
         password.append(digits.charAt(random.nextInt(digits.length())));
         password.append(special.charAt(random.nextInt(special.length())));
-        for (int i = 4; i < 12; i++) {
+        for (int i = 4; i < random.nextInt(12, 15); i++) {
             password.append(allChars.charAt(random.nextInt(allChars.length())));
         }
-        return password.toString();
+        return password;
     }
 
     private boolean confirmPasswordUsage(String password) {
@@ -153,7 +179,4 @@ public class RegisterMenuController {
         return result.isPresent() && result.get() == buttonTypeYes;
     }
 
-    public void handleBack() {
-        App.loadScene(Menu.LOGIN_MENU.getPath());
-    }
 }
