@@ -42,6 +42,9 @@ public class RegisterMenuController {
 
     @FXML
     private void initialize() {
+        passwordField.setVisible(false);
+        confirmPasswordField.setVisible(false);
+        showPasswordCheckBox.setSelected(false);
         securityQuestionComboBox.getItems().setAll(SecurityQuestion.values());
     }
 

@@ -20,6 +20,11 @@ public class LoginMenuController {
     @FXML
     private CheckBox showPasswordCheckBox;
 
+    @FXML
+    private void initialize() {
+        passwordField.setVisible(false);
+        showPasswordCheckBox.setSelected(false);
+    }
 
     @FXML
     private void handleLoginButtonAction() {
