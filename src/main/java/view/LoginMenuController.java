@@ -17,6 +17,22 @@ public class LoginMenuController {
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;
+    @FXML
+    private TextField textField;
+    @FXML
+    private CheckBox showPasswordCheckBox;
+
+    @FXML
+    public void initialize() {
+        // Bind the visibility of the textField to the showPasswordCheckBox
+        textField.managedProperty().bind(showPasswordCheckBox.selectedProperty());
+        textField.visibleProperty().bind(showPasswordCheckBox.selectedProperty());
+        passwordField.managedProperty().bind(showPasswordCheckBox.selectedProperty().not());
+        passwordField.visibleProperty().bind(showPasswordCheckBox.selectedProperty().not());
+
+        // Bind the text properties to keep them synchronized
+        textField.textProperty().bindBidirectional(passwordField.textProperty());
+    }
 
     @FXML
     private void handleLoginButtonAction() {
@@ -37,7 +53,6 @@ public class LoginMenuController {
             Tools.showAlert("Error during login: " + e.getMessage());
         }
     }
-
 
     @FXML
     private void handleForgotPasswordButtonAction() {
