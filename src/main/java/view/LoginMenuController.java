@@ -8,10 +8,7 @@ import model.App;
 import model.User;
 import util.DatabaseConnection;
 
-import java.io.IOException;
 import java.sql.SQLException;
-
-import static view.Tools.showAlert;
 
 public class LoginMenuController {
 
@@ -25,29 +22,30 @@ public class LoginMenuController {
     private void handleLoginButtonAction() {
         String username = usernameField.getText();
         String password = passwordField.getText();
-
+        User user;
         try {
-            if (DatabaseConnection.checkPassword(username, password)) {
-                User user = DatabaseConnection.getUser(username);
+            if ((user = DatabaseConnection.getUser(username)) == null) {
+                Tools.showAlert("Invalid username.");
+            } else if (DatabaseConnection.checkPassword(username, password)) {
                 User.setCurrentUser(user);
                 App.loadScene(Menu.MAIN_MENU.getPath());
-                showAlert("Login successful. Welcome " + user.getNickname() + "!");
+                Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
             } else {
-                showAlert("Invalid username or password.");
+                Tools.showAlert("Invalid password.");
             }
         } catch (SQLException e) {
-            showAlert("Error during login: " + e.getMessage());
+            Tools.showAlert("Error during login: " + e.getMessage());
         }
     }
 
 
     @FXML
-    public void handleForgotPasswordButtonAction() {
+    private void handleForgotPasswordButtonAction() {
         App.loadScene(Menu.FORGET_PASSWORD_MENU.getPath());
     }
 
     @FXML
-    public void handleRegisterButtonAction() {
+    private void handleRegisterButtonAction() {
         App.loadScene(Menu.REGISTER_MENU.getPath());
     }
 

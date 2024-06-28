@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import enums.cardsinformation.Faction;
 import enums.cards.*;
 import enums.leaders.*;
@@ -39,8 +40,6 @@ public class MainMenuController {
     private Label unitCardsLabel;
     @FXML
     private Label specialCardsLabel;
-    @FXML
-    private Button startGameButton;
 
     private User currentUser;
     private Deck currentDeck;
@@ -157,13 +156,13 @@ public class MainMenuController {
 
         // Randomly select a leader if none is set
         if (currentDeck.getLeader() == null && !leaders.isEmpty()) {
-            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()-1));
+            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size() - 1));
             currentDeck.setLeader(randomLeader);
         }
     }
 
     private Leader getRandomLeader() {
-        return leaders.get(new Random().nextInt(leaders.size()-1));
+        return leaders.get(new Random().nextInt(leaders.size() - 1));
     }
 
     private void setUpLeaders(Faction faction) {
@@ -227,18 +226,14 @@ public class MainMenuController {
     }
 
     @FXML
-    private void goToProfile() {
-        App.loadScene("/fxml/ProfileMenu.fxml");
-    }
-
-    @FXML
-    private void goToUserProfile() {
-        App.loadScene("/fxml/ProfileMenu.fxml");
+    private void goToProfileMenu() {
+        App.loadScene(Menu.PROFILE_MENU.getPath());
     }
 
     @FXML
     private void goToAddFriends() {
         // Implement add friends navigation
+        App.loadScene(Menu.ADD_FREINDS_MENU.getPath());
     }
 
     @FXML

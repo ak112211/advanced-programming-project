@@ -10,7 +10,7 @@ import util.DatabaseConnection;
 
 import java.sql.SQLException;
 
-public class ForgotPasswordController {
+public class ForgotPasswordMenuController {
 
     @FXML
     private TextField usernameField;

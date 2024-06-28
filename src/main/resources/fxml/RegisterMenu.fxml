@@ -8,7 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 
-<GridPane fx:id="registerForm" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterMenuController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterMenuController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
@@ -37,6 +37,8 @@
     <Label text="Confirm Security Answer:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
     <TextField fx:id="securityAnswerConfirmField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
-    <Button text="Register" fx:id="registerButton" onAction="#handleRegisterButtonAction" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
-    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
+    <Button text="Register" onAction="#handleRegisterButtonAction" GridPane.rowIndex="8"
+            GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+    <Button text="Back" onAction="#handleBack" GridPane.rowIndex="8" GridPane.columnIndex="1"
+            GridPane.halignment="LEFT"/>
 </GridPane>

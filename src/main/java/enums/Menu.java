@@ -6,11 +6,7 @@ public enum Menu {
     FORGET_PASSWORD_MENU("/fxml/ForgetPasswordMenu.fxml"),
     MAIN_MENU("/fxml/MainMenu.fxml"),
     PROFILE_MENU("/fxml/ProfileMenu.fxml"),
-    AVATAR_MENU("/fxml/AvatarMenu.fxml"),
-    RANKING_MENU("/fxml/RankingMenu.fxml"),
-    SETTINGS_MENU("/fxml/SettingsMenu.fxml"),
-    KEYBOARD_MENU("/fxml/KeyboardMenu.fxml"),
-    PAUSE_MENU("/fxml/PauseMenu.fxml"),
+    ADD_FREINDS_MENU("/fxml/AddFriendsMenu.fxml"),
     ;
 
     private final String PATH;
