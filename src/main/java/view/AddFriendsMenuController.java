@@ -8,7 +8,7 @@ import util.DatabaseConnection;
 
 import java.sql.SQLException;
 
-public class AddFriendsController {
+public class AddFriendsMenuController {
 
     @FXML
     private TextField friendUsernameField;

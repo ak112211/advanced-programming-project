@@ -1,6 +1,5 @@
 package enums.cardsinformation;
 
-import enums.Row;
 import model.Game;
 import model.card.Card;
 

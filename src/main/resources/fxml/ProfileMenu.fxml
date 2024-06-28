@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 
-<GridPane fx:id="profileForm" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileMenuController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileMenuController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
@@ -34,7 +34,9 @@
     <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
 
-    <Button text="Update Profile" fx:id="updateButton" onAction="#handleUpdateButtonAction" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
-    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.halignment="LEFT"/>
+    <Button text="Update Profile" fx:id="updateButton" onAction="#handleUpdateButtonAction" GridPane.rowIndex="7"
+            GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+    <Button text="Back" fx:id="backButton" onAction="#handleBack" GridPane.rowIndex="7" GridPane.columnIndex="1"
+            GridPane.halignment="LEFT"/>
 
 </GridPane>
