@@ -53,7 +53,7 @@ public class ProfileMenuController {
 
             highScoreLabel.setText(String.valueOf(user.getHighScore()));
             rankLabel.setText(String.valueOf(user.getRank()));
-            gamesPlayedLabel.setText(String.valueOf(user.getGames().size()));
+            gamesPlayedLabel.setText(String.valueOf(user.getGames() != null ? user.getGames().size() : 0));
             int drawsResponse = DatabaseConnection.getDrawsCount(user.getUsername());
             drawsLabel.setText(String.valueOf(drawsResponse));
             int winsResponse = DatabaseConnection.getWinsCount(user.getUsername());
