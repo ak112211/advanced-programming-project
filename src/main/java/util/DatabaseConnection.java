@@ -65,6 +65,10 @@ public class DatabaseConnection {
             preparedStatement.setString(3, email);
             preparedStatement.setString(4, User.getCurrentUser().getUsername());
             int rowsUpdated = preparedStatement.executeUpdate();
+            User.getCurrentUser().setUsername(username);
+            User.getCurrentUser().setNickname(nickname);
+            User.getCurrentUser().setEmail(email);
+
             return rowsUpdated > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -383,6 +387,54 @@ public class DatabaseConnection {
             }
         }
         return topUsers;
+    }
+
+
+    public static void saveMessage(String sender, String receiver, String message) throws SQLException {
+        String query = "INSERT INTO Messages (sender, receiver, message) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, sender);
+            stmt.setString(2, receiver);
+            stmt.setString(3, message);
+            stmt.executeUpdate();
+        }
+    }
+
+    public static String getMessages(String username) throws SQLException {
+        String query = "SELECT * FROM Messages WHERE receiver = ?";
+        StringBuilder messages = new StringBuilder();
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    messages.append(rs.getString("sender")).append(": ").append(rs.getString("message")).append("\n");
+                }
+            }
+        }
+        return messages.toString();
+    }
+
+    public static void saveGameRequest(String sender, String receiver) throws SQLException {
+        String query = "INSERT INTO GameRequests (sender, receiver) VALUES (?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, sender);
+            stmt.setString(2, receiver);
+            stmt.executeUpdate();
+        }
+    }
+
+    public static String getGameRequests(String username) throws SQLException {
+        String query = "SELECT * FROM GameRequests WHERE receiver = ?";
+        StringBuilder requests = new StringBuilder();
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    requests.append(rs.getString("sender")).append(" has challenged you to a game.\n");
+                }
+            }
+        }
+        return requests.toString();
     }
 
 }
