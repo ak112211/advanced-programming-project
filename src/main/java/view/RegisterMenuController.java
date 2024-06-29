@@ -54,7 +54,7 @@ public class RegisterMenuController {
         String securityAnswerConfirm = securityAnswerConfirmField.getText().trim();
 
         try {
-            if (DatabaseConnection.isUsernameTaken(username)) {
+            if (DatabaseConnection.getUser(username) != null) {
                 String newUsername = Tools.suggestNewUsername(username);
                 Tools.showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
             } else if (!Tools.isValidUsername(username)) {

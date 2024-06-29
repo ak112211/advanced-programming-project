@@ -112,7 +112,7 @@ public class ProfileMenuController {
         String confirmPassword = confirmPasswordField.getText();
 
         if (!user.getUsername().equals(username)) {
-            if (DatabaseConnection.isUsernameTaken(username)) {
+            if (DatabaseConnection.getUser(username) != null) {
                 String newUsername = Tools.suggestNewUsername(username);
                 Tools.showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
             } else {

@@ -32,8 +32,7 @@ public class AddFriendsMenuController {
         }
 
         // Check if the friend exists in the database
-        boolean isFriendExist = DatabaseConnection.isUsernameTaken(friendUsername);
-        if (!isFriendExist) {
+        if (DatabaseConnection.getUser(friendUsername) == null) {
             Tools.showAlert("Error", "User Not Found", "The entered friend's username does not exist.");
             return;
         }

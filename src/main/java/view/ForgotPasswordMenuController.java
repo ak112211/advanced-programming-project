@@ -32,8 +32,7 @@ public class ForgotPasswordMenuController {
         String username = usernameField.getText();
 
         // Check if the username exists using DatabaseUtils.isUserTaken method
-        boolean isUserTaken = DatabaseConnection.isUsernameTaken(username);
-        if (!isUserTaken) {
+        if (DatabaseConnection.getUser(username) == null) {
             Tools.showAlert("Error", "Invalid Username", "The entered username does not exist.");
             return;
         }

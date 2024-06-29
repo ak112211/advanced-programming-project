@@ -23,28 +23,6 @@ public class DatabaseConnection {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public static void saveUser(String username, String nickname, String email, String password) throws SQLException {
-        String query = "INSERT INTO Users (username, nickname, email, password) VALUES (?, ?, ?, ?)";
-
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, nickname);
-            preparedStatement.setString(3, email);
-            preparedStatement.setString(4, password);
-            preparedStatement.executeUpdate();
-        }
-    }
-
-    public static boolean isUsernameTaken(String username) throws SQLException {
-        String query = "SELECT username FROM Users WHERE username = ?";
-
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
-            }
-        }
-    }
 
     public static boolean checkPassword(String username, String password) throws SQLException {
         String query = "SELECT password FROM Users WHERE username = ?";
