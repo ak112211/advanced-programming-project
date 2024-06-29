@@ -63,7 +63,6 @@
                 <Button fx:id="startGameButton" onAction="#startGame" text="Start Game" disable="true" />
                 <Button text="Upload Deck" onAction="#uploadDeck" />
                 <Button text="Download Deck" onAction="#downloadDeck" />
-                <Button text="Save Deck" onAction="#handleSaveDeck" />
                 <Button fx:id="choosePlayer2DeckButton" text="Change turn" onAction="#changeTurn" disable="true" />
             </HBox>
         </VBox>

@@ -111,6 +111,21 @@ public class ProfileMenuController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
+        if (!Tools.isValidUsername(username)) {
+            Tools.showAlert("Error", "Invalid Username", "Username must be alphanumeric and can include dashes.");
+            return;
+        }
+
+        if (!Tools.isValidEmail(email)) {
+            Tools.showAlert("Error", "Invalid Email", "Please enter a valid email address.");
+            return;
+        }
+
+        if (!Tools.isValidPassword(password)) {
+            Tools.showAlert("Error", "Invalid Password", "Password must be at least 8 characters long and include uppercase, lowercase, digit, and special character.");
+            return;
+        }
+
         if (!password.equals(confirmPassword)) {
             Tools.showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
             return;

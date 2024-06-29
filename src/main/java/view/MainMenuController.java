@@ -369,30 +369,6 @@ public class MainMenuController {
         }
     }
 
-    @FXML
-    private void handleSaveDeck() {
-        Faction selectedFaction = factionComboBox.getValue();
-        Leader selectedLeader = leaderComboBox.getValue();
-        List<Card> selectedDeck = new ArrayList<>(deckCardsListView.getItems());
-
-        if (selectedDeck.size() < 22) {
-            Tools.showAlert("Deck must contain at least 22 unit cards.");
-            return;
-        }
-
-        currentDeck.setFaction(selectedFaction);
-        currentDeck.setLeader(selectedLeader);
-        currentDeck.getCards().clear();
-        currentDeck.getCards().addAll(selectedDeck);
-
-        try (FileWriter writer = new FileWriter(currentDeck.getFaction() + ".json")) {
-            writer.write(currentDeck.toJson());
-            Tools.showAlert("Deck saved successfully.");
-        } catch (IOException e) {
-            Tools.showAlert("Failed to save deck: " + e.getMessage());
-        }
-    }
-
     public void toggleMultiplayer(ActionEvent actionEvent) {
         isMulti = !isMulti;
         friendsMenu.setDisable(!isMulti);
