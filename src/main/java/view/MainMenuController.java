@@ -312,7 +312,7 @@ public class MainMenuController {
 
     @FXML
     private void goToAddFriends() {
-        App.loadScene("/fxml/AddFriendsMenu.fxml");
+        App.loadScene("/fxml/ChatMenu.fxml");
     }
 
     @FXML

@@ -1,12 +1,13 @@
+package server;
 
 import util.DatabaseConnection;
-import model.Game;
-import model.User;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 public class GwentServer {
 
@@ -60,50 +61,55 @@ class ClientHandler extends Thread {
     }
 
     private String handleRequest(String request) {
-        String[] parts = request.split(" ", 2);
+        String[] parts = request.split(" ");
         String command = parts[0];
 
         try {
             switch (command) {
-                case "chat":
-                    return handleChat(parts[1]);
-                case "requestGame":
-                    return handleGameRequest(parts[1]);
+                case "sendMessage":
+                    if (parts.length >= 4) {
+                        String sender = parts[1];
+                        String recipient = parts[2];
+                        String message = String.join(" ", Arrays.copyOfRange(parts, 3, parts.length));
+                        if (DatabaseConnection.saveMessage(sender, recipient, message)) {
+                            return "Message sent";
+                        } else {
+                            return "Failed to send message";
+                        }
+                    }
+                    break;
                 case "getMessages":
-                    return handleGetMessages(parts[1]);
+                    if (parts.length == 2) {
+                        String username = parts[1];
+                        List<String> messages = DatabaseConnection.getMessages(username);
+                        return String.join("\n", messages);
+                    }
+                    break;
+                case "sendGameRequest":
+                    if (parts.length == 3) {
+                        String sender = parts[1];
+                        String recipient = parts[2];
+                        if (DatabaseConnection.saveGameRequest(sender, recipient)) {
+                            return "Game request sent";
+                        } else {
+                            return "Failed to send game request";
+                        }
+                    }
+                    break;
                 case "getRequests":
-                    return handleGetRequests(parts[1]);
+                    if (parts.length == 2) {
+                        String username = parts[1];
+                        List<String> requests = DatabaseConnection.getGameRequests(username);
+                        return String.join("\n", requests);
+                    }
+                    break;
                 default:
                     return "Unknown command.";
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Error: " + e.getMessage();
+            return "Database error: " + e.getMessage();
         }
-    }
-
-    private String handleChat(String data) throws SQLException {
-        String[] parts = data.split(" ", 3);
-        String sender = parts[0];
-        String receiver = parts[1];
-        String message = parts[2];
-        DatabaseConnection.saveMessage(sender, receiver, message);
-        return "Message sent.";
-    }
-
-    private String handleGameRequest(String data) throws SQLException {
-        String[] parts = data.split(" ", 2);
-        String sender = parts[0];
-        String receiver = parts[1];
-        DatabaseConnection.saveGameRequest(sender, receiver);
-        return "Game request sent.";
-    }
-
-    private String handleGetMessages(String username) throws SQLException {
-        return DatabaseConnection.getMessages(username);
-    }
-
-    private String handleGetRequests(String username) throws SQLException {
-        return DatabaseConnection.getGameRequests(username);
+        return "Invalid request format.";
     }
 }
