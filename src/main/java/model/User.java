@@ -11,20 +11,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class User implements Serializable {
 
     private String username;
     private String nickname;
     private String email;
     private String password;
-    private int questionNumber;
+    private String securityQuestion;
     private String answer;
 
     private ArrayList<Game> games = new ArrayList<>();
     private Deck deck;
     private ArrayList<Deck> decks = new ArrayList<>();
-    private List<String> friends;
+    private List<String> friends = new ArrayList<>();
+    private List<String> pendingRequests = new ArrayList<>();
 
     private Card playCard;
     private int highScore = 0;
@@ -78,12 +78,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public int getQuestionNumber() {
-        return questionNumber;
+    public String getSecurityQuestion() {
+        return securityQuestion;
     }
 
-    public void setQuestionNumber(int questionNumber) {
-        this.questionNumber = questionNumber;
+    public void setSecurityQuestion(String securityQuestion) {
+        this.securityQuestion = securityQuestion;
     }
 
     public String getAnswer() {
@@ -98,8 +98,16 @@ public class User implements Serializable {
         return games;
     }
 
+    public void setGames(ArrayList<Game> games) {
+        this.games = games;
+    }
+
     public Deck getDeck() {
         return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
     }
 
     public ArrayList<Deck> getDecks() {
@@ -110,20 +118,44 @@ public class User implements Serializable {
         this.decks = decks;
     }
 
+    public List<String> getFriends() {
+        return friends;
+    }
+
     public void setFriends(List<String> friends) {
         this.friends = friends;
     }
 
-    public void setGames(ArrayList<Game> games) {
-        this.games = games;
+    public void addFriend(String friendUsername) {
+        if (!friends.contains(friendUsername)) {
+            friends.add(friendUsername);
+        }
     }
 
-    public void setPlayCard(Card playCard) {
-        this.playCard = playCard;
+    public List<String> getPendingRequests() {
+        return pendingRequests;
+    }
+
+    public void setPendingRequests(List<String> pendingRequests) {
+        this.pendingRequests = pendingRequests;
+    }
+
+    public void addPendingRequest(String requestUsername) {
+        if (!pendingRequests.contains(requestUsername)) {
+            pendingRequests.add(requestUsername);
+        }
+    }
+
+    public void removePendingRequest(String requestUsername) {
+        pendingRequests.remove(requestUsername);
     }
 
     public Card getPlayCard() {
         return playCard;
+    }
+
+    public void setPlayCard(Card playCard) {
+        this.playCard = playCard;
     }
 
     public int getHighScore() {
@@ -134,28 +166,7 @@ public class User implements Serializable {
         this.highScore = highScore;
     }
 
-    private static void sortUsers() {
-
-    }
-
-    public void setDeck(Deck deck) {
-        this.deck = deck;
-    }
-
-    public void addFriend(String friendUsername) {
-        if (!friends.contains(friendUsername)) {
-            friends.add(friendUsername);
-        }
-    }
-
-    public List<String> getFriends() {
-        return friends;
-    }
-
     public int getRank() throws SQLException {
-        return DatabaseConnection.getUserRank(User.getCurrentUser().getUsername());
+        return DatabaseConnection.getUserRank(this.username);
     }
-
 }
-
-

@@ -29,10 +29,6 @@
     <Label text="Confirm Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
     <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-    <Label text="Show Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-    <CheckBox fx:id="showPasswordCheckBox" GridPane.rowIndex="5" GridPane.columnIndex="1"
-              onMouseClicked="#handleShowPassword"/>
-
     <Label text="Security Question:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
     <ComboBox fx:id="securityQuestionComboBox" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 

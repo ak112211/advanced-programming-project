@@ -10,9 +10,11 @@ import model.card.Card;
 import model.card.Leader;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gwent";
@@ -24,10 +26,8 @@ public class DatabaseConnection {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-
     public static boolean checkPassword(String username, String password) throws SQLException {
         String query = "SELECT password FROM Users WHERE username = ?";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -55,7 +55,6 @@ public class DatabaseConnection {
         return false;
     }
 
-
     public static void updateUserProfile(User user, String oldUsername) throws SQLException {
         String query = "UPDATE users SET username = ?, nickname = ?, email = ?, password = ? WHERE username = ?";
         try (Connection conn = getConnection();
@@ -71,7 +70,6 @@ public class DatabaseConnection {
 
     public static String getSecurityQuestion(String username) throws SQLException {
         String query = "SELECT security_question FROM Users WHERE username = ?";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -85,13 +83,12 @@ public class DatabaseConnection {
     }
 
     public static boolean validateSecurityAnswer(String username, String answer) throws SQLException {
-        String query = "SELECT security_answer FROM Users WHERE username = ?";
-
+        String query = "SELECT answer FROM Users WHERE username = ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    String storedAnswer = resultSet.getString("security_answer");
+                    String storedAnswer = resultSet.getString("answer");
                     return storedAnswer.equals(answer);
                 } else {
                     return false;
@@ -102,7 +99,6 @@ public class DatabaseConnection {
 
     public static int getDrawsCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NULL";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, username);
@@ -117,7 +113,6 @@ public class DatabaseConnection {
 
     public static int getWinsCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE winner = ?";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -131,7 +126,6 @@ public class DatabaseConnection {
 
     public static int getLossesCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NOT NULL AND winner <> ?";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, username);
@@ -147,9 +141,7 @@ public class DatabaseConnection {
 
     public static List<String> getRecentGames(String username, int n) throws SQLException {
         String query = "SELECT * FROM Games WHERE player1 = ? OR player2 = ? ORDER BY date DESC LIMIT ?";
-
         List<String> games = new ArrayList<>();
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, username);
@@ -173,16 +165,13 @@ public class DatabaseConnection {
                 }
             }
         }
-
         return games;
     }
 
     public static void saveGame(Game game) throws SQLException {
         String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data, is_online) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
             preparedStatement.setString(1, game.getPlayer1().getUsername());
             preparedStatement.setString(2, game.getPlayer2().getUsername());
             preparedStatement.setTimestamp(3, new Timestamp(game.getDate().getTime()));
@@ -200,7 +189,6 @@ public class DatabaseConnection {
             preparedStatement.setBoolean(7, game.isOnline());
             preparedStatement.executeUpdate();
 
-            // Retrieve the generated game ID
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int gameId = generatedKeys.getInt(1);
@@ -215,10 +203,8 @@ public class DatabaseConnection {
 
     private static void addGameToUser(String username, int gameId) throws SQLException {
         String query = "UPDATE Users SET games = JSON_ARRAY_APPEND(games, '$', ?) WHERE username = ?";
-
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
             preparedStatement.setInt(1, gameId);
             preparedStatement.setString(2, username);
             preparedStatement.executeUpdate();
@@ -227,7 +213,6 @@ public class DatabaseConnection {
 
     public static Game getGame(int gameId) throws SQLException {
         String query = "SELECT game_data FROM Games WHERE game_id = ?";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, gameId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -247,28 +232,55 @@ public class DatabaseConnection {
         }
     }
 
-    public static void saveUser(User user) throws SQLException {
-        String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, faction, leader, deck, decks, play_card, friends) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+    public static void saveData(User user) throws SQLException {
+        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, question_number = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? WHERE username = ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getNickname());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.setString(4, user.getPassword());
-            preparedStatement.setInt(5, user.getQuestionNumber());
-            preparedStatement.setString(6, user.getAnswer());
-            preparedStatement.setInt(7, user.getHighScore());
-            preparedStatement.setString(8, user.getDeck().toJson());
+            preparedStatement.setString(1, user.getNickname());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getPassword());
+            preparedStatement.setString(4, user.getSecurityQuestion());
+            preparedStatement.setString(5, user.getAnswer());
+            preparedStatement.setInt(6, user.getHighScore());
+
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Card.class, new CardSerializer())
                     .registerTypeAdapter(Leader.class, new LeaderSerializer())
                     .setPrettyPrinting()
                     .create();
 
-            preparedStatement.setString(9, gson.toJson(user.getDecks()));
-            preparedStatement.setString(10, null);
-            preparedStatement.setString(11, GSON.toJson(user.getFriends()));
-            preparedStatement.setString(12, gson.toJson(user.getGames()));
+            preparedStatement.setString(7, gson.toJson(user.getDeck()));
+            preparedStatement.setString(8, gson.toJson(user.getDecks()));
+            preparedStatement.setString(9, gson.toJson(user.getPlayCard()));
+            preparedStatement.setString(10, GSON.toJson(user.getFriends()));
+            preparedStatement.setString(11, gson.toJson(user.getGames()));
+            preparedStatement.setString(12, user.getUsername());
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void saveUser(User user) throws SQLException {
+        String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, deck, decks, play_card, friends, games) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getNickname());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(5, !Objects.equals(user.getSecurityQuestion(), "") ? user.getSecurityQuestion() : "");
+            preparedStatement.setString(6, user.getAnswer() != null ? user.getAnswer() : "");
+            preparedStatement.setInt(7, user.getHighScore());
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardSerializer())
+                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                    .setPrettyPrinting()
+                    .create();
+
+            preparedStatement.setString(8, user.getDeck() != null ? gson.toJson(user.getDeck()) : "");
+            preparedStatement.setString(9, user.getDecks() != null ? gson.toJson(user.getDecks()) : "");
+            preparedStatement.setString(10, user.getPlayCard() != null ? gson.toJson(user.getPlayCard()) : "");
+            preparedStatement.setString(11, user.getFriends() != null ? GSON.toJson(user.getFriends()) : "");
+            preparedStatement.setString(12, user.getGames() != null ? gson.toJson(user.getGames()) : "");
 
             preparedStatement.executeUpdate();
         }
@@ -276,7 +288,6 @@ public class DatabaseConnection {
 
     public static User getUser(String username) throws SQLException {
         String query = "SELECT * FROM Users WHERE username = ?";
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -284,10 +295,9 @@ public class DatabaseConnection {
                     String nickname = resultSet.getString("nickname");
                     String email = resultSet.getString("email");
                     String password = resultSet.getString("password");
-                    int questionNumber = resultSet.getInt("question_number");
+                    String securityQuestion = resultSet.getString("security_question");
                     String answer = resultSet.getString("answer");
                     int highScore = resultSet.getInt("high_score");
-
 
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     gsonBuilder.registerTypeAdapter(Deck.class, new DeckDeserializer());
@@ -299,12 +309,11 @@ public class DatabaseConnection {
                     ArrayList<Game> games = gson.fromJson(resultSet.getString("games"), new TypeToken<ArrayList<Game>>() {
                     }.getType());
 
-
                     Card playCard = null;
                     List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
                     User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
-                    user.setQuestionNumber(questionNumber);
+                    user.setSecurityQuestion(securityQuestion);
                     user.setAnswer(answer != null ? answer : "");
                     user.setHighScore(highScore);
                     user.setGames(games);
@@ -312,7 +321,6 @@ public class DatabaseConnection {
                     user.setDecks(decks != null ? decks : new ArrayList<>());
                     user.setPlayCard(playCard);
                     user.setFriends(friends != null ? friends : new ArrayList<>());
-
                     return user;
                 } else {
                     return null;
@@ -321,35 +329,18 @@ public class DatabaseConnection {
         }
     }
 
-    public static boolean addFriend(String username, String friendUsername) {
-        String query = "INSERT INTO friends (username, friend_username) VALUES (?, ?)";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, friendUsername);
-            int rowsInserted = preparedStatement.executeUpdate();
-            return rowsInserted > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public static int getUserRank(String username) throws SQLException {
         String userExistsQuery = "SELECT COUNT(*) FROM Users WHERE username = ?";
         String rankQuery = "SELECT COUNT(*) + 1 FROM Users WHERE high_score > (SELECT high_score FROM Users WHERE username = ?)";
-
         try (Connection conn = getConnection();
              PreparedStatement userExistsStmt = conn.prepareStatement(userExistsQuery);
              PreparedStatement rankStmt = conn.prepareStatement(rankQuery)) {
-
             userExistsStmt.setString(1, username);
             try (ResultSet rs = userExistsStmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) == 0) {
                     throw new SQLException("User not found.");
                 }
             }
-
             rankStmt.setString(1, username);
             try (ResultSet rs = rankStmt.executeQuery()) {
                 if (rs.next()) {
@@ -361,11 +352,9 @@ public class DatabaseConnection {
         }
     }
 
-
     public static List<User> getTopUsers(int limit) throws SQLException {
         String query = "SELECT username, nickname, high_score FROM Users ORDER BY high_score DESC LIMIT ?";
         List<User> topUsers = new ArrayList<>();
-
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, limit);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -373,7 +362,6 @@ public class DatabaseConnection {
                     String username = rs.getString("username");
                     String nickname = rs.getString("nickname");
                     int highScore = rs.getInt("high_score");
-
                     User user = new User(username, nickname, null, null);
                     user.setHighScore(highScore);
                     topUsers.add(user);
@@ -383,10 +371,44 @@ public class DatabaseConnection {
         return topUsers;
     }
 
+    public static boolean addFriend(String username, String friendUsername) throws SQLException {
+        List<String> friends = getFriendsList(username);
+        if (friends.contains(friendUsername)) {
+            return false; // Friend already in the list
+        }
+        friends.add(friendUsername);
+        String updatedFriendsJson = GSON.toJson(friends);
+
+        String query = "UPDATE users SET friends = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, updatedFriendsJson);
+            preparedStatement.setString(2, username);
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+    public static List<String> getFriendsList(String username) throws SQLException {
+        String query = "SELECT friends FROM users WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String friendsJson = resultSet.getString("friends");
+                    if (friendsJson != null && !friendsJson.isEmpty()) {
+                        Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+                        return GSON.fromJson(friendsJson, listType);
+                    }
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
 
     public static boolean saveMessage(String sender, String recipient, String message) throws SQLException {
         String query = "INSERT INTO messages (sender, recipient, message) VALUES (?, ?, ?)";
-
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, sender);
             stmt.setString(2, recipient);
@@ -398,7 +420,6 @@ public class DatabaseConnection {
 
     public static List<String> getMessages(String username) throws SQLException {
         String query = "SELECT * FROM messages WHERE recipient = ? ORDER BY timestamp DESC";
-
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -415,8 +436,7 @@ public class DatabaseConnection {
     }
 
     public static boolean saveGameRequest(String sender, String recipient) throws SQLException {
-        String query = "INSERT INTO gamerequests (sender, recipient) VALUES (?, ?)";
-
+        String query = "INSERT INTO gamerequests (sender, recipient, status) VALUES (?, ?, 'pending')";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, sender);
             stmt.setString(2, recipient);
@@ -427,7 +447,6 @@ public class DatabaseConnection {
 
     public static List<String> getGameRequests(String username) throws SQLException {
         String query = "SELECT * FROM gamerequests WHERE recipient = ? AND status = 'pending' ORDER BY timestamp DESC";
-
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -442,5 +461,64 @@ public class DatabaseConnection {
         }
     }
 
+    public static boolean updateGameRequestStatus(String sender, String recipient, String status) throws SQLException {
+        String query = "UPDATE gamerequests SET status = ? WHERE sender = ? AND recipient = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, status);
+            stmt.setString(2, sender);
+            stmt.setString(3, recipient);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+    public static boolean acceptGameRequest(String sender, String recipient) throws SQLException {
+        return updateGameRequestStatus(sender, recipient, "accepted");
+    }
+
+    public static boolean declineGameRequest(String sender, String recipient) throws SQLException {
+        return updateGameRequestStatus(sender, recipient, "declined");
+    }
+
+    public static boolean deleteGameRequest(String sender, String recipient) throws SQLException {
+        String query = "DELETE FROM gamerequests WHERE sender = ? AND recipient = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, sender);
+            stmt.setString(2, recipient);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+        }
+    }
+
+    public static boolean sendFriendRequest(String username, String friendUsername) throws SQLException {
+        // Check if the friend already exists in the friends list
+        List<String> friends = getFriendsList(username);
+        if (friends.contains(friendUsername)) {
+            return false; // Friend already in the list
+        }
+
+        // Check if the friend request already exists
+        String checkQuery = "SELECT COUNT(*) FROM friendrequests WHERE sender = ? AND recipient = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
+            checkStmt.setString(1, username);
+            checkStmt.setString(2, friendUsername);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return false; // Friend request already sent
+                }
+            }
+        }
+
+        // Insert the friend request into the friendrequests table
+        String query = "INSERT INTO friendrequests (sender, recipient, status) VALUES (?, ?, 'pending')";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, friendUsername);
+            int rowsInserted = preparedStatement.executeUpdate();
+            return rowsInserted > 0;
+        }
+    }
 
 }

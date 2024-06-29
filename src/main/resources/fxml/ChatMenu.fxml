@@ -4,34 +4,42 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER" prefWidth="600" prefHeight="800">
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER" prefWidth="800" prefHeight="600">
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Chat Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        <Label text="Chat and Game Requests" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Back" onAction="#goBack" />
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <TextField fx:id="friendUsernameField" promptText="Enter friend's username" />
         <Button text="Add Friend" onAction="#handleAddFriend" />
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Friends:" />
-        <ListView fx:id="friendsListView" prefHeight="100" prefWidth="200" />
+        <Label text="Friends List:" />
+        <ListView fx:id="friendsListView" prefHeight="200" prefWidth="150" />
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <TextArea fx:id="chatTextArea" prefHeight="200" prefWidth="400" editable="false" />
-    </HBox>
-    <HBox spacing="10" alignment="CENTER">
-        <TextField fx:id="messageTextField" promptText="Enter your message" />
-        <Button text="Send Message" onAction="#handleSendMessage" />
-    </HBox>
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Send Game Request" onAction="#handleSendGameRequest" />
+        <Label text="Pending Requests:" />
+        <VBox alignment="CENTER">
+            <ListView fx:id="pendingRequestsListView" prefHeight="200" prefWidth="150" />
+            <Button text="Accept" onAction="#handlePendingRequestSelection" />
+        </VBox>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Label text="Messages:" />
-        <ListView fx:id="messagesListView" prefHeight="100" prefWidth="400" />
+        <ListView fx:id="messagesListView" prefHeight="200" prefWidth="600" />
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="messageField" promptText="Enter your message" />
+        <Button text="Send Message" onAction="#handleSendMessage" />
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Label text="Game Requests:" />
-        <ListView fx:id="gameRequestsListView" prefHeight="100" prefWidth="400" />
+        <ListView fx:id="gameRequestsListView" prefHeight="200" prefWidth="600" />
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <TextField fx:id="requestUsernameField" promptText="Enter username to send game request" />
+        <Button text="Send Game Request" onAction="#handleSendGameRequest" />
     </HBox>
 </VBox>

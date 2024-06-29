@@ -26,8 +26,6 @@ public class RegisterMenuController {
     @FXML
     private TextField confirmPasswordField;
     @FXML
-    private CheckBox showPasswordCheckBox;
-    @FXML
     private ComboBox<SecurityQuestion> securityQuestionComboBox;
     @FXML
     private TextField securityAnswerField;
@@ -36,9 +34,8 @@ public class RegisterMenuController {
 
     @FXML
     private void initialize() {
-        passwordField.setVisible(false);
-        confirmPasswordField.setVisible(false);
-        showPasswordCheckBox.setSelected(false);
+        passwordField.setVisible(true);
+        confirmPasswordField.setVisible(true);
         securityQuestionComboBox.getItems().setAll(SecurityQuestion.values());
     }
 
@@ -70,7 +67,7 @@ public class RegisterMenuController {
             } else {
 
                 User user = new User(username, nickname, email, password);
-                user.setQuestionNumber(securityQuestion.getNumber());
+                user.setSecurityQuestion(securityQuestion.getQuestion());
                 user.setAnswer(securityAnswer);
                 DatabaseConnection.saveUser(user);
                 Tools.showAlert("Success", "Registration Successful", "User registered successfully.");
@@ -90,12 +87,6 @@ public class RegisterMenuController {
         String password = Tools.generateRandomPassword();
         passwordField.setText(password);
         confirmPasswordField.setText(password);
-    }
-
-    @FXML
-    private void handleShowPassword() {
-        passwordField.setVisible(showPasswordCheckBox.isSelected());
-        confirmPasswordField.setVisible(showPasswordCheckBox.isSelected());
     }
 
 }
