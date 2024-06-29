@@ -56,26 +56,18 @@ public class DatabaseConnection {
     }
 
 
-    public static boolean updateUserProfile(String username, String nickname, String email) {
-        String query = "UPDATE users SET username = ?, nickname = ?, email = ? WHERE username = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, nickname);
-            preparedStatement.setString(3, email);
-            preparedStatement.setString(4, User.getCurrentUser().getUsername());
-            int rowsUpdated = preparedStatement.executeUpdate();
-            User.getCurrentUser().setUsername(username);
-            User.getCurrentUser().setNickname(nickname);
-            User.getCurrentUser().setEmail(email);
-
-            return rowsUpdated > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static void updateUserProfile(User user, String oldUsername) throws SQLException {
+        String query = "UPDATE users SET username = ?, nickname = ?, email = ?, password = ? WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getNickname());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getPassword());
+            stmt.setString(5, oldUsername); // Assuming there is an id field to uniquely identify the user
+            stmt.executeUpdate();
         }
-        return false;
     }
-
 
     public static String getSecurityQuestion(String username) throws SQLException {
         String query = "SELECT security_question FROM Users WHERE username = ?";
@@ -392,51 +384,63 @@ public class DatabaseConnection {
     }
 
 
-    public static void saveMessage(String sender, String receiver, String message) throws SQLException {
-        String query = "INSERT INTO Messages (sender, receiver, message) VALUES (?, ?, ?)";
+    public static boolean saveMessage(String sender, String recipient, String message) throws SQLException {
+        String query = "INSERT INTO messages (sender, recipient, message) VALUES (?, ?, ?)";
+
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, sender);
-            stmt.setString(2, receiver);
+            stmt.setString(2, recipient);
             stmt.setString(3, message);
             stmt.executeUpdate();
+            return true;
         }
     }
 
-    public static String getMessages(String username) throws SQLException {
-        String query = "SELECT * FROM Messages WHERE receiver = ?";
-        StringBuilder messages = new StringBuilder();
+    public static List<String> getMessages(String username) throws SQLException {
+        String query = "SELECT * FROM messages WHERE recipient = ? ORDER BY timestamp DESC";
+
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
+                List<String> messages = new ArrayList<>();
                 while (rs.next()) {
-                    messages.append(rs.getString("sender")).append(": ").append(rs.getString("message")).append("\n");
+                    String sender = rs.getString("sender");
+                    String message = rs.getString("message");
+                    String timestamp = rs.getString("timestamp");
+                    messages.add(sender + ": " + message + " (" + timestamp + ")");
                 }
+                return messages;
             }
         }
-        return messages.toString();
     }
 
-    public static void saveGameRequest(String sender, String receiver) throws SQLException {
-        String query = "INSERT INTO GameRequests (sender, receiver) VALUES (?, ?)";
+    public static boolean saveGameRequest(String sender, String recipient) throws SQLException {
+        String query = "INSERT INTO gamerequests (sender, recipient) VALUES (?, ?)";
+
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, sender);
-            stmt.setString(2, receiver);
+            stmt.setString(2, recipient);
             stmt.executeUpdate();
+            return true;
         }
     }
 
-    public static String getGameRequests(String username) throws SQLException {
-        String query = "SELECT * FROM GameRequests WHERE receiver = ?";
-        StringBuilder requests = new StringBuilder();
+    public static List<String> getGameRequests(String username) throws SQLException {
+        String query = "SELECT * FROM gamerequests WHERE recipient = ? AND status = 'pending' ORDER BY timestamp DESC";
+
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
+                List<String> requests = new ArrayList<>();
                 while (rs.next()) {
-                    requests.append(rs.getString("sender")).append(" has challenged you to a game.\n");
+                    String sender = rs.getString("sender");
+                    String timestamp = rs.getString("timestamp");
+                    requests.add("Game request from " + sender + " (" + timestamp + ")");
                 }
+                return requests;
             }
         }
-        return requests.toString();
     }
+
 
 }
