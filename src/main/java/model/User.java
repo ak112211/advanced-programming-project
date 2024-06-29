@@ -1,11 +1,13 @@
 package model;
 
 import model.card.Card;
+import util.DatabaseConnection;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,9 +152,8 @@ public class User implements Serializable {
         return friends;
     }
 
-    public int getRank() {
-        // TODO:
-        return 1;
+    public int getRank() throws SQLException {
+        return DatabaseConnection.getUserRank(User.getCurrentUser().getUsername());
     }
 
 }

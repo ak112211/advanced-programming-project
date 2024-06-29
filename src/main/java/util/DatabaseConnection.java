@@ -303,4 +303,19 @@ public class DatabaseConnection {
         }
         return false;
     }
+
+    public static int getUserRank(String username) throws SQLException {
+        String query = "SELECT COUNT(*) + 1 AS rank FROM Users WHERE high_score > (SELECT high_score FROM Users WHERE username = ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("rank");
+                } else {
+                    throw new SQLException("User not found.");
+                }
+            }
+        }
+    }
 }
