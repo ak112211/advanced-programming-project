@@ -9,7 +9,6 @@ import model.User;
 import model.card.Card;
 import model.card.Leader;
 
-import java.io.*;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
@@ -371,24 +370,6 @@ public class DatabaseConnection {
         return topUsers;
     }
 
-    public static boolean addFriend(String username, String friendUsername) throws SQLException {
-        List<String> friends = getFriendsList(username);
-        if (friends.contains(friendUsername)) {
-            return false; // Friend already in the list
-        }
-        friends.add(friendUsername);
-        String updatedFriendsJson = GSON.toJson(friends);
-
-        String query = "UPDATE users SET friends = ? WHERE username = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, updatedFriendsJson);
-            preparedStatement.setString(2, username);
-            int rowsUpdated = preparedStatement.executeUpdate();
-            return rowsUpdated > 0;
-        }
-    }
-
     public static List<String> getFriendsList(String username) throws SQLException {
         String query = "SELECT friends FROM users WHERE username = ?";
         try (Connection connection = getConnection();
@@ -461,23 +442,21 @@ public class DatabaseConnection {
         }
     }
 
-    public static boolean updateGameRequestStatus(String sender, String recipient, String status) throws SQLException {
+    public static void updateGameRequestStatus(String sender, String recipient, String status) throws SQLException {
         String query = "UPDATE gamerequests SET status = ? WHERE sender = ? AND recipient = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, status);
             stmt.setString(2, sender);
             stmt.setString(3, recipient);
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
         }
     }
 
-    public static boolean acceptGameRequest(String sender, String recipient) throws SQLException {
-        return updateGameRequestStatus(sender, recipient, "accepted");
+    public static void acceptGameRequest(String sender, String recipient) throws SQLException {
+        updateGameRequestStatus(sender, recipient, "accepted");
     }
 
-    public static boolean declineGameRequest(String sender, String recipient) throws SQLException {
-        return updateGameRequestStatus(sender, recipient, "declined");
+    public static void declineGameRequest(String sender, String recipient) throws SQLException {
+        updateGameRequestStatus(sender, recipient, "declined");
     }
 
     public static boolean deleteGameRequest(String sender, String recipient) throws SQLException {
@@ -520,5 +499,78 @@ public class DatabaseConnection {
             return rowsInserted > 0;
         }
     }
+
+    public static List<String> getFriendRequests(String username) throws SQLException {
+        String query = "SELECT * FROM friendrequests WHERE recipient = ? AND status = 'pending' ORDER BY timestamp DESC";
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<String> requests = new ArrayList<>();
+                while (rs.next()) {
+                    String sender = rs.getString("sender");
+                    String timestamp = rs.getString("timestamp");
+                    requests.add("Friend request from " + sender + " (" + timestamp + ")");
+                }
+                return requests;
+            }
+        }
+    }
+
+    public static boolean declineFriendRequest(String sender, String recipient) throws SQLException {
+        return updateFriendRequestStatus(sender, recipient, "declined");
+    }
+
+    private static boolean updateFriendRequestStatus(String sender, String recipient, String status) throws SQLException {
+        String query = "UPDATE friendrequests SET status = ? WHERE sender = ? AND recipient = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, status);
+            stmt.setString(2, sender);
+            stmt.setString(3, recipient);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+    // اضافه کردن تابعی برای پذیرش درخواست دوستی و اضافه کردن هر دو کاربر به لیست دوستان یکدیگر
+    public static boolean acceptFriendRequest(String username, String friendUsername) throws SQLException {
+        // قبول کردن درخواست دوستی
+        String acceptQuery = "UPDATE friendrequests SET status = 'accepted' WHERE sender = ? AND recipient = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement acceptStmt = connection.prepareStatement(acceptQuery)) {
+            acceptStmt.setString(1, friendUsername);
+            acceptStmt.setString(2, username);
+            int rowsUpdated = acceptStmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                // اضافه کردن هر دو کاربر به لیست دوستان یکدیگر
+                addFriend(username, friendUsername);
+                addFriend(friendUsername, username);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // تابع موجود برای اضافه کردن دوست به‌روز شده
+    public static boolean addFriend(String username, String friendUsername) throws SQLException {
+        List<String> friends = getFriendsList(username);
+        if (friends.contains(friendUsername)) {
+            return false; // دوست قبلا در لیست موجود است
+        }
+        friends.add(friendUsername);
+        String updatedFriendsJson = GSON.toJson(friends);
+
+        String query = "UPDATE users SET friends = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, updatedFriendsJson);
+            preparedStatement.setString(2, username);
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    }
+
+
 
 }

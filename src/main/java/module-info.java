@@ -7,6 +7,7 @@ module Gwent {
     requires org.json;
     requires com.google.gson;
     requires com.fasterxml.jackson.databind;
+    requires java.mail;
 
     exports view;
     opens view to javafx.fxml, com.fasterxml.jackson.databind;

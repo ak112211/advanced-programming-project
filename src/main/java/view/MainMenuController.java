@@ -117,4 +117,10 @@ public class MainMenuController {
         App.loadScene(Menu.DECK_MENU.getPath());
 
     }
+
+    public void logout(ActionEvent actionEvent) {
+        User.setCurrentUser(null);
+        Game.setCurrentGame(null);
+        App.loadScene(Menu.LOGIN_MENU.getPath());
+    }
 }

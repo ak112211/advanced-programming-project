@@ -3,7 +3,6 @@ package view;
 import enums.Menu;
 import enums.SecurityQuestion;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import model.App;
@@ -11,7 +10,7 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-
+import java.util.UUID;
 
 public class RegisterMenuController {
 
@@ -34,8 +33,6 @@ public class RegisterMenuController {
 
     @FXML
     private void initialize() {
-        passwordField.setVisible(true);
-        confirmPasswordField.setVisible(true);
         securityQuestionComboBox.getItems().setAll(SecurityQuestion.values());
     }
 
@@ -58,14 +55,13 @@ public class RegisterMenuController {
                 Tools.showAlert("Error", "Invalid Username", "Invalid username. Only letters, numbers, and '-' are allowed.");
             } else if (!Tools.isValidEmail(email)) {
                 Tools.showAlert("Error", "Invalid Email", "Invalid email address.");
-            } else if (!Tools.isValidPassword(password) && !password.equals("random")) {
+            } else if (!Tools.isValidPassword(password)) {
                 Tools.showAlert("Error", "Weak Password", "Invalid password. Password must be at least 8 characters long, include uppercase, lowercase, numbers, and special characters.");
             } else if (!password.equals(confirmPassword)) {
                 Tools.showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
             } else if (securityQuestion == null || securityAnswer.isEmpty() || !securityAnswer.equals(securityAnswerConfirm)) {
                 Tools.showAlert("Error", "Security Question", "Security question must be selected and answers must match.");
             } else {
-
                 User user = new User(username, nickname, email, password);
                 user.setSecurityQuestion(securityQuestion.getQuestion());
                 user.setAnswer(securityAnswer);
@@ -88,5 +84,4 @@ public class RegisterMenuController {
         passwordField.setText(password);
         confirmPasswordField.setText(password);
     }
-
 }

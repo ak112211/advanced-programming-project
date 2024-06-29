@@ -45,6 +45,7 @@ public class LoginMenuController {
             } else if (DatabaseConnection.checkPassword(username, password)) {
                 User.setCurrentUser(user);
                 App.loadScene(Menu.MAIN_MENU.getPath());
+                App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
                 Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
             } else {
                 Tools.showAlert("Invalid password.");

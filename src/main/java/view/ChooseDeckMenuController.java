@@ -337,6 +337,14 @@ public class ChooseDeckMenuController {
                 }
                 settingFromSaved = true;
                 currentDeck = Deck.fromJson(jsonBuilder.toString());
+                if (currentDeck.getCards().stream().filter(c -> c.getType().isUnit()).count() < 22) {
+                    Tools.showAlert("unit cards less than 22");
+                }
+
+                if (currentDeck.getCards().stream().filter(c -> c.getType().isSpecial()).count() > 10) {
+                    Tools.showAlert("special cards more than 10");
+                }
+
                 factionComboBox.setValue(currentDeck.getFaction());
                 leaderComboBox.setValue(currentDeck.getLeader());
                 deckCardsListView.getItems().clear();
