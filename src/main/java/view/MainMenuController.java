@@ -68,6 +68,7 @@ public class MainMenuController {
     private Deck currentDeck;
     private Deck player2Deck;
     private Game game;
+    private boolean settingFromSaved = false;
     private List<Leader> leaders = new ArrayList<>();
 
     private boolean isPlayer2Turn = false;
@@ -98,27 +99,32 @@ public class MainMenuController {
         setup();
 
         factionComboBox.setOnAction(event -> {
-            if (currentDeck.getFaction() != null && factionComboBox.getValue() != null)  {
-                currentDeck.getCards().clear();
-                deckCardsListView.getItems().clear();
-                Faction selectedFaction = factionComboBox.getValue();
-                currentDeck.setFaction(selectedFaction);
-                loadLeaders(currentDeck.getFaction());
-                loadFactionCards(currentDeck.getFaction());
+            if (!settingFromSaved) {
+                if (currentDeck.getFaction() != null && factionComboBox.getValue() != null) {
+                    currentDeck.getCards().clear();
+                    deckCardsListView.getItems().clear();
+                    Faction selectedFaction = factionComboBox.getValue();
+                    currentDeck.setFaction(selectedFaction);
+                    loadLeaders(currentDeck.getFaction());
+                    loadFactionCards(currentDeck.getFaction());
+                }
             }
         });
 
         leaderComboBox.setOnAction(event -> {
+            Leader leader = leaderComboBox.getValue();
             if (currentDeck.getLeader() != null && leaderComboBox.getValue() != null && player2Deck!= null) {
                 if (!isPlayer2Turn) {
                     currentDeck.setLeader(leaderComboBox.getValue());
                     loadFactionCards(currentDeck.getFaction());
-
+                    loadLeaders(currentDeck.getFaction());
+                    leaderComboBox.setValue(leader);
                     showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
                 } else {
                     player2Deck.setLeader(leaderComboBox.getValue());
                     loadFactionCards(player2Deck.getFaction());
-
+                    loadLeaders(player2Deck.getFaction());
+                    leaderComboBox.setValue(leader);
                     showBigImage(player2Deck.getLeader().getImagePath(), player2Deck.getLeader().getDescription());
                 }
 
@@ -305,11 +311,6 @@ public class MainMenuController {
     }
 
     @FXML
-    private void goToUserProfile() {
-        App.loadScene("/fxml/UserProfile.fxml");
-    }
-
-    @FXML
     private void goToAddFriends() {
         App.loadScene("/fxml/AddFriendsMenu.fxml");
     }
@@ -334,6 +335,7 @@ public class MainMenuController {
                 while ((i = reader.read()) != -1) {
                     jsonBuilder.append((char) i);
                 }
+                settingFromSaved = true;
                 currentDeck = Deck.fromJson(jsonBuilder.toString());
                 factionComboBox.setValue(currentDeck.getFaction());
                 leaderComboBox.setValue(currentDeck.getLeader());
@@ -341,6 +343,7 @@ public class MainMenuController {
                 deckCardsListView.getItems().addAll(currentDeck.getCards());
                 updateCardCounts();
                 Tools.showAlert("Deck loaded successfully.");
+                settingFromSaved = false;
             } catch (IOException e) {
                 Tools.showAlert("Failed to load deck: " + e.getMessage());
             }
@@ -437,4 +440,7 @@ public class MainMenuController {
         new GameLauncher().start(App.getStage());
     }
 
+    public void showScoreboard(ActionEvent actionEvent) {
+        App.loadScene("/fxml/Scoreboard.fxml");
+    }
 }

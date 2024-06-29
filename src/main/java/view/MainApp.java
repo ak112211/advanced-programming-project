@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.App;
+import util.ServerConnection;
 
 import java.util.Objects;
 
@@ -23,6 +24,7 @@ public class MainApp extends Application {
         stage.setResizable(false);
         stage.centerOnScreen();
         App.setStage(stage);
+        App.setServerConnection(new ServerConnection());
 
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/icon.png")));
         stage.getIcons().add(image);

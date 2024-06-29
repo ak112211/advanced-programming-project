@@ -28,8 +28,8 @@ public class Game implements Serializable {
     private final Date DATE;
     private boolean isOnline;
     private int player1Points, player2Points;
-    private final Leader PLAYER1_LEADER_CARD;
-    private final Leader PLAYER2_LEADER_CARD;
+    private Leader PLAYER1_LEADER_CARD;
+    private Leader PLAYER2_LEADER_CARD;
     private final ArrayList<Card> IN_GAME_CARDS = new ArrayList<>();
     private final ArrayList<Card> PLAYER1_IN_HAND_CARDS = new ArrayList<>();
     private final ArrayList<Card> PLAYER2_IN_HAND_CARDS = new ArrayList<>();
@@ -326,5 +326,13 @@ public class Game implements Serializable {
 
     public void setOnline(boolean online) {
         isOnline = online;
+    }
+
+    public void setPLAYER1_LEADER_CARD(Leader PLAYER1_LEADER_CARD) {
+        this.PLAYER1_LEADER_CARD = PLAYER1_LEADER_CARD;
+    }
+
+    public void setPLAYER2_LEADER_CARD(Leader PLAYER2_LEADER_CARD) {
+        this.PLAYER2_LEADER_CARD = PLAYER2_LEADER_CARD;
     }
 }

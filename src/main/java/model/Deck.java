@@ -64,29 +64,6 @@ public class Deck implements Serializable {
         return gson.fromJson(json, Deck.class);
     }
 
-    public void saveToFile(String filePath) throws IOException {
-        try (Writer writer = new FileWriter(filePath)) {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(Card.class, new CardSerializer())
-                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                    .setPrettyPrinting()
-                    .create();
-            gson.toJson(this, writer);
-        }
-    }
-
-    public static Deck loadFromFile(String filePath) throws IOException {
-        try (Reader reader = new FileReader(filePath)) {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(Card.class, new CardSerializer())
-                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                    .registerTypeAdapter(Deck.class, new DeckDeserializer())
-                    .create();
-            return gson.fromJson(reader, Deck.class);
-        }
-    }
-
-
     public void setCards(ArrayList<Card> cards) {
         this.cards.clear();
         this.cards.addAll(cards);

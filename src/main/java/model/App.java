@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import util.ServerConnection;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -13,6 +14,7 @@ public class App {
     private static User user;
     private static Stage stage;
     private static Menu menu;
+    private static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
         App.stage = stage;
@@ -47,5 +49,13 @@ public class App {
 
     public static void setMenu(Menu menu) {
         App.menu = menu;
+    }
+
+    public static ServerConnection getServerConnection() {
+        return serverConnection;
+    }
+
+    public static void setServerConnection(ServerConnection serverConnection) {
+        App.serverConnection = serverConnection;
     }
 }
