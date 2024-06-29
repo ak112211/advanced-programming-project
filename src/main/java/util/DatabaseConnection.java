@@ -55,14 +55,14 @@ public class DatabaseConnection {
     }
 
 
-    public static boolean updateUserProfile(String currentUsername, String newUsername, String nickname, String email) {
+    public static boolean updateUserProfile(String newUsername, String nickname, String email) {
         String query = "UPDATE users SET username = ?, nickname = ?, email = ? WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, newUsername);
             preparedStatement.setString(2, nickname);
             preparedStatement.setString(3, email);
-            preparedStatement.setString(4, currentUsername);
+            preparedStatement.setString(4, User.getCurrentUser().getUsername());
             int rowsUpdated = preparedStatement.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException e) {
