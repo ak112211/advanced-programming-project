@@ -294,8 +294,10 @@ public class DatabaseConnection {
                     gsonBuilder.registerTypeAdapter(Game.class, new GameDeserializer());
                     Gson gson = gsonBuilder.create();
                     Deck deck = Deck.fromJson(resultSet.getString("deck"));
-                    ArrayList<Deck> decks = gson.fromJson(resultSet.getString("decks"), new TypeToken<ArrayList<Deck>>() {}.getType());
-                    ArrayList<Game> games = gson.fromJson(resultSet.getString("games"), new TypeToken<ArrayList<Game>>() {}.getType());
+                    ArrayList<Deck> decks = gson.fromJson(resultSet.getString("decks"), new TypeToken<ArrayList<Deck>>() {
+                    }.getType());
+                    ArrayList<Game> games = gson.fromJson(resultSet.getString("games"), new TypeToken<ArrayList<Game>>() {
+                    }.getType());
 
 
                     Card playCard = null;
