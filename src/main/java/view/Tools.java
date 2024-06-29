@@ -2,7 +2,15 @@ package view;
 
 import javafx.scene.control.Alert;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Tools {
+    //Alert
     public static void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
@@ -15,5 +23,71 @@ public class Tools {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    //Check User Information Format
+    public static boolean isValidUsername(String username) {
+        String regex = "^[a-zA-Z0-9-]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(username);
+        return matcher.matches();
+    }
+
+    public static boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public static boolean isValidPassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+        boolean hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
+        for (char character : password.toCharArray()) {
+            if (Character.isUpperCase(character)) hasUpper = true;
+            else if (Character.isLowerCase(character)) hasLower = true;
+            else if (Character.isDigit(character)) hasDigit = true;
+            else if (!Character.isLetterOrDigit(character)) hasSpecial = true;
+        }
+        return hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+
+    public static String suggestNewUsername(String username) {
+        return username + new Random().nextInt(1000);
+    }
+
+    public static String generateRandomPassword() {
+        StringBuilder password = getInitialPassword();
+        char[] passwordArray = password.toString().toCharArray();
+        List<Character> passwordList = new ArrayList<>();
+        for (char character : passwordArray) {
+            passwordList.add(character);
+        }
+        Collections.shuffle(passwordList);
+        password = new StringBuilder();
+        for (char character : passwordList) {
+            password.append(character);
+        }
+        return password.toString();
+    }
+
+    private static StringBuilder getInitialPassword() {
+        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String special = "!@#$%^&*()-_=+<>?";
+        String allChars = upper + lower + digits + special;
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+        password.append(upper.charAt(random.nextInt(upper.length())));
+        password.append(lower.charAt(random.nextInt(lower.length())));
+        password.append(digits.charAt(random.nextInt(digits.length())));
+        password.append(special.charAt(random.nextInt(special.length())));
+        for (int i = 4; i < random.nextInt(12, 15); i++) {
+            password.append(allChars.charAt(random.nextInt(allChars.length())));
+        }
+        return password;
     }
 }

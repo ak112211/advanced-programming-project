@@ -3,6 +3,7 @@ package view;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.App;
 import model.User;
@@ -12,52 +13,52 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ProfileMenuController {
+    private static final int defaultNumberToShowGameHistory = 5;
 
     @FXML
-    private Label usernameLabel;
-
+    private TextField usernameField;
     @FXML
-    private Label nicknameLabel;
-
+    private TextField nicknameField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private PasswordField confirmPasswordField;
     @FXML
     private Label highScoreLabel;
-
     @FXML
     private Label rankLabel;
-
     @FXML
     private Label gamesPlayedLabel;
-
     @FXML
     private Label drawsLabel;
-
     @FXML
     private Label winsLabel;
-
     @FXML
     private Label lossesLabel;
-
     @FXML
-    private TextField recentGamesField;
+    private TextField gameHistoryField;
 
 
     @FXML
     private void initialize() {
         try {
-            User currentUser = User.getCurrentUser();
-            usernameLabel.setText(currentUser.getUsername());
-            nicknameLabel.setText(currentUser.getNickname());
-            highScoreLabel.setText(String.valueOf(currentUser.getHighScore()));
-            rankLabel.setText(String.valueOf(currentUser.getRank()));
-            gamesPlayedLabel.setText(String.valueOf(currentUser.getGames().size()));
+            User user = User.getCurrentUser();
+            usernameField.setText(user.getUsername());
+            nicknameField.setText(user.getNickname());
+            emailField.setText(user.getEmail());
+            passwordField.setText(user.getPassword());
+            confirmPasswordField.setText(user.getPassword());
 
-            int drawsResponse = DatabaseConnection.getDrawsCount(currentUser.getUsername());
+            highScoreLabel.setText(String.valueOf(user.getHighScore()));
+            rankLabel.setText(String.valueOf(user.getRank()));
+            gamesPlayedLabel.setText(String.valueOf(user.getGames().size()));
+            int drawsResponse = DatabaseConnection.getDrawsCount(user.getUsername());
             drawsLabel.setText(String.valueOf(drawsResponse));
-
-            int winsResponse = DatabaseConnection.getWinsCount(currentUser.getUsername());
+            int winsResponse = DatabaseConnection.getWinsCount(user.getUsername());
             winsLabel.setText(String.valueOf(winsResponse));
-
-            int lossesResponse = DatabaseConnection.getLossesCount(currentUser.getUsername());
+            int lossesResponse = DatabaseConnection.getLossesCount(user.getUsername());
             lossesLabel.setText(String.valueOf(lossesResponse));
 
         } catch (Exception e) {
@@ -67,13 +68,13 @@ public class ProfileMenuController {
     }
 
     @FXML
-    private void handleShowRecentGamesAction() {
-        String nStr = recentGamesField.getText();
-        int n = 5; // default value
-        if (!nStr.isEmpty()) {
+    private void handleShowGameHistory() {
+        String numberString = gameHistoryField.getText();
+        int number = defaultNumberToShowGameHistory;
+        if (!numberString.isEmpty()) {
             try {
-                n = Integer.parseInt(nStr);
-                if (n < 1) {
+                number = Integer.parseInt(numberString);
+                if (number < 1) {
                     Tools.showAlert("Error", "Invalid Input", "The number of recent games must be a positive integer greater than zero.");
                     return;
                 }
@@ -85,19 +86,47 @@ public class ProfileMenuController {
 
         try {
             String username = User.getCurrentUser().getUsername();
-            List<String> recentGames = DatabaseConnection.getRecentGames(username, n);
+            List<String> recentGames = DatabaseConnection.getRecentGames(username, number);
             if (recentGames.isEmpty()) {
                 Tools.showAlert("Information", "No Games Found", "No recent games found for the user.");
             } else {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
                 for (String game : recentGames) {
-                    sb.append(game).append("\n");
+                    stringBuilder.append(game).append("\n");
                 }
-                Tools.showAlert("Recent Games", "Recent Games History", sb.toString());
+                Tools.showAlert("Recent Games", "Recent Games History", stringBuilder.toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();
             Tools.showAlert("Error", "Database Error", "An error occurred while fetching the recent games. Please try again.");
+        }
+    }
+
+    @FXML
+    private void handleUpdateButtonAction() throws SQLException {
+        User user = User.getCurrentUser();
+        String username = usernameField.getText();
+        String nickname = nicknameField.getText();
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
+
+        if (!user.getUsername().equals(username)) {
+            if (DatabaseConnection.isUsernameTaken(username)) {
+                String newUsername = Tools.suggestNewUsername(username);
+                Tools.showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
+            } else {
+                DatabaseConnection.saveUser(user);
+            }
+        }
+        if (!user.getNickname().equals(nickname)) {
+
+        }
+        if (!user.getEmail().equals(email)) {
+
+        }
+        if (!user.getPassword().equals(password)) {
+
         }
     }
 
