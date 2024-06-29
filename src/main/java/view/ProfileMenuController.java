@@ -40,7 +40,6 @@ public class ProfileMenuController {
     @FXML
     private TextField gameHistoryField;
 
-
     @FXML
     private void initialize() {
         try {
@@ -105,28 +104,51 @@ public class ProfileMenuController {
     @FXML
     private void handleUpdateButtonAction() throws SQLException {
         User user = User.getCurrentUser();
+        String oldUsername = user.getUsername();
         String username = usernameField.getText();
         String nickname = nicknameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
+        if (!password.equals(confirmPassword)) {
+            Tools.showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
+            return;
+        }
+
+        boolean isUpdated = false;
+
         if (!user.getUsername().equals(username)) {
             if (DatabaseConnection.getUser(username) != null) {
                 String newUsername = Tools.suggestNewUsername(username);
                 Tools.showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
+                return;
             } else {
-                
+                user.setUsername(username);
+                isUpdated = true;
             }
         }
+
         if (!user.getNickname().equals(nickname)) {
-
+            user.setNickname(nickname);
+            isUpdated = true;
         }
+
         if (!user.getEmail().equals(email)) {
-
+            user.setEmail(email);
+            isUpdated = true;
         }
-        if (!user.getPassword().equals(password)) {
 
+        if (!user.getPassword().equals(password)) {
+            user.setPassword(password);
+            isUpdated = true;
+        }
+
+        if (isUpdated) {
+            DatabaseConnection.updateUserProfile(user, oldUsername);
+            Tools.showAlert("Success", "Profile Updated", "Your profile has been updated successfully.");
+        } else {
+            Tools.showAlert("Information", "No Changes", "No changes detected to update.");
         }
     }
 
@@ -134,5 +156,4 @@ public class ProfileMenuController {
     private void handleBack() {
         App.loadScene(Menu.MAIN_MENU.getPath());
     }
-
 }

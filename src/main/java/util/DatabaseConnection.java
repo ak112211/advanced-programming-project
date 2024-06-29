@@ -56,26 +56,18 @@ public class DatabaseConnection {
     }
 
 
-    public static boolean updateUserProfile(String username, String nickname, String email) {
-        String query = "UPDATE users SET username = ?, nickname = ?, email = ? WHERE username = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, nickname);
-            preparedStatement.setString(3, email);
-            preparedStatement.setString(4, User.getCurrentUser().getUsername());
-            int rowsUpdated = preparedStatement.executeUpdate();
-            User.getCurrentUser().setUsername(username);
-            User.getCurrentUser().setNickname(nickname);
-            User.getCurrentUser().setEmail(email);
-
-            return rowsUpdated > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static void updateUserProfile(User user, String oldUsername) throws SQLException {
+        String query = "UPDATE users SET username = ?, nickname = ?, email = ?, password = ? WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getNickname());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getPassword());
+            stmt.setString(5, oldUsername); // Assuming there is an id field to uniquely identify the user
+            stmt.executeUpdate();
         }
-        return false;
     }
-
 
     public static String getSecurityQuestion(String username) throws SQLException {
         String query = "SELECT security_question FROM Users WHERE username = ?";
