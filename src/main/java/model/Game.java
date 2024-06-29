@@ -26,6 +26,7 @@ public class Game implements Serializable {
     private final User PLAYER2;
     private User currentPlayer;
     private final Date DATE;
+    private boolean isOnline;
     private int player1Points, player2Points;
     private final Leader PLAYER1_LEADER_CARD;
     private final Leader PLAYER2_LEADER_CARD;
@@ -317,5 +318,13 @@ public class Game implements Serializable {
                 .registerTypeAdapter(Deck.class, new DeckDeserializer())
                 .create();
         return gson.fromJson(json, Game.class);
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }

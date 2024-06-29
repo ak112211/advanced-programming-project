@@ -431,6 +431,7 @@ public class MainMenuController {
         player2.setDeck(player2Deck);
         if (game == null) {
             game = new Game(currentUser, new User("Player2", null, null, null)); // Assuming "Player2" is a placeholder user
+            game.setOnline(isMulti);
         }
         Game.setCurrentGame(game);
         new GameLauncher().start(App.getStage());
