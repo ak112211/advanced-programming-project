@@ -41,11 +41,11 @@ public class DatabaseConnection {
         }
     }
 
-    public static boolean updatePassword(String username, String newPassword) {
+    public static boolean updatePassword(String username, String password) {
         String query = "UPDATE users SET password = ? WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, newPassword);
+            preparedStatement.setString(1, password);
             preparedStatement.setString(2, username);
             int rowsUpdated = preparedStatement.executeUpdate();
             return rowsUpdated > 0;

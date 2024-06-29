@@ -116,7 +116,7 @@ public class ProfileMenuController {
                 String newUsername = Tools.suggestNewUsername(username);
                 Tools.showAlert("Error", "Username Taken", "Username is already taken. Suggested username: " + newUsername);
             } else {
-                DatabaseConnection.saveUser(user);
+                
             }
         }
         if (!user.getNickname().equals(nickname)) {
