@@ -41,14 +41,6 @@ public class ChooseDeckMenuController {
     @FXML
     public Text cardDescriptionText;
     @FXML
-    public ListView<String> savedGamesListView;
-    @FXML
-    public Button continueButton;
-    @FXML
-    private TextField friendUsernameField;
-    @FXML
-    private ListView<String> friendsListView;
-    @FXML
     private ComboBox<Faction> factionComboBox;
     @FXML
     private ListView<Card> factionCardsListView;
@@ -66,8 +58,8 @@ public class ChooseDeckMenuController {
     private Button choosePlayer2DeckButton;
     public static boolean isMulti;
     private User currentUser;
+    private User player2;
     private Deck currentDeck;
-    private Deck player2Deck;
     private Game game;
     private boolean settingFromSaved = false;
 
@@ -80,24 +72,12 @@ public class ChooseDeckMenuController {
     private void initialize() {
         currentUser = User.getCurrentUser();
         currentDeck = currentUser.getDeck();
-        if (currentUser.getGames() != null) {
-            for (Game game : currentUser.getGames()) {
-                savedGamesListView.getItems().add(game.getDate().toString());
-            }
-        } else {
-            savedGamesListView.setVisible(false);
+        player2 = new User("Player2", null, null, null);
+        player2.setDeck(new Deck());
+
+        if (isMulti) {
+            choosePlayer2DeckButton.setVisible(false);
         }
-        savedGamesListView.setOnMouseClicked(event -> {
-            String selectedDate = savedGamesListView.getSelectionModel().getSelectedItem();
-            game = currentUser.getGames().stream()
-                    .filter(c -> c.getDate().toString().equals(selectedDate))
-                    .findFirst()
-                    .orElse(null);
-        });
-
-
-        continueButton.setDisable(true);
-        friendsMenu.setDisable(true);
 
         setup();
 
@@ -109,6 +89,9 @@ public class ChooseDeckMenuController {
                     Faction selectedFaction = factionComboBox.getValue();
                     currentDeck.setFaction(selectedFaction);
                     loadLeaders(currentDeck.getFaction());
+                    Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()));
+                    leaderComboBox.setValue(randomLeader);
+                    currentDeck.setLeader(randomLeader);
                     loadFactionCards(currentDeck.getFaction());
                 }
             }
@@ -116,21 +99,9 @@ public class ChooseDeckMenuController {
 
         leaderComboBox.setOnAction(event -> {
             Leader leader = leaderComboBox.getValue();
-            if (currentDeck.getLeader() != null && leaderComboBox.getValue() != null && player2Deck!= null) {
-                if (!isPlayer2Turn) {
-                    currentDeck.setLeader(leaderComboBox.getValue());
-                    loadFactionCards(currentDeck.getFaction());
-                    loadLeaders(currentDeck.getFaction());
-                    leaderComboBox.setValue(leader);
-                    showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
-                } else {
-                    player2Deck.setLeader(leaderComboBox.getValue());
-                    loadFactionCards(player2Deck.getFaction());
-                    loadLeaders(player2Deck.getFaction());
-                    leaderComboBox.setValue(leader);
-                    showBigImage(player2Deck.getLeader().getImagePath(), player2Deck.getLeader().getDescription());
-                }
-
+            if (leader != null) {
+                currentDeck.setLeader(leader);
+                showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
             }
         });
 
@@ -154,37 +125,45 @@ public class ChooseDeckMenuController {
         updateCardCounts();
     }
 
-    private void setup() {
-
-        factionComboBox.getItems().setAll(Faction.values());
-        factionComboBox.getItems().remove(Faction.NEUTRAL);
-        if (!isPlayer2Turn) {
-            currentDeck = new Deck();
-            currentUser.setDeck(currentDeck);
-            currentDeck.setFaction(Faction.REALMS_NORTHERN);
-            loadLeaders(currentDeck.getFaction());
-            factionComboBox.setValue(currentDeck.getFaction());
-            loadFactionCards(factionComboBox.getValue());
-            loadLeaders(factionComboBox.getValue());
-            deckCardsListView.getItems().addAll(currentDeck.getCards());
-        } else {
-            player2Deck = new Deck();
-            player2Deck.setFaction(Faction.EMPIRE_NILFGAARDIAM);
-            loadLeaders(player2Deck.getFaction());
-            factionComboBox.setValue(player2Deck.getFaction());
-            loadFactionCards(factionComboBox.getValue());
-            loadLeaders(factionComboBox.getValue());
-            deckCardsListView.getItems().addAll(player2Deck.getCards());
-        }
-    }
-
     @FXML
     private void changeTurn(ActionEvent event) {
+        if (isPlayer2Turn) {
+            player2.setDeck(currentDeck);
+        } else {
+            currentUser.setDeck(currentDeck);
+        }
+        currentDeck = new Deck();
         isPlayer2Turn = !isPlayer2Turn;
         deckCardsListView.getItems().clear();
         factionCardsListView.getItems().clear();
+
+        updateCardCounts();
         setup();
     }
+
+    private void setup() {
+        factionComboBox.getItems().setAll(Faction.values());
+        factionComboBox.getItems().remove(Faction.NEUTRAL);
+
+        try {
+            currentDeck = new Deck();
+            currentUser.setDeck(currentDeck);
+            currentDeck.setFaction(Faction.REALMS_NORTHERN);
+            factionComboBox.setValue(currentDeck.getFaction());
+            loadFactionCards(currentDeck.getFaction());
+            loadLeaders(currentDeck.getFaction());
+            Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()));
+            leaderComboBox.setValue(randomLeader);
+            currentDeck.setLeader(randomLeader);
+            deckCardsListView.getItems().addAll(currentDeck.getCards());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error during setup: " + e.getMessage());
+        }
+        System.out.println("Setup completed.");
+    }
+
 
     public void hideCardDisplay() {
         cardDisplayVBox.setVisible(false);
@@ -234,10 +213,6 @@ public class ChooseDeckMenuController {
         leaders.clear();
         setUpLeaders(faction);
         leaderComboBox.getItems().addAll(leaders);
-        Leader randomLeader = leaders.get(new Random().nextInt(leaders.size()));
-        leaderComboBox.setValue(randomLeader);
-        currentDeck.setLeader(randomLeader);
-
     }
 
     private Leader getRandomLeader() {
@@ -278,22 +253,14 @@ public class ChooseDeckMenuController {
         long countInDeck = deckCardsListView.getItems().stream().filter(c -> c.getName().equals(card.getName())).count();
         if (countInDeck < card.getNoOfCardsInGame()) {
             deckCardsListView.getItems().add(card);
-            if (!isPlayer2Turn) {
-                currentDeck.getCards().add(card);
-            } else {
-                player2Deck.getCards().add(card);
-            }
+            currentDeck.getCards().add(card);
             updateCardCounts();
         }
     }
 
     private void removeFromDeck(Card card) {
         deckCardsListView.getItems().remove(card);
-        if (!isPlayer2Turn) {
-            currentDeck.getCards().remove(card);
-        } else {
-            player2Deck.getCards().remove(card);
-        }
+        currentDeck.getCards().remove(card);
         updateCardCounts();
     }
 
@@ -305,7 +272,7 @@ public class ChooseDeckMenuController {
 
         boolean validDeck = unitCardsCount >= 22 && specialCardsCount <= 10;
         choosePlayer2DeckButton.setDisable(!validDeck);
-        startGameButton.setDisable(player2Deck == null || !validDeck);
+        startGameButton.setDisable(!validDeck);
     }
 
     @FXML
@@ -335,20 +302,23 @@ public class ChooseDeckMenuController {
                 while ((i = reader.read()) != -1) {
                     jsonBuilder.append((char) i);
                 }
+
                 settingFromSaved = true;
                 currentDeck = Deck.fromJson(jsonBuilder.toString());
                 if (currentDeck.getCards().stream().filter(c -> c.getType().isUnit()).count() < 22) {
                     Tools.showAlert("unit cards less than 22");
                 }
-
                 if (currentDeck.getCards().stream().filter(c -> c.getType().isSpecial()).count() > 10) {
                     Tools.showAlert("special cards more than 10");
                 }
-
                 factionComboBox.setValue(currentDeck.getFaction());
+                loadLeaders(currentDeck.getFaction());
                 leaderComboBox.setValue(currentDeck.getLeader());
                 deckCardsListView.getItems().clear();
                 deckCardsListView.getItems().addAll(currentDeck.getCards());
+                factionCardsListView.getItems().clear();
+                loadFactionCards(currentDeck.getFaction());
+
                 updateCardCounts();
                 Tools.showAlert("Deck loaded successfully.");
                 settingFromSaved = false;
@@ -404,15 +374,21 @@ public class ChooseDeckMenuController {
 
     @FXML
     public void startGame(ActionEvent actionEvent) {
-        if (currentDeck == null || player2Deck == null || currentDeck.getCards().size() < 22 || player2Deck.getCards().size() < 22) {
+        if (isPlayer2Turn) {
+            player2.setDeck(currentDeck);
+        } else {
+            currentUser.setDeck(currentDeck);
+        }
+
+        if (currentUser.getDeck() == null || player2.getDeck() == null || currentDeck.getCards().size() < 22 || player2.getDeck().getCards().size() < 22) {
+            System.out.println(currentDeck.getCards().size());
+            System.out.println(player2.getDeck().getCards().size());
             Tools.showAlert("Error", "Deck Error", "Both players must have at least 22 unit cards to start the game.");
             return;
         }
 
-        User player2 = new User("Player2", null, null, null);
-        player2.setDeck(player2Deck);
         if (game == null) {
-            game = new Game(currentUser, new User("Player2", null, null, null)); // Assuming "Player2" is a placeholder user
+            game = new Game(currentUser, player2);
             game.setOnline(isMulti);
         }
         Game.setCurrentGame(game);

@@ -14,6 +14,7 @@ public class App {
     private static User user;
     private static Stage stage;
     private static Menu menu;
+    private static String menuPath;
     private static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
@@ -28,6 +29,7 @@ public class App {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource(fxmlPath)));
             Stage stage = App.getStage();
+            menuPath = fxmlPath;
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -57,5 +59,9 @@ public class App {
 
     public static void setServerConnection(ServerConnection serverConnection) {
         App.serverConnection = serverConnection;
+    }
+
+    public static String getMenuPath() {
+        return menuPath;
     }
 }

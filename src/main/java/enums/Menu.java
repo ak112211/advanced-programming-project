@@ -6,6 +6,7 @@ public enum Menu {
     FORGET_PASSWORD_MENU("/fxml/ForgotPasswordMenu.fxml"),
     MAIN_MENU("/fxml/MainMenu.fxml"),
     PROFILE_MENU("/fxml/ProfileMenu.fxml"),
+    GAME_PANE("/fxml/GamePane.fxml"),
     CHAT_MENU("/fxml/ChatMenu.fxml"),
     DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
     ;

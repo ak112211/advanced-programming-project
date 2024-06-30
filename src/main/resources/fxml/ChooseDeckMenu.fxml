@@ -21,22 +21,6 @@
                 <Label text="Leader:" />
                 <ComboBox fx:id="leaderComboBox" />
             </HBox>
-            <HBox fx:id="friendsMenu" spacing="10" alignment="CENTER">
-                <Label text="Friends Menu:" />
-                <VBox spacing="10" visible="false">
-                    <Label text="Choose a friend to play with:" />
-                    <ListView fx:id="friendsListView" prefHeight="200" prefWidth="300" />
-                    <Button text="Send Play Request" onAction="#sendPlayRequest" />
-                </VBox>
-            </HBox>
-            <HBox fx:id="savedGamesMenu" spacing="10" alignment="CENTER">
-                <Label text="Saved Games Menu:" />
-                <VBox spacing="10" visible="false">
-                    <Label text="Choose a saved game to continue:" />
-                    <ListView fx:id="savedGamesListView" prefHeight="200" prefWidth="300" />
-                    <Button fx:id="continueButton" text="Continue Game" onAction="#startGame" />
-                </VBox>
-            </HBox>
             <HBox spacing="10" alignment="CENTER">
                 <VBox spacing="10" alignment="TOP_CENTER">
                     <Label text="Faction Cards:" />

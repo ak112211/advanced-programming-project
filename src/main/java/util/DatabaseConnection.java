@@ -232,7 +232,7 @@ public class DatabaseConnection {
     }
 
     public static void saveData(User user) throws SQLException {
-        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, question_number = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? WHERE username = ?";
+        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, security_question = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? WHERE username = ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getNickname());
             preparedStatement.setString(2, user.getEmail());
@@ -259,7 +259,7 @@ public class DatabaseConnection {
     }
 
     public static void saveUser(User user) throws SQLException {
-        String query = "INSERT INTO Users (username, nickname, email, password, question_number, answer, high_score, deck, decks, play_card, friends, games) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getNickname());
@@ -517,25 +517,21 @@ public class DatabaseConnection {
         }
     }
 
-    public static boolean declineFriendRequest(String sender, String recipient) throws SQLException {
-        return updateFriendRequestStatus(sender, recipient, "declined");
+    public static void declineFriendRequest(String sender, String recipient) throws SQLException {
+        updateFriendRequestStatus(sender, recipient, "declined");
     }
 
-    private static boolean updateFriendRequestStatus(String sender, String recipient, String status) throws SQLException {
+    private static void updateFriendRequestStatus(String sender, String recipient, String status) throws SQLException {
         String query = "UPDATE friendrequests SET status = ? WHERE sender = ? AND recipient = ?";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, status);
             stmt.setString(2, sender);
             stmt.setString(3, recipient);
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
         }
     }
 
-    // اضافه کردن تابعی برای پذیرش درخواست دوستی و اضافه کردن هر دو کاربر به لیست دوستان یکدیگر
-    public static boolean acceptFriendRequest(String username, String friendUsername) throws SQLException {
-        // قبول کردن درخواست دوستی
+    public static void acceptFriendRequest(String friendUsername, String username) throws SQLException {
         String acceptQuery = "UPDATE friendrequests SET status = 'accepted' WHERE sender = ? AND recipient = ?";
         try (Connection connection = getConnection();
              PreparedStatement acceptStmt = connection.prepareStatement(acceptQuery)) {
@@ -543,20 +539,16 @@ public class DatabaseConnection {
             acceptStmt.setString(2, username);
             int rowsUpdated = acceptStmt.executeUpdate();
             if (rowsUpdated > 0) {
-                // اضافه کردن هر دو کاربر به لیست دوستان یکدیگر
                 addFriend(username, friendUsername);
                 addFriend(friendUsername, username);
-                return true;
             }
         }
-        return false;
     }
 
-    // تابع موجود برای اضافه کردن دوست به‌روز شده
-    public static boolean addFriend(String username, String friendUsername) throws SQLException {
+    public static void addFriend(String username, String friendUsername) throws SQLException {
         List<String> friends = getFriendsList(username);
         if (friends.contains(friendUsername)) {
-            return false; // دوست قبلا در لیست موجود است
+            return;
         }
         friends.add(friendUsername);
         String updatedFriendsJson = GSON.toJson(friends);
@@ -566,8 +558,6 @@ public class DatabaseConnection {
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, updatedFriendsJson);
             preparedStatement.setString(2, username);
-            int rowsUpdated = preparedStatement.executeUpdate();
-            return rowsUpdated > 0;
         }
     }
 

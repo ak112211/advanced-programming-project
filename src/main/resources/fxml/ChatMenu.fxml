@@ -28,12 +28,12 @@
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="sendGameRequestButton" text="Send Game Request" onAction="#sendGameRequest"/>
-        <Button fx:id="acceptRequestButton" text="Accept Request" onAction="#acceptGameRequest" />
-        <Button fx:id="declineRequestButton" text="Decline Request" onAction="#declineGameRequest" />
+        <Button fx:id="acceptRequestButton" text="Accept Game Request" onAction="#acceptGameRequest" />
+        <Button fx:id="declineRequestButton" text="Decline Game Request" onAction="#declineGameRequest" />
     </HBox>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="acceptFriendRequestButton" text="Accept Request"  onAction="#acceptFriendRequest"/>
-        <Button fx:id="declineFriendRequestButton" text="Decline Request"  onAction="#declineFriendRequest"/>
+        <Button fx:id="acceptFriendRequestButton" text="Accept Friend Request"  onAction="#acceptFriendRequest"/>
+        <Button fx:id="declineFriendRequestButton" text="Decline Friend Request"  onAction="#declineFriendRequest"/>
     </HBox>
 </VBox>

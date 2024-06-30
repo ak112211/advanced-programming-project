@@ -77,12 +77,12 @@ public class MainMenuController {
 
     @FXML
     private void goToProfile() {
-        App.loadScene("/fxml/ProfileMenu.fxml");
+        App.loadScene(Menu.PROFILE_MENU.getPath());
     }
 
     @FXML
     private void goToAddFriends() {
-        App.loadScene("/fxml/ChatMenu.fxml");
+        App.loadScene(Menu.CHAT_MENU.getPath());
     }
 
     @FXML

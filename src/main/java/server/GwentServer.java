@@ -8,8 +8,8 @@ public class GwentServer {
     private static Map<String, ClientHandler> clients = new HashMap<>();
 
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(12345)) {
-            System.out.println("Server is listening on port 12345");
+        try (ServerSocket serverSocket = new ServerSocket(5555)) {
+            System.out.println("Server is listening on port 5555");
             while (true) {
                 Socket socket = serverSocket.accept();
                 new ClientHandler(socket).start();
@@ -54,7 +54,7 @@ public class GwentServer {
 
 
                         if (command.endsWith("sent friend request")) {
-                            targetClientHandler.sendMessage(clientId, command);
+                            targetClientHandler.sendMessage(clientId, "");
                         } else if (command.endsWith("sent game request"))  {
                             targetClientHandler.sendMessage(clientId, command);
                         } else if (command.startsWith("accepted friend request from"))  {
@@ -82,20 +82,8 @@ public class GwentServer {
         }
 
         private void sendMessage(String fromClientId, String message) {
-            out.println(fromClientId + ":" + message);
+            out.println(message);
         }
 
-        private void handleDisconnect() {
-            // Logic for handling client disconnection
-            out.println("DISCONNECTING");
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            synchronized (clients) {
-                clients.remove(clientId);
-            }
-        }
     }
 }
