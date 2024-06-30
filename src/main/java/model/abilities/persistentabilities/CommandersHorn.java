@@ -19,7 +19,7 @@ public class CommandersHorn extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return notSameCards(myCard, card) && sameRow(myCard, card) && !AFFECTED_CARDS.contains(card);
+        return myCard != card && myCard.sameRow(card) && !AFFECTED_CARDS.contains(card);
     }
 
     public static boolean doesAffectSpy(Card myCard, Card card) {

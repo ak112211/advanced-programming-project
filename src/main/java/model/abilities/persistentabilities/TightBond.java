@@ -12,7 +12,7 @@ public class TightBond extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return notSameCards(myCard, card) && sameName(myCard, card) && sameRow(myCard, card);
+        return myCard != card && myCard.same(card) && myCard.sameRow(card);
     }
 
     @Override

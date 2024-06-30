@@ -8,6 +8,7 @@ import enums.cardsinformation.*;
 import javafx.scene.input.DataFormat;
 import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
+import model.abilities.instantaneousabilities.Spy;
 
 import java.util.Objects;
 
@@ -136,8 +137,12 @@ public class Card extends Rectangle {
         this.row = row;
     }
 
+    public Row getDefaultRow(boolean isPlayer1Turn) {
+        return TYPE.getRow(isPlayer1Turn ^ ABILITY instanceof Spy);
+    }
+
     public void setDefaultRow(boolean isPlayer1Turn) {
-        row = TYPE.getRow(isPlayer1Turn);
+        row = getDefaultRow(isPlayer1Turn);
     }
 
     public boolean same(Card card) {

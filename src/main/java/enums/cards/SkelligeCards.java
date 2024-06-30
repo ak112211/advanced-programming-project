@@ -65,4 +65,8 @@ public enum SkelligeCards implements CardEnum {
     public Card getCard() {
         return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.SKELLIGE, DESCRIPTION, IMAGE_PATH, this);
     }
+
+    public int getNoOfCardsInGame() {
+        return NO_OF_CARDS_IN_GAME;
+    }
 }

@@ -60,4 +60,8 @@ public enum RealmsNorthernCards implements CardEnum {
     public Card getCard() {
         return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.REALMS_NORTHERN, DESCRIPTION, IMAGE_PATH, this);
     }
+
+    public int getNoOfCardsInGame() {
+        return NO_OF_CARDS_IN_GAME;
+    }
 }
