@@ -1,5 +1,6 @@
 package model.abilities.instantaneousabilities;
 
+import enums.Row;
 import enums.cards.CardEnum;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
@@ -27,30 +28,32 @@ public class PlayCard extends InstantaneousAbility {
 
     public void affect(Game game, Card myCard) {
         Card card;
+        Row row;
         if (CARDS_PLACE != null) {
             ArrayList<Card> cardsList = CARDS_PLACE.getPlayerCards(game);
             int index = cardsList.stream().map(Card::getCardEnum).toList().indexOf(CARD_ENUM);
             if (index == -1) {
                 return;
+            }
+            card = cardsList.remove(index);
+            if (TYPE == null) {
+                row = card.getDefaultRow(game.isPlayer1Turn());
             } else {
-                card = cardsList.get(index);
-                if (TYPE == null) {
-                    card.setDefaultRow(game.isPlayer1Turn());
-                } else {
-                    card.setRow(TYPE.getRow(game.isPlayer1Turn()));
-                }
-                if (game.canPlay(card)) {
-                    game.moveCard(card, cardsList, game.getInGameCards());
-                }
+                row = TYPE.getRow(game.isPlayer1Turn());
+            }
+            if (game.canPlay(card, row)) {
+                card.setRow(row);
+                game.moveCard(card, cardsList, game.getInGameCards());
             }
         } else {
             card = CARD_ENUM.getCard();
             if (TYPE == null) {
-                card.setDefaultRow(game.isPlayer1Turn());
+                row = card.getDefaultRow(game.isPlayer1Turn());
             } else {
-                card.setRow(TYPE.getRow(game.isPlayer1Turn()));
+                row = TYPE.getRow(game.isPlayer1Turn());
             }
-            if (game.canPlay(card)) {
+            if (game.canPlay(card, row)) {
+                card.setRow(row);
                 game.getInGameCards().add(card);
             }
         }

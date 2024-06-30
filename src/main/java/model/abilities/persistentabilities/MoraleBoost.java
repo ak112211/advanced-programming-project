@@ -12,7 +12,7 @@ public class MoraleBoost extends PersistentAbility {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return notSameCards(myCard, card) && sameRow(myCard, card);
+        return myCard != card && myCard.sameRow(card);
     }
 
     @Override
