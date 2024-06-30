@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public abstract class PersistentAbility extends Ability {
-    protected final BiFunction<Card, Card, Boolean> DOES_AFFECT;
+    private final BiFunction<Card, Card, Boolean> DOES_AFFECT;
 
     public PersistentAbility(BiFunction<Card, Card, Boolean> doesAffect) {
         DOES_AFFECT = doesAffect;

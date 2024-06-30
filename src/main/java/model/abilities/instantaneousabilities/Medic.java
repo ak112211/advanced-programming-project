@@ -16,8 +16,7 @@ public class Medic extends InstantaneousAbility {
         if (card.isEmpty()) {
             return;
         }
-        Row row = card.get().getType().getRow(game.isPlayer1Turn());
-        card.get().setRow(row);
+        card.get().setDefaultRow(game.isPlayer1Turn());
         game.moveCard(card.get(), graveyard, game.getInGameCards());
     }
 }

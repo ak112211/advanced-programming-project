@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.Type;
-import javafx.scene.layout.Pane;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.InstantaneousAbility;
 import model.abilities.openingabilities.OpeningAbility;
@@ -17,6 +16,7 @@ import util.LeaderSerializer;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Game implements Serializable {
     private static final Random RANDOM = new Random();
@@ -108,9 +108,9 @@ public class Game implements Serializable {
                 .sum();
     }
 
-    public boolean canPlay(Card card) {
+    public boolean canPlay(Card card, Row row) {
         return card.getType() != Type.SPELL ||
-                IN_GAME_CARDS.stream().noneMatch(inGameCard -> card.same(inGameCard) && card.sameRow(inGameCard));
+                IN_GAME_CARDS.stream().noneMatch(inGameCard -> inGameCard.same(card) && inGameCard.getRow() == row);
     }
 
     // Functions that move a card:
@@ -118,6 +118,9 @@ public class Game implements Serializable {
     public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
         if (!cards1.remove(card)) {
             throw new IllegalArgumentException("Card doesn't exist there");
+        }
+        if (cards2.contains(card)) {
+            throw new IllegalArgumentException("Card exists in destination");
         }
         cards2.add(card);
         if (cards2 == IN_GAME_CARDS && card.getAbility() instanceof InstantaneousAbility) {
@@ -127,11 +130,10 @@ public class Game implements Serializable {
 
     public boolean player1PlayCard(Card card, Row row) {
         if (row == null) {
-            card.setDefaultRow(true);
-        } else {
-            card.setRow(row);
+            row = card.getDefaultRow(true);
         }
-        if (canPlay(card)) {
+        if (canPlay(card, row)) {
+            card.setRow(row);
             moveCard(card, PLAYER1_IN_HAND_CARDS, IN_GAME_CARDS);
             return true;
         }
@@ -140,11 +142,10 @@ public class Game implements Serializable {
 
     public boolean player2PlayCard(Card card, Row row) {
         if (row == null) {
-            card.setDefaultRow(false);
-        } else {
-            card.setRow(row);
+            row = card.getDefaultRow(false);
         }
-        if (canPlay(card)) {
+        if (canPlay(card, row)) {
+            card.setRow(row);
             moveCard(card, PLAYER2_IN_HAND_CARDS, IN_GAME_CARDS);
             return true;
         }
@@ -296,6 +297,11 @@ public class Game implements Serializable {
 
     public ArrayList<Card> getPlayer2GraveyardCards() {
         return PLAYER2_GRAVEYARD_CARDS;
+    }
+
+    public List<Card> getAllCards() {
+        return Stream.of(PLAYER1_IN_HAND_CARDS, PLAYER2_IN_HAND_CARDS, player1Deck, player2Deck, IN_GAME_CARDS,
+                PLAYER1_GRAVEYARD_CARDS, PLAYER2_GRAVEYARD_CARDS).flatMap(ArrayList::stream).toList();
     }
 
     public enum GameStatus {

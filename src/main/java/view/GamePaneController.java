@@ -1,17 +1,15 @@
 package view;
 
 import enums.Row;
-import enums.cards.RealmsNorthernCards;
+import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.RealmsNorthernLeaders;
-import enums.leaders.SkelligeLeaders;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -94,9 +92,7 @@ public class GamePaneController implements Initializable {
     @FXML
     private StackPane player2Leader;
 
-    private HashMap<HBox, Row> GET_ROW;
-
-    private HashMap<Row, HBox> GET_ROW_BOX;
+    private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
 
     private Text messageDisplay = new Text();
     private Game game;
@@ -104,21 +100,6 @@ public class GamePaneController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        GET_ROW = new HashMap<>() {{
-            put(player1CloseCombat, Row.PLAYER1_CLOSE_COMBAT);
-            put(player1Ranged, Row.PLAYER1_RANGED);
-            put(player1Siege, Row.PLAYER1_SIEGE);
-            put(player1CloseCombatSpell, Row.PLAYER1_CLOSE_COMBAT);
-            put(player1RangedSpell, Row.PLAYER1_RANGED);
-            put(player1SiegeSpell, Row.PLAYER1_SIEGE);
-            put(player2CloseCombat, Row.PLAYER2_CLOSE_COMBAT);
-            put(player2Ranged, Row.PLAYER2_RANGED);
-            put(player2Siege, Row.PLAYER2_SIEGE);
-            put(player2CloseCombatSpell, Row.PLAYER2_CLOSE_COMBAT);
-            put(player2RangedSpell, Row.PLAYER2_RANGED);
-            put(player2SiegeSpell, Row.PLAYER2_SIEGE);
-        }};
-
         GET_ROW_BOX = new HashMap<>() {{
             put(Row.PLAYER1_CLOSE_COMBAT, player1CloseCombat);
             put(Row.PLAYER1_RANGED, player1Ranged);
@@ -128,6 +109,15 @@ public class GamePaneController implements Initializable {
             put(Row.PLAYER2_RANGED, player2Ranged);
             put(Row.PLAYER2_SIEGE, player2Siege);
             put(Row.PLAYER2_WEATHER, weather);
+        }};
+
+        GET_ROW_BOX_SPELL = new HashMap<>() {{
+            put(Row.PLAYER1_CLOSE_COMBAT, player1CloseCombatSpell);
+            put(Row.PLAYER1_RANGED, player1RangedSpell);
+            put(Row.PLAYER1_SIEGE, player1SiegeSpell);
+            put(Row.PLAYER2_CLOSE_COMBAT, player2CloseCombatSpell);
+            put(Row.PLAYER2_RANGED, player2RangedSpell);
+            put(Row.PLAYER2_SIEGE, player2SiegeSpell);
         }};
 
         game = Game.getCurrentGame();
@@ -176,12 +166,15 @@ public class GamePaneController implements Initializable {
         player1Siege.getChildren().clear();
         player2Siege.getChildren().clear();
         weather.getChildren().clear();
+        player1CloseCombatSpell.getChildren().clear();
+        player2CloseCombatSpell.getChildren().clear();
+        player1RangedSpell.getChildren().clear();
+        player2RangedSpell.getChildren().clear();
+        player1SiegeSpell.getChildren().clear();
+        player2SiegeSpell.getChildren().clear();
 
         for (Card card : game.getInGameCards()) {
-            HBox targetBox = GET_ROW_BOX.get(card.getRow());
-            if (targetBox != null) {
-                targetBox.getChildren().add(card);
-            }
+            getRowBox(card).getChildren().add(card);
         }
     }
 
@@ -191,36 +184,36 @@ public class GamePaneController implements Initializable {
 
         Leader player1LeaderCard = game.getPlayer1LeaderCard();
         player1Leader.getChildren().add(player1LeaderCard);
+        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player1LeaderCard));
 
         Leader player2LeaderCard = game.getPlayer2LeaderCard();
         player2Leader.getChildren().add(player2LeaderCard);
+        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player2LeaderCard));
     }
 
     private void setupCardsInHand() {
         player1Hand.getChildren().clear();
         player2Hand.getChildren().clear();
 
-        for (Card card : game.getPlayer1InHandCards()) {
-            player1Hand.getChildren().add(card);
+        player1Hand.getChildren().addAll(game.getPlayer1InHandCards());
+        player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
+
+        for (Card card : CardsPlace.IN_HAND.getPlayerCards(game)) {
+            card.setOnMouseClicked(event -> {
+                System.out.println("clicked");
+                selectCard(card);
+            });
         }
 
-        for (Card card : game.getPlayer2InHandCards()) {
-            player2Hand.getChildren().add(card);
+        if (game.isPlayer1Turn()) {
+            displayMessage("Turn of Player 1");
+        } else {
+            displayMessage("Turn of Player 2");
         }
     }
 
-    private Card createCardView(Card card) {
+    private void createCardView(Card card) {
         card.setSmallImage();
-        card.setOnMouseClicked(event -> { // this will disable when it's not his turn
-            System.out.println("clicked");
-            if (card.equals(game.getPlayer1LeaderCard()) || card.equals(game.getPlayer2LeaderCard())) {
-                showLeaderCardOverlay(card);
-            } else {
-                selectCard(card);
-                // showHandCardOverlay(card);
-            }
-        });
-        return card;
     }
 
     public void updateScore() {
@@ -271,29 +264,9 @@ public class GamePaneController implements Initializable {
 
     private void startTurn() {
         updateScore();
+        clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         setupCardsInHand();
         setupCardsOnBoard();
-        clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
-        if (game.isPlayer1Turn()) {
-            // Enable Player 2's hand and disable Player 1's hand
-            for (Node card : player1Hand.getChildren()) {
-                card.setDisable(false);
-            }
-            for (Node card : player2Hand.getChildren()) {
-                card.setDisable(true);
-            }
-            displayMessage("Turn of Player 2");
-
-        } else {
-            // Enable Player 1's hand and disable Player 2's hand
-            for (Node card : player2Hand.getChildren()) {
-                card.setDisable(false);
-            }
-            for (Node card : player1Hand.getChildren()) {
-                card.setDisable(true);
-            }
-            displayMessage("Turn of Player 1");
-        }
     }
 
     private void selectCard(Card card) {
@@ -301,6 +274,8 @@ public class GamePaneController implements Initializable {
 
         // Highlighting and setting mouse handler for possible rows
         clearHighlights();
+        setupCardsInHand();
+        setupCardsOnBoard();
         boolean isPlayer1 = game.isPlayer1Turn() ^ card.getAbility() instanceof Spy;
         try {
             highlightRow(GET_ROW_BOX.get(card.getType().getRow(isPlayer1)),
@@ -315,15 +290,27 @@ public class GamePaneController implements Initializable {
         } catch (UnsupportedOperationException e) {
             if (card.getType() == Type.SPELL) {
                 if (isPlayer1) {
-                    highlightRow(player1CloseCombatSpell, Row.PLAYER1_CLOSE_COMBAT, card);
-                    highlightRow(player1RangedSpell, Row.PLAYER1_RANGED, card);
-                    highlightRow(player1SiegeSpell, Row.PLAYER1_SIEGE, card);
+                    if (game.canPlay(card, Row.PLAYER1_CLOSE_COMBAT)) {
+                        highlightRow(player1CloseCombatSpell, Row.PLAYER1_CLOSE_COMBAT, card);
+                    }
+                    if (game.canPlay(card, Row.PLAYER1_RANGED)) {
+                        highlightRow(player1RangedSpell, Row.PLAYER1_RANGED, card);
+                    }
+                    if (game.canPlay(card, Row.PLAYER1_SIEGE)) {
+                        highlightRow(player1SiegeSpell, Row.PLAYER1_SIEGE, card);
+                    }
                 } else {
-                    highlightRow(player2CloseCombatSpell, Row.PLAYER2_CLOSE_COMBAT, card);
-                    highlightRow(player2RangedSpell, Row.PLAYER2_RANGED, card);
-                    highlightRow(player2SiegeSpell, Row.PLAYER2_SIEGE, card);
+                    if (game.canPlay(card, Row.PLAYER2_CLOSE_COMBAT)) {
+                        highlightRow(player2CloseCombatSpell, Row.PLAYER2_CLOSE_COMBAT, card);
+                    }
+                    if (game.canPlay(card, Row.PLAYER2_RANGED)) {
+                        highlightRow(player2RangedSpell, Row.PLAYER2_RANGED, card);
+                    }
+                    if (game.canPlay(card, Row.PLAYER2_SIEGE)) {
+                        highlightRow(player2SiegeSpell, Row.PLAYER2_SIEGE, card);
+                    }
                 }
-            } else if (card.getType() == Type.DECOY) {
+            } else if (card.getType() == Type.DECOY) { // kodoom ghashangtare? code ye khati paiin ya kode bala?
                 (isPlayer1 ?
                         Stream.concat(player1CloseCombat.getChildren().stream(),
                                 Stream.concat(player1Ranged.getChildren().stream(), player1Siege.getChildren().stream())) :
@@ -341,7 +328,8 @@ public class GamePaneController implements Initializable {
             try {
                 playCard(card, row);
             } catch (IllegalArgumentException e) {
-                System.out.println(card.getType() + card.getName() + row);
+                System.out.println("" + rowBox + row + card.getName());
+                throw e;
             }
         });
     }
@@ -350,77 +338,49 @@ public class GamePaneController implements Initializable {
         inGameCard.setStroke(Paint.valueOf("FFFFA0B0"));
         inGameCard.setStrokeWidth(2);
         inGameCard.setOnMouseClicked(rowClickEvent -> {
+            ((Decoy) card.getAbility()).setReturnCard(inGameCard);
             try {
                 playCard(card, inGameCard.getRow());
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 System.out.println(card.getType() + card.getName() + inGameCard.getRow());
             }
-            ((Decoy) card.getAbility()).setReturnCard(inGameCard);
         });
     }
 
-    private void clearHighlights() {
-        player1CloseCombat.setStyle("");
-        player2CloseCombat.setStyle("");
-        player1Ranged.setStyle("");
-        player2Ranged.setStyle("");
-        player1Siege.setStyle("");
-        player2Siege.setStyle("");
-        weather.setStyle("");
-        player1CloseCombatSpell.setStyle("");
-        player2CloseCombatSpell.setStyle("");
-        player1RangedSpell.setStyle("");
-        player2RangedSpell.setStyle("");
-        player1SiegeSpell.setStyle("");
-        player2SiegeSpell.setStyle("");
-        player1CloseCombat.getChildren().forEach(inGameCard -> ((Card) inGameCard).setStrokeWidth(0));
-        player1Ranged.getChildren().forEach(inGameCard -> ((Card) inGameCard).setStrokeWidth(0));
-        player1Siege.getChildren().forEach(inGameCard -> ((Card) inGameCard).setStrokeWidth(0));
-        player2CloseCombat.getChildren().forEach(inGameCard -> ((Card) inGameCard).setStrokeWidth(0));
-        player2Ranged.getChildren().forEach(inGameCard -> ((Card) inGameCard).setStrokeWidth(0));
-        player2Siege.getChildren().forEach(inGameCard -> ((Card) inGameCard).setStrokeWidth(0));
-
-        player1CloseCombat.setOnMouseClicked(null);
-        player1Ranged.setOnMouseClicked(null);
-        player1Siege.setOnMouseClicked(null);
-        player2CloseCombat.setOnMouseClicked(null);
-        player2Ranged.setOnMouseClicked(null);
-        player2Siege.setOnMouseClicked(null);
-        weather.setOnMouseClicked(null);
-        player1CloseCombatSpell.setOnMouseClicked(null);
-        player1RangedSpell.setOnMouseClicked(null);
-        player1SiegeSpell.setOnMouseClicked(null);
-        player2CloseCombatSpell.setOnMouseClicked(null);
-        player2RangedSpell.setOnMouseClicked(null);
-        player2SiegeSpell.setOnMouseClicked(null);
-        player1CloseCombat.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-        player1Ranged.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-        player1Siege.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-        player2CloseCombat.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-        player2Ranged.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-        player2Siege.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
-        weather.getChildren().forEach(inGameCard -> inGameCard.setOnMouseClicked(null));
+    private void clearHighlights() { // removes every highlight and removes onMouseClick of every card and row boxes
+        getAllRowBoxes().forEach(rowBox -> {
+            rowBox.setStyle("");
+            rowBox.setOnMouseClicked(null);
+        });
+        game.getAllCards().forEach(inGameCard -> {
+            inGameCard.setStrokeWidth(0);
+            inGameCard.setOnMouseClicked(null);
+        });
     }
 
     private void playCard(Card card, Row row) {
         if (row.isPlayer1() ^ card.getAbility() instanceof Spy) {
-            game.player1PlayCard(card, row);
+            if (!game.player1PlayCard(card, row)){
+                throw new IllegalArgumentException("card cannot be played");
+            }
         } else {
-            game.player2PlayCard(card, row);
+            if (!game.player2PlayCard(card, row)){
+                throw new IllegalArgumentException("card cannot be played");
+            }
         }
         game.calculatePoints();
         nextTurn();
     }
 
-    private void showLeaderCardOverlay(Card leaderCard) {
+    private void showLeaderCardOverlay(Leader leaderCard) {
         VBox overlay = new VBox(10);
         overlay.setAlignment(Pos.TOP_LEFT);
         overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
         overlay.setPrefSize(200, 400);
 
         Text name = new Text(leaderCard.getName());
-        Text description = new Text(leaderCard.getDescription().toString());
+        Text description = new Text(leaderCard.getDescription());
 
         overlay.getChildren().addAll(name, description);
         overlayPane.getChildren().add(overlay);
@@ -463,5 +423,16 @@ public class GamePaneController implements Initializable {
 
         overlayPane.getChildren().add(overlay);
         overlayPane.setVisible(true);
+    }
+
+    private HBox getRowBox(Card card) {
+        return Objects.requireNonNull(card.getType() == Type.SPELL ?
+                GET_ROW_BOX_SPELL.get(card.getRow()) : GET_ROW_BOX.get(card.getRow()));
+    }
+
+    private List<HBox> getAllRowBoxes() {
+        return Arrays.asList(player1CloseCombat,player1CloseCombatSpell,player1Ranged,player1RangedSpell,
+                player1Siege, player1SiegeSpell, player2CloseCombat, player2CloseCombatSpell,
+                player2Ranged, player2RangedSpell, player2Siege, player2SiegeSpell, weather);
     }
 }

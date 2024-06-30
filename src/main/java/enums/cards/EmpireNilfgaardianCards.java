@@ -59,6 +59,10 @@ public enum EmpireNilfgaardianCards implements CardEnum {
         IMAGE_PATH = imagePath;
     }
 
+    public int getNoOfCardsInGame() {
+        return NO_OF_CARDS_IN_GAME;
+    }
+
     public Card getCard() {
         return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.EMPIRE_NILFGAARDIAM, DESCRIPTION, IMAGE_PATH, this);
     }

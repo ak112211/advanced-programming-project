@@ -1,5 +1,6 @@
 package model.abilities.instantaneousabilities;
 
+import enums.cardsinformation.CardsPlace;
 import model.Game;
 import model.card.Card;
 
@@ -14,8 +15,7 @@ public class Decoy extends InstantaneousAbility {
     }
 
     public void affect(Game game, Card myCard) {
-        game.moveCard(returnCard, game.getInGameCards(),
-                game.isPlayer1Turn() ? game.getPlayer1Deck() : game.getPlayer2Deck());
+        game.moveCard(returnCard, game.getInGameCards(), CardsPlace.IN_HAND.getPlayerCards(game));
         returnCard = null;
     }
 }
