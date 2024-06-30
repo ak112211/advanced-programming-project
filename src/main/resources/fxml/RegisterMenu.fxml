@@ -9,7 +9,9 @@
 <?import javafx.scene.layout.GridPane?>
 
 <?import javafx.scene.control.CheckBox?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterMenuController">
+<?import javafx.scene.image.ImageView?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RegisterMenuController" styleClass="logicPage">
+
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>

@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 import static view.Tools.showAlert;
 
@@ -45,6 +48,7 @@ public class ChatController {
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
+
         // Initialize friends list
         loadFriendsList();
 

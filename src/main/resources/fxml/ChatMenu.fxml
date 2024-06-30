@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER" prefWidth="800" prefHeight="600">
+<?import javafx.scene.image.ImageView?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER" prefWidth="800" prefHeight="600" styleClass="logicPage">
     <HBox spacing="10" alignment="CENTER">
         <Label text="Chat and Game Requests" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
     </HBox>

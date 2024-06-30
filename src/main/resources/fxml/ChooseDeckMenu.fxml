@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.text.Text?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseDeckMenuController" prefWidth="1000" prefHeight="600">
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseDeckMenuController" prefWidth="1000" prefHeight="600" styleClass="logicPage">
     <ScrollPane fitToWidth="true" fitToHeight="true">
         <VBox spacing="10" alignment="TOP_CENTER">
             <HBox spacing="10" alignment="CENTER">
@@ -43,8 +43,9 @@
             </HBox>
         </VBox>
     </ScrollPane>
-    <VBox fx:id="cardDisplayVBox" maxWidth="200" maxHeight="400" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false">
+    <VBox fx:id="cardDisplayVBox" maxWidth="200" maxHeight="400" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
         <ImageView fx:id="cardImageView" fitWidth="200" fitHeight="400" preserveRatio="true" />
         <Text fx:id="cardDescriptionText" wrappingWidth="200" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
+        <Text fx:id="cardNumText" wrappingWidth="200" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"/>
     </VBox>
 </StackPane>

@@ -30,7 +30,9 @@ public class App {
             Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource(fxmlPath)));
             Stage stage = App.getStage();
             menuPath = fxmlPath;
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(App.class.getResource("/css/styles.css")).toExternalForm());
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

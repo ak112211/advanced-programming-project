@@ -5,11 +5,14 @@ import enums.SecurityQuestion;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 public class RegisterMenuController {

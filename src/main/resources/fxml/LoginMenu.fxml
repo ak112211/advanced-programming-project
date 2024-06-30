@@ -4,20 +4,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="view.LoginMenuController">
-    <padding>
-        <Insets bottom="20" left="20" right="20" top="20"/>
-    </padding>
+<?import javafx.scene.image.ImageView?>
+<StackPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="view.LoginMenuController" styleClass="main">
+    <ImageView fx:id="backgroundImageView" fitWidth="700" fitHeight="500" preserveRatio="false" />
 
+    <VBox prefWidth="20" prefHeight="100"/>
+    <VBox style="-fx-alignment: center">
     <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
     <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
     <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <TextField fx:id="textField" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-    <CheckBox fx:id="showPasswordCheckBox" text="Show Password" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+    <CheckBox styleClass="label" fx:id="showPasswordCheckBox" text="Show Password" GridPane.columnIndex="1" GridPane.halignment="LEFT"
               GridPane.rowIndex="2"/>
 
     <Button onAction="#handleLoginButtonAction" text="Login" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
@@ -28,15 +28,5 @@
 
     <Button onAction="#handleRegisterButtonAction" text="Register" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
             GridPane.rowIndex="4"/>
-    <columnConstraints>
-        <ColumnConstraints/>
-        <ColumnConstraints/>
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-        <RowConstraints/>
-    </rowConstraints>
-</GridPane>
+    </VBox>
+</StackPane>

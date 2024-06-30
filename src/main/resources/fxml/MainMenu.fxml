@@ -6,38 +6,25 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.text.Text?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" prefWidth="1000" prefHeight="600">
-    <ScrollPane fitToWidth="true" fitToHeight="true">
-        <VBox spacing="10" alignment="TOP_CENTER">
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" prefWidth="500" prefHeight="300" styleClass="main">
 
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-            </HBox>
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Show Scoreboard" onAction="#showScoreboard" />
-            </HBox>
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Profile" onAction="#goToProfile" />
-                <Button text="Logout" onAction="#logout" />
-                <Button text="Friends and requests" onAction="#goToAddFriends" />
-                <Button text="New Offline Game" onAction="#goToDeckMenu" />
-            </HBox>
-            <HBox fx:id="friendsMenu" spacing="10" alignment="CENTER">
-                <Label text="Friends Menu:" />
-                <VBox spacing="10" visible="false">
-                    <Label text="Choose a friend to play with:" />
-                    <ListView fx:id="friendsListView" prefHeight="200" prefWidth="300" />
-                    <Button text="Send Play Request" onAction="#sendPlayRequest" />
-                </VBox>
-            </HBox>
-            <HBox fx:id="savedGamesMenu" spacing="10" alignment="CENTER">
-                <Label text="Saved Games Menu:" />
-                <VBox spacing="10" visible="false">
-                    <Label text="Choose a saved game to continue:" />
-                    <ListView fx:id="savedGamesListView" prefHeight="200" prefWidth="300" />
-                    <Button fx:id="continueButton" text="Continue Game" onAction="#startGame" />
-                </VBox>
-            </HBox>
-        </VBox>
-    </ScrollPane>
+    <!-- ImageView for background -->
+    <ImageView fx:id="backgroundImageView" fitWidth="500" fitHeight="300" preserveRatio="false" />
+    <!-- Main content -->
+    <VBox fx:id="mainBox" spacing="10" alignment="TOP_CENTER">
+
+        <VBox prefWidth="20" prefHeight="100"/>
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Show Scoreboard" onAction="#showScoreboard" />
+        </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Profile" onAction="#goToProfile" />
+            <Button text="Logout" onAction="#logout" />
+            <Button text="Friends and requests" onAction="#goToAddFriends" />
+            <Button text="New Offline Game" onAction="#goToDeckMenu" />
+        </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <Label fx:id="usernameField" text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        </HBox>
+    </VBox>
 </StackPane>

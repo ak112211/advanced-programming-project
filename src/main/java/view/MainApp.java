@@ -32,7 +32,10 @@ public class MainApp extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(Menu.LOGIN_MENU.getPath())));
         controller = fxmlLoader.getController();
-        stage.setScene(new Scene(pane));
+        Scene scene = new Scene(pane);
+        scene.getStylesheets().add(Objects.requireNonNull(App.class.getResource("/css/styles.css")).toExternalForm());
+        stage.setScene(scene);
+        stage.setTitle("Gwent");
         stage.show();
     }
 }

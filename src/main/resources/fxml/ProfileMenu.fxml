@@ -4,8 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea"
-          fx:controller="view.ProfileMenuController">
+          fx:controller="view.ProfileMenuController" styleClass="logicPage">
+
     <padding>
         <Insets bottom="20" left="20" right="20" top="20"/>
     </padding>

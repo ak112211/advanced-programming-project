@@ -33,13 +33,15 @@ import java.util.Random;
 public class ChooseDeckMenuController {
 
     @FXML
-    public HBox friendsMenu;
-    @FXML
     public VBox cardDisplayVBox;
     @FXML
     public ImageView cardImageView;
     @FXML
     public Text cardDescriptionText;
+    @FXML
+    public Text cardNumText;
+    @FXML
+    public ImageView backgroundImageView;
     @FXML
     private ComboBox<Faction> factionComboBox;
     @FXML
@@ -72,8 +74,10 @@ public class ChooseDeckMenuController {
     private void initialize() {
         currentUser = User.getCurrentUser();
         currentDeck = currentUser.getDeck();
+
         player2 = new User("Player2", null, null, null);
         player2.setDeck(new Deck());
+        cardNumText.setVisible(false);
 
         if (isMulti) {
             choosePlayer2DeckButton.setVisible(false);
@@ -101,7 +105,7 @@ public class ChooseDeckMenuController {
             Leader leader = leaderComboBox.getValue();
             if (leader != null) {
                 currentDeck.setLeader(leader);
-                showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription());
+                showBigImage(currentDeck.getLeader().getImagePath(), currentDeck.getLeader().getDescription(), false, null, leader);
             }
         });
 
@@ -110,7 +114,7 @@ public class ChooseDeckMenuController {
             if (selectedCard != null) {
                 loadFactionCards(currentDeck.getFaction());
                 addToDeck(selectedCard);
-                showBigImage(selectedCard.getImagePath(), selectedCard.getDescription().getDescription());
+                showBigImage(selectedCard.getImagePath(), selectedCard.getDescription().getDescription() , true, selectedCard, null);
             }
         });
 
@@ -161,12 +165,13 @@ public class ChooseDeckMenuController {
             e.printStackTrace();
             System.out.println("Error during setup: " + e.getMessage());
         }
-        System.out.println("Setup completed.");
+
     }
 
 
     public void hideCardDisplay() {
         cardDisplayVBox.setVisible(false);
+        cardNumText.setVisible(false);
     }
 
     private void loadFactionCards(Faction faction) {
@@ -347,9 +352,20 @@ public class ChooseDeckMenuController {
         }
     }
 
-    private void showBigImage(String imagePath, String description) {
+    private void showBigImage(String imagePath, String description, boolean isCard, Card card, Leader leader) {
         if (imagePath == null || imagePath.isEmpty()) {
             return;
+        }
+
+        if (isCard) {
+            cardNumText.setVisible(true);
+            int count = 0;
+            for (Card card1 : deckCardsListView.getItems()) {
+                if (card1.getName().equals(card.getName())) {
+                    count++;
+                }
+            }
+            cardNumText.setText("count of this card in deck : " + String.valueOf(count));
         }
 
         // Load the image and set it in the ImageView
