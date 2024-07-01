@@ -13,6 +13,7 @@ import java.util.List;
 
 public class User implements Serializable {
 
+    private boolean verified;
     private String username;
     private String nickname;
     private String email;
@@ -168,5 +169,13 @@ public class User implements Serializable {
 
     public int getRank() throws SQLException {
         return DatabaseConnection.getUserRank(this.username);
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

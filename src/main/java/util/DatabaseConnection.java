@@ -11,6 +11,7 @@ import model.card.Leader;
 
 import java.lang.reflect.Type;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -232,7 +233,7 @@ public class DatabaseConnection {
     }
 
     public static void saveData(User user) throws SQLException {
-        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, security_question = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? WHERE username = ?";
+        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, security_question = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? , verified = ? WHERE username = ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getNickname());
             preparedStatement.setString(2, user.getEmail());
@@ -253,13 +254,14 @@ public class DatabaseConnection {
             preparedStatement.setString(10, GSON.toJson(user.getFriends()));
             preparedStatement.setString(11, gson.toJson(user.getGames()));
             preparedStatement.setString(12, user.getUsername());
+            preparedStatement.setBoolean(13, user.isVerified());
 
             preparedStatement.executeUpdate();
         }
     }
 
     public static void saveUser(User user) throws SQLException {
-        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getNickname());
@@ -280,6 +282,7 @@ public class DatabaseConnection {
             preparedStatement.setString(10, user.getPlayCard() != null ? gson.toJson(user.getPlayCard()) : "");
             preparedStatement.setString(11, user.getFriends() != null ? GSON.toJson(user.getFriends()) : "");
             preparedStatement.setString(12, user.getGames() != null ? gson.toJson(user.getGames()) : "");
+            preparedStatement.setBoolean(13, false);
 
             preparedStatement.executeUpdate();
         }
@@ -296,6 +299,7 @@ public class DatabaseConnection {
                     String password = resultSet.getString("password");
                     String securityQuestion = resultSet.getString("security_question");
                     String answer = resultSet.getString("answer");
+                    boolean verified = resultSet.getBoolean("verified");
                     int highScore = resultSet.getInt("high_score");
 
                     GsonBuilder gsonBuilder = new GsonBuilder();
@@ -318,8 +322,9 @@ public class DatabaseConnection {
                     user.setGames(games);
                     user.setDeck(deck != null ? deck : new Deck());
                     user.setDecks(decks != null ? decks : new ArrayList<>());
-                    user.setPlayCard(playCard);
+                    user.setPlayCard(null);
                     user.setFriends(friends != null ? friends : new ArrayList<>());
+                    user.setVerified(verified);
                     return user;
                 } else {
                     return null;
@@ -561,6 +566,65 @@ public class DatabaseConnection {
         }
     }
 
+    // Method to insert a verification code
+    public static void insertVerificationCode(String username, String code, LocalDateTime expiration) throws SQLException {
+        String query = "INSERT INTO email_verification (username, code, expiration) VALUES (?, ?, ?)";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, code);
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(expiration));
+            preparedStatement.executeUpdate();
+        }
+    }
 
+    // Method to verify the code
+    public static boolean verifyCode(String username, String code) throws SQLException {
+        String query = "SELECT expiration, verified FROM email_verification WHERE username = ? AND code = ?";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, code);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Timestamp expiration = resultSet.getTimestamp("expiration");
+                    boolean verified = resultSet.getBoolean("verified");
 
+                    if (verified) {
+                        return false; // Code already used
+                    }
+
+                    markCodeAsVerified(username, code);
+
+                }
+                return false;
+            }
+        }
+    }
+
+    // Method to mark the code as verified
+    public static void markCodeAsVerified(String username, String code) throws SQLException {
+        String updateVerificationQuery = "UPDATE email_verification SET verified = TRUE WHERE username = ? AND code = ?";
+        String updateUserVerifiedQuery = "UPDATE users SET verified = TRUE WHERE username = ?";
+
+        try (Connection connection = getConnection()) {
+            connection.setAutoCommit(false); // Begin transaction
+
+            try (PreparedStatement updateVerificationStmt = connection.prepareStatement(updateVerificationQuery);
+                 PreparedStatement updateUserVerifiedStmt = connection.prepareStatement(updateUserVerifiedQuery)) {
+
+                // Update the email_verification table
+                updateVerificationStmt.setString(1, username);
+                updateVerificationStmt.setString(2, code);
+                updateVerificationStmt.executeUpdate();
+
+                // Update the users table
+                updateUserVerifiedStmt.setString(1, username);
+                updateUserVerifiedStmt.executeUpdate();
+
+                connection.commit(); // Commit transaction
+            } catch (SQLException e) {
+                connection.rollback(); // Rollback transaction on error
+                throw e;
+            }
+        }
+    }
 }

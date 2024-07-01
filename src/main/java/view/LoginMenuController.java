@@ -49,10 +49,15 @@ public class LoginMenuController {
             if ((user = DatabaseConnection.getUser(username)) == null) {
                 Tools.showAlert("Invalid username.");
             } else if (DatabaseConnection.checkPassword(username, password)) {
-                User.setCurrentUser(user);
-                App.loadScene(Menu.MAIN_MENU.getPath());
-                App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
-                Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
+                if (!user.isVerified()) {
+                    Tools.showAlert("Account not verified. Redirecting to verification screen.");
+                    App.loadScene(Menu.VERIFY_MENU.getPath()); // Load the verification code scene
+                } else {
+                    User.setCurrentUser(user);
+                    App.loadScene(Menu.MAIN_MENU.getPath());
+                    App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
+                    Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
+                }
             } else {
                 Tools.showAlert("Invalid password.");
             }
