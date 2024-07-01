@@ -10,6 +10,7 @@ module Gwent {
     requires java.mail;
 
     exports view;
+    exports model;
     opens view to javafx.fxml, com.fasterxml.jackson.databind;
     opens model to com.google.gson, com.fasterxml.jackson.databind;
     opens enums.cardsinformation to com.google.gson, com.fasterxml.jackson.databind;

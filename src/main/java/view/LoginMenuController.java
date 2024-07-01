@@ -10,9 +10,14 @@ import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
+import util.EmailSender;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static view.Tools.generateVerificationCode;
+import static view.Tools.sendVerificationCode;
 
 public class LoginMenuController {
 
@@ -49,14 +54,22 @@ public class LoginMenuController {
             if ((user = DatabaseConnection.getUser(username)) == null) {
                 Tools.showAlert("Invalid username.");
             } else if (DatabaseConnection.checkPassword(username, password)) {
+                User.setCurrentUser(user);
                 if (!user.isVerified()) {
+                    sendVerificationCode(User.getCurrentUser());
                     Tools.showAlert("Account not verified. Redirecting to verification screen.");
                     App.loadScene(Menu.VERIFY_MENU.getPath()); // Load the verification code scene
                 } else {
-                    User.setCurrentUser(user);
-                    App.loadScene(Menu.MAIN_MENU.getPath());
-                    App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
-                    Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
+                    App.setIsLoggedIn(true);
+                    if (user.isTwoFactorOn()) {
+                        sendVerificationCode(User.getCurrentUser());
+                        Tools.showAlert("Code needed", "Login Successful", "User logged in successfully. Please check your email for the verification code.");
+                        App.loadScene(Menu.VERIFY_MENU.getPath());
+                    } else {
+                        App.loadScene(Menu.MAIN_MENU.getPath());
+                        App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
+                        Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
+                    }
                 }
             } else {
                 Tools.showAlert("Invalid password.");

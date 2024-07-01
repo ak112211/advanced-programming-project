@@ -7,15 +7,15 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    private static final String USERNAME = "gwentgameproject@gmail.com";
-    private static final String PASSWORD = "S.S.V-A.H.K-M.S.B13";
+    private static final String USERNAME = "77baf5001@smtp-brevo.com";
+    private static final String PASSWORD = "hGnmL2MBOxyrWftA";
 
     public static void sendVerificationEmail(String toEmail, String code) {
         Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp-relay.brevo.com");
+        properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
@@ -37,4 +37,5 @@ public class EmailSender {
             e.printStackTrace();
         }
     }
+
 }

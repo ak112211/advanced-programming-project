@@ -55,15 +55,16 @@ public class DatabaseConnection {
         return false;
     }
 
-    public static void updateUserProfile(User user, String oldUsername) throws SQLException {
-        String query = "UPDATE users SET username = ?, nickname = ?, email = ?, password = ? WHERE username = ?";
+    public static void updateUserProfile(User user, String oldUsername, boolean isTwoFactorOn) throws SQLException {
+        String query = "UPDATE users SET username = ?, nickname = ?, email = ?, password = ? , two_factor_on = ? WHERE username = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getNickname());
             stmt.setString(3, user.getEmail());
             stmt.setString(4, user.getPassword());
-            stmt.setString(5, oldUsername); // Assuming there is an id field to uniquely identify the user
+            stmt.setBoolean(5, user.isTwoFactorOn());
+            stmt.setString(6, oldUsername); // Assuming there is an id field to uniquely identify the user
             stmt.executeUpdate();
         }
     }
@@ -233,7 +234,7 @@ public class DatabaseConnection {
     }
 
     public static void saveData(User user) throws SQLException {
-        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, security_question = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? , verified = ? WHERE username = ?";
+        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, security_question = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? , verified = ?, two_factor_on = ? WHERE username = ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getNickname());
             preparedStatement.setString(2, user.getEmail());
@@ -255,13 +256,14 @@ public class DatabaseConnection {
             preparedStatement.setString(11, gson.toJson(user.getGames()));
             preparedStatement.setString(12, user.getUsername());
             preparedStatement.setBoolean(13, user.isVerified());
+            preparedStatement.setBoolean(14, user.isTwoFactorOn());
 
             preparedStatement.executeUpdate();
         }
     }
 
     public static void saveUser(User user) throws SQLException {
-        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games, verified, two_factor_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getNickname());
@@ -283,7 +285,7 @@ public class DatabaseConnection {
             preparedStatement.setString(11, user.getFriends() != null ? GSON.toJson(user.getFriends()) : "");
             preparedStatement.setString(12, user.getGames() != null ? gson.toJson(user.getGames()) : "");
             preparedStatement.setBoolean(13, false);
-
+            preparedStatement.setBoolean(14, false);
             preparedStatement.executeUpdate();
         }
     }
@@ -300,6 +302,7 @@ public class DatabaseConnection {
                     String securityQuestion = resultSet.getString("security_question");
                     String answer = resultSet.getString("answer");
                     boolean verified = resultSet.getBoolean("verified");
+                    boolean twoFactorOn = resultSet.getBoolean("two_factor_on");
                     int highScore = resultSet.getInt("high_score");
 
                     GsonBuilder gsonBuilder = new GsonBuilder();
@@ -325,6 +328,7 @@ public class DatabaseConnection {
                     user.setPlayCard(null);
                     user.setFriends(friends != null ? friends : new ArrayList<>());
                     user.setVerified(verified);
+                    user.setTwoFactorOn(twoFactorOn);
                     return user;
                 } else {
                     return null;
@@ -579,13 +583,12 @@ public class DatabaseConnection {
 
     // Method to verify the code
     public static boolean verifyCode(String username, String code) throws SQLException {
-        String query = "SELECT expiration, verified FROM email_verification WHERE username = ? AND code = ?";
+        String query = "SELECT verified FROM email_verification WHERE username = ? AND code = ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, code);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    Timestamp expiration = resultSet.getTimestamp("expiration");
                     boolean verified = resultSet.getBoolean("verified");
 
                     if (verified) {
@@ -593,7 +596,7 @@ public class DatabaseConnection {
                     }
 
                     markCodeAsVerified(username, code);
-
+                    return true;
                 }
                 return false;
             }

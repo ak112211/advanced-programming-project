@@ -1,7 +1,12 @@
 package view;
 
 import javafx.scene.control.Alert;
+import model.User;
+import util.DatabaseConnection;
+import util.EmailSender;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,5 +94,19 @@ public class Tools {
             password.append(allChars.charAt(random.nextInt(allChars.length())));
         }
         return password;
+    }
+
+    static String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
+    }
+
+    public static void sendVerificationCode(User user) throws SQLException {
+        String verificationCode = generateVerificationCode();
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(10); // Code valid for 10 minutes
+        DatabaseConnection.insertVerificationCode(user.getUsername(), verificationCode, expirationTime);
+        // Send verification email
+        EmailSender.sendVerificationEmail(user.getEmail(), verificationCode);
     }
 }

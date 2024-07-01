@@ -42,7 +42,7 @@
 
     <Label text="Losses" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
     <Label fx:id="lossesLabel" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
-
+    <CheckBox fx:id="isTwoFactorOn" text="FA2 ON"/>
     <Label text="Game History:" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
     <TextField fx:id="gameHistoryField" promptText="Input number to show" GridPane.columnIndex="1"
                GridPane.rowIndex="11"/>

@@ -15,6 +15,7 @@ public class App {
     private static Stage stage;
     private static Menu menu;
     private static String menuPath;
+    private static boolean isLoggedIn;
     private static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
@@ -65,5 +66,13 @@ public class App {
 
     public static String getMenuPath() {
         return menuPath;
+    }
+
+    public static boolean isIsLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public static void setIsLoggedIn(boolean isLoggedIn) {
+        App.isLoggedIn = isLoggedIn;
     }
 }

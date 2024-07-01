@@ -2,6 +2,7 @@ package view;
 
 import enums.Menu;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -42,6 +43,8 @@ public class ProfileMenuController {
     private Label lossesLabel;
     @FXML
     private TextField gameHistoryField;
+    @FXML
+    private CheckBox isTwoFactorOn;
 
     @FXML
     private void initialize() {
@@ -52,7 +55,7 @@ public class ProfileMenuController {
             emailField.setText(user.getEmail());
             passwordField.setText(user.getPassword());
             confirmPasswordField.setText(user.getPassword());
-
+            isTwoFactorOn.setSelected(user.isTwoFactorOn());
             highScoreLabel.setText(String.valueOf(user.getHighScore()));
             rankLabel.setText(String.valueOf(user.getRank()));
             gamesPlayedLabel.setText(String.valueOf(user.getGames() != null ? user.getGames().size() : 0));
@@ -157,13 +160,18 @@ public class ProfileMenuController {
             isUpdated = true;
         }
 
+        if (user.isTwoFactorOn() != isTwoFactorOn.isSelected()) {
+            user.setEmail(email);
+            isUpdated = true;
+        }
+
         if (!user.getPassword().equals(password)) {
             user.setPassword(password);
             isUpdated = true;
         }
 
         if (isUpdated) {
-            DatabaseConnection.updateUserProfile(user, oldUsername);
+            DatabaseConnection.updateUserProfile(user, oldUsername, isTwoFactorOn.isSelected());
             Tools.showAlert("Success", "Profile Updated", "Your profile has been updated successfully.");
         } else {
             Tools.showAlert("Information", "No Changes", "No changes detected to update.");

@@ -66,5 +66,6 @@ public class MainMenuController {
         User.setCurrentUser(null);
         Game.setCurrentGame(null);
         App.loadScene(Menu.LOGIN_MENU.getPath());
+        App.getServerConnection().sendMessage(User.getCurrentUser().getUsername(), "logout");
     }
 }

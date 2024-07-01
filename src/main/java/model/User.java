@@ -14,6 +14,7 @@ import java.util.List;
 public class User implements Serializable {
 
     private boolean verified;
+    private boolean twoFactorOn;
     private String username;
     private String nickname;
     private String email;
@@ -177,5 +178,13 @@ public class User implements Serializable {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public boolean isTwoFactorOn() {
+        return twoFactorOn;
+    }
+
+    public void setTwoFactorOn(boolean twoFactorOn) {
+        this.twoFactorOn = twoFactorOn;
     }
 }
