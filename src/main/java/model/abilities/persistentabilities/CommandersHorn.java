@@ -1,15 +1,13 @@
 package model.abilities.persistentabilities;
 
-import enums.cardsinformation.Type;
 import model.abilities.Animatable;
 import model.abilities.instantaneousabilities.Spy;
 import model.card.Card;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 public class CommandersHorn extends PersistentAbility implements Animatable {
-    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
+    public static final ArrayList<Card> affectedCards = new ArrayList<>();
 
     public CommandersHorn(boolean forSpies) {
         super(forSpies ? CommandersHorn::doesAffectSpy : CommandersHorn::doesAffectDefault, "horn");
@@ -20,16 +18,16 @@ public class CommandersHorn extends PersistentAbility implements Animatable {
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return myCard != card && myCard.sameRow(card) && !AFFECTED_CARDS.contains(card);
+        return myCard != card && myCard.sameRow(card) && !affectedCards.contains(card);
     }
 
     public static boolean doesAffectSpy(Card myCard, Card card) {
-        return card.getAbility() instanceof Spy && !AFFECTED_CARDS.contains(card);
+        return card.getAbility() instanceof Spy && !affectedCards.contains(card);
     }
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AFFECTED_CARDS;
+        return affectedCards;
     }
 
     public static void affect(Card card) {

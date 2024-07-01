@@ -7,10 +7,9 @@ import model.abilities.passiveabilities.WeatherEndurance;
 import model.card.Card;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 public class Weather extends PersistentAbility {
-    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
+    public static final ArrayList<Card> affectedCards = new ArrayList<>();
 
     public Weather(Type type) {
         super(type == Type.CLOSE_COMBAT_UNIT ? Weather::doesAffectCloseCombat :
@@ -24,15 +23,15 @@ public class Weather extends PersistentAbility {
     }
 
     public static boolean doesAffectCloseCombat(Card myCard, Card card) {
-        return (card.getRow() == Row.PLAYER1_CLOSE_COMBAT || card.getRow() == Row.PLAYER2_CLOSE_COMBAT) && !AFFECTED_CARDS.contains(card);
+        return (card.getRow() == Row.PLAYER1_CLOSE_COMBAT || card.getRow() == Row.PLAYER2_CLOSE_COMBAT) && !affectedCards.contains(card);
     }
 
     public static boolean doesAffectSiege(Card myCard, Card card) {
-        return (card.getRow() == Row.PLAYER1_SIEGE || card.getRow() == Row.PLAYER2_SIEGE) && !AFFECTED_CARDS.contains(card);
+        return (card.getRow() == Row.PLAYER1_SIEGE || card.getRow() == Row.PLAYER2_SIEGE) && !affectedCards.contains(card);
     }
 
     public static boolean doesAffectRanged(Card myCard, Card card) {
-        return (card.getRow() == Row.PLAYER1_RANGED || card.getRow() == Row.PLAYER2_RANGED) && !AFFECTED_CARDS.contains(card);
+        return (card.getRow() == Row.PLAYER1_RANGED || card.getRow() == Row.PLAYER2_RANGED) && !affectedCards.contains(card);
     }
 
     public static boolean doesAffectRangedSiege(Card myCard, Card card) {
@@ -41,7 +40,7 @@ public class Weather extends PersistentAbility {
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AFFECTED_CARDS;
+        return affectedCards;
     }
 
     public static void affect(Card card) {

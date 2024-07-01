@@ -6,7 +6,7 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class MoraleBoost extends PersistentAbility implements Animatable {
-    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
+    public static final ArrayList<Card> affectedCards = new ArrayList<>();
 
     public MoraleBoost() {
         super(MoraleBoost::doesAffectDefault, "morale");
@@ -18,7 +18,7 @@ public class MoraleBoost extends PersistentAbility implements Animatable {
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AFFECTED_CARDS;
+        return affectedCards;
     }
 
     public static void affect(Card card) {

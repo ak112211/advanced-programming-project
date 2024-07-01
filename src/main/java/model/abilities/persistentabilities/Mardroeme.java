@@ -6,19 +6,19 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class Mardroeme extends PersistentAbility {
-    public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
+    public static final ArrayList<Card> affectedCards = new ArrayList<>();
 
     public Mardroeme() {
         super(Mardroeme::doesAffectDefault, "mardroeme");
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
-        return card.getAbility() instanceof Berserker && myCard.sameRow(card) && !AFFECTED_CARDS.contains(card) ;
+        return card.getAbility() instanceof Berserker && myCard.sameRow(card) && !affectedCards.contains(card) ;
     }
 
     @Override
     public ArrayList<Card> getAffectedCards() {
-        return AFFECTED_CARDS;
+        return affectedCards;
     }
 
     public static void affect(Card card, ArrayList<Card> inGameCards) {

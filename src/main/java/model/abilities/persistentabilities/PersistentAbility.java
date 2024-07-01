@@ -18,11 +18,11 @@ public abstract class PersistentAbility extends Ability {
     }
 
     public static void findAffectedCards(ArrayList<Card> inGameCards) {
-        CommandersHorn.AFFECTED_CARDS.clear();
-        Mardroeme.AFFECTED_CARDS.clear();
-        MoraleBoost.AFFECTED_CARDS.clear();
-        TightBond.AFFECTED_CARDS.clear();
-        Weather.AFFECTED_CARDS.clear();
+        CommandersHorn.affectedCards.clear();
+        Mardroeme.affectedCards.clear();
+        MoraleBoost.affectedCards.clear();
+        TightBond.affectedCards.clear();
+        Weather.affectedCards.clear();
         for (Card card : inGameCards) {
             if (card.getAbility() instanceof PersistentAbility) {
                 ((PersistentAbility) card.getAbility()).addToAffectedCards(inGameCards, card);
@@ -32,25 +32,25 @@ public abstract class PersistentAbility extends Ability {
 
     public static void calculatePowers(ArrayList<Card> inGameCards) {
         findAffectedCards(inGameCards);
-        for (Card card : Mardroeme.AFFECTED_CARDS) {
+        for (Card card : Mardroeme.affectedCards) {
             Mardroeme.affect(card, inGameCards);
         }
-        if (!Mardroeme.AFFECTED_CARDS.isEmpty()) {
+        if (!Mardroeme.affectedCards.isEmpty()) {
             findAffectedCards(inGameCards);
         }
         for (Card card : inGameCards) {
             card.setPower(card.getFirstPower());
         }
-        for (Card card : TightBond.AFFECTED_CARDS) {
+        for (Card card : TightBond.affectedCards) {
             TightBond.affect(card);
         }
-        for (Card card : Weather.AFFECTED_CARDS) {
+        for (Card card : Weather.affectedCards) {
             Weather.affect(card);
         }
-        for (Card card : MoraleBoost.AFFECTED_CARDS) {
+        for (Card card : MoraleBoost.affectedCards) {
             MoraleBoost.affect(card);
         }
-        for (Card card : CommandersHorn.AFFECTED_CARDS) {
+        for (Card card : CommandersHorn.affectedCards) {
             CommandersHorn.affect(card);
         }
     }
