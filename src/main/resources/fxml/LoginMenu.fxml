@@ -11,12 +11,12 @@
     <VBox prefHeight="100" prefWidth="20"/>
     <VBox style="-fx-alignment: center">
         <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="usernameField" prefHeight="26.0" prefWidth="563.0" GridPane.columnIndex="1"
+        <TextField fx:id="usernameField"  prefHeight="30.0" maxWidth="250.0" GridPane.columnIndex="1"
                    GridPane.rowIndex="0"/>
 
         <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <TextField fx:id="textField" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <PasswordField fx:id="passwordField" maxHeight="30" maxWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <TextField fx:id="textField" visible="false" maxHeight="30" maxWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         <CheckBox fx:id="showPasswordCheckBox" styleClass="label" text="Show Password" GridPane.columnIndex="1"
                   GridPane.halignment="LEFT" GridPane.rowIndex="2"/>
 
