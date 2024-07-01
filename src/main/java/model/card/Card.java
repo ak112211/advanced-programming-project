@@ -2,6 +2,7 @@ package model.card;
 
 import enums.cards.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import enums.Row;
 import enums.cardsinformation.*;
@@ -9,10 +10,11 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Spy;
+import view.cardpane.CardPane;
 
 import java.util.Objects;
 
-public class Card extends Rectangle {
+public class Card extends CardPane {
     public static final DataFormat DATA_FORMAT = new DataFormat("model.card.Card");
 
     private final String name;
@@ -25,10 +27,10 @@ public class Card extends Rectangle {
     private final boolean isHero;
     private final Faction faction;
     private final Description description;
-    private final String imagePath;
     private final CardEnum cardEnum;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
+        super(imagePath);
         this.name = name;
         this.type = type;
         this.noOfCardsInGame = noOfCardsInGame;
@@ -38,47 +40,9 @@ public class Card extends Rectangle {
         this.isHero = isHero;
         this.faction = faction;
         this.description = description;
-        this.imagePath = imagePath;
         this.cardEnum = cardEnum;
 
         setBigImage();
-    }
-
-    public void setSmallImage() {
-        this.setArcWidth(5);
-        this.setArcHeight(5);
-        this.setWidth(53);
-        this.setHeight(79);
-        try {
-            this.setFill(new ImagePattern(new Image(
-                    Objects.requireNonNull(getClass().getResource(imagePath.replaceFirst("/lg/", "/sm/")))
-                            .toExternalForm())));
-        } catch (RuntimeException e){
-            System.out.println("couldn't find " + imagePath.replaceFirst("/lg/", "/sm/"));
-        }
-
-    }
-
-    public void setBigImage() {
-        this.setArcWidth(10);
-        this.setArcHeight(10);
-        this.setWidth(70);
-        this.setHeight(100);
-        this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm())));
-    }
-
-    public Rectangle getBigRectangle() {
-        Rectangle rectangle = new Rectangle();
-        rectangle.setArcWidth(10);
-        rectangle.setArcHeight(10);
-        rectangle.setWidth(70);
-        rectangle.setHeight(100);
-        rectangle.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm())));
-        return rectangle;
     }
 
     public String getName() {
