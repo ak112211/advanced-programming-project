@@ -61,6 +61,8 @@ public class GwentServer {
                             targetClientHandler.sendMessage(clientId, command);
                         } else if (command.startsWith("accepted game request from")) {
                             targetClientHandler.sendMessage(clientId, command);
+                        } else if (command.endsWith("played move")) {
+                            targetClientHandler.sendMessage(clientId, command);
                         } else {
                             out.println("Target client not found");
                         }
