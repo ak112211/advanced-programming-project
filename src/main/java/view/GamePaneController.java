@@ -336,8 +336,7 @@ public class GamePaneController implements Initializable {
     }
 
     private void highlightCard(Card inGameCard, Card card) {
-        inGameCard.setStroke(Paint.valueOf("FFFFA0B0"));
-        inGameCard.setStrokeWidth(2);
+        inGameCard.setStroke();
         inGameCard.setOnMouseClicked(rowClickEvent -> {
             ((Decoy) card.getAbility()).setReturnCard(inGameCard);
             try {
@@ -355,7 +354,7 @@ public class GamePaneController implements Initializable {
             rowBox.setOnMouseClicked(null);
         });
         game.getAllCards().forEach(inGameCard -> {
-            inGameCard.setStrokeWidth(0);
+            inGameCard.removeStroke();
             inGameCard.setOnMouseClicked(null);
         });
     }
