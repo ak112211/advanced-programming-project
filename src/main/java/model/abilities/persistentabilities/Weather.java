@@ -1,6 +1,7 @@
 package model.abilities.persistentabilities;
 
 import enums.Row;
+import enums.cardsinformation.Type;
 import model.Game;
 import model.abilities.passiveabilities.WeatherEndurance;
 import model.card.Card;
@@ -11,8 +12,15 @@ import java.util.function.BiFunction;
 public class Weather extends PersistentAbility {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
-    public Weather(BiFunction<Card, Card, Boolean> doesAffect) {
-        super(doesAffect);
+    public Weather(Type type) {
+        super(type == Type.CLOSE_COMBAT_UNIT ? Weather::doesAffectCloseCombat :
+                        type == Type.RANGED_UNIT ? Weather::doesAffectRanged :
+                                type == Type.SIEGE_UNIT ? Weather::doesAffectSiege :
+                                        type == Type.AGILE_UNIT ? Weather::doesAffectRangedSiege : null,
+                type == Type.CLOSE_COMBAT_UNIT ? "frost" :
+                        type == Type.RANGED_UNIT ? "fog" :
+                                type == Type.SIEGE_UNIT ? "rain" :
+                                        type == Type.AGILE_UNIT ? "storm" : null);
     }
 
     public static boolean doesAffectCloseCombat(Card myCard, Card card) {

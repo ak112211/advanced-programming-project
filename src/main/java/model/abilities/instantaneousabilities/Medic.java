@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Medic extends InstantaneousAbility {
+    public Medic() {
+        setIconPath("medic");
+    }
     public void affect(Game game, Card myCard) {
         ArrayList<Card> graveyard = CardsPlace.GRAVEYARD.getPlayerCards(game);
         Optional<Card> card = game.chooseCard(graveyard, true, DisruptMedic.exists(game));

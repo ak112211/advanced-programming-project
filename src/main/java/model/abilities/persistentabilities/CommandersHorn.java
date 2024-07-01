@@ -10,12 +10,12 @@ import java.util.function.BiFunction;
 public class CommandersHorn extends PersistentAbility {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
-    public CommandersHorn(BiFunction<Card, Card, Boolean> doesAffect) {
-        super(doesAffect);
+    public CommandersHorn(boolean forSpies) {
+        super(forSpies ? CommandersHorn::doesAffectSpy : CommandersHorn::doesAffectDefault, "horn");
     }
 
     public CommandersHorn() {
-        super(CommandersHorn::doesAffectDefault);
+        this(false);
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {

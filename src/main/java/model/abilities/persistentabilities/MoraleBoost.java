@@ -8,7 +8,7 @@ public class MoraleBoost extends PersistentAbility {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public MoraleBoost() {
-        super(MoraleBoost::doesAffectDefault);
+        super(MoraleBoost::doesAffectDefault, "morale");
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {
