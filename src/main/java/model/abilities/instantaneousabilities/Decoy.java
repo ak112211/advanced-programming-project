@@ -5,7 +5,7 @@ import model.Game;
 import model.card.Card;
 
 public class Decoy extends InstantaneousAbility {
-    Card returnCard;
+    private Card returnCard;
 
     public void setReturnCard(Card card) {
         if (returnCard != null) {

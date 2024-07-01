@@ -53,7 +53,7 @@ public class Card extends Rectangle {
             this.setFill(new ImagePattern(new Image(
                     Objects.requireNonNull(getClass().getResource(imagePath.replaceFirst("/lg/", "/sm/")))
                             .toExternalForm())));
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             System.out.println("couldn't find " + imagePath.replaceFirst("/lg/", "/sm/"));
         }
 
@@ -152,7 +152,7 @@ public class Card extends Rectangle {
     public boolean sameRow(Card card) {
         return row.equals(card.row);
     }
-    
+
     public static Card getCardFromType(String type) {
         for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
             if (cardEnum.toString().equals(type)) {

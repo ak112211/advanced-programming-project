@@ -114,7 +114,7 @@ public class ChooseDeckMenuController {
             if (selectedCard != null) {
                 loadFactionCards(currentDeck.getFaction());
                 addToDeck(selectedCard);
-                showBigImage(selectedCard.getImagePath(), selectedCard.getDescription().getDescription() , true, selectedCard, null);
+                showBigImage(selectedCard.getImagePath(), selectedCard.getDescription().getDescription(), true, selectedCard, null);
             }
         });
 

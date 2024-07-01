@@ -11,17 +11,17 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ChooseAndPlayCard extends InstantaneousAbility {
-    private final Predicate<Card> FUNCTION;
-    private final CardsPlace CARDS_PLACE;
+    private final Predicate<Card> function;
+    private final CardsPlace cardsPlace;
 
     public ChooseAndPlayCard(CardsPlace cardsPlace, Predicate<Card> function) {
-        FUNCTION = function;
-        CARDS_PLACE = cardsPlace;
+        this.function = function;
+        this.cardsPlace = cardsPlace;
     }
 
     public void affect(Game game, Card myCard) {
-        ArrayList<Card> cardsList = CARDS_PLACE.getPlayerCards(game);
-        List<Card> chooseCardsList = cardsList.stream().filter(FUNCTION).toList();
+        ArrayList<Card> cardsList = cardsPlace.getPlayerCards(game);
+        List<Card> chooseCardsList = cardsList.stream().filter(function).toList();
         Optional<Card> card = game.chooseCard(chooseCardsList, true, DisruptMedic.exists(game));
         if (card.isEmpty()) {
             return;

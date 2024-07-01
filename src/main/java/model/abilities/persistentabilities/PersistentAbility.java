@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public abstract class PersistentAbility extends Ability {
-    private final BiFunction<Card, Card, Boolean> DOES_AFFECT;
+    private final BiFunction<Card, Card, Boolean> doesAffect;
 
     public PersistentAbility(BiFunction<Card, Card, Boolean> doesAffect) {
-        DOES_AFFECT = doesAffect;
+        this.doesAffect = doesAffect;
     }
 
     public static void findAffectedCards(ArrayList<Card> inGameCards) {
@@ -54,7 +54,7 @@ public abstract class PersistentAbility extends Ability {
     public abstract ArrayList<Card> getAffectedCards();
 
     public void addToAffectedCardsForEachCard(Card card, Card myCard) {
-        if (DOES_AFFECT.apply(myCard, card)) {
+        if (doesAffect.apply(myCard, card)) {
             getAffectedCards().add(card);
         }
     }

@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class Muster extends InstantaneousAbility {
-    private final String[] MUSTER_CARDS_NAME;
+    private final String[] musterCardsName;
 
     public Muster(String... cardNames) {
-        MUSTER_CARDS_NAME = cardNames;
+        musterCardsName = cardNames;
     }
 
     private boolean canMuster(Card card, String myCardName) {
         String cardName = card.getName().split(":")[0];
-        return Stream.concat(Arrays.stream(MUSTER_CARDS_NAME), Stream.of(myCardName))
+        return Stream.concat(Arrays.stream(musterCardsName), Stream.of(myCardName))
                 .anyMatch(name -> name.equals(cardName));
     }
 

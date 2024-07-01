@@ -361,11 +361,11 @@ public class GamePaneController implements Initializable {
 
     private void playCard(Card card, Row row) {
         if (row.isPlayer1() ^ card.getAbility() instanceof Spy) {
-            if (!game.player1PlayCard(card, row)){
+            if (!game.player1PlayCard(card, row)) {
                 throw new IllegalArgumentException("card cannot be played");
             }
         } else {
-            if (!game.player2PlayCard(card, row)){
+            if (!game.player2PlayCard(card, row)) {
                 throw new IllegalArgumentException("card cannot be played");
             }
         }
@@ -431,7 +431,7 @@ public class GamePaneController implements Initializable {
     }
 
     private List<HBox> getAllRowBoxes() {
-        return Arrays.asList(player1CloseCombat,player1CloseCombatSpell,player1Ranged,player1RangedSpell,
+        return Arrays.asList(player1CloseCombat, player1CloseCombatSpell, player1Ranged, player1RangedSpell,
                 player1Siege, player1SiegeSpell, player2CloseCombat, player2CloseCombatSpell,
                 player2Ranged, player2RangedSpell, player2Siege, player2SiegeSpell, weather);
     }
