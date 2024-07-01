@@ -152,36 +152,55 @@ public class Card extends Rectangle {
     public boolean sameRow(Card card) {
         return row.equals(card.row);
     }
-    
-    public static Card getCardFromType(String type) {
+
+
+    public static Card getCardFromType(String type, int power, Row row) {
         for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
+                Card card = cardEnum.getCard();
+                card.setRow(row);
+                card.setPower(power);
+                return card;
             }
         }
         for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
+                Card card = cardEnum.getCard();
+                card.setRow(row);
+                card.setPower(power);
+                return card;
             }
         }
         for (MonstersCards cardEnum : MonstersCards.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
+                Card card = cardEnum.getCard();
+                card.setRow(row);
+                card.setPower(power);
+                return card;
             }
         }
         for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
+                Card card = cardEnum.getCard();
+                card.setRow(row);
+                card.setPower(power);
+                return card;
             }
         }
         for (SkelligeCards cardEnum : SkelligeCards.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
+                Card card = cardEnum.getCard();
+                card.setRow(row);
+                card.setPower(power);
+                return card;
             }
         }
         for (NeutralCards cardEnum : NeutralCards.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
+                Card card = cardEnum.getCard();
+                card.setRow(row);
+                card.setPower(power);
+                return card;
             }
         }
         return null;

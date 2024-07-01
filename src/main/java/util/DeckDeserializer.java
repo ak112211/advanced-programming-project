@@ -1,6 +1,7 @@
 package util;
 
 import com.google.gson.*;
+import enums.Row;
 import model.Deck;
 import enums.cards.CardEnum;
 import enums.cardsinformation.Faction;
@@ -23,14 +24,18 @@ public class DeckDeserializer implements JsonDeserializer<Deck> {
         JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
         for (JsonElement cardElement : cardsArray) {
             JsonObject jsonElement = cardElement.getAsJsonObject();
-            cards.add(Card.getCardFromType(jsonElement.get("CARD_ENUM").toString().replaceAll("\"", "")));
+            cards.add(Card.getCardFromType(jsonElement.get("CARD_ENUM").toString().replaceAll("\"", ""),
+                    Integer.parseInt(jsonElement.get("POWER").toString().replaceAll("\"", "")),
+                    Row.valueOf(jsonElement.get("ROW").toString().replaceAll("\"", ""))));
         }
 
         Deck deck = new Deck();
         deck.setFaction(faction);
         deck.setCards(cards);
         deck.setLeader(Leader.getLeaderFromType(jsonObject.get("leader").getAsJsonObject().get("LEADER_ENUM")
-                .toString().replaceAll("\"", "")));
+                .toString().replaceAll("\"", ""), Integer.parseInt(jsonObject.get("leader").getAsJsonObject().get("NUMBER_OF_ACTIONS")
+                        .toString().replaceAll("\"", "")))
+                );
 
         return deck;
     }

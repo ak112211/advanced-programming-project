@@ -80,34 +80,40 @@ public class Leader extends Rectangle {
         return leaderEnum;
     }
 
-    public static Leader getLeaderFromType(String type) {
-        for (
-                RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
+    public static Leader getLeaderFromType(String type, int numberOfAction) {
+        for (RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (
-                ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (
-                MonstersLeaders cardEnum : MonstersLeaders.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (
-                EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
+                Leader leader = cardEnum.getLeader();
+                leader.setNumberOfAction(numberOfAction);
+                return leader;
             }
         }
         for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
+                Leader leader = cardEnum.getLeader();
+                leader.setNumberOfAction(numberOfAction);
+                return leader;
+            }
+        }
+        for (MonstersLeaders cardEnum : MonstersLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                Leader leader = cardEnum.getLeader();
+                leader.setNumberOfAction(numberOfAction);
+                return leader;
+            }
+        }
+        for (EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                Leader leader = cardEnum.getLeader();
+                leader.setNumberOfAction(numberOfAction);
+                return leader;
+            }
+        }
+        for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                Leader leader = cardEnum.getLeader();
+                leader.setNumberOfAction(numberOfAction);
+                return leader;
             }
         }
         return null;
