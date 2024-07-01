@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.MessagingController">
+    <VBox prefHeight="400.0" prefWidth="600.0" spacing="10" padding="10">
+        <ListView fx:id="messageListView" prefHeight="300.0" />
+        <HBox spacing="10">
+            <TextField fx:id="messageInputField" HBox.hgrow="ALWAYS" promptText="Enter your message..." />
+            <Button text="Send" onAction="#handleSendButtonAction" />
+        </HBox>
+    </VBox>
+</AnchorPane>

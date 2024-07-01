@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+import static view.Tools.openMessagingWindow;
 import static view.Tools.showAlert;
 
 public class ChatController {
@@ -27,6 +28,8 @@ public class ChatController {
     public Button acceptFriendRequestButton;
     @FXML
     public Button declineFriendRequestButton;
+    @FXML
+    public Button startChatButton;
     @FXML
     private TextField friendUsernameField;
     @FXML
@@ -257,5 +260,15 @@ public class ChatController {
             e.printStackTrace();
             showAlert("Error", "Request Failed", "Failed to decline friend request. Please try again.");
         }
+    }
+
+    public void startChat(ActionEvent actionEvent) {
+        String selectedFriend = friendsListView.getSelectionModel().getSelectedItem();
+        if (selectedFriend == null) {
+            showAlert("Error", "No Friend Selected", "Please select a friend to chat with.");
+            return;
+        }
+
+        openMessagingWindow(selectedFriend);
     }
 }

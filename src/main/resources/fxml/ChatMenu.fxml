@@ -36,4 +36,7 @@
         <Button fx:id="acceptFriendRequestButton" text="Accept Friend Request" onAction="#acceptFriendRequest"/>
         <Button fx:id="declineFriendRequestButton" text="Decline Friend Request" onAction="#declineFriendRequest"/>
     </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="startChatButton" text="Start chat" onAction="#startChat"/>
+    </HBox>
 </VBox>

@@ -67,6 +67,10 @@ public class DatabaseConnection {
             stmt.setString(6, oldUsername); // Assuming there is an id field to uniquely identify the user
             stmt.executeUpdate();
         }
+
+        if (!user.getUsername().equals(oldUsername)) {
+            updateUsername(oldUsername, user.getUsername());
+        }
     }
 
     public static String getSecurityQuestion(String username) throws SQLException {
@@ -409,16 +413,17 @@ public class DatabaseConnection {
     }
 
     public static List<String> getMessages(String username) throws SQLException {
-        String query = "SELECT * FROM messages WHERE recipient = ? ORDER BY timestamp DESC";
+        String query = "SELECT sender, message, timestamp FROM messages WHERE recipient = ? OR sender = ? ORDER BY timestamp ASC";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
+            stmt.setString(2, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 List<String> messages = new ArrayList<>();
                 while (rs.next()) {
                     String sender = rs.getString("sender");
                     String message = rs.getString("message");
                     String timestamp = rs.getString("timestamp");
-                    messages.add(sender + ": " + message + " (" + timestamp + ")");
+                    messages.add(String.format("%s [%s]: %s", sender, timestamp, message));
                 }
                 return messages;
             }
@@ -630,4 +635,106 @@ public class DatabaseConnection {
             }
         }
     }
+
+    public static void updateUsername(String oldUsername, String newUsername) throws SQLException {
+        try (Connection connection = getConnection()) {
+            connection.setAutoCommit(false); // Begin transaction
+
+            try {
+                // Update friends lists
+                String getUsersQuery = "SELECT username, friends FROM users";
+                try (PreparedStatement stmt = connection.prepareStatement(getUsersQuery);
+                     ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        String username = rs.getString("username");
+                        String friendsJson = rs.getString("friends");
+                        List<String> friends = GSON.fromJson(friendsJson, new TypeToken<List<String>>() {}.getType());
+
+                        if (friends.contains(oldUsername)) {
+                            friends.remove(oldUsername);
+                            friends.add(newUsername);
+                            String updatedFriendsJson = GSON.toJson(friends);
+
+                            String updateFriendsQuery = "UPDATE users SET friends = ? WHERE username = ?";
+                            try (PreparedStatement updateStmt = connection.prepareStatement(updateFriendsQuery)) {
+                                updateStmt.setString(1, updatedFriendsJson);
+                                updateStmt.setString(2, username);
+                                updateStmt.executeUpdate();
+                            }
+                        }
+                    }
+                }
+
+                // Update messages table
+                String updateMessagesQuery = "UPDATE messages SET sender = ? WHERE sender = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(updateMessagesQuery)) {
+                    stmt.setString(1, newUsername);
+                    stmt.setString(2, oldUsername);
+                    stmt.executeUpdate();
+                }
+                updateMessagesQuery = "UPDATE messages SET recipient = ? WHERE recipient = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(updateMessagesQuery)) {
+                    stmt.setString(1, newUsername);
+                    stmt.setString(2, oldUsername);
+                    stmt.executeUpdate();
+                }
+
+                // Update friend requests table
+                String updateFriendRequestsQuery = "UPDATE friendrequests SET sender = ? WHERE sender = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(updateFriendRequestsQuery)) {
+                    stmt.setString(1, newUsername);
+                    stmt.setString(2, oldUsername);
+                    stmt.executeUpdate();
+                }
+                updateFriendRequestsQuery = "UPDATE friendrequests SET recipient = ? WHERE recipient = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(updateFriendRequestsQuery)) {
+                    stmt.setString(1, newUsername);
+                    stmt.setString(2, oldUsername);
+                    stmt.executeUpdate();
+                }
+
+                // Update games table
+                String updateGamesQuery = "UPDATE Games SET player1 = ? WHERE player1 = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(updateGamesQuery)) {
+                    stmt.setString(1, newUsername);
+                    stmt.setString(2, oldUsername);
+                    stmt.executeUpdate();
+                }
+                updateGamesQuery = "UPDATE Games SET player2 = ? WHERE player2 = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(updateGamesQuery)) {
+                    stmt.setString(1, newUsername);
+                    stmt.setString(2, oldUsername);
+                    stmt.executeUpdate();
+                }
+
+                connection.commit(); // Commit transaction
+            } catch (SQLException e) {
+                connection.rollback(); // Rollback transaction on error
+                throw e;
+            }
+        }
+    }
+
+    public static List<String> getMessagesBetweenUsers(String username1, String username2) throws SQLException {
+        String query = "SELECT sender, message, timestamp FROM messages " +
+                "WHERE (sender = ? AND recipient = ?) OR (sender = ? AND recipient = ?) " +
+                "ORDER BY timestamp ASC";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username1);
+            stmt.setString(2, username2);
+            stmt.setString(3, username2);
+            stmt.setString(4, username1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<String> messages = new ArrayList<>();
+                while (rs.next()) {
+                    String sender = rs.getString("sender");
+                    String message = rs.getString("message");
+                    String timestamp = rs.getString("timestamp");
+                    messages.add(String.format("%s [%s]: %s", sender, timestamp, message));
+                }
+                return messages;
+            }
+        }
+    }
+
 }

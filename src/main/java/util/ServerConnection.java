@@ -46,9 +46,6 @@ public class ServerConnection {
                             || incomingMessage.startsWith("accepted friend request")
                             || incomingMessage.startsWith("accepted game request")) {
                         showAlert(incomingMessage);
-                        if (!App.getMenuPath().equals(Menu.GAME_PANE.getPath())) {
-                            App.loadScene(Menu.CHAT_MENU.getPath());
-                        }
                     }
                 }
             } catch (IOException e) {
@@ -63,4 +60,7 @@ public class ServerConnection {
         }
     }
 
+    public BufferedReader getIn() {
+        return in;
+    }
 }

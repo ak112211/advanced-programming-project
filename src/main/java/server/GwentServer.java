@@ -102,6 +102,8 @@ public class GwentServer {
                     targetClientHandler.sendMessage(clientId, "sent friend request");
                 } else if (command.endsWith("sent game request")) {
                     targetClientHandler.sendMessage(clientId, "sent game request");
+                } else if (command.endsWith("sent message")) {
+                    targetClientHandler.sendMessage(clientId, "sent game request");
                 } else if (command.startsWith("accepted friend request from")) {
                     targetClientHandler.sendMessage(clientId, "accepted friend request from");
                 } else if (command.startsWith("accepted game request from")) {
@@ -117,7 +119,7 @@ public class GwentServer {
         }
 
         private void sendMessage(String fromClientId, String message) {
-            out.println(fromClientId + ": " + message);
+            out.println(message);
         }
     }
 }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -42,17 +41,16 @@
 
     <Label text="Losses" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
     <Label fx:id="lossesLabel" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
-    <CheckBox fx:id="isTwoFactorOn" text="FA2 ON"/>
+
     <Label text="Game History:" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
-    <TextField fx:id="gameHistoryField" promptText="Input number to show" GridPane.columnIndex="1"
-               GridPane.rowIndex="11"/>
+    <TextField fx:id="gameHistoryField" promptText="Input number to show" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
 
-    <Button onAction="#handleShowGameHistory" text="Show Game History" GridPane.columnIndex="1"
-            GridPane.halignment="CENTER" GridPane.rowIndex="12"/>
+    <Button onAction="#handleShowGameHistory" text="Show Game History" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="12"/>
 
-    <Button onAction="#handleUpdateButtonAction" text="Update Profile" GridPane.columnIndex="1"
-            GridPane.halignment="RIGHT" GridPane.rowIndex="13"/>
-    <Button onAction="#handleBack" text="Back" GridPane.columnIndex="1" GridPane.halignment="LEFT"
-            GridPane.rowIndex="13"/>
+    <Button onAction="#handleUpdateButtonAction" text="Update Profile" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="13"/>
+    <Button onAction="#handleBack" text="Back" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="13"/>
+
+    <!-- Placing the CheckBox at the bottom -->
+    <CheckBox fx:id="isTwoFactorOn" text="FA2 ON" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.halignment="CENTER"/>
 
 </GridPane>

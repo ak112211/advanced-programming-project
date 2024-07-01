@@ -65,6 +65,8 @@ public class RegisterMenuController {
                 Tools.showAlert("Error", "Invalid Email", "Invalid email address.");
             } else if (!password.equals(confirmPassword)) {
                 Tools.showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
+            } else if (!Tools.isValidPassword(password)) {
+                Tools.showAlert("Error", "Invalid Password", "Password must be at least 8 characters long and include uppercase, lowercase, digit, and special character.");
             } else if (securityQuestion == null || securityAnswer.isEmpty() || !securityAnswer.equals(securityAnswerConfirm)) {
                 Tools.showAlert("Error", "Security Question", "Security question must be selected and answers must match.");
             } else {

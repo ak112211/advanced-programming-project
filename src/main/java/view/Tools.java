@@ -1,10 +1,15 @@
 package view;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 import model.User;
 import util.DatabaseConnection;
 import util.EmailSender;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -108,5 +113,21 @@ public class Tools {
         DatabaseConnection.insertVerificationCode(user.getUsername(), verificationCode, expirationTime);
         // Send verification email
         EmailSender.sendVerificationEmail(user.getEmail(), verificationCode);
+    }
+
+    public static void openMessagingWindow(String chatUsername) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Tools.class.getResource("/fxml/MessagingMenu.fxml"));
+            Parent root = loader.load();
+            MessagingController controller = loader.getController();
+            controller.setCurrentChatUser(chatUsername);
+
+            Stage stage = new Stage();
+            stage.setTitle("Messaging");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

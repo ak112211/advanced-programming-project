@@ -9,7 +9,8 @@ public enum Menu {
     GAME_PANE("/fxml/GamePane.fxml"),
     CHAT_MENU("/fxml/ChatMenu.fxml"),
     DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
-    VERIFY_MENU("/fxml/VerificationCode.fxml")
+    VERIFY_MENU("/fxml/VerificationCode.fxml"),
+    MESSAGING_MENU("/fxml/MessagingMenu.fxml")
     ;
 
     private final String path;
