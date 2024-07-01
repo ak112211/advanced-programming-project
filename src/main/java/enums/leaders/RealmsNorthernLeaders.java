@@ -16,9 +16,9 @@ public enum RealmsNorthernLeaders implements LeaderEnum {
     SON_OF_MEDELL("Son of Medell", new Scorch(Type.RANGED_UNIT), "Destroys the strongest ranged unit if the opponent's ranged units have a total power greater than 10.", "/gwentImages/img/lg/realms_foltest_son_of_medell.jpg");
 
     private final String name;
+    private final Ability ability;
     private final String description;
     private final String imagePath;
-    private Ability ability;
 
     RealmsNorthernLeaders(String name, Ability ability, String description, String imagePath) {
         this.name = name;

@@ -8,7 +8,7 @@ public enum SecurityQuestion {
     FIRST_SCHOOL("What was the name of your first school?", 5);
 
     private final String question;
-    private final  int number;
+    private final int number;
 
     SecurityQuestion(String question, int num) {
         this.question = question;

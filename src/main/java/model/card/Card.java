@@ -15,31 +15,31 @@ import java.util.Objects;
 public class Card extends Rectangle {
     public static final DataFormat DATA_FORMAT = new DataFormat("model.card.Card");
 
-    private final String NAME;
-    private final Type TYPE;
-    private final int NO_OF_CARDS_IN_GAME;
-    private final int FIRST_POWER;
+    private final String name;
+    private final Type type;
+    private final int noOfCardsInGame;
+    private final int firstPower;
     private int power;
     private Row row;
-    private final Ability ABILITY;
-    private final boolean IS_HERO;
-    private final Faction FACTION;
-    private final Description DESCRIPTION;
-    private final String IMAGE_PATH;
-    private final CardEnum CARD_ENUM;
+    private final Ability ability;
+    private final boolean isHero;
+    private final Faction faction;
+    private final Description description;
+    private final String imagePath;
+    private final CardEnum cardEnum;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
-        NAME = name;
-        TYPE = type;
-        NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        FIRST_POWER = power;
+        this.name = name;
+        this.type = type;
+        this.noOfCardsInGame = noOfCardsInGame;
+        firstPower = power;
         this.power = power;
-        ABILITY = ability;
-        IS_HERO = isHero;
-        FACTION = faction;
-        DESCRIPTION = description;
-        IMAGE_PATH = imagePath;
-        CARD_ENUM = cardEnum;
+        this.ability = ability;
+        this.isHero = isHero;
+        this.faction = faction;
+        this.description = description;
+        this.imagePath = imagePath;
+        this.cardEnum = cardEnum;
 
         setBigImage();
     }
@@ -51,10 +51,10 @@ public class Card extends Rectangle {
         this.setHeight(79);
         try {
             this.setFill(new ImagePattern(new Image(
-                    Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("/lg/", "/sm/")))
+                    Objects.requireNonNull(getClass().getResource(imagePath.replaceFirst("/lg/", "/sm/")))
                             .toExternalForm())));
         } catch (RuntimeException e){
-            System.out.println("couldn't find " + IMAGE_PATH.replaceFirst("/lg/", "/sm/"));
+            System.out.println("couldn't find " + imagePath.replaceFirst("/lg/", "/sm/"));
         }
 
     }
@@ -65,7 +65,7 @@ public class Card extends Rectangle {
         this.setWidth(70);
         this.setHeight(100);
         this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                Objects.requireNonNull(getClass().getResource(imagePath))
                         .toExternalForm())));
     }
 
@@ -76,49 +76,49 @@ public class Card extends Rectangle {
         rectangle.setWidth(70);
         rectangle.setHeight(100);
         rectangle.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                Objects.requireNonNull(getClass().getResource(imagePath))
                         .toExternalForm())));
         return rectangle;
     }
 
     public String getName() {
-        return NAME;
+        return name;
     }
 
     public Type getType() {
-        return TYPE;
+        return type;
     }
 
     public int getNoOfCardsInGame() {
-        return NO_OF_CARDS_IN_GAME;
+        return noOfCardsInGame;
     }
 
     public Ability getAbility() {
-        return ABILITY;
+        return ability;
     }
 
     public Faction getFaction() {
-        return FACTION;
+        return faction;
     }
 
     public Description getDescription() {
-        return DESCRIPTION;
+        return description;
     }
 
     public int getFirstPower() {
-        return FIRST_POWER;
+        return firstPower;
     }
 
     public boolean isHero() {
-        return IS_HERO;
+        return isHero;
     }
 
     public String getImagePath() {
-        return IMAGE_PATH;
+        return imagePath;
     }
 
     public CardEnum getCardEnum() {
-        return CARD_ENUM;
+        return cardEnum;
     }
 
     public int getPower() {
@@ -138,7 +138,7 @@ public class Card extends Rectangle {
     }
 
     public Row getDefaultRow(boolean isPlayer1Turn) {
-        return TYPE.getRow(isPlayer1Turn ^ ABILITY instanceof Spy);
+        return type.getRow(isPlayer1Turn ^ ability instanceof Spy);
     }
 
     public void setDefaultRow(boolean isPlayer1Turn) {
@@ -146,7 +146,7 @@ public class Card extends Rectangle {
     }
 
     public boolean same(Card card) {
-        return CARD_ENUM.equals(card.CARD_ENUM);
+        return cardEnum.equals(card.cardEnum);
     }
 
     public boolean sameRow(Card card) {

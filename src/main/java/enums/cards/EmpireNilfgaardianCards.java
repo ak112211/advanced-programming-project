@@ -39,31 +39,31 @@ public enum EmpireNilfgaardianCards implements CardEnum {
     ALBRICH("Albrich", 2, 1, Type.RANGED_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_albrich.jpg"),
     LETHO_OF_GULET("Letho of Gulet", 10, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/nilfgaard_letho.jpg"),
     RAINFARN("Rainfarn", 4, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/nilfgaard_rainfarn.jpg");
-    private final String NAME;
-    private final int POWER;
-    private final int NO_OF_CARDS_IN_GAME;
-    private final Type TYPE;
-    private final Ability ABILITY;
-    private final Description DESCRIPTION;
-    private final boolean IS_HERO;
-    private final String IMAGE_PATH;
+    private final String name;
+    private final int power;
+    private final int noOfCardsInGame;
+    private final Type type;
+    private final Ability ability;
+    private final Description description;
+    private final boolean isHero;
+    private final String imagePath;
 
     EmpireNilfgaardianCards(String name, int power, int noOfCardsInGame, Type type, Ability ability, Description description, boolean isHero, String imagePath) {
-        NAME = name;
-        POWER = power;
-        NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        TYPE = type;
-        ABILITY = ability;
-        DESCRIPTION = description;
-        IS_HERO = isHero;
-        IMAGE_PATH = imagePath;
+        this.name = name;
+        this.power = power;
+        this.noOfCardsInGame = noOfCardsInGame;
+        this.type = type;
+        this.ability = ability;
+        this.description = description;
+        this.isHero = isHero;
+        this.imagePath = imagePath;
     }
 
     public int getNoOfCardsInGame() {
-        return NO_OF_CARDS_IN_GAME;
+        return noOfCardsInGame;
     }
 
     public Card getCard() {
-        return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.EMPIRE_NILFGAARDIAM, DESCRIPTION, IMAGE_PATH, this);
+        return new Card(name, type, noOfCardsInGame, power, ability, isHero, Faction.EMPIRE_NILFGAARDIAM, description, imagePath, this);
     }
 }

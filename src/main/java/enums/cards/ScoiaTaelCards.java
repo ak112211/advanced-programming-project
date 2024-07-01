@@ -35,31 +35,31 @@ public enum ScoiaTaelCards implements CardEnum {
     EITHNE("Eithne", 10, 1, Type.RANGED_UNIT, null, Description.NOTHING, true, "/gwentImages/img/lg/scoiatael_eithne.jpg"),
     ISENGRIM_FAOILTIARNA("Isengrim Faoiltiarna", 10, 1, Type.CLOSE_COMBAT_UNIT, new MoraleBoost(), Description.NOTHING, true, "/gwentImages/img/lg/scoiatael_isengrim.jpg");
 
-    private final String IMAGE_PATH;
-    private final String NAME;
-    private final int POWER;
-    private final int NO_OF_CARDS_IN_GAME;
-    private final Type TYPE;
-    private final Ability ABILITY;
-    private final Description DESCRIPTION;
-    private final boolean IS_HERO;
+    private final String imagePath;
+    private final String name;
+    private final int power;
+    private final int noOfCardsInGame;
+    private final Type type;
+    private final Ability ability;
+    private final Description description;
+    private final boolean isHero;
 
     ScoiaTaelCards(String name, int power, int noOfCardsInGame, Type type, Ability ability, Description description, boolean isHero, String imagePath) {
-        NAME = name;
-        POWER = power;
-        NO_OF_CARDS_IN_GAME = noOfCardsInGame;
-        TYPE = type;
-        ABILITY = ability;
-        DESCRIPTION = description;
-        IS_HERO = isHero;
-        IMAGE_PATH = imagePath;
+        this.name = name;
+        this.power = power;
+        this.noOfCardsInGame = noOfCardsInGame;
+        this.type = type;
+        this.ability = ability;
+        this.description = description;
+        this.isHero = isHero;
+        this.imagePath = imagePath;
     }
 
     public Card getCard() {
-        return new Card(NAME, TYPE, NO_OF_CARDS_IN_GAME, POWER, ABILITY, IS_HERO, Faction.SCOIA_TAEL, DESCRIPTION, IMAGE_PATH, this);
+        return new Card(name, type, noOfCardsInGame, power, ability, isHero, Faction.SCOIA_TAEL, description, imagePath, this);
     }
 
     public int getNoOfCardsInGame() {
-        return NO_OF_CARDS_IN_GAME;
+        return noOfCardsInGame;
     }
 }

@@ -4,9 +4,7 @@ import enums.cards.*;
 import model.card.Card;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public enum Faction {
     MONSTER(MonstersCards.values()),
@@ -16,10 +14,10 @@ public enum Faction {
     NEUTRAL(NeutralCards.values()),
     SKELLIGE(SkelligeCards.values());
 
-    private final CardEnum[] CARDS_ENUM;
+    private final CardEnum[] cardEnumList;
 
-    Faction(CardEnum[] cardEnums) {
-        CARDS_ENUM = cardEnums;
+    Faction(CardEnum[] cardEnumList) {
+        this.cardEnumList = cardEnumList;
     }
 
     public List<Card> getAllCards() {
@@ -27,12 +25,12 @@ public enum Faction {
             throw new RuntimeException("Can't get cards of neutral faction");
         }
         List<Card> cards = new ArrayList<>();
-        for (CardEnum cardEnum : CARDS_ENUM) {
+        for (CardEnum cardEnum : cardEnumList) {
             for (int i = 0; i < cardEnum.getNoOfCardsInGame(); i++) {
                 cards.add(cardEnum.getCard());
             }
         }
-        for (CardEnum cardEnum : NEUTRAL.CARDS_ENUM) {
+        for (CardEnum cardEnum : NEUTRAL.cardEnumList) {
             for (int i = 0; i < cardEnum.getNoOfCardsInGame(); i++) {
                 cards.add(cardEnum.getCard());
             }

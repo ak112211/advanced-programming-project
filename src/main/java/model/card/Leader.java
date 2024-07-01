@@ -1,6 +1,5 @@
 package model.card;
 
-import enums.cards.*;
 import enums.leaders.*;
 import enums.cardsinformation.Faction;
 import javafx.scene.image.Image;
@@ -11,20 +10,20 @@ import model.abilities.Ability;
 import java.util.Objects;
 
 public class Leader extends Rectangle {
-    private final String NAME;
-    private final Faction FACTION;
-    private final String DESCRIPTION;
-    private final Ability ABILITY;
+    private final String name;
+    private final Faction faction;
+    private final String description;
+    private final Ability ability;
     private int numberOfAction = 1;
-    private final LeaderEnum LEADER_ENUM;
-    private final String IMAGE_PATH;
+    private final LeaderEnum leaderEnum;
+    private final String imagePath;
     public Leader(String name, Ability ability, Faction faction, String description, String imagePath, LeaderEnum leaderEnum) {
-        NAME = name;
-        IMAGE_PATH = imagePath;
-        FACTION = faction;
-        DESCRIPTION = description;
-        ABILITY = ability;
-        LEADER_ENUM = leaderEnum;
+        this.name = name;
+        this.imagePath = imagePath;
+        this.faction = faction;
+        this.description = description;
+        this.ability = ability;
+        this.leaderEnum = leaderEnum;
 
         setBigImage();
     }
@@ -35,7 +34,7 @@ public class Leader extends Rectangle {
         this.setWidth(68);
         this.setHeight(90);
         this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(IMAGE_PATH.replaceFirst("lg", "sm")))
+                Objects.requireNonNull(getClass().getResource(imagePath.replaceFirst("lg", "sm")))
                         .toExternalForm())));
     }
 
@@ -45,20 +44,20 @@ public class Leader extends Rectangle {
         this.setWidth(70);
         this.setHeight(100);
         this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(IMAGE_PATH))
+                Objects.requireNonNull(getClass().getResource(imagePath))
                         .toExternalForm())));
     }
 
     public String getName() {
-        return NAME;
+        return name;
     }
 
     public Faction getFaction() {
-        return FACTION;
+        return faction;
     }
 
     public String getDescription() {
-        return DESCRIPTION;
+        return description;
     }
 
     public int getNumberOfAction() {
@@ -69,16 +68,16 @@ public class Leader extends Rectangle {
         this.numberOfAction = numberOfAction;
     }
 
-    public Ability getABILITY() {
-        return ABILITY;
+    public Ability getAbility() {
+        return ability;
     }
 
     public String getImagePath() {
-        return IMAGE_PATH;
+        return imagePath;
     }
 
     public LeaderEnum getLeaderEnum() {
-        return LEADER_ENUM;
+        return leaderEnum;
     }
 
     public static Leader getLeaderFromType(String type) {

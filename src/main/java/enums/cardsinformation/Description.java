@@ -23,13 +23,13 @@ public enum Description {
     SETS_SIEGE_AND_RANGED_TO_ONE("Sets the power of all siege and ranged units of both sides to 1\n"),
     CANCELS_ALL_WEATHER_CARDS("Cancel all the weather cards"),
     REMOVES_MAX_POWER_CARDS("Remove card(s) with the maximum power points in the field (ignores heroes)");
-    private final String DESCRIPTION;
+    private final String description;
 
     Description(String description) {
-        DESCRIPTION = description;
+        this.description = description;
     }
 
     public String getDescription() {
-        return DESCRIPTION;
+        return description;
     }
 }

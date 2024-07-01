@@ -22,33 +22,33 @@ public class Game implements Serializable {
     private static final Random RANDOM = new Random();
     private static final int VETO_TIMES = 2;
     private static final int STARTING_HAND_SIZE = 10;
-    private final User PLAYER1;
-    private final User PLAYER2;
+    private final User player1;
+    private final User player2;
     private User currentPlayer;
-    private final Date DATE;
+    private final Date date;
     private boolean isOnline;
     private int player1Points, player2Points;
-    private Leader PLAYER1_LEADER_CARD;
-    private Leader PLAYER2_LEADER_CARD;
-    private final ArrayList<Card> IN_GAME_CARDS = new ArrayList<>();
-    private final ArrayList<Card> PLAYER1_IN_HAND_CARDS = new ArrayList<>();
-    private final ArrayList<Card> PLAYER2_IN_HAND_CARDS = new ArrayList<>();
-    private ArrayList<Card> player1Deck;
-    private ArrayList<Card> player2Deck;
-    private final ArrayList<Card> PLAYER1_GRAVEYARD_CARDS = new ArrayList<>();
-    private final ArrayList<Card> PLAYER2_GRAVEYARD_CARDS = new ArrayList<>();
+    private Leader player1LeaderCard;
+    private Leader player2LeaderCard;
+    private final ArrayList<Card> inGameCards = new ArrayList<>();
+    private final ArrayList<Card> player1InHandCards = new ArrayList<>();
+    private final ArrayList<Card> player2InHandCards = new ArrayList<>();
+    private final ArrayList<Card> player1Deck;
+    private final ArrayList<Card> player2Deck;
+    private final ArrayList<Card> player1GraveyardCards = new ArrayList<>();
+    private final ArrayList<Card> player2GraveyardCards = new ArrayList<>();
     private GameStatus status = GameStatus.PENDING;
     private User winner = null;
     private static Game currentGame;
 
     public Game(User player1, User player2) {
-        PLAYER1 = player1;
-        PLAYER2 = player2;
+        this.player1 = player1;
+        this.player2 = player2;
         player1Deck = player1.getDeck().getCards();
         player2Deck = player2.getDeck().getCards();
-        PLAYER1_LEADER_CARD = player1.getDeck().getLeader();
-        PLAYER2_LEADER_CARD = player2.getDeck().getLeader();
-        DATE = new Date(System.currentTimeMillis());
+        player1LeaderCard = player1.getDeck().getLeader();
+        player2LeaderCard = player2.getDeck().getLeader();
+        date = new Date(System.currentTimeMillis());
     }
 
     public void initializeGameObjects() {
@@ -57,7 +57,7 @@ public class Game implements Serializable {
             player2GetRandomCard();
         }
         OpeningAbility.StartRound(this);
-        currentPlayer = PLAYER1;
+        currentPlayer = player1;
     }
 
     public void initializeGameObjectsFromSaved() {
@@ -69,38 +69,38 @@ public class Game implements Serializable {
     }
 
     public void switchSides() {
-        currentPlayer = (currentPlayer.equals(PLAYER1)) ? PLAYER2 : PLAYER1;
+        currentPlayer = (currentPlayer.equals(player1)) ? player2 : player1;
     }
 
     public void player1VetoCard() {
         for (int i = 0; i < VETO_TIMES; i++) {
-            Optional<Card> chosenCard = chooseCardOrPass(PLAYER1_IN_HAND_CARDS);
+            Optional<Card> chosenCard = chooseCardOrPass(player1InHandCards);
             if (chosenCard == null) {
                 return;
             }
             player1GetRandomCard();
-            moveCard(chosenCard.orElseThrow(), PLAYER1_IN_HAND_CARDS, player1Deck);
+            moveCard(chosenCard.orElseThrow(), player1InHandCards, player1Deck);
         }
     }
 
     public void player2VetoCard() {
         for (int i = 0; i < VETO_TIMES; i++) {
-            Optional<Card> chosenCard = chooseCardOrPass(PLAYER2_IN_HAND_CARDS);
+            Optional<Card> chosenCard = chooseCardOrPass(player2InHandCards);
             if (chosenCard == null) {
                 return;
             }
             player2GetRandomCard();
-            moveCard(chosenCard.orElseThrow(), PLAYER2_IN_HAND_CARDS, player2Deck);
+            moveCard(chosenCard.orElseThrow(), player2InHandCards, player2Deck);
         }
     }
 
     public void calculatePoints() {
-        PersistentAbility.calculatePowers(IN_GAME_CARDS);
-        player1Points = IN_GAME_CARDS.stream()
+        PersistentAbility.calculatePowers(inGameCards);
+        player1Points = inGameCards.stream()
                 .filter(card -> card.getRow().isPlayer1())
                 .mapToInt(Card::getPower)
                 .sum();
-        player2Points = IN_GAME_CARDS.stream()
+        player2Points = inGameCards.stream()
                 .filter(card -> !card.getRow().isPlayer1())
                 .mapToInt(Card::getPower)
                 .sum();
@@ -108,7 +108,7 @@ public class Game implements Serializable {
 
     public boolean canPlay(Card card, Row row) {
         return card.getType() != Type.SPELL ||
-                IN_GAME_CARDS.stream().noneMatch(inGameCard -> inGameCard.same(card) && inGameCard.getRow() == row);
+                inGameCards.stream().noneMatch(inGameCard -> inGameCard.same(card) && inGameCard.getRow() == row);
     }
 
     // Functions that move a card:
@@ -121,7 +121,7 @@ public class Game implements Serializable {
             throw new IllegalArgumentException("Card exists in destination");
         }
         cards2.add(card);
-        if (cards2 == IN_GAME_CARDS && card.getAbility() instanceof InstantaneousAbility) {
+        if (cards2 == inGameCards && card.getAbility() instanceof InstantaneousAbility) {
             ((InstantaneousAbility) card.getAbility()).affect(this, card);
         }
     }
@@ -132,7 +132,7 @@ public class Game implements Serializable {
         }
         if (canPlay(card, row)) {
             card.setRow(row);
-            moveCard(card, PLAYER1_IN_HAND_CARDS, IN_GAME_CARDS);
+            moveCard(card, player1InHandCards, inGameCards);
             return true;
         }
         return false;
@@ -144,7 +144,7 @@ public class Game implements Serializable {
         }
         if (canPlay(card, row)) {
             card.setRow(row);
-            moveCard(card, PLAYER2_IN_HAND_CARDS, IN_GAME_CARDS);
+            moveCard(card, player2InHandCards, inGameCards);
             return true;
         }
         return false;
@@ -152,18 +152,18 @@ public class Game implements Serializable {
 
     public void player1GetRandomCard() {
         if (!player1Deck.isEmpty()) {
-            moveCard(chooseRandomCard(player1Deck, false).orElseThrow(), player1Deck, PLAYER1_IN_HAND_CARDS);
+            moveCard(chooseRandomCard(player1Deck, false).orElseThrow(), player1Deck, player1InHandCards);
         }
     }
 
     public void player2GetRandomCard() {
         if (!player2Deck.isEmpty()) {
-            moveCard(chooseRandomCard(player2Deck, false).orElseThrow(), player2Deck, PLAYER2_IN_HAND_CARDS);
+            moveCard(chooseRandomCard(player2Deck, false).orElseThrow(), player2Deck, player2InHandCards);
         }
     }
 
     public void moveCardToGraveyard(Card card) {
-        moveCard(card, IN_GAME_CARDS, card.getRow().isPlayer1() ? PLAYER1_GRAVEYARD_CARDS : PLAYER2_GRAVEYARD_CARDS);
+        moveCard(card, inGameCards, card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
     }
 
     // Functions that choose a card:
@@ -242,19 +242,19 @@ public class Game implements Serializable {
     }
 
     public boolean isPlayer1Turn() {
-        return currentPlayer.equals(PLAYER1);
+        return currentPlayer.equals(player1);
     }
 
     public User getPlayer1() {
-        return PLAYER1;
+        return player1;
     }
 
     public User getPlayer2() {
-        return PLAYER2;
+        return player2;
     }
 
     public Date getDate() {
-        return DATE;
+        return date;
     }
 
     public GameStatus getStatus() {
@@ -282,23 +282,23 @@ public class Game implements Serializable {
     }
 
     public Leader getPlayer1LeaderCard() {
-        return PLAYER1_LEADER_CARD;
+        return player1LeaderCard;
     }
 
     public Leader getPlayer2LeaderCard() {
-        return PLAYER2_LEADER_CARD;
+        return player2LeaderCard;
     }
 
     public ArrayList<Card> getInGameCards() {
-        return IN_GAME_CARDS;
+        return inGameCards;
     }
 
     public ArrayList<Card> getPlayer1InHandCards() {
-        return PLAYER1_IN_HAND_CARDS;
+        return player1InHandCards;
     }
 
     public ArrayList<Card> getPlayer2InHandCards() {
-        return PLAYER2_IN_HAND_CARDS;
+        return player2InHandCards;
     }
 
     public ArrayList<Card> getPlayer1Deck() {
@@ -310,11 +310,11 @@ public class Game implements Serializable {
     }
 
     public ArrayList<Card> getPlayer1GraveyardCards() {
-        return PLAYER1_GRAVEYARD_CARDS;
+        return player1GraveyardCards;
     }
 
     public ArrayList<Card> getPlayer2GraveyardCards() {
-        return PLAYER2_GRAVEYARD_CARDS;
+        return player2GraveyardCards;
     }
 
     public boolean isOnline() {
@@ -326,16 +326,16 @@ public class Game implements Serializable {
     }
 
     public void setPlayer1LeaderCard(Leader PLAYER1_LEADER_CARD) {
-        this.PLAYER1_LEADER_CARD = PLAYER1_LEADER_CARD;
+        this.player1LeaderCard = PLAYER1_LEADER_CARD;
     }
 
     public void setPlayer2LeaderCard(Leader PLAYER2_LEADER_CARD) {
-        this.PLAYER2_LEADER_CARD = PLAYER2_LEADER_CARD;
+        this.player2LeaderCard = PLAYER2_LEADER_CARD;
     }
 
     public List<Card> getAllCards() {
-        return Stream.of(PLAYER1_IN_HAND_CARDS, PLAYER2_IN_HAND_CARDS, player1Deck, player2Deck, IN_GAME_CARDS,
-                PLAYER1_GRAVEYARD_CARDS, PLAYER2_GRAVEYARD_CARDS).flatMap(ArrayList::stream).toList();
+        return Stream.of(player1InHandCards, player2InHandCards, player1Deck, player2Deck, inGameCards,
+                player1GraveyardCards, player2GraveyardCards).flatMap(ArrayList::stream).toList();
     }
 
     public enum GameStatus {

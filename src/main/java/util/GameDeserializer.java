@@ -42,8 +42,8 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         game.getPlayer2Deck().addAll(player2Deck);
         game.getPlayer1GraveyardCards().addAll(player1GraveyardCards);
         game.getPlayer2GraveyardCards().addAll(player2GraveyardCards);
-        game.setPLAYER1_LEADER_CARD(player1LeaderCard);
-        game.setPLAYER2_LEADER_CARD(player2LeaderCard);
+        game.setPlayer1LeaderCard(player1LeaderCard);
+        game.setPlayer2LeaderCard(player2LeaderCard);
         return game;
     }
 

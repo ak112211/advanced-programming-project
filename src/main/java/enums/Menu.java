@@ -11,13 +11,13 @@ public enum Menu {
     DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
     ;
 
-    private final String PATH;
+    private final String path;
 
     Menu(String path) {
-        this.PATH = path;
+        this.path = path;
     }
 
     public String getPath() {
-        return PATH;
+        return path;
     }
 }
