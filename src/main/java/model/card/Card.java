@@ -154,7 +154,7 @@ public class Card extends Rectangle {
     }
 
 
-    public static Card getCardFromType(String type, int power, Row row) {
+    public static Card getCardFromSaved(String type, int power, Row row) {
         for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 Card card = cardEnum.getCard();

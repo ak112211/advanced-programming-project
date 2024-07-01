@@ -1,6 +1,7 @@
 package util;
 
 import com.google.gson.*;
+import enums.Row;
 import model.Game;
 import model.User;
 import model.card.Card;
@@ -22,8 +23,10 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         Game.GameStatus status = Game.GameStatus.valueOf(jsonObject.get("status").getAsString());
         User winner = context.deserialize(jsonObject.get("winner"), User.class);
 
-        Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsString());
-        Leader player2LeaderCard = Leader.getLeaderFromType(jsonObject.get("player2LeaderCard").getAsString());
+        Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString(),
+                Integer.parseInt(jsonObject.get("player1LeaderCard").getAsJsonObject().get("number_of_actions").toString()));
+        Leader player2LeaderCard = Leader.getLeaderFromType(jsonObject.get("player2LeaderCard").getAsJsonObject().get("leader_enum").toString(),
+                Integer.parseInt(jsonObject.get("player2LeaderCard").getAsJsonObject().get("number_of_actions").toString()));
 
         ArrayList<Card> inGameCards = deserializeCards(jsonObject.getAsJsonArray("inGameCards"), context);
         ArrayList<Card> player1InHandCards = deserializeCards(jsonObject.getAsJsonArray("player1InHandCards"), context);
@@ -33,15 +36,14 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> player1GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player1GraveyardCards"), context);
         ArrayList<Card> player2GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player2GraveyardCards"), context);
 
-        Game game = new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards, player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard, status, winner, currentPlayer);
-        return game;
+        return new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards, player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard, status, winner, currentPlayer);
     }
 
     private ArrayList<Card> deserializeCards(JsonArray jsonArray, JsonDeserializationContext context) {
         ArrayList<Card> cards = new ArrayList<>();
         for (JsonElement cardElement : jsonArray) {
             JsonObject jsonElement = cardElement.getAsJsonObject();
-            cards.add(Card.getCardFromEnumString(jsonElement.get("cardEnum").getAsString()));
+            cards.add(Card.getCardFromSaved(jsonElement.get("card_enum").getAsString(), Integer.parseInt(jsonElement.get("power").getAsString()), Row.valueOf(jsonElement.get("row").getAsString())));
         }
         return cards;
     }
