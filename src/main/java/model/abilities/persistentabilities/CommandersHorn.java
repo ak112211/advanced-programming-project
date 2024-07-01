@@ -1,13 +1,14 @@
 package model.abilities.persistentabilities;
 
 import enums.cardsinformation.Type;
+import model.abilities.Animatable;
 import model.abilities.instantaneousabilities.Spy;
 import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
-public class CommandersHorn extends PersistentAbility {
+public class CommandersHorn extends PersistentAbility implements Animatable {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public CommandersHorn(boolean forSpies) {

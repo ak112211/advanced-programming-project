@@ -4,12 +4,13 @@ import enums.Row;
 import enums.cardsinformation.Type;
 import model.Game;
 import model.abilities.Ability;
+import model.abilities.Animatable;
 import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Scorch extends InstantaneousAbility {
+public class Scorch extends InstantaneousAbility implements Animatable {
     private final Type type;
 
     /**

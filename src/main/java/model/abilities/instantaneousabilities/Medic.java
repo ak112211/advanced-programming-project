@@ -3,13 +3,14 @@ package model.abilities.instantaneousabilities;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import model.Game;
+import model.abilities.Animatable;
 import model.abilities.passiveabilities.DisruptMedic;
 import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Medic extends InstantaneousAbility {
+public class Medic extends InstantaneousAbility implements Animatable {
     public Medic() {
         setIconPath("medic");
     }

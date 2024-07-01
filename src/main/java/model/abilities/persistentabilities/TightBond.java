@@ -1,10 +1,11 @@
 package model.abilities.persistentabilities;
 
+import model.abilities.Animatable;
 import model.card.Card;
 
 import java.util.ArrayList;
 
-public class TightBond extends PersistentAbility {
+public class TightBond extends PersistentAbility implements Animatable {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public TightBond() {
