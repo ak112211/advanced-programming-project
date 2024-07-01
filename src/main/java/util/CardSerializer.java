@@ -16,13 +16,21 @@ public class CardSerializer implements JsonSerializer<Card>, JsonDeserializer<Ca
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("card_enum", context.serialize(src.getCardEnum()));
         jsonObject.add("power", context.serialize(src.getPower()));
-        jsonObject.add("row", context.serialize(src.getRow()));
+        if (src.getRow() == null) {
+            jsonObject.add("row", context.serialize(""));
+        } else {
+            jsonObject.add("row", context.serialize(src.getRow()));
+        }
         return jsonObject;
     }
 
     @Override
     public Card deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        return Card.getCardFromSaved(jsonObject.get("card_enum").toString(), Integer.parseInt(jsonObject.get("power").toString()), Row.valueOf(jsonObject.get("row").toString()));
+        if (jsonObject.get("row").toString().replaceAll("\"", "").isEmpty()) {
+            return Card.getCardFromSaved(jsonObject.get("card_enum").toString(), Integer.parseInt(jsonObject.get("power").toString()), null);
+        } else {
+            return Card.getCardFromSaved(jsonObject.get("card_enum").toString(), Integer.parseInt(jsonObject.get("power").toString()), Row.valueOf(jsonObject.get("row").toString()));
+        }
     }
 }

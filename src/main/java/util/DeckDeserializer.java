@@ -26,7 +26,7 @@ public class DeckDeserializer implements JsonDeserializer<Deck> {
             JsonObject jsonElement = cardElement.getAsJsonObject();
             cards.add(Card.getCardFromSaved(jsonElement.get("card_enum").toString().replaceAll("\"", ""),
                     Integer.parseInt(jsonElement.get("power").toString().replaceAll("\"", "")),
-                    Row.valueOf(jsonElement.get("row").toString().replaceAll("\"", ""))));
+                    jsonElement.get("row").toString().replaceAll("\"", "").isEmpty() ? null : Row.valueOf(jsonElement.get("row").toString().replaceAll("\"", ""))));
         }
 
         Deck deck = new Deck();

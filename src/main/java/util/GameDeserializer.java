@@ -36,14 +36,16 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> player1GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player1GraveyardCards"), context);
         ArrayList<Card> player2GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player2GraveyardCards"), context);
 
-        return new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards, player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard, status, winner, currentPlayer);
+        return new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards,
+                player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard, status, winner, currentPlayer);
     }
 
     private ArrayList<Card> deserializeCards(JsonArray jsonArray, JsonDeserializationContext context) {
         ArrayList<Card> cards = new ArrayList<>();
         for (JsonElement cardElement : jsonArray) {
             JsonObject jsonElement = cardElement.getAsJsonObject();
-            cards.add(Card.getCardFromSaved(jsonElement.get("card_enum").getAsString(), Integer.parseInt(jsonElement.get("power").getAsString()), Row.valueOf(jsonElement.get("row").getAsString())));
+            cards.add(Card.getCardFromSaved(jsonElement.get("card_enum").getAsString(), Integer.parseInt(jsonElement.get("power").getAsString()),
+                    jsonElement.get("row").toString().replaceAll("\"", "").isEmpty() ? null : Row.valueOf(jsonElement.get("row").getAsString())));
         }
         return cards;
     }
