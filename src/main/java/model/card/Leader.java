@@ -81,26 +81,7 @@ public class Leader extends Rectangle {
     }
 
     public static Leader getLeaderFromType(String type) {
-        for (
-                RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (
-                ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (
-                MonstersLeaders cardEnum : MonstersLeaders.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getLeader();
-            }
-        }
-        for (
-                EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
+        for (RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getLeader();
             }
@@ -110,7 +91,22 @@ public class Leader extends Rectangle {
                 return cardEnum.getLeader();
             }
         }
-        return null;
+        for (MonstersLeaders cardEnum : MonstersLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        for (EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
+            if (cardEnum.toString().equals(type)) {
+                return cardEnum.getLeader();
+            }
+        }
+        throw new IllegalArgumentException("Can't find the leader enum");
     }
 
 }
