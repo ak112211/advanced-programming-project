@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.Random;
 
 public class Spy extends InstantaneousAbility {
+    public Spy() {
+        setIconPath("spy");
+    }
     public void affect(Game game, Card myCard) {
         ArrayList<Card> deck = CardsPlace.DECK.getPlayerCards(game);
         ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getPlayerCards(game);

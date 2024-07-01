@@ -12,10 +12,10 @@ import model.abilities.persistentabilities.Weather;
 import model.card.Card;
 
 public enum NeutralCards implements CardEnum {
-    BITING_FROST("Biting Frost", 0, 3, Type.WEATHER, new Weather(Weather::doesAffectCloseCombat), Description.SETS_CLOSE_COMBAT_TO_ONE, false, "/gwentImages/img/lg/weather_frost.jpg"),
-    IMPENETRABLE_FOG("Impenetrable Fog", 0, 3, Type.WEATHER, new Weather(Weather::doesAffectRanged), Description.SETS_RANGED_TO_ONE, false , "/gwentImages/img/lg/weather_fog.jpg"),
-    TORRENTIAL_RAIN("Torrential Rain", 0, 3, Type.WEATHER,  new Weather(Weather::doesAffectSiege), Description.SETS_SIEGE_TO_ONE, false, "/gwentImages/img/lg/weather_rain.jpg"),
-    SKELLIGE_STORM("Skellige Storm", 0, 3, Type.WEATHER, new Weather(Weather::doesAffectRangedSiege), Description.SETS_SIEGE_AND_RANGED_TO_ONE, false, "/gwentImages/img/lg/weather_storm.jpg"),
+    BITING_FROST("Biting Frost", 0, 3, Type.WEATHER, new Weather(Type.CLOSE_COMBAT_UNIT), Description.SETS_CLOSE_COMBAT_TO_ONE, false, "/gwentImages/img/lg/weather_frost.jpg"),
+    IMPENETRABLE_FOG("Impenetrable Fog", 0, 3, Type.WEATHER, new Weather(Type.RANGED_UNIT), Description.SETS_RANGED_TO_ONE, false, "/gwentImages/img/lg/weather_fog.jpg"),
+    TORRENTIAL_RAIN("Torrential Rain", 0, 3, Type.WEATHER, new Weather(Type.SIEGE_UNIT), Description.SETS_SIEGE_TO_ONE, false, "/gwentImages/img/lg/weather_rain.jpg"),
+    SKELLIGE_STORM("Skellige Storm", 0, 3, Type.WEATHER, new Weather(Type.AGILE_UNIT), Description.SETS_SIEGE_AND_RANGED_TO_ONE, false, "/gwentImages/img/lg/weather_storm.jpg"),
     CLEAR_WEATHER("Clear Weather", 0, 3, Type.WEATHER, new ClearWeather(), Description.CANCELS_ALL_WEATHER_CARDS, false, "/gwentImages/img/lg/weather_clear.jpg"),
     SCORCH("Scorch", 0, 3, Type.SPELL, new Scorch(null), Description.REMOVES_MAX_POWER_CARDS, false, "/gwentImages/img/lg/special_scorch.jpg"),
     COMMANDERS_HORN("Commander’s Horn", 0, 3, Type.SPELL, new CommandersHorn(), Description.DOUBLES_POWER_IN_ROW, false, "/gwentImages/img/lg/special_horn.jpg"),

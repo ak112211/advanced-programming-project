@@ -26,6 +26,7 @@ import model.User;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Decoy;
 import model.abilities.instantaneousabilities.Spy;
+import model.abilities.persistentabilities.Weather;
 import model.card.Card;
 import model.card.Leader;
 
@@ -252,7 +253,7 @@ public class GamePaneController implements Initializable {
     }
 
     private void passVeto() {
-        // nextTurn(); // ridam dahane in khat
+        // nextTurn(); // ridam dahane in khate code
         overlayPane.setVisible(false);
         overlayPane.getChildren().clear();
     }
@@ -369,6 +370,7 @@ public class GamePaneController implements Initializable {
                 throw new IllegalArgumentException("card cannot be played");
             }
         }
+        if (card.getAbility() instanceof Weather)
         game.calculatePoints();
         nextTurn();
     }

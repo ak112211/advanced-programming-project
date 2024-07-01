@@ -11,6 +11,7 @@ public class SummonAvenger extends EjectAbility {
 
     public SummonAvenger(CardEnum newCardEnum) {
         this.NEW_CARD_ENUM = newCardEnum;
+        setIconPath("avenger");
     }
 
     public void Affect(Card myCard) {

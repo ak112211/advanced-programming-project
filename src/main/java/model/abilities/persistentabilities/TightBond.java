@@ -8,7 +8,7 @@ public class TightBond extends PersistentAbility {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public TightBond() {
-        super(TightBond::doesAffectDefault);
+        super(TightBond::doesAffectDefault, "bond");
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {

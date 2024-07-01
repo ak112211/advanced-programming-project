@@ -10,6 +10,7 @@ public class Berserker extends Ability {
 
     public Berserker(CardEnum newCardEnum) {
         this.newCardEnum = newCardEnum;
+        setIconPath("berserker");
     }
 
     public void affect(ArrayList<Card> inGameCards, Card myCard) {

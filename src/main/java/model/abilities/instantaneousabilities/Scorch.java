@@ -19,6 +19,7 @@ public class Scorch extends InstantaneousAbility {
      */
     public Scorch(Type type) {
         this.type = type;
+        setIconPath("scorch");
     }
 
     private List<Card> getCardsInRow(Game game, Card myCard) {

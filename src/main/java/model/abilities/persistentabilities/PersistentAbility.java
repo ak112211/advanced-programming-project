@@ -9,7 +9,11 @@ import java.util.function.BiFunction;
 public abstract class PersistentAbility extends Ability {
     private final BiFunction<Card, Card, Boolean> doesAffect;
 
-    public PersistentAbility(BiFunction<Card, Card, Boolean> doesAffect) {
+    public PersistentAbility(BiFunction<Card, Card, Boolean> doesAffect, String iconName) {
+        if (doesAffect == null) {
+            throw new NullPointerException("doesAffect is null");
+        }
+        setIconPath(iconName);
         this.doesAffect = doesAffect;
     }
 

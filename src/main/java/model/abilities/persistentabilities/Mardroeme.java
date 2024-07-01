@@ -9,7 +9,7 @@ public class Mardroeme extends PersistentAbility {
     public static final ArrayList<Card> AFFECTED_CARDS = new ArrayList<>();
 
     public Mardroeme() {
-        super(Mardroeme::doesAffectDefault);
+        super(Mardroeme::doesAffectDefault, "mardroeme");
     }
 
     public static boolean doesAffectDefault(Card myCard, Card card) {

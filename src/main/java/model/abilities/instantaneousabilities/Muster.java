@@ -1,16 +1,18 @@
 package model.abilities.instantaneousabilities;
 
 import model.Game;
+import model.abilities.Animatable;
 import model.card.Card;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public class Muster extends InstantaneousAbility {
+public class Muster extends InstantaneousAbility implements Animatable {
     private final String[] musterCardsName;
 
     public Muster(String... cardNames) {
         musterCardsName = cardNames;
+        setIconPath("muster");
     }
 
     private boolean canMuster(Card card, String myCardName) {
