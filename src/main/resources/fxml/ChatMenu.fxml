@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<?import javafx.scene.image.ImageView?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER" prefWidth="800" prefHeight="600" styleClass="logicPage">
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER"
+      prefWidth="800" prefHeight="600" styleClass="logicPage">
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Chat and Game Requests" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+        <Label text="Chat and Game Requests" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Back" onAction="#goBack" />
+        <Button text="Back" onAction="#goBack"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <TextField fx:id="friendUsernameField" promptText="Enter friend's username" />
-        <Button fx:id="sendFriendRequestButton" text="Add Friend" />
+        <TextField fx:id="friendUsernameField" promptText="Enter friend's username"/>
+        <Button fx:id="sendFriendRequestButton" text="Add Friend"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Friends List:" />
-        <ListView fx:id="friendsListView" prefHeight="200" prefWidth="150" />
+        <Label text="Friends List:"/>
+        <ListView fx:id="friendsListView" prefHeight="200" prefWidth="150"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Game Requests:" />
-        <ListView fx:id="gameRequestsListView" prefHeight="200" prefWidth="600" />
+        <Label text="Game Requests:"/>
+        <ListView fx:id="gameRequestsListView" prefHeight="200" prefWidth="600"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
-        <Label text="Friend Requests:" />
-        <ListView fx:id="friendRequestsListView" prefHeight="200" prefWidth="600" />
+        <Label text="Friend Requests:"/>
+        <ListView fx:id="friendRequestsListView" prefHeight="200" prefWidth="600"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="sendGameRequestButton" text="Send Game Request" onAction="#sendGameRequest"/>
-        <Button fx:id="acceptRequestButton" text="Accept Game Request" onAction="#acceptGameRequest" />
-        <Button fx:id="declineRequestButton" text="Decline Game Request" onAction="#declineGameRequest" />
+        <Button fx:id="acceptRequestButton" text="Accept Game Request" onAction="#acceptGameRequest"/>
+        <Button fx:id="declineRequestButton" text="Decline Game Request" onAction="#declineGameRequest"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="acceptFriendRequestButton" text="Accept Friend Request"  onAction="#acceptFriendRequest"/>
-        <Button fx:id="declineFriendRequestButton" text="Decline Friend Request"  onAction="#declineFriendRequest"/>
+        <Button fx:id="acceptFriendRequestButton" text="Accept Friend Request" onAction="#acceptFriendRequest"/>
+        <Button fx:id="declineFriendRequestButton" text="Decline Friend Request" onAction="#declineFriendRequest"/>
     </HBox>
 </VBox>

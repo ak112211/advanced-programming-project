@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.text.Text?>
-
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" prefWidth="500" prefHeight="300" styleClass="main">
+<?import javafx.scene.layout.*?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" prefWidth="500" prefHeight="300"
+           styleClass="main">
 
     <!-- ImageView for background -->
-    <ImageView fx:id="backgroundImageView" fitWidth="500" fitHeight="300" preserveRatio="false" />
+    <ImageView fx:id="backgroundImageView" fitWidth="500" fitHeight="300" preserveRatio="false"/>
     <!-- Main content -->
     <VBox fx:id="mainBox" spacing="10" alignment="TOP_CENTER">
 
         <VBox prefWidth="20" prefHeight="100"/>
         <HBox spacing="10" alignment="CENTER">
-            <Button text="Show Scoreboard" onAction="#showScoreboard" />
+            <Button text="Show Scoreboard" onAction="#showScoreboard"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Button text="Profile" onAction="#goToProfile" />
-            <Button text="Logout" onAction="#logout" />
-            <Button text="Friends and requests" onAction="#goToAddFriends" />
-            <Button text="New Offline Game" onAction="#goToDeckMenu" />
+            <Button text="Profile" onAction="#goToProfile"/>
+            <Button text="Logout" onAction="#logout"/>
+            <Button text="Friends and requests" onAction="#goToAddFriends"/>
+            <Button text="New Offline Game" onAction="#goToDeckMenu"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Label fx:id="usernameField" text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Label fx:id="usernameField" text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
         </HBox>
     </VBox>
 </StackPane>
