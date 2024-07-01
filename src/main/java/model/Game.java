@@ -22,33 +22,50 @@ public class Game implements Serializable {
     private static final Random RANDOM = new Random();
     private static final int VETO_TIMES = 2;
     private static final int STARTING_HAND_SIZE = 10;
-    private final User player1;
-    private final User player2;
-    private User currentPlayer;
-    private final Date date;
-    private boolean isOnline;
-    private int player1Points, player2Points;
-    private Leader player1LeaderCard;
-    private Leader player2LeaderCard;
-    private final ArrayList<Card> inGameCards = new ArrayList<>();
-    private final ArrayList<Card> player1InHandCards = new ArrayList<>();
-    private final ArrayList<Card> player2InHandCards = new ArrayList<>();
-    private final ArrayList<Card> player1Deck;
-    private final ArrayList<Card> player2Deck;
-    private final ArrayList<Card> player1GraveyardCards = new ArrayList<>();
-    private final ArrayList<Card> player2GraveyardCards = new ArrayList<>();
-    private GameStatus status = GameStatus.PENDING;
-    private User winner = null;
     private static Game currentGame;
 
+    private final User player1;
+    private final User player2;
+    private final Date date;
+    private User currentPlayer;
+    private boolean isOnline;
+    private int player1Points, player2Points;
+    private final Leader player1LeaderCard;
+    private final Leader player2LeaderCard;
+    private final ArrayList<Card> inGameCards;
+    private final ArrayList<Card> player1InHandCards;
+    private final ArrayList<Card> player2InHandCards;
+    private final ArrayList<Card> player1Deck;
+    private final ArrayList<Card> player2Deck;
+    private final ArrayList<Card> player1GraveyardCards;
+    private final ArrayList<Card> player2GraveyardCards;
+    private GameStatus status;
+    private User winner;
+
     public Game(User player1, User player2) {
+        this(player1, player2, new Date(System.currentTimeMillis()),
+                player1.getDeck().getCards(), player2.getDeck().getCards(),
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+                player1.getDeck().getLeader(), player2.getDeck().getLeader(), GameStatus.PENDING, null,
+                RANDOM.nextBoolean() ? player1 : player2);
+    }
+
+    public Game(User player1, User player2, Date date, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, GameStatus status, User winner, User currentPlayer) {
         this.player1 = player1;
         this.player2 = player2;
-        player1Deck = player1.getDeck().getCards();
-        player2Deck = player2.getDeck().getCards();
-        player1LeaderCard = player1.getDeck().getLeader();
-        player2LeaderCard = player2.getDeck().getLeader();
-        date = new Date(System.currentTimeMillis());
+        this.date = date;
+        this.player1Deck = player1Deck;
+        this.player2Deck = player2Deck;
+        this.player1InHandCards = player1InHandCards;
+        this.player2InHandCards = player2InHandCards;
+        this.player1GraveyardCards = player1GraveyardCards;
+        this.player2GraveyardCards = player2GraveyardCards;
+        this.inGameCards = inGameCards;
+        this.player1LeaderCard = player1LeaderCard;
+        this.player2LeaderCard = player2LeaderCard;
+        this.status = status;
+        this.winner = winner;
+        this.currentPlayer = currentPlayer;
     }
 
     public void initializeGameObjects() {
@@ -324,15 +341,7 @@ public class Game implements Serializable {
     public void setOnline(boolean online) {
         isOnline = online;
     }
-
-    public void setPlayer1LeaderCard(Leader PLAYER1_LEADER_CARD) {
-        this.player1LeaderCard = PLAYER1_LEADER_CARD;
-    }
-
-    public void setPlayer2LeaderCard(Leader PLAYER2_LEADER_CARD) {
-        this.player2LeaderCard = PLAYER2_LEADER_CARD;
-    }
-
+    
     public List<Card> getAllCards() {
         return Stream.of(player1InHandCards, player2InHandCards, player1Deck, player2Deck, inGameCards,
                 player1GraveyardCards, player2GraveyardCards).flatMap(ArrayList::stream).toList();

@@ -154,7 +154,7 @@ public class Card extends Rectangle {
     }
 
     public static Card getCardFromType(String type) {
-        for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
+        for (CardEnum cardEnum : RealmsNorthernCards.values()) {
             if (cardEnum.toString().equals(type)) {
                 return cardEnum.getCard();
             }
@@ -184,6 +184,6 @@ public class Card extends Rectangle {
                 return cardEnum.getCard();
             }
         }
-        return null;
+        throw new IllegalArgumentException("Can't find the card enum");
     }
 }
