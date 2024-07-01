@@ -153,37 +153,23 @@ public class Card extends Rectangle {
         return row.equals(card.row);
     }
     
-    public static Card getCardFromType(String type) {
-        for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
-            }
+    public static Card getCardFromEnumString(String cardEnum) {
+        try {
+            return EmpireNilfgaardianCards.valueOf(cardEnum).getCard();
+        } catch (IllegalArgumentException ignored) {};
+        try {
+            return MonstersCards.valueOf(cardEnum).getCard();
+        } catch (IllegalArgumentException ignored) {};
+        try {
+            return RealmsNorthernCards.valueOf(cardEnum).getCard();
+        } catch (IllegalArgumentException ignored) {};
+        try {
+            return ScoiaTaelCards.valueOf(cardEnum).getCard();
+        } catch (IllegalArgumentException ignored) {};
+        try {
+            return SkelligeCards.valueOf(cardEnum).getCard();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Can't find that card enum");
         }
-        for (ScoiaTaelCards cardEnum : ScoiaTaelCards.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
-            }
-        }
-        for (MonstersCards cardEnum : MonstersCards.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
-            }
-        }
-        for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
-            }
-        }
-        for (SkelligeCards cardEnum : SkelligeCards.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
-            }
-        }
-        for (NeutralCards cardEnum : NeutralCards.values()) {
-            if (cardEnum.toString().equals(type)) {
-                return cardEnum.getCard();
-            }
-        }
-        return null;
     }
 }

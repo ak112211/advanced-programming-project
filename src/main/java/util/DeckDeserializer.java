@@ -2,15 +2,12 @@ package util;
 
 import com.google.gson.*;
 import model.Deck;
-import enums.cards.CardEnum;
 import enums.cardsinformation.Faction;
-import enums.leaders.LeaderEnum;
 import model.card.Card;
 import model.card.Leader;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DeckDeserializer implements JsonDeserializer<Deck> {
     @Override
@@ -23,7 +20,7 @@ public class DeckDeserializer implements JsonDeserializer<Deck> {
         JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
         for (JsonElement cardElement : cardsArray) {
             JsonObject jsonElement = cardElement.getAsJsonObject();
-            cards.add(Card.getCardFromType(jsonElement.get("CARD_ENUM").toString().replaceAll("\"", "")));
+            cards.add(Card.getCardFromEnumString(jsonElement.get("CARD_ENUM").toString().replaceAll("\"", "")));
         }
 
         Deck deck = new Deck();
