@@ -11,13 +11,13 @@ public class LeaderSerializer implements JsonSerializer<Leader>, JsonDeserialize
     @Override
     public JsonElement serialize(Leader src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("LEADER_ENUM", context.serialize(src.getLeaderEnum()));
+        jsonObject.add("leaderEnum", context.serialize(src.getLeaderEnum()));
         return jsonObject;
     }
 
     @Override
     public Leader deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        return Leader.getLeaderFromType(jsonObject.get("LEADER_ENUM").toString());
+        return Leader.getLeaderFromType(jsonObject.get("leaderEnum").toString());
     }
 }

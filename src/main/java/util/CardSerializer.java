@@ -9,13 +9,13 @@ public class CardSerializer implements JsonSerializer<Card>, JsonDeserializer<Ca
     @Override
     public JsonElement serialize(Card src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("CARD_ENUM", context.serialize(src.getCardEnum()));
+        jsonObject.add("cardEnum", context.serialize(src.getCardEnum()));
         return jsonObject;
     }
 
     @Override
     public Card deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        return Card.getCardFromEnumString(jsonObject.get("CARD_ENUM").toString());
+        return Card.getCardFromEnumString(jsonObject.get("cardEnum").toString());
     }
 }

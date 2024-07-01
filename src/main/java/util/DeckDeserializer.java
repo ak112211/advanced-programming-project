@@ -20,13 +20,13 @@ public class DeckDeserializer implements JsonDeserializer<Deck> {
         JsonArray cardsArray = jsonObject.getAsJsonArray("cards");
         for (JsonElement cardElement : cardsArray) {
             JsonObject jsonElement = cardElement.getAsJsonObject();
-            cards.add(Card.getCardFromEnumString(jsonElement.get("CARD_ENUM").toString().replaceAll("\"", "")));
+            cards.add(Card.getCardFromEnumString(jsonElement.get("cardEnum").toString().replaceAll("\"", "")));
         }
 
         Deck deck = new Deck();
         deck.setFaction(faction);
         deck.setCards(cards);
-        deck.setLeader(Leader.getLeaderFromType(jsonObject.get("leader").getAsJsonObject().get("LEADER_ENUM")
+        deck.setLeader(Leader.getLeaderFromType(jsonObject.get("leader").getAsJsonObject().get("leaderEnum")
                 .toString().replaceAll("\"", "")));
 
         return deck;

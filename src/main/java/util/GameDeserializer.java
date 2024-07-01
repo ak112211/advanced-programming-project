@@ -41,7 +41,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> cards = new ArrayList<>();
         for (JsonElement cardElement : jsonArray) {
             JsonObject jsonElement = cardElement.getAsJsonObject();
-            cards.add(Card.getCardFromEnumString(jsonElement.get("CARD_ENUM").getAsString()));
+            cards.add(Card.getCardFromEnumString(jsonElement.get("cardEnum").getAsString()));
         }
         return cards;
     }
