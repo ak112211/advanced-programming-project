@@ -5,7 +5,7 @@ import java.net.*;
 import java.util.*;
 
 public class GwentServer {
-    private static Map<String, ClientHandler> clients = new HashMap<>();
+    private static final Map<String, ClientHandler> CLIENTS = new HashMap<>();
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(5555)) {
@@ -20,7 +20,7 @@ public class GwentServer {
     }
 
     static class ClientHandler extends Thread {
-        private Socket socket;
+        private final Socket socket;
         private PrintWriter out;
         private BufferedReader in;
         private String clientId;
@@ -35,8 +35,8 @@ public class GwentServer {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 clientId = in.readLine();
-                synchronized (clients) {
-                    clients.put(clientId, this);
+                synchronized (CLIENTS) {
+                    CLIENTS.put(clientId, this);
                 }
 
                 String inputLine;
@@ -48,18 +48,18 @@ public class GwentServer {
 
 
                         ClientHandler targetClientHandler;
-                        synchronized (clients) {
-                            targetClientHandler = clients.get(targetClientId);
+                        synchronized (CLIENTS) {
+                            targetClientHandler = CLIENTS.get(targetClientId);
                         }
 
 
                         if (command.endsWith("sent friend request")) {
                             targetClientHandler.sendMessage(clientId, "");
-                        } else if (command.endsWith("sent game request"))  {
+                        } else if (command.endsWith("sent game request")) {
                             targetClientHandler.sendMessage(clientId, command);
-                        } else if (command.startsWith("accepted friend request from"))  {
+                        } else if (command.startsWith("accepted friend request from")) {
                             targetClientHandler.sendMessage(clientId, command);
-                        } else if (command.startsWith("accepted game request from"))  {
+                        } else if (command.startsWith("accepted game request from")) {
                             targetClientHandler.sendMessage(clientId, command);
                         } else {
                             out.println("Target client not found");
@@ -75,8 +75,8 @@ public class GwentServer {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                synchronized (clients) {
-                    clients.remove(clientId);
+                synchronized (CLIENTS) {
+                    CLIENTS.remove(clientId);
                 }
             }
         }

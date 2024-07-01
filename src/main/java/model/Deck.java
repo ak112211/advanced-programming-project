@@ -16,7 +16,7 @@ import java.util.List;
 public class Deck implements Serializable {
     private Faction faction;
     private Leader leader;
-    private ArrayList<Card> cards = new ArrayList<Card>();
+    private final ArrayList<Card> cards = new ArrayList<Card>();
 
     public ArrayList<Card> getCards() {
         return cards;
@@ -27,7 +27,7 @@ public class Deck implements Serializable {
     }
 
     public void addCards(List<Card> cards) {
-        cards.addAll(cards);
+        this.cards.addAll(cards);
     }
 
     public Leader getLeader() {

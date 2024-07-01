@@ -43,8 +43,8 @@ public class ServerConnection {
                 while ((incomingMessage = in.readLine()) != null) {
                     if (incomingMessage.endsWith("sent friend request")
                             || incomingMessage.endsWith("sent game request")
-                            ||  incomingMessage.startsWith("accepted friend request")
-                            ||  incomingMessage.startsWith("accepted game request")) {
+                            || incomingMessage.startsWith("accepted friend request")
+                            || incomingMessage.startsWith("accepted game request")) {
                         showAlert(incomingMessage);
                         if (!App.getMenuPath().equals(Menu.GAME_PANE.getPath())) {
                             App.loadScene(Menu.CHAT_MENU.getPath());

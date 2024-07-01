@@ -219,7 +219,7 @@ public class Game implements Serializable {
         }
         return null; // TODO
     }
-    
+
     // Saving functions:
 
     public String toJson() {
@@ -239,7 +239,7 @@ public class Game implements Serializable {
                 .create();
         return gson.fromJson(json, Game.class);
     }
-    
+
     // Getter and setter functions:
 
     public static void setCurrentGame(Game game) {

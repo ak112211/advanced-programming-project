@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Scorch extends InstantaneousAbility {
-    Type type;
+    private final Type type;
 
     /**
      * @param type selects which row should it remove,

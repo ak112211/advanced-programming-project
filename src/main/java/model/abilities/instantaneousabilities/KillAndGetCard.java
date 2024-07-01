@@ -5,22 +5,21 @@ import model.Game;
 import model.card.Card;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class KillAndGetCard extends InstantaneousAbility {
-    private final int KILL_AMOUNT;
+    private final int killAmount;
 
     public KillAndGetCard(int killAmount) {
-        KILL_AMOUNT = killAmount;
+        this.killAmount = killAmount;
     }
 
     public void affect(Game game, Card myCard) {
         ArrayList<Card> inHandCards = CardsPlace.IN_HAND.getPlayerCards(game);
         ArrayList<Card> graveyard = CardsPlace.GRAVEYARD.getPlayerCards(game);
-        if (inHandCards.size() < KILL_AMOUNT) {
+        if (inHandCards.size() < killAmount) {
             return;
         }
-        for (int i = 0; i < KILL_AMOUNT; i++) {
+        for (int i = 0; i < killAmount; i++) {
             game.moveCard(game.chooseCard(inHandCards, false).orElseThrow(), inHandCards, graveyard);
         }
         if (game.isPlayer1Turn()) {

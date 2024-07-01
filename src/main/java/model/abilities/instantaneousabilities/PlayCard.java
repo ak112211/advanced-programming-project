@@ -10,47 +10,47 @@ import model.card.Card;
 import java.util.ArrayList;
 
 public class PlayCard extends InstantaneousAbility {
-    private final CardEnum CARD_ENUM;
-    private final CardsPlace CARDS_PLACE;
-    private final Type TYPE;
+    private final CardEnum cardEnum;
+    private final CardsPlace cardsPlace;
+    private final Type type;
 
     public PlayCard(CardsPlace cardsPlace, CardEnum cardEnum, Type type) {
-        CARD_ENUM = cardEnum;
-        CARDS_PLACE = cardsPlace;
-        TYPE = type;
+        this.cardEnum = cardEnum;
+        this.cardsPlace = cardsPlace;
+        this.type = type;
     }
 
     public PlayCard(CardsPlace cardsPlace, CardEnum cardEnum) {
-        CARD_ENUM = cardEnum;
-        CARDS_PLACE = cardsPlace;
-        TYPE = null;
+        this.cardEnum = cardEnum;
+        this.cardsPlace = cardsPlace;
+        type = null;
     }
 
     public void affect(Game game, Card myCard) {
         Card card;
         Row row;
-        if (CARDS_PLACE != null) {
-            ArrayList<Card> cardsList = CARDS_PLACE.getPlayerCards(game);
-            int index = cardsList.stream().map(Card::getCardEnum).toList().indexOf(CARD_ENUM);
+        if (cardsPlace != null) {
+            ArrayList<Card> cardsList = cardsPlace.getPlayerCards(game);
+            int index = cardsList.stream().map(Card::getCardEnum).toList().indexOf(cardEnum);
             if (index == -1) {
                 return;
             }
             card = cardsList.remove(index);
-            if (TYPE == null) {
+            if (type == null) {
                 row = card.getDefaultRow(game.isPlayer1Turn());
             } else {
-                row = TYPE.getRow(game.isPlayer1Turn());
+                row = type.getRow(game.isPlayer1Turn());
             }
             if (game.canPlay(card, row)) {
                 card.setRow(row);
                 game.moveCard(card, cardsList, game.getInGameCards());
             }
         } else {
-            card = CARD_ENUM.getCard();
-            if (TYPE == null) {
+            card = cardEnum.getCard();
+            if (type == null) {
                 row = card.getDefaultRow(game.isPlayer1Turn());
             } else {
-                row = TYPE.getRow(game.isPlayer1Turn());
+                row = type.getRow(game.isPlayer1Turn());
             }
             if (game.canPlay(card, row)) {
                 card.setRow(row);
