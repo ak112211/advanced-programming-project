@@ -52,8 +52,6 @@ public class Game implements Serializable {
     }
 
     public void initializeGameObjects() {
-        player1Deck = PLAYER1.getDeck().getCards();
-        player2Deck = PLAYER2.getDeck().getCards();
         for (int i = 0; i < STARTING_HAND_SIZE; i++) {
             player1GetRandomCard();
             player2GetRandomCard();
@@ -204,7 +202,27 @@ public class Game implements Serializable {
         }
         return null; // TODO
     }
+    
+    // Saving functions:
 
+    public String toJson() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .setPrettyPrinting()
+                .create();
+        return gson.toJson(this);
+    }
+
+    public static Game fromJson(String json) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .registerTypeAdapter(Deck.class, new DeckDeserializer())
+                .create();
+        return gson.fromJson(json, Game.class);
+    }
+    
     // Getter and setter functions:
 
     public static void setCurrentGame(Game game) {
@@ -299,33 +317,6 @@ public class Game implements Serializable {
         return PLAYER2_GRAVEYARD_CARDS;
     }
 
-    public List<Card> getAllCards() {
-        return Stream.of(PLAYER1_IN_HAND_CARDS, PLAYER2_IN_HAND_CARDS, player1Deck, player2Deck, IN_GAME_CARDS,
-                PLAYER1_GRAVEYARD_CARDS, PLAYER2_GRAVEYARD_CARDS).flatMap(ArrayList::stream).toList();
-    }
-
-    public enum GameStatus {
-        PENDING, ACTIVE, COMPLETED
-    }
-
-    public String toJson() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Card.class, new CardSerializer())
-                .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                .setPrettyPrinting()
-                .create();
-        return gson.toJson(this);
-    }
-
-    public static Game fromJson(String json) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Card.class, new CardSerializer())
-                .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                .registerTypeAdapter(Deck.class, new DeckDeserializer())
-                .create();
-        return gson.fromJson(json, Game.class);
-    }
-
     public boolean isOnline() {
         return isOnline;
     }
@@ -334,11 +325,20 @@ public class Game implements Serializable {
         isOnline = online;
     }
 
-    public void setPLAYER1_LEADER_CARD(Leader PLAYER1_LEADER_CARD) {
+    public void setPlayer1LeaderCard(Leader PLAYER1_LEADER_CARD) {
         this.PLAYER1_LEADER_CARD = PLAYER1_LEADER_CARD;
     }
 
-    public void setPLAYER2_LEADER_CARD(Leader PLAYER2_LEADER_CARD) {
+    public void setPlayer2LeaderCard(Leader PLAYER2_LEADER_CARD) {
         this.PLAYER2_LEADER_CARD = PLAYER2_LEADER_CARD;
+    }
+
+    public List<Card> getAllCards() {
+        return Stream.of(PLAYER1_IN_HAND_CARDS, PLAYER2_IN_HAND_CARDS, player1Deck, player2Deck, IN_GAME_CARDS,
+                PLAYER1_GRAVEYARD_CARDS, PLAYER2_GRAVEYARD_CARDS).flatMap(ArrayList::stream).toList();
+    }
+
+    public enum GameStatus {
+        PENDING, ACTIVE, COMPLETED
     }
 }
