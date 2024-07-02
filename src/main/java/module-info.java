@@ -8,6 +8,7 @@ module Gwent {
     requires com.google.gson;
     requires com.fasterxml.jackson.databind;
     requires java.mail;
+    requires java.prefs;
 
     exports view;
     exports model;

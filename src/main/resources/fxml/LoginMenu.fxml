@@ -11,7 +11,7 @@
     <VBox prefHeight="100" prefWidth="20"/>
     <VBox style="-fx-alignment: center">
         <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="usernameField"  prefHeight="30.0" maxWidth="250.0" GridPane.columnIndex="1"
+        <TextField fx:id="usernameField" prefHeight="30.0" maxWidth="250.0" GridPane.columnIndex="1"
                    GridPane.rowIndex="0"/>
 
         <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>

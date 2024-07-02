@@ -10,13 +10,11 @@ import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
-import util.EmailSender;
+import java.util.prefs.Preferences;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static view.Tools.generateVerificationCode;
 import static view.Tools.sendVerificationCode;
 
 public class LoginMenuController {
@@ -43,6 +41,7 @@ public class LoginMenuController {
 
         // Bind the text properties to keep them synchronized
         textField.textProperty().bindBidirectional(passwordField.textProperty());
+
     }
 
     @FXML
@@ -58,8 +57,9 @@ public class LoginMenuController {
                 if (!user.isVerified()) {
                     sendVerificationCode(User.getCurrentUser());
                     Tools.showAlert("Account not verified. Redirecting to verification screen.");
-                    App.loadScene(Menu.VERIFY_MENU.getPath()); // Load the verification code scene
+                    App.loadScene(Menu.VERIFY_MENU.getPath());
                 } else {
+                    saveUserSession(user);  // Save session
                     App.setIsLoggedIn(true);
                     if (user.isTwoFactorOn()) {
                         sendVerificationCode(User.getCurrentUser());
@@ -88,4 +88,11 @@ public class LoginMenuController {
     private void handleRegisterButtonAction() {
         App.loadScene(Menu.REGISTER_MENU.getPath());
     }
+
+    private void saveUserSession(User user) {
+        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
+        prefs.put("username", user.getUsername());
+        prefs.put("password", user.getPassword());  // You might want to encrypt this
+    }
+
 }

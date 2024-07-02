@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import static view.Tools.clearUserSession;
+
 public class MainMenuController {
     @FXML
     public Label usernameField;
@@ -63,9 +65,10 @@ public class MainMenuController {
     }
 
     public void logout(ActionEvent actionEvent) {
+        App.getServerConnection().sendMessage(User.getCurrentUser().getUsername(), "logout");
         User.setCurrentUser(null);
         Game.setCurrentGame(null);
+        clearUserSession();
         App.loadScene(Menu.LOGIN_MENU.getPath());
-        App.getServerConnection().sendMessage(User.getCurrentUser().getUsername(), "logout");
     }
 }

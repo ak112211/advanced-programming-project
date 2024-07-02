@@ -8,9 +8,12 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.App;
+import model.User;
 import util.ServerConnection;
 
 import java.util.Objects;
+
+import static view.Tools.loadUserSession;
 
 public class MainApp extends Application {
     public LoginMenuController controller;
@@ -30,12 +33,10 @@ public class MainApp extends Application {
         stage.getIcons().add(image);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(Menu.LOGIN_MENU.getPath())));
         controller = fxmlLoader.getController();
-        Scene scene = new Scene(pane);
-        scene.getStylesheets().add(Objects.requireNonNull(App.class.getResource("/css/styles.css")).toExternalForm());
-        stage.setScene(scene);
         stage.setTitle("Gwent");
-        stage.show();
+
+        loadUserSession();
+
     }
 }

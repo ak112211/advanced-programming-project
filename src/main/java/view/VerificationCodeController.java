@@ -13,9 +13,9 @@ import util.EmailSender;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.prefs.Preferences;
 
-import static view.Tools.generateVerificationCode;
-import static view.Tools.sendVerificationCode;
+import static view.Tools.*;
 
 public class VerificationCodeController {
 
@@ -43,10 +43,11 @@ public class VerificationCodeController {
         }
     }
 
-    public void handleBack(ActionEvent actionEvent) {
-        App.setIsLoggedIn(false);
+    @FXML
+    public void handleBack() {
+        clearUserSession();
         User.setCurrentUser(null);
-        Game.setCurrentGame(null);
+        App.setIsLoggedIn(false);
         App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 

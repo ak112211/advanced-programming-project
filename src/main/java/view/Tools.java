@@ -1,10 +1,12 @@
 package view;
 
+import enums.Menu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import model.App;
 import model.User;
 import util.DatabaseConnection;
 import util.EmailSender;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,4 +133,45 @@ public class Tools {
             e.printStackTrace();
         }
     }
+
+    public static void clearUserSession() {
+        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
+        prefs.remove("username");
+        prefs.remove("password");
+    }
+
+    public static void loadUserSession() {
+        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
+        String username = prefs.get("username", null);
+        String password = prefs.get("password", null);
+
+        if (username != null && password != null) {
+            try {
+                User user = DatabaseConnection.getUser(username);
+                if (user != null && DatabaseConnection.checkPassword(username, password)) {
+                    User.setCurrentUser(user);
+                    if (!user.isVerified()) {
+                        sendVerificationCode(User.getCurrentUser());
+                        App.loadScene(Menu.VERIFY_MENU.getPath());
+                    } else {
+                        App.setIsLoggedIn(true);
+                        if (user.isTwoFactorOn()) {
+                            sendVerificationCode(User.getCurrentUser());
+                            App.loadScene(Menu.VERIFY_MENU.getPath());
+                        } else {
+
+                            App.loadScene(Menu.MAIN_MENU.getPath());
+                            App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
+
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                Tools.showAlert("Error loading session: " + e.getMessage());
+            }
+        } else {
+            App.loadScene(Menu.LOGIN_MENU.getPath());
+        }
+    }
+
 }
