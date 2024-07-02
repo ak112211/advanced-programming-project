@@ -45,6 +45,9 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static util.DatabaseConnection.updateUserProfile;
+import static util.DatabaseConnection.updateUserScore;
+
 public class GamePaneController implements Initializable {
     @FXML
     public VBox pauseMenu;
@@ -186,6 +189,12 @@ public class GamePaneController implements Initializable {
             exit.setVisible(true);
             quit.setVisible(false);
         }
+
+        if (game.isPlayer1Turn()) {
+            displayMessage("Turn of Player 1");
+        } else {
+            displayMessage("Turn of Player 2");
+        }
     }
 
     private void setupBackgroundMusic() {
@@ -256,12 +265,6 @@ public class GamePaneController implements Initializable {
                 selectCard(card);
             });
         }
-
-        if (game.isPlayer1Turn()) {
-            displayMessage("Turn of Player 1");
-        } else {
-            displayMessage("Turn of Player 2");
-        }
     }
 
     private void createCardView(Card card) {
@@ -312,6 +315,11 @@ public class GamePaneController implements Initializable {
     private void nextTurn() throws SQLException, IOException {
         game.switchSides();
         startTurn();
+        if (game.isPlayer1Turn()) {
+            displayMessage("Turn of " + game.getPlayer1().getUsername());
+        } else {
+            displayMessage("Turn of " + game.getPlayer2().getUsername());
+        }
         if (game.isOnline()) {
             DatabaseConnection.updateGame(game);
             String input;
@@ -520,11 +528,18 @@ public class GamePaneController implements Initializable {
                 player = game.getPlayer1();
             }
 
+            game.setStatus(Game.GameStatus.COMPLETED);
             game.setWinner(player);
             DatabaseConnection.updateGame(game);
             hideOverlayMessage();
-            App.loadScene(Menu.MAIN_MENU.getPath());
+            game.getPlayer1().setHighScore(game.getPlayer1Points() + game.getPlayer1().getHighScore());
+            game.getPlayer2().setHighScore(game.getPlayer2Points() + game.getPlayer2().getHighScore());
+
+            updateUserScore(game.getPlayer1());
+            updateUserScore(game.getPlayer2());
+
             Game.setCurrentGame(null);
+            App.loadScene(Menu.MAIN_MENU.getPath());
 
         } catch (SQLException e) {
             Tools.showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
@@ -535,6 +550,8 @@ public class GamePaneController implements Initializable {
     @FXML
     public void handleSaveGameAndExit(ActionEvent actionEvent) throws SQLException {
         DatabaseConnection.updateGame(game);
+        game.setStatus(Game.GameStatus.PENDING);
+
         App.loadScene(Menu.MAIN_MENU.getPath());
         hideOverlayMessage();
         Game.setCurrentGame(null);

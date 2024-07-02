@@ -75,10 +75,9 @@ public class ChooseDeckMenuController {
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
-        currentDeck = currentUser.getDeck();
+        currentDeck = new Deck();
 
         player2 = new User("Player2", null, null, null);
-        player2.setDeck(new Deck());
         cardNumText.setVisible(false);
 
         if (isMulti) {
@@ -133,10 +132,14 @@ public class ChooseDeckMenuController {
 
     @FXML
     private void changeTurn(ActionEvent event) {
+        Deck deck = new Deck();
+        deck.setCards(currentDeck.getCards());
+        deck.setLeader(currentDeck.getLeader());
+        deck.setFaction(currentDeck.getFaction());
         if (isPlayer2Turn) {
-            player2.setDeck(currentDeck);
+            player2.setDeck(deck);
         } else {
-            currentUser.setDeck(currentDeck);
+            currentUser.setDeck(deck);
         }
         currentDeck = new Deck();
         isPlayer2Turn = !isPlayer2Turn;
@@ -153,7 +156,6 @@ public class ChooseDeckMenuController {
 
         try {
             currentDeck = new Deck();
-            currentUser.setDeck(currentDeck);
             currentDeck.setFaction(Faction.REALMS_NORTHERN);
             factionComboBox.setValue(currentDeck.getFaction());
             loadFactionCards(currentDeck.getFaction());
@@ -393,14 +395,18 @@ public class ChooseDeckMenuController {
 
     @FXML
     public void startGame(ActionEvent actionEvent) throws SQLException {
+        Deck deck = new Deck();
+        deck.setCards(currentDeck.getCards());
+        deck.setLeader(currentDeck.getLeader());
+        deck.setFaction(currentDeck.getFaction());
         if (isPlayer2Turn) {
-            player2.setDeck(currentDeck);
+            player2.setDeck(deck);
         } else {
-            currentUser.setDeck(currentDeck);
+            currentUser.setDeck(deck);
         }
 
-        if (currentUser.getDeck() == null || player2.getDeck() == null || currentDeck.getCards().size() < 22 || player2.getDeck().getCards().size() < 22) {
-            System.out.println(currentDeck.getCards().size());
+        if (currentUser.getDeck() == null || player2.getDeck() == null || currentUser.getDeck().getCards().size() < 22 || player2.getDeck().getCards().size() < 22) {
+            System.out.println(currentUser.getDeck().getCards().size());
             System.out.println(player2.getDeck().getCards().size());
             Tools.showAlert("Error", "Deck Error", "Both players must have at least 22 unit cards to start the game.");
             return;

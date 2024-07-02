@@ -3,11 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" prefWidth="500" prefHeight="300"
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainMenuController" prefWidth="600" prefHeight="400"
            styleClass="main">
 
     <!-- ImageView for background -->
-    <ImageView fx:id="backgroundImageView" fitWidth="500" fitHeight="300" preserveRatio="false"/>
+    <ImageView fx:id="backgroundImageView" fitWidth="600" fitHeight="400" preserveRatio="false"/>
     <!-- Main content -->
     <VBox fx:id="mainBox" spacing="10" alignment="TOP_CENTER">
 
@@ -23,6 +23,12 @@
         </HBox>
         <HBox spacing="10" alignment="CENTER">
             <Label fx:id="usernameField" text="Gwent Main Menu" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <ListView fx:id="savedGamesListView" prefHeight="150" prefWidth="300"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="continueGameButton" text="Continue Selected Game" onAction="#handleContinueGameButtonAction"/>
         </HBox>
     </VBox>
 </StackPane>

@@ -2,6 +2,7 @@ package enums;
 
 public enum Menu {
     LOGIN_MENU("/fxml/LoginMenu.fxml"),
+    SCORE_MENU("/fxml/Scoreboard.fxml"),
     REGISTER_MENU("/fxml/RegisterMenu.fxml"),
     FORGET_PASSWORD_MENU("/fxml/ForgotPasswordMenu.fxml"),
     MAIN_MENU("/fxml/MainMenu.fxml"),

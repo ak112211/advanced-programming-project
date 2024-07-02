@@ -47,7 +47,7 @@ public class Game implements Serializable {
         this(player1, player2, new Date(System.currentTimeMillis()),
                 player1.getDeck().getCards(), player2.getDeck().getCards(),
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-                player1.getDeck().getLeader(), player2.getDeck().getLeader(), GameStatus.PENDING, null,
+                player1.getDeck().getLeader(), player2.getDeck().getLeader(), GameStatus.ACTIVE, null,
                 RANDOM.nextBoolean() ? player1 : player2);
     }
 
@@ -64,9 +64,9 @@ public class Game implements Serializable {
         this.inGameCards = inGameCards;
         this.player1LeaderCard = player1LeaderCard;
         this.player2LeaderCard = player2LeaderCard;
-        this.status = status;
         this.winner = winner;
         this.currentPlayer = currentPlayer;
+        this.status = GameStatus.ACTIVE;
     }
 
     public void initializeGameObjects() {

@@ -2,6 +2,7 @@ package util;
 
 import com.google.gson.*;
 import enums.Row;
+import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
@@ -15,14 +16,18 @@ public class GameDeserializer implements JsonDeserializer<Game> {
     @Override
     public Game deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(User.class, new UserDeserializer());
+        gsonBuilder.registerTypeAdapter(Deck.class, new DeckDeserializer());
+        Gson gson = gsonBuilder.create();
 
-        User player1 = context.deserialize(jsonObject.get("player1"), User.class);
-        User player2 = context.deserialize(jsonObject.get("player2"), User.class);
+        User player1 = gson.fromJson(jsonObject.get("player1"), User.class);
+        User player2 = gson.fromJson(jsonObject.get("player2"), User.class);
         Date date = context.deserialize(jsonObject.get("date"), Date.class);
-        User currentPlayer = context.deserialize(jsonObject.get("currentPlayer"), User.class);
+        User currentPlayer = gson.fromJson(jsonObject.get("currentPlayer"), User.class);
         Game.GameStatus status = Game.GameStatus.valueOf(jsonObject.get("status").getAsString());
-        User winner = context.deserialize(jsonObject.get("winner"), User.class);
-        int ID = jsonObject.get("game_id").getAsInt();
+        User winner = gson.fromJson(jsonObject.get("winner"), User.class);
+        int ID = jsonObject.get("ID").getAsInt();
 
         Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString(),
                 Integer.parseInt(jsonObject.get("player1LeaderCard").getAsJsonObject().get("number_of_actions").toString()));

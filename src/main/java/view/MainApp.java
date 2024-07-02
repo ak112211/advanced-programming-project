@@ -18,6 +18,7 @@ import util.ServerConnection;
 
 import java.util.Objects;
 
+import static view.Tools.clearUserSession;
 import static view.Tools.loadUserSession;
 
 public class MainApp extends Application {

@@ -22,7 +22,7 @@ public class User implements Serializable {
     private String securityQuestion;
     private String answer;
 
-    private ArrayList<Game> games = new ArrayList<>();
+    private List<Integer> games = new ArrayList<>();
     private Deck deck;
     private ArrayList<Deck> decks = new ArrayList<>();
     private List<String> friends = new ArrayList<>();
@@ -96,11 +96,11 @@ public class User implements Serializable {
         this.answer = answer;
     }
 
-    public ArrayList<Game> getGames() {
+    public List<Integer> getGames() {
         return games;
     }
 
-    public void setGames(ArrayList<Game> games) {
+    public void setGames(List<Integer> games) {
         this.games = games;
     }
 

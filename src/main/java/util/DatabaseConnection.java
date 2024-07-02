@@ -130,6 +130,16 @@ public class DatabaseConnection {
         }
     }
 
+    public static void updateUserScore(User user) throws SQLException {
+        String query = "UPDATE Users SET high_score = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, user.getHighScore());
+            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.executeUpdate();
+        }
+    }
+
     public static int getLossesCount(String username) throws SQLException {
         String query = "SELECT COUNT(*) FROM Games WHERE (player1 = ? OR player2 = ?) AND winner IS NOT NULL AND winner <> ?";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -208,6 +218,7 @@ public class DatabaseConnection {
             preparedStatement.setString(4, game.getStatus().name());
             preparedStatement.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
 
+            game.setID(getTotalGamesCount() + 1);
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Card.class, new CardSerializer())
                     .registerTypeAdapter(Leader.class, new LeaderSerializer())
@@ -222,6 +233,7 @@ public class DatabaseConnection {
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int gameId = generatedKeys.getInt(1);
+                    game.setID(gameId);
                     if (game.isOnline()) {
                         addGameToUser(game.getPlayer1().getUsername(), gameId);
                         addGameToUser(game.getPlayer2().getUsername(), gameId);
@@ -267,12 +279,33 @@ public class DatabaseConnection {
         }
     }
 
+    public static List<Game> getSavedOfflineGames(String username) throws SQLException {
+        List<Game> games = new ArrayList<>();
+        String query = "SELECT game_id, game_data FROM Games WHERE (player1 = ? OR player2 = ?) AND is_online = FALSE AND status = 'PENDING'";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String gameData = resultSet.getString("game_data");
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(Game.class, new GameDeserializer())
+                            .create();
+                    Game game = gson.fromJson(gameData, Game.class);
+                    games.add(game);
+                }
+            }
+        }
+        return games;
+    }
+
+
     private static void removeGameFromUser(String username, int gameId) throws SQLException {
         User user = getUser(username);
         if (user == null) {
             throw new SQLException("User not found.");
         }
-        List<Integer> gameIds = user.getGames().stream().map(Game::getID).collect(Collectors.toList());
+        List<Integer> gameIds = user.getGames();
         gameIds.remove(Integer.valueOf(gameId));
         String updatedGamesJson = new Gson().toJson(gameIds);
 
@@ -323,17 +356,12 @@ public class DatabaseConnection {
                     .setPrettyPrinting()
                     .create();
 
-            ArrayList<Integer> gameIds = new ArrayList<>();
-
-            for (Game game : user.getGames()) {
-                gameIds.add(game.getID());
-            }
 
             preparedStatement.setString(8, user.getDeck() != null ? gson.toJson(user.getDeck()) : "");
             preparedStatement.setString(9, user.getDecks() != null ? gson.toJson(user.getDecks()) : "");
             preparedStatement.setString(10, user.getPlayCard() != null ? gson.toJson(user.getPlayCard()) : "");
-            preparedStatement.setString(11, user.getFriends() != null ? GSON.toJson(user.getFriends()) : "");
-            preparedStatement.setString(12, GSON.toJson(gameIds));
+            preparedStatement.setString(11, user.getFriends() != null ? GSON.toJson(user.getFriends()) : "[]");
+            preparedStatement.setString(12, user.getGames() != null ? GSON.toJson(user.getGames()) : "[]");
             preparedStatement.setBoolean(13, false);
             preparedStatement.setBoolean(14, false);
             preparedStatement.executeUpdate();
@@ -365,10 +393,6 @@ public class DatabaseConnection {
                     }.getType());
 
                     List<Integer> gameIds = gson.fromJson(resultSet.getString("games"), new TypeToken<List<Integer>>() {}.getType());
-                    ArrayList<Game> games = new ArrayList<>();
-                    /*for (int id : gameIds) {
-                        games.add(getGame(id));
-                    }*/
 
                     List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
@@ -376,7 +400,7 @@ public class DatabaseConnection {
                     user.setSecurityQuestion(securityQuestion);
                     user.setAnswer(answer != null ? answer : "");
                     user.setHighScore(highScore);
-                    user.setGames(games);
+                    user.setGames(gameIds);
                     user.setDeck(deck != null ? deck : new Deck());
                     user.setDecks(decks != null ? decks : new ArrayList<>());
                     user.setPlayCard(null);
@@ -766,6 +790,18 @@ public class DatabaseConnection {
                 return messages;
             }
         }
+    }
+
+    public static int getTotalGamesCount() throws SQLException {
+        String query = "SELECT COUNT(*) FROM Games";
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        }
+        return 0;
     }
 
 }
