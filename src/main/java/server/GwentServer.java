@@ -86,7 +86,7 @@ public class GwentServer {
                 targetClientHandler = CLIENTS.get(targetClientId);
             }
             if (targetClientHandler != null) {
-                targetClientHandler.sendMessage(fromClientId, command);
+                targetClientHandler.sendMessage(command);
             } else {
                 out.println("Target client not found");
             }
@@ -99,17 +99,19 @@ public class GwentServer {
             }
             if (targetClientHandler != null) {
                 if (command.endsWith("sent friend request")) {
-                    targetClientHandler.sendMessage(clientId, "sent friend request");
+                    targetClientHandler.sendMessage(command);
                 } else if (command.endsWith("sent game request")) {
-                    targetClientHandler.sendMessage(clientId, "sent game request");
+                    targetClientHandler.sendMessage(command);
                 } else if (command.endsWith("sent message")) {
-                    targetClientHandler.sendMessage(clientId, "sent game request");
+                    targetClientHandler.sendMessage(command);
                 } else if (command.startsWith("accepted friend request from")) {
-                    targetClientHandler.sendMessage(clientId, "accepted friend request from");
+                    targetClientHandler.sendMessage(command);
                 } else if (command.startsWith("accepted game request from")) {
-                    targetClientHandler.sendMessage(clientId, "accepted game request from");
+                    targetClientHandler.sendMessage(command);
                 } else if (command.endsWith("played move")) {
-                    targetClientHandler.sendMessage(clientId, "played move");
+                    targetClientHandler.sendMessage(command);
+                } else if (command.endsWith("ended game")) {
+                    targetClientHandler.sendMessage(command);
                 } else {
                     out.println("Unknown command");
                 }
@@ -118,7 +120,7 @@ public class GwentServer {
             }
         }
 
-        private void sendMessage(String fromClientId, String message) {
+        private void sendMessage(String message) {
             out.println(message);
         }
     }

@@ -8,6 +8,7 @@ import enums.cardsinformation.Type;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.RealmsNorthernLeaders;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,6 +48,7 @@ import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserProfile;
 import static util.DatabaseConnection.updateUserScore;
+import static view.Tools.showAlert;
 
 public class GamePaneController implements Initializable {
     @FXML
@@ -187,6 +189,8 @@ public class GamePaneController implements Initializable {
         } else {
             displayMessage("Turn of Player 2");
         }
+
+        startServerListener();
     }
 
     private void setupBackgroundMusic() {
@@ -314,13 +318,8 @@ public class GamePaneController implements Initializable {
         }
         if (game.isOnline()) {
             DatabaseConnection.updateGame(game);
-            String input;
             String player = game.isPlayer1Turn() ? game.getPlayer1().getUsername() : game.getPlayer2().getUsername();
-            while ((input = App.getServerConnection().getIn().readLine()) != null) {
-                if (input.endsWith("made move " + player)) {
-                    startTurn();
-                }
-            }
+            App.getServerConnection().sendMessage(player, User.getCurrentUser().getUsername() + " made move");
         }
     }
 
@@ -534,7 +533,7 @@ public class GamePaneController implements Initializable {
             App.loadScene(Menu.MAIN_MENU.getPath());
 
         } catch (SQLException e) {
-            Tools.showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
+            showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -556,13 +555,13 @@ public class GamePaneController implements Initializable {
                 int gameId = game.getID();
                 System.out.println(gameId);
                 DatabaseConnection.deleteGame(gameId);
-                Tools.showAlert("Game ended without saving.");
+                showAlert("Game ended without saving.");
                 App.loadScene(Menu.MAIN_MENU.getPath());
                 hideOverlayMessage();
 
             }
         } catch (SQLException e) {
-            Tools.showAlert("Error ending game: " + e.getMessage());
+            showAlert("Error ending game: " + e.getMessage());
         }
     }
 
@@ -576,4 +575,30 @@ public class GamePaneController implements Initializable {
             mediaPlayer.stop();
         }
     }
+
+    private void startServerListener() {
+        new Thread(() -> {
+            try {
+                String input;
+                while ((input = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(input);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.endsWith("made move")) {
+                startTurn();
+            } else if (input.endsWith("ended game , you won!")) {
+                Game.setCurrentGame(null);
+                showAlert(input);
+                App.loadScene(Menu.MAIN_MENU.getPath());
+            }
+        });
+    }
+
 }
