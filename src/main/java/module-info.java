@@ -21,4 +21,6 @@ module Gwent {
     opens model.abilities.instantaneousabilities to com.google.gson;
     opens enums.cards to com.google.gson;
     opens enums.leaders to com.google.gson;
+    opens enums to com.google.gson;
+    opens view.cardpane to com.google.gson;
 }

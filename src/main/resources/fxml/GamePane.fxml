@@ -62,6 +62,14 @@
     <VBox fx:id="player1Score" alignment="CENTER" layoutX="10" layoutY="400" spacing="3"/>
     <VBox fx:id="player2Score" alignment="CENTER" layoutX="1150" layoutY="400" spacing="3"/>
 
-    <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);"
-          visible="false"/>
+    <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false"/>
+    <Label fx:id="overlayMessage" visible="false" style="-fx-font-size: 36; -fx-text-fill: black; -fx-background-color: white"/>
+    <VBox fx:id="pauseMenu" alignment="CENTER" spacing="10" layoutX="540" layoutY="300" visible="false">
+        <Button fx:id="exit" text="End Game Without Saving" onAction="#handleEndGameWithoutSaving"/>
+        <Button fx:id="exitSave" text="Save Game and Exit" onAction="#handleSaveGameAndExit"/>
+        <Button fx:id="quit" text="Quit" onAction="#handleQuit"/>
+        <Button text="Turn Sound On/Off" onAction="#handleToggleSound"/>
+    </VBox>
+
 </Pane>
+

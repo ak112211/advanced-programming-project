@@ -22,6 +22,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         User currentPlayer = context.deserialize(jsonObject.get("currentPlayer"), User.class);
         Game.GameStatus status = Game.GameStatus.valueOf(jsonObject.get("status").getAsString());
         User winner = context.deserialize(jsonObject.get("winner"), User.class);
+        int ID = jsonObject.get("game_id").getAsInt();
 
         Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString(),
                 Integer.parseInt(jsonObject.get("player1LeaderCard").getAsJsonObject().get("number_of_actions").toString()));
@@ -36,8 +37,11 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> player1GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player1GraveyardCards"), context);
         ArrayList<Card> player2GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player2GraveyardCards"), context);
 
-        return new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards,
+        Game game = new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards,
                 player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard, status, winner, currentPlayer);
+        game.setID(ID);
+
+        return game;
     }
 
     private ArrayList<Card> deserializeCards(JsonArray jsonArray, JsonDeserializationContext context) {

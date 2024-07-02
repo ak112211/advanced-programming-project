@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gwent";
@@ -173,6 +174,30 @@ public class DatabaseConnection {
         return games;
     }
 
+    public static void updateGame(Game game) throws SQLException {
+        String query = "UPDATE Games SET player1 = ?, player2 = ?, date = ?, status = ?, winner = ?, game_data = ?, is_online = ? WHERE game_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, game.getPlayer1().getUsername());
+            preparedStatement.setString(2, game.getPlayer2().getUsername());
+            preparedStatement.setTimestamp(3, new Timestamp(game.getDate().getTime()));
+            preparedStatement.setString(4, game.getStatus().name());
+            preparedStatement.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Card.class, new CardSerializer())
+                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                    .setPrettyPrinting()
+                    .create();
+            String gameData = gson.toJson(game);
+
+            preparedStatement.setString(6, gameData);
+            preparedStatement.setBoolean(7, game.isOnline());
+            preparedStatement.setInt(8, game.getID());
+            preparedStatement.executeUpdate();
+        }
+    }
+
     public static void saveGame(Game game) throws SQLException {
         String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data, is_online) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
@@ -197,8 +222,12 @@ public class DatabaseConnection {
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int gameId = generatedKeys.getInt(1);
-                    addGameToUser(game.getPlayer1().getUsername(), gameId);
-                    addGameToUser(game.getPlayer2().getUsername(), gameId);
+                    if (game.isOnline()) {
+                        addGameToUser(game.getPlayer1().getUsername(), gameId);
+                        addGameToUser(game.getPlayer2().getUsername(), gameId);
+                    } else {
+                        addGameToUser(game.getPlayer1().getUsername(), gameId);
+                    }
                 } else {
                     throw new SQLException("Creating game failed, no ID obtained.");
                 }
@@ -211,6 +240,46 @@ public class DatabaseConnection {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, gameId);
+            preparedStatement.setString(2, username);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void deleteGame(int gameId) throws SQLException {
+        // Get the game from the database to find the players
+        Game game = getGame(gameId);
+        if (game == null) {
+            throw new SQLException("Game not found.");
+        }
+
+        // Remove game ID from players' game lists
+        removeGameFromUser(game.getPlayer1().getUsername(), gameId);
+        if (game.isOnline() && game.getPlayer2() != null) {
+            removeGameFromUser(game.getPlayer2().getUsername(), gameId);
+        }
+
+        // Delete the game record from the database
+        String query = "DELETE FROM Games WHERE game_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, gameId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    private static void removeGameFromUser(String username, int gameId) throws SQLException {
+        User user = getUser(username);
+        if (user == null) {
+            throw new SQLException("User not found.");
+        }
+        List<Integer> gameIds = user.getGames().stream().map(Game::getID).collect(Collectors.toList());
+        gameIds.remove(Integer.valueOf(gameId));
+        String updatedGamesJson = new Gson().toJson(gameIds);
+
+        String query = "UPDATE Users SET games = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, updatedGamesJson);
             preparedStatement.setString(2, username);
             preparedStatement.executeUpdate();
         }
@@ -237,35 +306,6 @@ public class DatabaseConnection {
         }
     }
 
-    public static void saveData(User user) throws SQLException {
-        String query = "UPDATE Users SET nickname = ?, email = ?, password = ?, security_question = ?, answer = ?, high_score = ?, deck = ?, decks = ?, play_card = ?, friends = ?, games = ? , verified = ?, two_factor_on = ? WHERE username = ?";
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, user.getNickname());
-            preparedStatement.setString(2, user.getEmail());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, user.getSecurityQuestion());
-            preparedStatement.setString(5, user.getAnswer());
-            preparedStatement.setInt(6, user.getHighScore());
-
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(Card.class, new CardSerializer())
-                    .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                    .setPrettyPrinting()
-                    .create();
-
-            preparedStatement.setString(7, gson.toJson(user.getDeck()));
-            preparedStatement.setString(8, gson.toJson(user.getDecks()));
-            preparedStatement.setString(9, gson.toJson(user.getPlayCard()));
-            preparedStatement.setString(10, GSON.toJson(user.getFriends()));
-            preparedStatement.setString(11, gson.toJson(user.getGames()));
-            preparedStatement.setString(12, user.getUsername());
-            preparedStatement.setBoolean(13, user.isVerified());
-            preparedStatement.setBoolean(14, user.isTwoFactorOn());
-
-            preparedStatement.executeUpdate();
-        }
-    }
-
     public static void saveUser(User user) throws SQLException {
         String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games, verified, two_factor_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -283,11 +323,17 @@ public class DatabaseConnection {
                     .setPrettyPrinting()
                     .create();
 
+            ArrayList<Integer> gameIds = new ArrayList<>();
+
+            for (Game game : user.getGames()) {
+                gameIds.add(game.getID());
+            }
+
             preparedStatement.setString(8, user.getDeck() != null ? gson.toJson(user.getDeck()) : "");
             preparedStatement.setString(9, user.getDecks() != null ? gson.toJson(user.getDecks()) : "");
             preparedStatement.setString(10, user.getPlayCard() != null ? gson.toJson(user.getPlayCard()) : "");
             preparedStatement.setString(11, user.getFriends() != null ? GSON.toJson(user.getFriends()) : "");
-            preparedStatement.setString(12, user.getGames() != null ? gson.toJson(user.getGames()) : "");
+            preparedStatement.setString(12, GSON.toJson(gameIds));
             preparedStatement.setBoolean(13, false);
             preparedStatement.setBoolean(14, false);
             preparedStatement.executeUpdate();
@@ -314,12 +360,16 @@ public class DatabaseConnection {
                     gsonBuilder.registerTypeAdapter(Game.class, new GameDeserializer());
                     Gson gson = gsonBuilder.create();
                     Deck deck = Deck.fromJson(resultSet.getString("deck"));
+
                     ArrayList<Deck> decks = gson.fromJson(resultSet.getString("decks"), new TypeToken<ArrayList<Deck>>() {
                     }.getType());
-                    ArrayList<Game> games = gson.fromJson(resultSet.getString("games"), new TypeToken<ArrayList<Game>>() {
-                    }.getType());
 
-                    Card playCard = null;
+                    List<Integer> gameIds = gson.fromJson(resultSet.getString("games"), new TypeToken<List<Integer>>() {}.getType());
+                    ArrayList<Game> games = new ArrayList<>();
+                    /*for (int id : gameIds) {
+                        games.add(getGame(id));
+                    }*/
+
                     List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
                     User user = new User(username, nickname != null ? nickname : "", email != null ? email : "", password != null ? password : "");
@@ -401,32 +451,13 @@ public class DatabaseConnection {
         return new ArrayList<>();
     }
 
-    public static boolean saveMessage(String sender, String recipient, String message) throws SQLException {
+    public static void saveMessage(String sender, String recipient, String message) throws SQLException {
         String query = "INSERT INTO messages (sender, recipient, message) VALUES (?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, sender);
             stmt.setString(2, recipient);
             stmt.setString(3, message);
             stmt.executeUpdate();
-            return true;
-        }
-    }
-
-    public static List<String> getMessages(String username) throws SQLException {
-        String query = "SELECT sender, message, timestamp FROM messages WHERE recipient = ? OR sender = ? ORDER BY timestamp ASC";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
-            stmt.setString(2, username);
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<String> messages = new ArrayList<>();
-                while (rs.next()) {
-                    String sender = rs.getString("sender");
-                    String message = rs.getString("message");
-                    String timestamp = rs.getString("timestamp");
-                    messages.add(String.format("%s [%s]: %s", sender, timestamp, message));
-                }
-                return messages;
-            }
         }
     }
 
@@ -471,15 +502,15 @@ public class DatabaseConnection {
 
     public static void declineGameRequest(String sender, String recipient) throws SQLException {
         updateGameRequestStatus(sender, recipient, "declined");
+        deleteGameRequest(sender, recipient);
     }
 
-    public static boolean deleteGameRequest(String sender, String recipient) throws SQLException {
+    public static void deleteGameRequest(String sender, String recipient) throws SQLException {
         String query = "DELETE FROM gamerequests WHERE sender = ? AND recipient = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, sender);
             stmt.setString(2, recipient);
             int rowsDeleted = stmt.executeUpdate();
-            return rowsDeleted > 0;
         }
     }
 

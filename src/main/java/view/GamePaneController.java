@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
@@ -7,19 +8,25 @@ import enums.cardsinformation.Type;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.RealmsNorthernLeaders;
 import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import model.App;
 import model.Deck;
 import model.Game;
 import model.User;
@@ -29,13 +36,24 @@ import model.abilities.instantaneousabilities.Spy;
 import model.abilities.persistentabilities.Weather;
 import model.card.Card;
 import model.card.Leader;
+import util.DatabaseConnection;
 
+import java.io.IOException;
 import java.net.URL;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
 public class GamePaneController implements Initializable {
+    @FXML
+    public VBox pauseMenu;
+    @FXML
+    public Button exit;
+    @FXML
+    public Button exitSave;
+    @FXML
+    public Button quit;
     @FXML
     private Pane gamePane;
     @FXML
@@ -93,11 +111,15 @@ public class GamePaneController implements Initializable {
     @FXML
     private StackPane player2Leader;
 
+    public MediaPlayer mediaPlayer; // Assuming this handles your background music
+    public boolean isMute;
     private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
 
-    private Text messageDisplay = new Text();
     private Game game;
     private Card selectedCard;
+
+    @FXML
+    private Label overlayMessage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -146,6 +168,35 @@ public class GamePaneController implements Initializable {
         setupLeaderCards();
         showVetoOverlay(); // Show the veto overlay at the beginning of the game
         startTurn();
+
+        App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                togglePauseMenu();
+            }
+        });
+
+        setupBackgroundMusic();
+
+        if (game.isOnline()) {
+            exitSave.setVisible(false);
+            exit.setVisible(false);
+            quit.setVisible(true);
+        } else {
+            exitSave.setVisible(true);
+            exit.setVisible(true);
+            quit.setVisible(false);
+        }
+    }
+
+    private void setupBackgroundMusic() {
+        Media media = new Media(getClass().getResource("/media/Ramin-Djawadi-Finale-128.mp3").toExternalForm());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
+    }
+
+    private void togglePauseMenu() {
+        boolean isVisible = pauseMenu.isVisible();
+        pauseMenu.setVisible(!isVisible);
     }
 
     private void initializeCards() {
@@ -258,9 +309,19 @@ public class GamePaneController implements Initializable {
         overlayPane.getChildren().clear();
     }
 
-    private void nextTurn() {
+    private void nextTurn() throws SQLException, IOException {
         game.switchSides();
         startTurn();
+        if (game.isOnline()) {
+            DatabaseConnection.updateGame(game);
+            String input;
+            String player = game.isPlayer1Turn() ? game.getPlayer1().getUsername() : game.getPlayer2().getUsername();
+            while ((input = App.getServerConnection().getIn().readLine()) != null) {
+                if (input.endsWith("made move " + player)) {
+                    startTurn();
+                }
+            }
+        }
     }
 
     private void startTurn() {
@@ -331,6 +392,8 @@ public class GamePaneController implements Initializable {
             } catch (IllegalArgumentException e) {
                 System.out.println("" + rowBox + row + card.getName());
                 throw e;
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException(e);
             }
         });
     }
@@ -344,6 +407,8 @@ public class GamePaneController implements Initializable {
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 System.out.println(card.getType() + card.getName() + inGameCard.getRow());
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException(e);
             }
         });
     }
@@ -359,7 +424,7 @@ public class GamePaneController implements Initializable {
         });
     }
 
-    private void playCard(Card card, Row row) {
+    private void playCard(Card card, Row row) throws SQLException, IOException {
         if (row.isPlayer1() ^ card.getAbility() instanceof Spy) {
             if (!game.player1PlayCard(card, row)) {
                 throw new IllegalArgumentException("card cannot be played");
@@ -403,11 +468,10 @@ public class GamePaneController implements Initializable {
     }
 
     public void displayMessage(String message) {
-        messageDisplay.setText(message);
-        messageDisplay.setVisible(true);
+        showOverlayMessage(message);
         // Hide message after a few seconds
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(event -> messageDisplay.setVisible(false));
+        pause.setOnFinished(event -> hideOverlayMessage());
         pause.play();
     }
 
@@ -435,5 +499,72 @@ public class GamePaneController implements Initializable {
         return Arrays.asList(player1CloseCombat, player1CloseCombatSpell, player1Ranged, player1RangedSpell,
                 player1Siege, player1SiegeSpell, player2CloseCombat, player2CloseCombatSpell,
                 player2Ranged, player2RangedSpell, player2Siege, player2SiegeSpell, weather);
+    }
+
+    public void showOverlayMessage(String message) {
+        overlayMessage.setText(message);
+        overlayMessage.setVisible(true);
+    }
+
+    public void hideOverlayMessage() {
+        overlayMessage.setVisible(false);
+    }
+
+    @FXML
+    public void handleQuit(ActionEvent actionEvent) {
+        try {
+            User player;
+            if (game.isPlayer1Turn()) {
+                player = game.getPlayer2();
+            } else {
+                player = game.getPlayer1();
+            }
+
+            game.setWinner(player);
+            DatabaseConnection.updateGame(game);
+            hideOverlayMessage();
+            App.loadScene(Menu.MAIN_MENU.getPath());
+            Game.setCurrentGame(null);
+
+        } catch (SQLException e) {
+            Tools.showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleSaveGameAndExit(ActionEvent actionEvent) throws SQLException {
+        DatabaseConnection.updateGame(game);
+        App.loadScene(Menu.MAIN_MENU.getPath());
+        hideOverlayMessage();
+        Game.setCurrentGame(null);
+    }
+
+    @FXML
+    public void handleEndGameWithoutSaving(ActionEvent actionEvent) {
+        try {
+            if (game != null) {
+                int gameId = game.getID();
+                System.out.println(gameId);
+                DatabaseConnection.deleteGame(gameId);
+                Tools.showAlert("Game ended without saving.");
+                App.loadScene(Menu.MAIN_MENU.getPath());
+                hideOverlayMessage();
+
+            }
+        } catch (SQLException e) {
+            Tools.showAlert("Error ending game: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleToggleSound(ActionEvent actionEvent) {
+        if (isMute) {
+            isMute = false;
+            mediaPlayer.play();
+        } else {
+            isMute = true;
+            mediaPlayer.stop();
+        }
     }
 }

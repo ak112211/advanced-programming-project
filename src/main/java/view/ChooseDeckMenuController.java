@@ -20,11 +20,13 @@ import model.User;
 import model.card.Card;
 import model.card.Leader;
 import model.Deck;
+import util.DatabaseConnection;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -310,6 +312,7 @@ public class ChooseDeckMenuController {
 
                 settingFromSaved = true;
                 currentDeck = Deck.fromJson(jsonBuilder.toString());
+
                 if (currentDeck.getCards().stream().filter(c -> c.getType().isUnit()).count() < 22) {
                     Tools.showAlert("unit cards less than 22");
                 }
@@ -389,7 +392,7 @@ public class ChooseDeckMenuController {
 
 
     @FXML
-    public void startGame(ActionEvent actionEvent) {
+    public void startGame(ActionEvent actionEvent) throws SQLException {
         if (isPlayer2Turn) {
             player2.setDeck(currentDeck);
         } else {
@@ -408,6 +411,8 @@ public class ChooseDeckMenuController {
             game.setOnline(isMulti);
         }
         Game.setCurrentGame(game);
+        DatabaseConnection.saveGame(game);
+
         new GameLauncher().start(App.getStage());
     }
 

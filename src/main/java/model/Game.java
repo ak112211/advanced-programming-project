@@ -24,6 +24,7 @@ public class Game implements Serializable {
     private static final int STARTING_HAND_SIZE = 10;
     private static Game currentGame;
 
+    private int ID;
     private final User player1;
     private final User player2;
     private final Date date;
@@ -350,4 +351,13 @@ public class Game implements Serializable {
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
 }
