@@ -172,14 +172,6 @@ public class GamePaneController implements Initializable {
         showVetoOverlay(); // Show the veto overlay at the beginning of the game
         startTurn();
 
-        App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                togglePauseMenu();
-            }
-        });
-
-        setupBackgroundMusic();
-
         if (game.isOnline()) {
             exitSave.setVisible(false);
             exit.setVisible(false);

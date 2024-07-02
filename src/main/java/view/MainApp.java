@@ -18,7 +18,6 @@ import util.ServerConnection;
 
 import java.util.Objects;
 
-import static view.Tools.clearUserSession;
 import static view.Tools.loadUserSession;
 
 public class MainApp extends Application {
@@ -56,7 +55,6 @@ public class MainApp extends Application {
     private void setupBackgroundMusic() {
         Media media = new Media(getClass().getResource("/media/Ramin-Djawadi-Finale-128.mp3").toExternalForm());
         mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
         mediaPlayer.play();
     }
 

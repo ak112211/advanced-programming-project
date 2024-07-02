@@ -174,4 +174,10 @@ public class Tools {
         }
     }
 
+    public static void saveUserSession(User user) {
+        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
+        prefs.put("username", user.getUsername());
+        prefs.put("password", user.getPassword());  // You might want to encrypt this
+    }
+
 }

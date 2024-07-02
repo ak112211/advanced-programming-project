@@ -15,6 +15,7 @@ import java.util.prefs.Preferences;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import static view.Tools.saveUserSession;
 import static view.Tools.sendVerificationCode;
 
 public class LoginMenuController {
@@ -89,10 +90,5 @@ public class LoginMenuController {
         App.loadScene(Menu.REGISTER_MENU.getPath());
     }
 
-    private void saveUserSession(User user) {
-        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
-        prefs.put("username", user.getUsername());
-        prefs.put("password", user.getPassword());  // You might want to encrypt this
-    }
 
 }

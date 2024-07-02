@@ -35,6 +35,7 @@ public class VerificationCodeController {
                 Tools.showAlert("Success", "Verification Successful", "Your account has been successfully verified.");
                 App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
                 App.loadScene(Menu.MAIN_MENU.getPath());
+                saveUserSession(User.getCurrentUser());  // Save session
             } else {
                 Tools.showAlert("Error", "Verification Failed", "Invalid or expired verification code.");
             }
