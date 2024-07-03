@@ -28,6 +28,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import model.App;
 import model.Deck;
@@ -68,6 +69,12 @@ public class GamePaneController implements Initializable {
     public Text cardDescriptionText;
     @FXML
     public Text cardNumText;
+    @FXML
+    public VBox vetoDisplayVBox;
+    @FXML
+    public ImageView vetoImageView;
+    @FXML
+    public Text vetoDescriptionText;
     @FXML
     private Pane gamePane;
     @FXML
@@ -129,8 +136,14 @@ public class GamePaneController implements Initializable {
     public boolean isMute;
     private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
 
+    boolean fromSaved = false;
+
     private Game game;
     private Card selectedCard;
+    private boolean vetoForPLayer1Shown = false;
+    private boolean vetoForPLayer2Shown = false;
+
+    private int currentIndex;
 
     @FXML
     private Label overlayMessage;
@@ -177,6 +190,7 @@ public class GamePaneController implements Initializable {
         }
 
         if (game.getStatus() == Game.GameStatus.PENDING) {
+            fromSaved = true;
             game.setStatus(Game.GameStatus.ACTIVE);
             game.initializeGameObjectsFromSaved();
             try {
@@ -191,8 +205,21 @@ public class GamePaneController implements Initializable {
         player2NameLabel.setText(game.getPlayer2().getUsername());
         initializeCards();
         setupLeaderCards();
-        showVetoOverlay(); // Show the veto overlay at the beginning of the game
         startTurn();
+        if (!fromSaved) {
+            showVetoOverlay(); // Show the veto overlay at the beginning of the game
+            if (User.getCurrentUser().equals(game.getPlayer1())) {
+                if (!vetoForPLayer1Shown) {
+                    showVetoOverlay();
+                    vetoForPLayer1Shown =true;
+                }
+            } else {
+                if (!vetoForPLayer2Shown) {
+                    showVetoOverlay();
+                    vetoForPLayer2Shown =true;
+                }
+            }
+        }
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
@@ -204,6 +231,7 @@ public class GamePaneController implements Initializable {
             exitSave.setVisible(false);
             exit.setVisible(false);
             quit.setVisible(true);
+            startServerListener();
         } else {
             exitSave.setVisible(true);
             exit.setVisible(true);
@@ -216,7 +244,6 @@ public class GamePaneController implements Initializable {
             displayMessage("Turn of Player 2");
         }
 
-        startServerListener();
 
     }
 
@@ -300,27 +327,81 @@ public class GamePaneController implements Initializable {
         player2ScoreLabel.setText("Score: " + game.getPlayer2Points());
     }
 
-    private void showVetoOverlay() {
+    private void handlePreviousCard() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            showCard();
+        }
+    }
+
+    private void handleNextCard() {
+        if (game.isPlayer1Turn()) {
+            if (currentIndex < player1Hand.getChildren().size() - 1) {
+                currentIndex++;
+                showCard();
+            }
+        } else {
+            if (currentIndex < player2Hand.getChildren().size() - 1) {
+                currentIndex++;
+                showCard();
+            }
+        }
+
+    }
+
+    private void showCard() {
+        if (game.isPlayer1Turn()) {
+            Card card = (Card) player1Hand.getChildren().get(currentIndex);
+            vetoImageView.setImage(new Image(Objects.requireNonNull(getClass().getResource(card.getImagePath())).toExternalForm()));
+            vetoDescriptionText.setText(card.getDescription().getDescription());
+        } else {
+            Card card = (Card) player2Hand.getChildren().get(currentIndex);
+            vetoImageView.setImage(new Image(Objects.requireNonNull(getClass().getResource(card.getImagePath())).toExternalForm()));
+            vetoDescriptionText.setText(card.getDescription().getDescription());
+        }
+
+    }
+
+    public void showVetoOverlay() {
+        overlayPane.getChildren().clear();  // Clear any existing children
+
         VBox overlay = new VBox(10);
         overlay.setAlignment(Pos.CENTER);
         overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
         overlay.setPrefSize(400, 300);
 
-        Text instruction = new Text("Veto up to two cards from your hand.");
+        Button previousButton = new Button("◄");
+        previousButton.setOnAction(event -> handlePreviousCard());
 
-        HBox handCards = new HBox(10);
-        for (Card card : game.getPlayer1InHandCards()) {
-            Button cardButton = new Button(card.getName());
-            cardButton.setOnAction(event -> vetoCard(card));
-            handCards.getChildren().add(cardButton);
-        }
+        vetoImageView.setFitWidth(150);
+        vetoImageView.setFitHeight(340);
+        vetoImageView.setPreserveRatio(true);
+
+        Button nextButton = new Button("►");
+        nextButton.setOnAction(event -> handleNextCard());
+
+        HBox navigation = new HBox(10, previousButton, vetoImageView, nextButton);
+        navigation.setAlignment(Pos.CENTER);
+
+        vetoDescriptionText.setWrappingWidth(170);
+        vetoDescriptionText.setStyle("-fx-padding: 10; -fx-fill: #000000;");
+        vetoDescriptionText.setTextAlignment(TextAlignment.CENTER);
 
         Button passButton = new Button("Pass");
         passButton.setOnAction(event -> passVeto());
 
-        overlay.getChildren().addAll(instruction, handCards, passButton);
+        overlay.getChildren().addAll(navigation, vetoDescriptionText, passButton);
         overlayPane.getChildren().add(overlay);
         overlayPane.setVisible(true);
+
+        currentIndex = 0;
+        showCard();
+
+        if (game.isPlayer1Turn()) {
+            vetoImageView.setOnMouseClicked(event -> vetoCard((Card) player1Hand.getChildren().get(currentIndex)));
+        } else {
+            vetoImageView.setOnMouseClicked(event -> vetoCard((Card) player2Hand.getChildren().get(currentIndex)));
+        }
     }
 
     private void vetoCard(Card card) {
@@ -328,12 +409,14 @@ public class GamePaneController implements Initializable {
         Card newCard = game.getPlayer1Deck().get(new Random().nextInt(game.getPlayer1Deck().size()));
         game.getPlayer1InHandCards().add(newCard);
         setupCardsInHand();
+        currentIndex = 0;
     }
 
     private void passVeto() {
         // nextTurn(); // ridam dahane in khate code
         overlayPane.setVisible(false);
         overlayPane.getChildren().clear();
+        currentIndex = 0;
     }
 
     private void nextTurn() throws SQLException, IOException {
@@ -356,6 +439,28 @@ public class GamePaneController implements Initializable {
         clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         setupCardsInHand();
         setupCardsOnBoard();
+        if (game.isOnline()) {
+            if (User.getCurrentUser().equals(game.getPlayer1())) {
+                if (!vetoForPLayer1Shown) {
+                    showVetoOverlay();
+                    vetoForPLayer1Shown =true;
+                }
+            } else {
+                if (!vetoForPLayer2Shown) {
+                    showVetoOverlay();
+                    vetoForPLayer2Shown =true;
+                }
+            }
+        } else {
+            if (!fromSaved) {
+                if (!User.getCurrentUser().equals(game.getCurrentPlayer())) {
+                    if (!vetoForPLayer2Shown) {
+                        showVetoOverlay();
+                        vetoForPLayer2Shown = true;
+                    }
+                }
+            }
+        }
     }
 
     private void selectCard(Card card) {

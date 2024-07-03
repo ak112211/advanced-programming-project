@@ -58,4 +58,8 @@
         <Text fx:id="cardDescriptionText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
         <Text fx:id="cardNumText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"/>
     </VBox>
+    <VBox fx:id="vetoDisplayVBox" maxWidth="170" maxHeight="350" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
+        <ImageView fx:id="vetoImageView" fitWidth="150" fitHeight="340" preserveRatio="true" />
+        <Text fx:id="vetoDescriptionText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
+    </VBox>
 </Pane>
