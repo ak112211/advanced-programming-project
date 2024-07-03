@@ -265,6 +265,7 @@ public class GamePaneController implements Initializable {
 
     private void createCardView(Card card) {
         card.setSmallImage();
+        card.setPowerText();
     }
 
     public void updateScore() {
@@ -433,7 +434,6 @@ public class GamePaneController implements Initializable {
                 throw new IllegalArgumentException("card cannot be played");
             }
         }
-        if (card.getAbility() instanceof Weather)
         game.calculatePoints();
         nextTurn();
     }

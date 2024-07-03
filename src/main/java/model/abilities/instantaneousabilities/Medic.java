@@ -1,6 +1,5 @@
 package model.abilities.instantaneousabilities;
 
-import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import model.Game;
 import model.abilities.Animatable;
@@ -12,7 +11,7 @@ import java.util.Optional;
 
 public class Medic extends InstantaneousAbility implements Animatable {
     public Medic() {
-        setIconPath("medic");
+        setIconName("medic");
     }
     public void affect(Game game, Card myCard) {
         ArrayList<Card> graveyard = CardsPlace.GRAVEYARD.getPlayerCards(game);

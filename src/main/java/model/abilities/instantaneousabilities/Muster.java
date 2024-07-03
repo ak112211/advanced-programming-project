@@ -12,7 +12,7 @@ public class Muster extends InstantaneousAbility implements Animatable {
 
     public Muster(String... cardNames) {
         musterCardsName = cardNames;
-        setIconPath("muster");
+        setIconName("muster");
     }
 
     private boolean canMuster(Card card, String myCardName) {
