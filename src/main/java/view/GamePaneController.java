@@ -15,9 +15,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -58,6 +60,14 @@ public class GamePaneController implements Initializable {
     public Button exitSave;
     @FXML
     public Button quit;
+    @FXML
+    public VBox cardDisplayVBox;
+    @FXML
+    public ImageView cardImageView;
+    @FXML
+    public Text cardDescriptionText;
+    @FXML
+    public Text cardNumText;
     @FXML
     private Pane gamePane;
     @FXML
@@ -207,6 +217,7 @@ public class GamePaneController implements Initializable {
         }
 
         startServerListener();
+
     }
 
     private void setupBackgroundMusic() {
@@ -261,7 +272,7 @@ public class GamePaneController implements Initializable {
 
         Leader player2LeaderCard = game.getPlayer2LeaderCard();
         player2Leader.getChildren().add(player2LeaderCard);
-        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player2LeaderCard));
+        player2LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player2LeaderCard));
     }
 
     private void setupCardsInHand() {
@@ -354,6 +365,7 @@ public class GamePaneController implements Initializable {
         clearHighlights();
         setupCardsInHand();
         setupCardsOnBoard();
+        showBigImage(card.getImagePath(), card.getDescription().getDescription(), true, card, null);
         boolean isPlayer1 = game.isPlayer1Turn() ^ card.getAbility() instanceof Spy;
         try {
             highlightRow(GET_ROW_BOX.get(card.getType().getRow(isPlayer1)),
@@ -455,17 +467,7 @@ public class GamePaneController implements Initializable {
     }
 
     private void showLeaderCardOverlay(Leader leaderCard) {
-        VBox overlay = new VBox(10);
-        overlay.setAlignment(Pos.TOP_LEFT);
-        overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
-        overlay.setPrefSize(200, 400);
-
-        Text name = new Text(leaderCard.getName());
-        Text description = new Text(leaderCard.getDescription());
-
-        overlay.getChildren().addAll(name, description);
-        overlayPane.getChildren().add(overlay);
-        overlayPane.setVisible(true);
+        showBigImage(leaderCard.getImagePath(), leaderCard.getDescription(), false, null, leaderCard);
     }
 
     private void showHandCardOverlay(Card handCard) {  //TODO
@@ -612,6 +614,28 @@ public class GamePaneController implements Initializable {
                 Game.setCurrentGame(null);
                 showAlert(input + " You won!");
                 App.loadScene(Menu.MAIN_MENU.getPath());
+            }
+        });
+    }
+
+    public void hideCardDisplay() {
+        cardDisplayVBox.setVisible(false);
+        cardNumText.setVisible(false);
+    }
+
+    private void showBigImage(String imagePath, String description, boolean isCard, Card card, Leader leader) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return;
+        }
+        Image image = new Image(
+                Objects.requireNonNull(getClass().getResource(imagePath))
+                        .toExternalForm());
+        cardImageView.setImage(image);
+        cardDescriptionText.setText(description);
+        cardDisplayVBox.setVisible(true);
+        cardDisplayVBox.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            if (!cardDisplayVBox.contains(event.getScreenX(), event.getScreenY())) {
+                hideCardDisplay();
             }
         });
     }

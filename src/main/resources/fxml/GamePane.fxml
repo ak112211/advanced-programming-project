@@ -4,6 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <Pane fx:id="gamePane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
     <ImageView fx:id="background" fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
         <Image url="@../gwentImages/img/board.jpg" />
@@ -52,5 +53,9 @@
         <Button fx:id="quit" onAction="#handleQuit" text="Quit" />
         <Button onAction="#handleToggleSound" text="Turn Sound On/Off" />
     </VBox>
-
+    <VBox fx:id="cardDisplayVBox" maxWidth="170" maxHeight="350" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
+        <ImageView fx:id="cardImageView" fitWidth="150" fitHeight="340" preserveRatio="true" />
+        <Text fx:id="cardDescriptionText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
+        <Text fx:id="cardNumText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"/>
+    </VBox>
 </Pane>
