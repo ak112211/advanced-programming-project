@@ -27,12 +27,8 @@ public class ServerConnection {
         }
     }
 
-    public void sendMessage(String targetClientId, String message) {
-        out.println(targetClientId + ":" + message);
-    }
-
-    public void setLogin(String userID) {
-        out.println(userID);
+    public void sendMessage(String message) {
+        out.println(message);
     }
 
     private class IncomingMessageHandler implements Runnable {
@@ -41,10 +37,11 @@ public class ServerConnection {
             try {
                 String incomingMessage;
                 while ((incomingMessage = in.readLine()) != null) {
-                    if (incomingMessage.endsWith("sent friend request")
-                            || incomingMessage.endsWith("sent game request")
-                            || incomingMessage.startsWith("accepted friend request")
-                            || incomingMessage.startsWith("accepted game request")) {
+                    if (incomingMessage.startsWith("Friend request from ")
+                            || incomingMessage.startsWith("Game request from ")
+                            || incomingMessage.startsWith("Message from ")
+                            || incomingMessage.startsWith("Game request accepted by ")
+                            || incomingMessage.startsWith("Friend request accepted by ")) {
                         showAlert(incomingMessage);
                     }
                 }

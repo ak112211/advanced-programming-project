@@ -80,7 +80,7 @@ public class MainMenuController {
     }
 
     public void logout(ActionEvent actionEvent) {
-        App.getServerConnection().sendMessage(User.getCurrentUser().getUsername(), "logout");
+        App.getServerConnection().sendMessage("logout");
         User.setCurrentUser(null);
         Game.setCurrentGame(null);
         clearUserSession();

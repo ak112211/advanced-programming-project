@@ -40,7 +40,7 @@ public class MessagingController {
                 DatabaseConnection.saveMessage(currentUser.getUsername(), currentChatUser, message);
                 messageInputField.clear();
                 loadMessages();
-                App.getServerConnection().sendMessage(currentChatUser, "message from " + currentUser.getUsername());
+                App.getServerConnection().sendMessage(currentChatUser + ":send message:" + message);
                 String input;
                 while ((input = App.getServerConnection().getIn().readLine()) != null) {
                     if (input.endsWith("message from " + currentChatUser)) {

@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
-import util.EmailSender;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -115,7 +114,8 @@ public class Tools {
         LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(10); // Code valid for 10 minutes
         DatabaseConnection.insertVerificationCode(user.getUsername(), verificationCode, expirationTime);
         // Send verification email
-        EmailSender.sendVerificationEmail(user.getEmail(), verificationCode);
+        System.out.println(user.getEmail() + ":" + verificationCode);
+        App.getServerConnection().sendMessage("send verification for:" + user.getEmail() + ":" + verificationCode);
     }
 
     public static void openMessagingWindow(String chatUsername) {
@@ -161,7 +161,7 @@ public class Tools {
                         } else {
 
                             App.loadScene(Menu.MAIN_MENU.getPath());
-                            App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
+                            App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
 
                         }
                     }

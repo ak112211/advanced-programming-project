@@ -46,7 +46,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static util.DatabaseConnection.updateUserProfile;
 import static util.DatabaseConnection.updateUserScore;
 import static view.Tools.showAlert;
 
@@ -319,7 +318,7 @@ public class GamePaneController implements Initializable {
         if (game.isOnline()) {
             DatabaseConnection.updateGame(game);
             String player = game.isPlayer1Turn() ? game.getPlayer1().getUsername() : game.getPlayer2().getUsername();
-            App.getServerConnection().sendMessage(player, User.getCurrentUser().getUsername() + " made move");
+            App.getServerConnection().sendMessage(player + ":other player played move");
         }
     }
 
@@ -591,11 +590,11 @@ public class GamePaneController implements Initializable {
 
     private void handleServerEvent(String input) {
         Platform.runLater(() -> {
-            if (input.endsWith("made move")) {
+            if (input.startsWith("Move from ")) {
                 startTurn();
-            } else if (input.endsWith("ended game , you won!")) {
+            } else if (input.endsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
-                showAlert(input);
+                showAlert(input + " You won!");
                 App.loadScene(Menu.MAIN_MENU.getPath());
             }
         });

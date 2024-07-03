@@ -1,18 +1,19 @@
-package util;
+package server;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 public class EmailSender {
 
-    private static final String USERNAME = "77baf5001@smtp-brevo.com";
-    private static final String PASSWORD = "hGnmL2MBOxyrWftA";
+    private static final String USERNAME = "alitourguide1@gmail.com";
+    private static final String PASSWORD = System.getenv("G_PASS");
 
     public static void sendVerificationEmail(String toEmail, String code) {
         Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp-relay.brevo.com");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");

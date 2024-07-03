@@ -9,7 +9,6 @@ import model.App;
 import model.Game;
 import model.User;
 import util.DatabaseConnection;
-import util.EmailSender;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -33,7 +32,7 @@ public class VerificationCodeController {
         try {
             if (DatabaseConnection.verifyCode(User.getCurrentUser().getUsername(), code)) {
                 Tools.showAlert("Success", "Verification Successful", "Your account has been successfully verified.");
-                App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
+                App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
                 App.loadScene(Menu.MAIN_MENU.getPath());
                 saveUserSession(User.getCurrentUser());  // Save session
             } else {

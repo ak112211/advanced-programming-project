@@ -43,7 +43,7 @@ public class DatabaseConnection {
     }
 
     public static boolean updatePassword(String username, String password) {
-        String query = "UPDATE users SET password = ? WHERE username = ?";
+        String query = "UPDATE Users SET password = ? WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, password);
@@ -57,9 +57,10 @@ public class DatabaseConnection {
     }
 
     public static void updateUserProfile(User user, String oldUsername, boolean isTwoFactorOn) throws SQLException {
-        String query = "UPDATE users SET username = ?, nickname = ?, email = ?, password = ? , two_factor_on = ? WHERE username = ?";
+        String query = "UPDATE Users SET username = ?, nickname = ?, email = ?, password = ? , two_factor_on = ? WHERE username = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
+            user.setTwoFactorOn(isTwoFactorOn);
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getNickname());
             stmt.setString(3, user.getEmail());
@@ -157,7 +158,7 @@ public class DatabaseConnection {
 
     public static List<String> getRecentGames(String username, int n) throws SQLException {
         String query = "SELECT * FROM Games WHERE player1 = ? OR player2 = ? ORDER BY date DESC LIMIT ?";
-        List<String> games = new ArrayList<>();
+        List<String> Games = new ArrayList<>();
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, username);
@@ -176,12 +177,12 @@ public class DatabaseConnection {
                     int player2FinalScore = resultSet.getInt("player2_final_score");
                     String winner = resultSet.getString("winner");
 
-                    games.add(String.format("Opponent: %s, Date: %s, Rounds: [%d, %d, %d] - [%d, %d, %d], Final Scores: %d - %d, Winner: %s",
+                    Games.add(String.format("Opponent: %s, Date: %s, Rounds: [%d, %d, %d] - [%d, %d, %d], Final Scores: %d - %d, Winner: %s",
                             opponent, date, player1Round1, player1Round2, player1Round3, player2Round1, player2Round2, player2Round3, player1FinalScore, player2FinalScore, winner));
                 }
             }
         }
-        return games;
+        return Games;
     }
 
     public static void updateGame(Game game) throws SQLException {
@@ -248,7 +249,7 @@ public class DatabaseConnection {
     }
 
     private static void addGameToUser(String username, int gameId) throws SQLException {
-        String query = "UPDATE Users SET games = JSON_ARRAY_APPEND(games, '$', ?) WHERE username = ?";
+        String query = "UPDATE Users SET Games = JSON_ARRAY_APPEND(Games, '$', ?) WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, gameId);
@@ -280,7 +281,7 @@ public class DatabaseConnection {
     }
 
     public static List<Game> getSavedOfflineGames(String username) throws SQLException {
-        List<Game> games = new ArrayList<>();
+        List<Game> Games = new ArrayList<>();
         String query = "SELECT game_id, game_data FROM Games WHERE (player1 = ? OR player2 = ?) AND is_online = FALSE AND status = 'PENDING'";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
@@ -292,11 +293,11 @@ public class DatabaseConnection {
                             .registerTypeAdapter(Game.class, new GameDeserializer())
                             .create();
                     Game game = gson.fromJson(gameData, Game.class);
-                    games.add(game);
+                    Games.add(game);
                 }
             }
         }
-        return games;
+        return Games;
     }
 
 
@@ -309,7 +310,7 @@ public class DatabaseConnection {
         gameIds.remove(Integer.valueOf(gameId));
         String updatedGamesJson = new Gson().toJson(gameIds);
 
-        String query = "UPDATE Users SET games = ? WHERE username = ?";
+        String query = "UPDATE Users SET Games = ? WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, updatedGamesJson);
@@ -340,7 +341,7 @@ public class DatabaseConnection {
     }
 
     public static void saveUser(User user) throws SQLException {
-        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, games, verified, two_factor_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Users (username, nickname, email, password, security_question, answer, high_score, deck, decks, play_card, friends, Games, verified, two_factor_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getNickname());
@@ -392,7 +393,7 @@ public class DatabaseConnection {
                     ArrayList<Deck> decks = gson.fromJson(resultSet.getString("decks"), new TypeToken<ArrayList<Deck>>() {
                     }.getType());
 
-                    List<Integer> gameIds = gson.fromJson(resultSet.getString("games"), new TypeToken<List<Integer>>() {}.getType());
+                    List<Integer> gameIds = gson.fromJson(resultSet.getString("Games"), new TypeToken<List<Integer>>() {}.getType());
 
                     List<String> friends = GSON.fromJson(resultSet.getString("friends"), ArrayList.class);
 
@@ -458,7 +459,7 @@ public class DatabaseConnection {
     }
 
     public static List<String> getFriendsList(String username) throws SQLException {
-        String query = "SELECT friends FROM users WHERE username = ?";
+        String query = "SELECT friends FROM Users WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
@@ -622,7 +623,7 @@ public class DatabaseConnection {
         friends.add(friendUsername);
         String updatedFriendsJson = GSON.toJson(friends);
 
-        String query = "UPDATE users SET friends = ? WHERE username = ?";
+        String query = "UPDATE Users SET friends = ? WHERE username = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, updatedFriendsJson);
@@ -666,7 +667,7 @@ public class DatabaseConnection {
     // Method to mark the code as verified
     public static void markCodeAsVerified(String username, String code) throws SQLException {
         String updateVerificationQuery = "UPDATE email_verification SET verified = TRUE WHERE username = ? AND code = ?";
-        String updateUserVerifiedQuery = "UPDATE users SET verified = TRUE WHERE username = ?";
+        String updateUserVerifiedQuery = "UPDATE Users SET verified = TRUE WHERE username = ?";
 
         try (Connection connection = getConnection()) {
             connection.setAutoCommit(false); // Begin transaction
@@ -679,7 +680,7 @@ public class DatabaseConnection {
                 updateVerificationStmt.setString(2, code);
                 updateVerificationStmt.executeUpdate();
 
-                // Update the users table
+                // Update the Users table
                 updateUserVerifiedStmt.setString(1, username);
                 updateUserVerifiedStmt.executeUpdate();
 
@@ -697,7 +698,7 @@ public class DatabaseConnection {
 
             try {
                 // Update friends lists
-                String getUsersQuery = "SELECT username, friends FROM users";
+                String getUsersQuery = "SELECT username, friends FROM Users";
                 try (PreparedStatement stmt = connection.prepareStatement(getUsersQuery);
                      ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
@@ -710,7 +711,7 @@ public class DatabaseConnection {
                             friends.add(newUsername);
                             String updatedFriendsJson = GSON.toJson(friends);
 
-                            String updateFriendsQuery = "UPDATE users SET friends = ? WHERE username = ?";
+                            String updateFriendsQuery = "UPDATE Users SET friends = ? WHERE username = ?";
                             try (PreparedStatement updateStmt = connection.prepareStatement(updateFriendsQuery)) {
                                 updateStmt.setString(1, updatedFriendsJson);
                                 updateStmt.setString(2, username);
@@ -748,7 +749,7 @@ public class DatabaseConnection {
                     stmt.executeUpdate();
                 }
 
-                // Update games table
+                // Update Games table
                 String updateGamesQuery = "UPDATE Games SET player1 = ? WHERE player1 = ?";
                 try (PreparedStatement stmt = connection.prepareStatement(updateGamesQuery)) {
                     stmt.setString(1, newUsername);

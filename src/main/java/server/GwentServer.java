@@ -1,15 +1,34 @@
 package server;
 
 import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GwentServer {
-    private static final Map<String, ClientHandler> CLIENTS = new HashMap<>();
+    private static final int PORT = 5555;
+
+    // Command patterns
+    private static final Pattern LOGIN_PATTERN = Pattern.compile("login:(\\w+)");
+    private static final Pattern LOGOUT_PATTERN = Pattern.compile("logout");
+    private static final Pattern SEND_VERIFICATION_PATTERN = Pattern.compile("send verification for:(.+):(.+)");
+    private static final Pattern FRIEND_REQUEST_PATTERN = Pattern.compile("(\\w+):send friend request");
+    private static final Pattern GAME_REQUEST_PATTERN = Pattern.compile("(\\w+):send game request");
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("(\\w+):send message:(.+)");
+    private static final Pattern ACCEPT_FRIEND_REQUEST_PATTERN = Pattern.compile("accepted friend request from:(\\w+)");
+    private static final Pattern ACCEPT_GAME_REQUEST_PATTERN = Pattern.compile("accepted game request from:(\\w+)");
+    private static final Pattern MOVE_PATTERN = Pattern.compile("(\\w+):other player played move");
+    private static final Pattern END_GAME_PATTERN = Pattern.compile("(\\w+):ended game");
+
+    private static final Map<String, ClientHandler> clients = new HashMap<>();
+    private static final Map<String, Player> players = new HashMap<>();
 
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(5555)) {
-            System.out.println("Server is listening on port 5555");
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server is listening on port " + PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
                 new ClientHandler(socket).start();
@@ -19,43 +38,51 @@ public class GwentServer {
         }
     }
 
-    static class ClientHandler extends Thread {
+    private static class ClientHandler extends Thread {
         private final Socket socket;
         private PrintWriter out;
         private BufferedReader in;
-        private String clientId;
+        private Player currentPlayer;
 
         public ClientHandler(Socket socket) {
             this.socket = socket;
         }
 
+        @Override
         public void run() {
             try {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                clientId = in.readLine();
-                synchronized (CLIENTS) {
-                    CLIENTS.put(clientId, this);
-                }
+                String input;
+                while ((input = in.readLine()) != null) {
+                    Matcher matcher = getMatcher(input);
+                    System.out.println(input);
 
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    String[] parts = inputLine.split(":", 3);
-                    if (parts.length == 2) {
-                        String targetClientId = parts[0];
-                        String command = parts[1];
-
-                        if (command.equals("logout")) {
+                    if (matcher != null) {
+                        if (matcher.pattern() == LOGIN_PATTERN) {
+                            handleLogin(matcher);
+                        } else if (matcher.pattern() == LOGOUT_PATTERN) {
                             handleLogout();
-                        } else {
-                            handleCommand(targetClientId, command);
+                        } else if (matcher.pattern() == SEND_VERIFICATION_PATTERN) {
+                            handleSendVerification(matcher);
+                        } else if (matcher.pattern() == FRIEND_REQUEST_PATTERN) {
+                            handleFriendRequest(matcher);
+                        } else if (matcher.pattern() == GAME_REQUEST_PATTERN) {
+                            handleGameRequest(matcher);
+                        } else if (matcher.pattern() == MESSAGE_PATTERN) {
+                            handleMessage(matcher);
+                        } else if (matcher.pattern() == ACCEPT_FRIEND_REQUEST_PATTERN) {
+                            handleAcceptFriendRequest(matcher);
+                        } else if (matcher.pattern() == ACCEPT_GAME_REQUEST_PATTERN) {
+                            handleAcceptGameRequest(matcher);
+                        } else if (matcher.pattern() == MOVE_PATTERN) {
+                            handleMove(matcher);
+                        } else if (matcher.pattern() == END_GAME_PATTERN) {
+                            handleEndGame(matcher);
                         }
-                    } else if (parts.length == 3) {
-                        String fromClientId = parts[0];
-                        String targetClientId = parts[1];
-                        String command = parts[2];
-                        handleCommand(fromClientId, targetClientId, command);
+                    } else {
+                        out.println("Invalid command");
                     }
                 }
             } catch (IOException ex) {
@@ -66,62 +93,129 @@ public class GwentServer {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                synchronized (CLIENTS) {
-                    CLIENTS.remove(clientId);
+                synchronized (clients) {
+                    if (currentPlayer != null) {
+                        clients.remove(currentPlayer.id());
+                    }
                 }
             }
         }
 
-        private void handleLogout() {
-            synchronized (CLIENTS) {
-                CLIENTS.remove(clientId);
-            }
-            clientId = null;
-            out.println("Logged out. You can log in as a different user.");
+        private Matcher getMatcher(String input) {
+            Matcher matcher = LOGIN_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = LOGOUT_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = SEND_VERIFICATION_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = FRIEND_REQUEST_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = GAME_REQUEST_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = MESSAGE_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = ACCEPT_FRIEND_REQUEST_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = ACCEPT_GAME_REQUEST_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = MOVE_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = END_GAME_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            return null;
         }
 
-        private void handleCommand(String fromClientId, String targetClientId, String command) {
-            ClientHandler targetClientHandler;
-            synchronized (CLIENTS) {
-                targetClientHandler = CLIENTS.get(targetClientId);
-            }
-            if (targetClientHandler != null) {
-                targetClientHandler.sendMessage(command);
-            } else {
-                out.println("Target client not found");
-            }
-        }
-
-        private void handleCommand(String targetClientId, String command) {
-            ClientHandler targetClientHandler;
-            synchronized (CLIENTS) {
-                targetClientHandler = CLIENTS.get(targetClientId);
-            }
-            if (targetClientHandler != null) {
-                if (command.endsWith("sent friend request")) {
-                    targetClientHandler.sendMessage(command);
-                } else if (command.endsWith("sent game request")) {
-                    targetClientHandler.sendMessage(command);
-                } else if (command.endsWith("sent message")) {
-                    targetClientHandler.sendMessage(command);
-                } else if (command.startsWith("accepted friend request from")) {
-                    targetClientHandler.sendMessage(command);
-                } else if (command.startsWith("accepted game request from")) {
-                    targetClientHandler.sendMessage(command);
-                } else if (command.endsWith("played move")) {
-                    targetClientHandler.sendMessage(command);
-                } else if (command.endsWith("ended game")) {
-                    targetClientHandler.sendMessage(command);
-                } else {
-                    out.println("Unknown command");
+        private void handleLogin(Matcher matcher) throws IOException {
+            String id = matcher.group(1);
+            synchronized (players) {
+             
+                currentPlayer = players.get(id);
+                synchronized (clients) {
+                    clients.put(id, this);
                 }
-            } else {
-                out.println("Target client not found");
+                out.println("Login successful");
+               
             }
         }
 
-        private void sendMessage(String message) {
-            out.println(message);
+        private void handleLogout() throws IOException {
+            if (currentPlayer != null) {
+                synchronized (clients) {
+                    clients.remove(currentPlayer.id());
+                }
+                currentPlayer = null;
+                out.println("Logout successful");
+            } else {
+                out.println("No player is logged in");
+            }
+        }
+
+        private void handleSendVerification(Matcher matcher) throws IOException {
+            String email = matcher.group(1);
+            String code = matcher.group(2);
+            EmailSender.sendVerificationEmail(email, code);
+            out.println("Verification email sent to " + email);
+        }
+
+        private void handleFriendRequest(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            sendToClient(targetId, "Friend request from " + currentPlayer.id());
+        }
+
+        private void handleGameRequest(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            sendToClient(targetId, "Game request from " + currentPlayer.id());
+        }
+
+        private void handleMessage(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            String message = matcher.group(2);
+            sendToClient(targetId, "Message from " + currentPlayer.id() + ": " + message);
+        }
+
+        private void handleAcceptFriendRequest(Matcher matcher) throws IOException {
+            String fromId = matcher.group(1);
+            sendToClient(fromId, "Friend request accepted by " + currentPlayer.id());
+        }
+
+        private void handleAcceptGameRequest(Matcher matcher) throws IOException {
+            String fromId = matcher.group(1);
+            sendToClient(fromId, "Game request accepted by " + currentPlayer.id());
+        }
+
+        private void handleMove(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            sendToClient(targetId, "Move from " + currentPlayer.id());
+        }
+
+        private void handleEndGame(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            sendToClient(targetId, "Game ended by " + currentPlayer.id());
+        }
+
+        private void sendToClient(String clientId, String message) throws IOException {
+            ClientHandler targetClientHandler;
+            synchronized (clients) {
+                targetClientHandler = clients.get(clientId);
+            }
+            if (targetClientHandler != null) {
+                targetClientHandler.out.println(message);
+            } else {
+                out.println("Target client not found");
+            }
         }
     }
+}
+
+record Player(String id) {
 }

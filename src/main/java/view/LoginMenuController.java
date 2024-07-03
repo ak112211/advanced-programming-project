@@ -68,7 +68,7 @@ public class LoginMenuController {
                         App.loadScene(Menu.VERIFY_MENU.getPath());
                     } else {
                         App.loadScene(Menu.MAIN_MENU.getPath());
-                        App.getServerConnection().setLogin(User.getCurrentUser().getUsername());
+                        App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
                         Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
                     }
                 }

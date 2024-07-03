@@ -132,7 +132,7 @@ public class ChatController {
             return;
         }
 
-        App.getServerConnection().sendMessage(friendUsername, userId + "sent friend request");
+        App.getServerConnection().sendMessage(friendUsername + ":send friend request");
 
         try {
             if (DatabaseConnection.sendFriendRequest(userId, friendUsername)) {
@@ -158,8 +158,7 @@ public class ChatController {
             return;
         }
 
-        String request = "GAME_REQUEST:" + senderId + "," + receiverId;
-        out.println(request);
+        App.getServerConnection().sendMessage(receiverId + ":send game request");
 
         try {
             if (DatabaseConnection.saveGameRequest(senderId, receiverId)) {
@@ -185,7 +184,7 @@ public class ChatController {
         String sender = selectedRequest.split(":")[1];
         try {
             DatabaseConnection.acceptGameRequest(sender, currentUser.getUsername());
-            App.getServerConnection().sendMessage(sender, "accepted game request from" + currentUser.getUsername());
+            App.getServerConnection().sendMessage("accepted game request from:" + sender);
 
             showAlert("Success", "Game Request Accepted", "Game request accepted. Starting game...");
             startGame();
@@ -234,7 +233,7 @@ public class ChatController {
         String sender = selectedRequest.split(" ")[3];
         try {
             DatabaseConnection.acceptFriendRequest(sender, currentUser.getUsername());
-            App.getServerConnection().sendMessage(sender, "accepted friend request from" + currentUser.getUsername());
+            App.getServerConnection().sendMessage("accepted friend request from:" + sender);
             showAlert("Success", "Friend Request Accepted", "Friend request accepted.");
             loadFriendRequests();
             loadFriendsList();
