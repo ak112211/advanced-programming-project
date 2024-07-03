@@ -805,4 +805,16 @@ public class DatabaseConnection {
         return 0;
     }
 
+    public static void saveDeck() {
+        String query = "UPDATE Users SET deck = ? WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, User.getCurrentUser().getDeck().toJson());
+            preparedStatement.setString(2, User.getCurrentUser().getUsername());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

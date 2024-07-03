@@ -1,5 +1,7 @@
 package server;
 
+import model.User;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,6 +16,8 @@ public class GwentServer {
     // Command patterns
     private static final Pattern LOGIN_PATTERN = Pattern.compile("login:(\\w+)");
     private static final Pattern LOGOUT_PATTERN = Pattern.compile("logout");
+    private static final Pattern LOADED_DECK_PATTERN = Pattern.compile("(\\w+):loaded new");
+    private static final Pattern LOADED_AFTER_PATTERN = Pattern.compile("(\\w+):loaded after:(\\w+)");
     private static final Pattern SEND_VERIFICATION_PATTERN = Pattern.compile("send verification for:(.+):(.+)");
     private static final Pattern FRIEND_REQUEST_PATTERN = Pattern.compile("(\\w+):send friend request");
     private static final Pattern GAME_REQUEST_PATTERN = Pattern.compile("(\\w+):send game request");
@@ -80,6 +84,10 @@ public class GwentServer {
                             handleMove(matcher);
                         } else if (matcher.pattern() == END_GAME_PATTERN) {
                             handleEndGame(matcher);
+                        } else if (matcher.pattern() == LOADED_DECK_PATTERN) {
+                            handleDeckLoaded(matcher);
+                        } else if (matcher.pattern() == LOADED_AFTER_PATTERN) {
+                            handleDeckLoadedAfter(matcher);
                         }
                     } else {
                         out.println("Invalid command");
@@ -112,6 +120,12 @@ public class GwentServer {
             if (matcher.matches()) return matcher;
 
             matcher = FRIEND_REQUEST_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = LOADED_DECK_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = LOADED_AFTER_PATTERN.matcher(input);
             if (matcher.matches()) return matcher;
 
             matcher = GAME_REQUEST_PATTERN.matcher(input);
@@ -201,6 +215,17 @@ public class GwentServer {
         private void handleEndGame(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
             sendToClient(targetId, "Game ended by " + currentPlayer.id());
+        }
+
+        private void handleDeckLoaded(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            sendToClient(targetId, currentPlayer.id() + " loaded deck new");
+        }
+
+        private void handleDeckLoadedAfter(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            String gameId = matcher.group(2);
+            sendToClient(targetId, currentPlayer.id() + " loaded deck after with id: " + gameId);
         }
 
         private void sendToClient(String clientId, String message) throws IOException {

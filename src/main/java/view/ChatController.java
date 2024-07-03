@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import model.App;
+import model.Game;
 import model.User;
 import util.DatabaseConnection;
 
@@ -71,6 +72,7 @@ public class ChatController {
         sendGameRequestButton.setOnAction(event -> sendGameRequest());
         acceptRequestButton.setOnAction(event -> acceptGameRequest());
         declineRequestButton.setOnAction(event -> declineGameRequest());
+        startServerListener();
     }
 
     private void loadFriendsList() {
@@ -185,8 +187,8 @@ public class ChatController {
         try {
             DatabaseConnection.acceptGameRequest(sender, currentUser.getUsername());
             App.getServerConnection().sendMessage("accepted game request from:" + sender);
-
             showAlert("Success", "Game Request Accepted", "Game request accepted. Starting game...");
+            ChooseDeckMenuController.player2 = DatabaseConnection.getUser(sender);
             startGame();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -269,5 +271,40 @@ public class ChatController {
         }
 
         openMessagingWindow(selectedFriend);
+    }
+
+    private void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.startsWith("Friend request from ")
+                    || input.startsWith("Game request from ")
+                    || input.startsWith("Message from ")
+                    || input.startsWith("Game request accepted by ")
+                    || input.startsWith("Friend request accepted by ")) {
+                loadFriendsList();
+                loadFriendRequests();
+                loadGameRequests();
+                if (input.startsWith("Game request accepted by ")) {
+                    try {
+                        ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    startGame();
+                }
+            }
+        });
+    }
+
+    private void startServerListener() {
+        new Thread(() -> {
+            try {
+                String input;
+                while ((input = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(input);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

@@ -11,8 +11,8 @@ public enum Menu {
     CHAT_MENU("/fxml/ChatMenu.fxml"),
     DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
     VERIFY_MENU("/fxml/VerificationCode.fxml"),
-    MESSAGING_MENU("/fxml/MessagingMenu.fxml")
-    ;
+    MESSAGING_MENU("/fxml/MessagingMenu.fxml"),
+    LOBBY_MENU("/fxml/Lobby.fxml");
 
     private final String path;
 

@@ -1,5 +1,6 @@
 package view;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -30,6 +31,7 @@ public class MessagingController {
     public void initialize() {
         currentUser = User.getCurrentUser();
         loadMessages();
+        startServerListener();
     }
 
     @FXML
@@ -69,5 +71,26 @@ public class MessagingController {
     public void setCurrentChatUser(String username) {
         this.currentChatUser = username;
         loadMessages();
+    }
+
+    private void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.startsWith("Message from ")) {
+                loadMessages();
+            }
+        });
+    }
+
+    private void startServerListener() {
+        new Thread(() -> {
+            try {
+                String input;
+                while ((input = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(input);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

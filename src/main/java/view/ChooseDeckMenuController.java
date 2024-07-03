@@ -61,10 +61,9 @@ public class ChooseDeckMenuController {
     @FXML
     private Button choosePlayer2DeckButton;
     public static boolean isMulti;
-    private User currentUser;
-    private User player2;
+    private static User currentUser;
+    public static User player2;
     private Deck currentDeck;
-    private Game game;
     private boolean settingFromSaved = false;
 
     public static String opponent;
@@ -77,11 +76,12 @@ public class ChooseDeckMenuController {
         currentUser = User.getCurrentUser();
         currentDeck = new Deck();
 
-        player2 = new User("Player2", null, null, null);
         cardNumText.setVisible(false);
 
         if (isMulti) {
             choosePlayer2DeckButton.setVisible(false);
+        } else {
+            player2 = new User("Player2", null, null, null);
         }
 
         setup();
@@ -292,11 +292,6 @@ public class ChooseDeckMenuController {
     }
 
     @FXML
-    private void sendPlayRequest() {
-        // Implement send play request
-    }
-
-    @FXML
     private void uploadDeck() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Deck File");
@@ -405,21 +400,25 @@ public class ChooseDeckMenuController {
             currentUser.setDeck(deck);
         }
 
-        if (currentUser.getDeck() == null || player2.getDeck() == null || currentUser.getDeck().getCards().size() < 22 || player2.getDeck().getCards().size() < 22) {
+        if (currentUser.getDeck() == null || (player2.getDeck() == null && !isMulti) || currentUser.getDeck().getCards().size() < 22 || (player2.getDeck().getCards().size() < 22 && !isMulti)) {
             System.out.println(currentUser.getDeck().getCards().size());
             System.out.println(player2.getDeck().getCards().size());
             Tools.showAlert("Error", "Deck Error", "Both players must have at least 22 unit cards to start the game.");
             return;
         }
 
-        if (game == null) {
-            game = new Game(currentUser, player2);
-            game.setOnline(isMulti);
-        }
-        Game.setCurrentGame(game);
-        DatabaseConnection.saveGame(game);
+        DatabaseConnection.saveDeck();
 
-        new GameLauncher().start(App.getStage());
+        if (isMulti) {
+            App.getServerConnection().sendMessage(player2.getUsername() + ":loaded new");
+            App.loadScene(Menu.LOBBY_MENU.getPath());
+        } else {
+            Game game = new Game(currentUser, player2);
+            game.setOnline(isMulti);
+            Game.setCurrentGame(game);
+            DatabaseConnection.saveGame(game);
+            new GameLauncher().start(App.getStage());
+        }
     }
 
 }
