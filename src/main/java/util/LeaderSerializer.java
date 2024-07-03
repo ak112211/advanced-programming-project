@@ -19,6 +19,6 @@ public class LeaderSerializer implements JsonSerializer<Leader>, JsonDeserialize
     @Override
     public Leader deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        return Leader.getLeaderFromType(jsonObject.get("leader_enum").toString(), Integer.parseInt(jsonObject.get("number_of_actions").toString()));
+        return Leader.getLeaderFromType(jsonObject.get("leader_enum").toString().replaceAll("\"", ""), Integer.parseInt(jsonObject.get("number_of_actions").toString().replaceAll("\"", "")));
     }
 }

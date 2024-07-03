@@ -28,9 +28,9 @@ public class CardSerializer implements JsonSerializer<Card>, JsonDeserializer<Ca
     public Card deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
         if (jsonObject.get("row").toString().replaceAll("\"", "").isEmpty()) {
-            return Card.getCardFromSaved(jsonObject.get("card_enum").toString(), Integer.parseInt(jsonObject.get("power").toString()), null);
+            return Card.getCardFromSaved(jsonObject.get("card_enum").toString().replaceAll("\"", ""), Integer.parseInt(jsonObject.get("power").toString().replaceAll("\"", "")), null);
         } else {
-            return Card.getCardFromSaved(jsonObject.get("card_enum").toString(), Integer.parseInt(jsonObject.get("power").toString()), Row.valueOf(jsonObject.get("row").toString()));
+            return Card.getCardFromSaved(jsonObject.get("card_enum").toString().replaceAll("\"", ""), Integer.parseInt(jsonObject.get("power").toString().replaceAll("\"", "")), Row.valueOf(jsonObject.get("row").toString().replaceAll("\"", "")));
         }
     }
 }

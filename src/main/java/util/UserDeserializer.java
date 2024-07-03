@@ -18,15 +18,15 @@ public class UserDeserializer implements JsonDeserializer<User> {
     public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
-        String username = jsonObject.get("username").getAsString();
-        String nickname = jsonObject.has("nickname") ? jsonObject.get("nickname").getAsString() : null;
-        String email = jsonObject.has("email") ? jsonObject.get("email").getAsString() : null;
-        String password = jsonObject.has("password") ? jsonObject.get("password").getAsString() : null;
+        String username = jsonObject.get("username").getAsString().replaceAll("\"", "");
+        String nickname = jsonObject.has("nickname") ? jsonObject.get("nickname").getAsString().replaceAll("\"", "") : null;
+        String email = jsonObject.has("email") ? jsonObject.get("email").getAsString().replaceAll("\"", "") : null;
+        String password = jsonObject.has("password") ? jsonObject.get("password").getAsString().replaceAll("\"", "") : null;
 
         User user = new User(username, nickname, email, password);
 
-        user.setSecurityQuestion(jsonObject.has("securityQuestion") ? jsonObject.get("securityQuestion").getAsString() : null);
-        user.setAnswer(jsonObject.has("answer") ? jsonObject.get("answer").getAsString() : null);
+        user.setSecurityQuestion(jsonObject.has("securityQuestion") ? jsonObject.get("securityQuestion").getAsString().replaceAll("\"", "") : null);
+        user.setAnswer(jsonObject.has("answer") ? jsonObject.get("answer").getAsString().replaceAll("\"", "") : null);
         user.setVerified(jsonObject.has("verified") && jsonObject.get("verified").getAsBoolean());
         user.setTwoFactorOn(jsonObject.has("twoFactorOn") && jsonObject.get("twoFactorOn").getAsBoolean());
 

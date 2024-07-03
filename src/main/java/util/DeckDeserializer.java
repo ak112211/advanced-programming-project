@@ -18,7 +18,7 @@ public class DeckDeserializer implements JsonDeserializer<Deck> {
     public Deck deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
-        Faction faction = Faction.valueOf(jsonObject.get("faction").getAsString());
+        Faction faction = Faction.valueOf(jsonObject.get("faction").getAsString().replaceAll("\"", ""));
 
         ArrayList<Card> cards = new ArrayList<>();
         JsonArray cardsArray = jsonObject.getAsJsonArray("cards");

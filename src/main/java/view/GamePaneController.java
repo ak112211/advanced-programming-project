@@ -165,13 +165,30 @@ public class GamePaneController implements Initializable {
             game = new Game(user1, user2);
             Game.setCurrentGame(game);
         }
-        game.initializeGameObjects();
+
+        if (game.getStatus() == Game.GameStatus.PENDING) {
+            game.setStatus(Game.GameStatus.ACTIVE);
+            game.initializeGameObjectsFromSaved();
+            try {
+                DatabaseConnection.updateGame(game);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            game.initializeGameObjects();
+        }
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
         initializeCards();
         setupLeaderCards();
         showVetoOverlay(); // Show the veto overlay at the beginning of the game
         startTurn();
+
+        App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                togglePauseMenu();
+            }
+        });
 
         if (game.isOnline()) {
             exitSave.setVisible(false);
@@ -520,10 +537,10 @@ public class GamePaneController implements Initializable {
 
             game.setStatus(Game.GameStatus.COMPLETED);
             game.setWinner(player);
-            DatabaseConnection.updateGame(game);
             hideOverlayMessage();
             game.getPlayer1().setHighScore(game.getPlayer1Points() + game.getPlayer1().getHighScore());
             game.getPlayer2().setHighScore(game.getPlayer2Points() + game.getPlayer2().getHighScore());
+            DatabaseConnection.updateGame(game);
 
             updateUserScore(game.getPlayer1());
             updateUserScore(game.getPlayer2());
@@ -539,9 +556,8 @@ public class GamePaneController implements Initializable {
 
     @FXML
     public void handleSaveGameAndExit(ActionEvent actionEvent) throws SQLException {
-        DatabaseConnection.updateGame(game);
         game.setStatus(Game.GameStatus.PENDING);
-
+        DatabaseConnection.updateGame(game);
         App.loadScene(Menu.MAIN_MENU.getPath());
         hideOverlayMessage();
         Game.setCurrentGame(null);

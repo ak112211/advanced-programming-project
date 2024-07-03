@@ -66,7 +66,7 @@ public class Game implements Serializable {
         this.player2LeaderCard = player2LeaderCard;
         this.winner = winner;
         this.currentPlayer = currentPlayer;
-        this.status = GameStatus.ACTIVE;
+        this.status = status;
     }
 
     public void initializeGameObjects() {
@@ -79,7 +79,7 @@ public class Game implements Serializable {
     }
 
     public void initializeGameObjectsFromSaved() {
-        //TODO
+        OpeningAbility.StartRound(this);
     }
 
     public void nextTurn() {
