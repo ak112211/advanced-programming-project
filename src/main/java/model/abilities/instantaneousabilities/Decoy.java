@@ -7,7 +7,7 @@ import model.card.Card;
 public class Decoy extends InstantaneousAbility {
     private Card returnCard;
     public Decoy() {
-        setIconPath("decoy");
+        setIconName("decoy");
     }
 
     public void setReturnCard(Card card) {

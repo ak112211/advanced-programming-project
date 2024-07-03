@@ -113,6 +113,9 @@ public class Game implements Serializable {
     }
 
     public void calculatePoints() {
+        for (Card card : getAllCards()) {
+            card.setPower(card.getFirstPower());
+        }
         PersistentAbility.calculatePowers(inGameCards);
         player1Points = inGameCards.stream()
                 .filter(card -> card.getRow().isPlayer1())
@@ -122,6 +125,7 @@ public class Game implements Serializable {
                 .filter(card -> !card.getRow().isPlayer1())
                 .mapToInt(Card::getPower)
                 .sum();
+        getAllCards().forEach(Card::setPowerText);
     }
 
     public boolean canPlay(Card card, Row row) {

@@ -1,12 +1,11 @@
 package model.abilities.instantaneousabilities;
 
-import enums.Row;
 import model.Game;
 import model.card.Card;
 
 public class ClearWeather extends InstantaneousAbility {
     public ClearWeather() {
-        setIconPath("clear");
+        setIconName("clear");
     }
 
     public void affect(Game game, Card myCard) {

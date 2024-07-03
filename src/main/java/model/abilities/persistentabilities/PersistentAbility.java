@@ -13,7 +13,7 @@ public abstract class PersistentAbility extends Ability {
         if (doesAffect == null) {
             throw new NullPointerException("doesAffect is null");
         }
-        setIconPath(iconName);
+        setIconName(iconName);
         this.doesAffect = doesAffect;
     }
 
@@ -37,9 +37,6 @@ public abstract class PersistentAbility extends Ability {
         }
         if (!Mardroeme.affectedCards.isEmpty()) {
             findAffectedCards(inGameCards);
-        }
-        for (Card card : inGameCards) {
-            card.setPower(card.getFirstPower());
         }
         for (Card card : TightBond.affectedCards) {
             TightBond.affect(card);

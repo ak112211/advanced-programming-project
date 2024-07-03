@@ -10,6 +10,7 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Spy;
+import view.cardpane.CardIcon;
 import view.cardpane.CardPane;
 
 import java.util.Objects;
@@ -23,24 +24,24 @@ public class Card extends CardPane {
     private final int firstPower;
     private int power;
     private Row row;
-    private final Ability ability;
     private final boolean isHero;
+    private final Ability ability;
     private final Faction faction;
     private final Description description;
     private final CardEnum cardEnum;
 
     public Card(String name, Type type, int noOfCardsInGame, int power, Ability ability, boolean isHero, Faction faction, Description description, String imagePath, CardEnum cardEnum) {
-        super(imagePath);
+        super(imagePath, new CardIcon(ability != null ? ability.getIconName() : null, type, isHero));
         this.name = name;
         this.type = type;
         this.noOfCardsInGame = noOfCardsInGame;
-        firstPower = power;
+        this.firstPower = power;
         this.power = power;
-        this.ability = ability;
         this.isHero = isHero;
         this.faction = faction;
         this.description = description;
         this.cardEnum = cardEnum;
+        this.ability = ability;
 
         setBigImage();
     }
@@ -117,6 +118,15 @@ public class Card extends CardPane {
         return row.equals(card.row);
     }
 
+    public boolean isSpecial() {
+        return type.isSpecial();
+    }
+
+    public void setPowerText() {
+        if (!type.isSpecial()) {
+            setPowerText(power, firstPower);
+        }
+    }
 
     public static Card getCardFromSaved(String type, int power, Row row) {
         for (RealmsNorthernCards cardEnum : RealmsNorthernCards.values()) {

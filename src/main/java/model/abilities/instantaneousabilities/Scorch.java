@@ -20,7 +20,7 @@ public class Scorch extends InstantaneousAbility implements Animatable {
      */
     public Scorch(Type type) {
         this.type = type;
-        setIconPath("scorch");
+        setIconName("scorch");
     }
 
     private List<Card> getCardsInRow(Game game, Card myCard) {

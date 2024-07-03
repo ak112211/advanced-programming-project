@@ -1,33 +1,54 @@
 package view.cardpane;
 
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Objects;
 
-public class CardPane extends StackPane {
-    protected final String imagePath;
-    private Rectangle image;
+public abstract class CardPane extends Pane {
+    public static final int SMALL_WIDTH = 53;
+    public static final int SMALL_HEIGHT = 79;
 
-    public CardPane(String imagePath) {
+    protected final String imagePath;
+    protected final CardIcon icon;
+    private Rectangle image;
+    private Label powerLabel;
+
+    public CardPane(String imagePath, CardIcon icon) {
         this.imagePath = imagePath;
+        this.icon = icon;
     }
 
     public void setSmallImage() {
-        setWidth(53);
-        setHeight(79);
+        setWidth(SMALL_WIDTH);
+        setHeight(SMALL_HEIGHT);
+
         getChildren().clear();
         try {
-            image = new Rectangle(53, 79, getImagePattern(imagePath.replaceFirst("/lg/", "/sm/")));
+            image = new Rectangle(SMALL_WIDTH, SMALL_HEIGHT, getImagePattern(imagePath.replaceFirst("/lg/", "/sm/")));
         } catch (RuntimeException e){
-            image = new Rectangle(53, 79, getImagePattern(imagePath));
+            image = new Rectangle(SMALL_WIDTH, SMALL_HEIGHT, getImagePattern(imagePath));
         }
         image.setArcWidth(5);
         image.setArcHeight(5);
         getChildren().add(image);
+        getChildren().add(icon.getPowerIcon());
+        if (!icon.getType().isSpecial()) {
+            powerLabel = icon.getPowerLabel();
+            getChildren().add(powerLabel);
+            getChildren().add(icon.getTypeIcon());
+            if (icon.getAbilityName() != null) {
+                getChildren().add(icon.getAbilityIcon());
+            }
+        }
+    }
+
+    protected void setPowerText(int power, int firstPower) {
+        icon.setPowerText(powerLabel, power, firstPower);
     }
 
     public void setBigImage() {
@@ -66,4 +87,5 @@ public class CardPane extends StackPane {
                         .toExternalForm())));
         return rectangle;
     }
+
 }
