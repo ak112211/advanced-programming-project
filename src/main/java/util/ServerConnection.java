@@ -33,7 +33,6 @@ public class ServerConnection {
     }
 
     public void addMessageListener(Consumer<String> listener) {
-        listeners.clear();
         listeners.add(listener);
     }
 
