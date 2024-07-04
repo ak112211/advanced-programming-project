@@ -1,8 +1,5 @@
 package util;
 
-import enums.Menu;
-import model.App;
-
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
@@ -37,6 +34,7 @@ public class ServerConnection {
             try {
                 String incomingMessage;
                 while ((incomingMessage = in.readLine()) != null) {
+                    System.out.println("Received: " + incomingMessage);
                     if (incomingMessage.startsWith("Friend request from ")
                             || incomingMessage.startsWith("Game request from ")
                             || incomingMessage.startsWith("Message from ")
@@ -45,6 +43,7 @@ public class ServerConnection {
                         showAlert(incomingMessage);
                     }
                 }
+                System.out.println("Input stream closed.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,5 +58,9 @@ public class ServerConnection {
 
     public BufferedReader getIn() {
         return in;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

@@ -14,7 +14,9 @@ import util.DatabaseConnection;
 import util.ServerConnection;
 
 import javax.swing.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
@@ -83,10 +85,6 @@ public class ChatController {
         try {
             List<String> requests = DatabaseConnection.getGameRequests(currentUser.getUsername());
             Platform.runLater(() -> gameRequestsListView.getItems().setAll(requests));
-            // Automatically show pop-ups for new game requests
-            for (String request : requests) {
-                showRequestPopup(request);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -97,22 +95,9 @@ public class ChatController {
             List<String> requests = DatabaseConnection.getFriendRequests(currentUser.getUsername());
             Platform.runLater(() -> friendRequestsListView.getItems().setAll(requests));
             // Automatically show pop-ups for new game requests
-            for (String request : requests) {
-                showRequestPopup(request);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private void showRequestPopup(String request) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("New Game Request");
-            alert.setHeaderText("You have a new game request");
-            alert.setContentText(request);
-            alert.showAndWait();
-        });
     }
 
     @FXML
@@ -173,8 +158,8 @@ public class ChatController {
     @FXML
     private void acceptGameRequest() {
         String selectedRequest = gameRequestsListView.getSelectionModel().getSelectedItem();
-        if (selectedRequest == null) {
-            showAlert("Error", "No Request Selected", "Please select a game request to accept.");
+        if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
+            showAlert("Error", "No Pending Request Selected", "Please select a pending game request to accept.");
             return;
         }
 
@@ -194,8 +179,8 @@ public class ChatController {
     @FXML
     private void declineGameRequest() {
         String selectedRequest = gameRequestsListView.getSelectionModel().getSelectedItem();
-        if (selectedRequest == null) {
-            showAlert("Error", "No Request Selected", "Please select a game request to decline.");
+        if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
+            showAlert("Error", "No Pending Request Selected", "Please select a pending game request to decline.");
             return;
         }
 
@@ -222,8 +207,8 @@ public class ChatController {
 
     public void acceptFriendRequest(ActionEvent actionEvent) {
         String selectedRequest = friendRequestsListView.getSelectionModel().getSelectedItem();
-        if (selectedRequest == null) {
-            showAlert("Error", "No Request Selected", "Please select a friend request to accept.");
+        if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
+            showAlert("Error", "No Pending Request Selected", "Please select a pending friend request to accept.");
             return;
         }
 
@@ -242,8 +227,8 @@ public class ChatController {
 
     public void declineFriendRequest(ActionEvent actionEvent) {
         String selectedRequest = friendRequestsListView.getSelectionModel().getSelectedItem();
-        if (selectedRequest == null) {
-            showAlert("Error", "No Request Selected", "Please select a friend request to decline.");
+        if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
+            showAlert("Error", "No Pending Request Selected", "Please select a pending friend request to decline.");
             return;
         }
 
@@ -274,7 +259,8 @@ public class ChatController {
         public void run() {
             try {
                 String incomingMessage;
-                while ((incomingMessage = App.getServerConnection().getIn().readLine()) != null) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(App.getServerConnection().getSocket().getInputStream()));
+                while ((incomingMessage = in.readLine()) != null) {
                     handleServerEvent(incomingMessage);
                 }
             } catch (IOException e) {

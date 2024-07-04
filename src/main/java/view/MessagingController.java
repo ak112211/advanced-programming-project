@@ -8,7 +8,9 @@ import model.App;
 import model.User;
 import util.DatabaseConnection;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -64,7 +66,9 @@ public class MessagingController {
         public void run() {
             try {
                 String incomingMessage;
-                while ((incomingMessage = App.getServerConnection().getIn().readLine()) != null) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(App.getServerConnection().getSocket().getInputStream()));
+                while ((incomingMessage = in.readLine()) != null) {
+                    System.out.println("hello");
                     handleServerEvent(incomingMessage);
                 }
             } catch (IOException e) {

@@ -497,7 +497,7 @@ public class DatabaseConnection {
     }
 
     public static List<String> getGameRequests(String username) throws SQLException {
-        String query = "SELECT * FROM gamerequests WHERE recipient = ? AND status = 'pending' ORDER BY timestamp DESC";
+        String query = "SELECT * FROM gamerequests WHERE recipient = ? ORDER BY timestamp DESC";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -505,7 +505,8 @@ public class DatabaseConnection {
                 while (rs.next()) {
                     String sender = rs.getString("sender");
                     String timestamp = rs.getString("timestamp");
-                    requests.add("Game request from " + sender + " (" + timestamp + ")");
+                    String status = rs.getString("status");
+                    requests.add("Game request from " + sender + " (" + timestamp + ")" + " status: " + status);
                 }
                 return requests;
             }
@@ -528,17 +529,8 @@ public class DatabaseConnection {
 
     public static void declineGameRequest(String sender, String recipient) throws SQLException {
         updateGameRequestStatus(sender, recipient, "declined");
-        deleteGameRequest(sender, recipient);
     }
 
-    public static void deleteGameRequest(String sender, String recipient) throws SQLException {
-        String query = "DELETE FROM gamerequests WHERE sender = ? AND recipient = ?";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, sender);
-            stmt.setString(2, recipient);
-            int rowsDeleted = stmt.executeUpdate();
-        }
-    }
 
     public static boolean sendFriendRequest(String username, String friendUsername) throws SQLException {
         // Check if the friend already exists in the friends list
@@ -572,7 +564,7 @@ public class DatabaseConnection {
     }
 
     public static List<String> getFriendRequests(String username) throws SQLException {
-        String query = "SELECT * FROM friendrequests WHERE recipient = ? AND status = 'pending' ORDER BY timestamp DESC";
+        String query = "SELECT * FROM friendrequests WHERE recipient = ? ORDER BY timestamp DESC";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, username);
@@ -580,8 +572,9 @@ public class DatabaseConnection {
                 List<String> requests = new ArrayList<>();
                 while (rs.next()) {
                     String sender = rs.getString("sender");
+                    String status = rs.getString("status");
                     String timestamp = rs.getString("timestamp");
-                    requests.add("Friend request from " + sender + " (" + timestamp + ")");
+                    requests.add("Friend request from " + sender + " (" + timestamp + ")" + " status: " + status);
                 }
                 return requests;
             }
