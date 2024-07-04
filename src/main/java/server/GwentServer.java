@@ -1,7 +1,5 @@
 package server;
 
-import model.User;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
