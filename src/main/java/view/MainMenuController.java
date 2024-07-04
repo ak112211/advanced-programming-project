@@ -1,6 +1,7 @@
 package view;
 
 import enums.Menu;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -11,6 +12,8 @@ import model.Game;
 import model.User;
 import util.DatabaseConnection;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +35,8 @@ public class MainMenuController {
         usernameField.setText("Hi " + User.getCurrentUser().getUsername() + "!");
         backgroundImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/maxresdefault.jpg"))));
         loadSavedGames();
+        App.getServerConnection().addMessageListener(this::handleServerEvent);
+
     }
 
     private void loadSavedGames() {
@@ -83,5 +88,36 @@ public class MainMenuController {
         Game.setCurrentGame(null);
         clearUserSession();
         App.loadScene(Menu.LOGIN_MENU.getPath());
+    }
+
+    private void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.startsWith("Friend request from ")
+                    || input.startsWith("Game request from ")
+                    || input.startsWith("Message from ")
+                    || input.startsWith("Game request accepted by ")
+                    || input.startsWith("Friend request accepted by ")) {
+                showAlert(input);
+                if (input.startsWith("Game request accepted by ")) {
+                    try {
+                        ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    startGame();
+                }
+            }
+        });
+    }
+
+    private void showAlert(String message) {
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(null, message, "Message from Server", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
+
+    private void startGame() {
+        ChooseDeckMenuController.isMulti = true;
+        App.loadScene("/fxml/ChooseDeckMenu.fxml");
     }
 }

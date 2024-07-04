@@ -7,10 +7,8 @@ import javafx.scene.control.TextField;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
+import util.ServerConnection;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,12 +20,17 @@ public class MessagingController {
     private TextField messageInputField;
     private User currentUser;
     private String currentChatUser;
+    private ServerConnection serverConnection;
+
+    public MessagingController() {
+        this.serverConnection = App.getServerConnection();
+        this.serverConnection.addMessageListener(this::handleServerEvent);
+    }
 
     @FXML
     public void initialize() {
         currentUser = User.getCurrentUser();
         loadMessages();
-        new Thread(new IncomingMessageHandler()).start();
     }
 
     @FXML
@@ -38,7 +41,7 @@ public class MessagingController {
                 DatabaseConnection.saveMessage(currentUser.getUsername(), currentChatUser, message);
                 messageInputField.clear();
                 loadMessages();
-                App.getServerConnection().sendMessage(currentChatUser + ":send message:" + message);
+                serverConnection.sendMessage(currentChatUser + ":send message:" + message);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -61,29 +64,11 @@ public class MessagingController {
         loadMessages();
     }
 
-    private class IncomingMessageHandler implements Runnable {
-        @Override
-        public void run() {
-            try {
-                String incomingMessage;
-                BufferedReader in = new BufferedReader(new InputStreamReader(App.getServerConnection().getSocket().getInputStream()));
-                while ((incomingMessage = in.readLine()) != null) {
-                    System.out.println("hello");
-                    handleServerEvent(incomingMessage);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+    private void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.startsWith("Message from " + currentChatUser)) {
+                loadMessages();
             }
-        }
-
-        private void handleServerEvent(String input) {
-            Platform.runLater(() -> {
-                System.out.println("Server Event Received: " + input);
-                if (input.startsWith("Message from ")) {
-                    loadMessages();
-                }
-            });
-        }
+        });
     }
-
 }

@@ -127,6 +127,11 @@ public class Tools {
 
     public static void openMessagingWindow(String chatUsername) {
         try {
+            if (App.getMessagingStage() != null) {
+                App.getMessagingStage().close();
+                App.setMessagingStage(null);
+            }
+
             FXMLLoader loader = new FXMLLoader(Tools.class.getResource("/fxml/MessagingMenu.fxml"));
             Parent root = loader.load();
             MessagingController controller = loader.getController();
@@ -136,6 +141,10 @@ public class Tools {
             stage.setTitle("Messaging");
             stage.setScene(new Scene(root));
             stage.show();
+            App.setMessagingStage(stage);
+            stage.setOnCloseRequest(event -> {
+                App.setMessagingStage(null);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

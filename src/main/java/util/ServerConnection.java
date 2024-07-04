@@ -1,8 +1,13 @@
 package util;
 
-import javax.swing.*;
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ServerConnection {
     private Socket socket;
@@ -10,15 +15,14 @@ public class ServerConnection {
     private PrintWriter out;
     private static final String SERVER_ADDRESS = "37.152.188.83";
     private static final int SERVER_PORT = 5555;
+    private final List<Consumer<String>> listeners = new ArrayList<>();
 
     public ServerConnection() {
         try {
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-
-            // Start a thread to listen for incoming messages
-            new Thread(new IncomingMessageHandler()).start();
+            new Thread(this::listenForMessages).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,31 +32,29 @@ public class ServerConnection {
         out.println(message);
     }
 
-    private class IncomingMessageHandler implements Runnable {
-        @Override
-        public void run() {
-            try {
-                String incomingMessage;
-                while ((incomingMessage = in.readLine()) != null) {
-                    System.out.println("Received: " + incomingMessage);
-                    if (incomingMessage.startsWith("Friend request from ")
-                            || incomingMessage.startsWith("Game request from ")
-                            || incomingMessage.startsWith("Message from ")
-                            || incomingMessage.startsWith("Game request accepted by ")
-                            || incomingMessage.startsWith("Friend request accepted by ")) {
-                        showAlert(incomingMessage);
-                    }
-                }
-                System.out.println("Input stream closed.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public void addMessageListener(Consumer<String> listener) {
+        listeners.clear();
+        listeners.add(listener);
+    }
 
-        private void showAlert(String message) {
-            SwingUtilities.invokeLater(() -> {
-                JOptionPane.showMessageDialog(null, message, "Message from Server", JOptionPane.INFORMATION_MESSAGE);
-            });
+    public void removeMessageListener(Consumer<String> listener) {
+        listeners.remove(listener);
+    }
+
+    private void listenForMessages() {
+        try {
+            String incomingMessage;
+            while ((incomingMessage = in.readLine()) != null) {
+                notifyListeners(incomingMessage);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyListeners(String message) {
+        for (Consumer<String> listener : listeners) {
+            listener.accept(message);
         }
     }
 

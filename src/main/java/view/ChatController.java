@@ -13,11 +13,6 @@ import model.User;
 import util.DatabaseConnection;
 import util.ServerConnection;
 
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -44,32 +39,21 @@ public class ChatController {
     private Button declineRequestButton;
 
     private User currentUser;
-    private PrintWriter out;
 
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
 
-        // Initialize friends list
         loadFriendsList();
-
-        // Initialize game requests list
         loadGameRequests();
-
         loadFriendRequests();
 
-        // Set button actions
-        sendFriendRequestButton.setOnAction(event -> {
-            try {
-                sendFriendRequest();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        sendFriendRequestButton.setOnAction(event -> sendFriendRequest());
         sendGameRequestButton.setOnAction(event -> sendGameRequest());
         acceptRequestButton.setOnAction(event -> acceptGameRequest());
         declineRequestButton.setOnAction(event -> declineGameRequest());
-        new Thread(new IncomingMessageHandler()).start();
+
+        App.getServerConnection().addMessageListener(this::handleServerEvent);
     }
 
     private void loadFriendsList() {
@@ -94,14 +78,13 @@ public class ChatController {
         try {
             List<String> requests = DatabaseConnection.getFriendRequests(currentUser.getUsername());
             Platform.runLater(() -> friendRequestsListView.getItems().setAll(requests));
-            // Automatically show pop-ups for new game requests
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
-    private void sendFriendRequest() throws IOException {
+    private void sendFriendRequest() {
         String friendUsername = friendUsernameField.getText();
         if (friendUsername.isEmpty()) {
             showAlert("Error", "Input Error", "Please enter a friend's username.");
@@ -121,7 +104,6 @@ public class ChatController {
                 showAlert("Success", "Friend Request Sent", "Friend request sent successfully.");
             } else if (DatabaseConnection.getUser(friendUsername) == null) {
                 showAlert("Error", "Request Failed", "No such user");
-
             } else {
                 showAlert("Error", "Request Failed", "Failed to send friend request. The user might already be your friend or a request is pending.");
             }
@@ -253,41 +235,30 @@ public class ChatController {
         openMessagingWindow(selectedFriend);
     }
 
-
-    private class IncomingMessageHandler implements Runnable {
-        @Override
-        public void run() {
-            try {
-                String incomingMessage;
-                BufferedReader in = new BufferedReader(new InputStreamReader(App.getServerConnection().getSocket().getInputStream()));
-                while ((incomingMessage = in.readLine()) != null) {
-                    handleServerEvent(incomingMessage);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void handleServerEvent(String input) {
-            Platform.runLater(() -> {
-                if (input.startsWith("Friend request from ")
-                        || input.startsWith("Game request from ")
-                        || input.startsWith("Message from ")
-                        || input.startsWith("Game request accepted by ")
-                        || input.startsWith("Friend request accepted by ")) {
-                    loadFriendsList();
-                    loadFriendRequests();
-                    loadGameRequests();
-                    if (input.startsWith("Game request accepted by ")) {
-                        try {
-                            ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                        startGame();
+    private void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.startsWith("Friend request from ")
+                    || input.startsWith("Game request from ")
+                    || input.startsWith("Message from ")
+                    || input.startsWith("Game request accepted by ")
+                    || input.startsWith("Friend request accepted by ")) {
+                loadFriendsList();
+                loadFriendRequests();
+                loadGameRequests();
+                if (input.startsWith("Game request accepted by ")) {
+                    try {
+                        ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
+                    startGame();
                 }
-            });
-        }
+            }
+        });
+    }
+
+    @FXML
+    public void cleanup() {
+        App.getServerConnection().removeMessageListener(this::handleServerEvent);
     }
 }

@@ -14,6 +14,7 @@ public class App {
     private static User user;
     private static Stage stage;
     private static Menu menu;
+    private static Stage messagingStage;
     private static String menuPath;
     private static boolean isLoggedIn;
     private static ServerConnection serverConnection;
@@ -54,6 +55,14 @@ public class App {
 
     public static void setMenu(Menu menu) {
         App.menu = menu;
+    }
+
+    public static Stage getMessagingStage() {
+        return messagingStage;
+    }
+
+    public static void setMessagingStage(Stage messagingStage) {
+        App.messagingStage = messagingStage;
     }
 
     public static ServerConnection getServerConnection() {
