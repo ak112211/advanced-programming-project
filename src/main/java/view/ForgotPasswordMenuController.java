@@ -62,7 +62,7 @@ public class ForgotPasswordMenuController {
     }
 
     @FXML
-    private void handleSetPasswordButtonAction() throws SQLException {
+    private void handleSetPasswordButtonAction() {
         String username = usernameField.getText();
         String newPassword = newPasswordField.getText();
         String confirmNewPassword = confirmNewPasswordField.getText();

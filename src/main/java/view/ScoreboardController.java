@@ -2,9 +2,7 @@ package view;
 
 import enums.Menu;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Alert.AlertType;
 import model.App;
 import model.User;
 import util.DatabaseConnection;

@@ -1,9 +1,7 @@
 package view;
 
 import enums.Menu;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -14,7 +12,6 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,13 +19,11 @@ import static view.Tools.clearUserSession;
 
 public class MainMenuController {
     @FXML
-    public Label usernameField;
+    private Label usernameField;
     @FXML
-    public ImageView backgroundImageView;
+    private ImageView backgroundImageView;
     @FXML
     private ListView<String> savedGamesListView;
-    @FXML
-    private Button continueGameButton;
 
     private List<Game> savedGames;
 
@@ -70,16 +65,19 @@ public class MainMenuController {
         App.loadScene(Menu.CHAT_MENU.getPath());
     }
 
-    public void showScoreboard(ActionEvent actionEvent) {
+    @FXML
+    private void showScoreboard() {
         App.loadScene(Menu.SCORE_MENU.getPath());
     }
 
-    public void goToDeckMenu(ActionEvent actionEvent) {
+    @FXML
+    private void goToDeckMenu() {
         ChooseDeckMenuController.isMulti = false;
         App.loadScene(Menu.DECK_MENU.getPath());
     }
 
-    public void logout(ActionEvent actionEvent) {
+    @FXML
+    private void logout() {
         App.getServerConnection().sendMessage("logout");
         User.setCurrentUser(null);
         Game.setCurrentGame(null);

@@ -6,15 +6,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 public class ProfileMenuController {
     private static final int defaultNumberToShowGameHistory = 5;

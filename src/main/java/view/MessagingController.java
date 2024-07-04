@@ -2,12 +2,11 @@ package view;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import model.App;
-import util.DatabaseConnection;
 import model.User;
+import util.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,13 +16,8 @@ public class MessagingController {
 
     @FXML
     private ListView<String> messageListView;
-
     @FXML
     private TextField messageInputField;
-
-    @FXML
-    private Button sendButton;
-
     private User currentUser;
     private String currentChatUser;
 

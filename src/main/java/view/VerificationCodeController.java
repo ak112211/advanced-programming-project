@@ -1,18 +1,13 @@
 package view;
 
 import enums.Menu;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
 import model.App;
-import model.Game;
 import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.prefs.Preferences;
 
 import static view.Tools.*;
 
@@ -20,10 +15,6 @@ public class VerificationCodeController {
 
     @FXML
     private TextField codeField;
-    @FXML
-    private Button verifyButton;
-    @FXML
-    private Button resendButton;
 
     @FXML
     private void handleVerifyButtonAction() {
@@ -44,7 +35,7 @@ public class VerificationCodeController {
     }
 
     @FXML
-    public void handleBack() {
+    private void handleBack() {
         clearUserSession();
         User.setCurrentUser(null);
         App.setIsLoggedIn(false);
@@ -52,7 +43,7 @@ public class VerificationCodeController {
     }
 
     @FXML
-    public void handleResend(ActionEvent actionEvent) throws SQLException {
+    private void handleResend() throws SQLException {
         sendVerificationCode(User.getCurrentUser());
     }
 }

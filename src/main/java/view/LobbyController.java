@@ -1,9 +1,7 @@
 package view;
 
-import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
@@ -15,19 +13,12 @@ import util.DatabaseConnection;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static view.Tools.showAlert;
-
 public class LobbyController {
 
     @FXML
     private Label waitingLabel;
-
     @FXML
     private ProgressIndicator progressIndicator;
-
-    @FXML
-    private Button cancelButton;
-
     @FXML
     private AnchorPane rootPane;
 
@@ -58,7 +49,7 @@ public class LobbyController {
                     game.setCurrentPlayer(User.getCurrentUser());
                     game.setOnline(true);
                     DatabaseConnection.saveGame(Game.getCurrentGame());
-                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split("")[0]) +":loaded after:"+ game.getID());
+                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split("")[0]) + ":loaded after:" + game.getID());
                     Game.setCurrentGame(game);
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {

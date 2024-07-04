@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
-import java.util.prefs.Preferences;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -21,7 +20,7 @@ import static view.Tools.sendVerificationCode;
 public class LoginMenuController {
 
     @FXML
-    public ImageView backgroundImageView;
+    private ImageView backgroundImageView;
     @FXML
     private TextField usernameField;
     @FXML
@@ -32,7 +31,7 @@ public class LoginMenuController {
     private CheckBox showPasswordCheckBox;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         // Bind the visibility of the textField to the showPasswordCheckBox
         textField.managedProperty().bind(showPasswordCheckBox.selectedProperty());
         textField.visibleProperty().bind(showPasswordCheckBox.selectedProperty());

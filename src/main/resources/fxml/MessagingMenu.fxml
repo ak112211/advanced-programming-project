@@ -10,10 +10,10 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.MessagingController">
     <VBox prefHeight="400.0" prefWidth="600.0" spacing="10" padding="10">
-        <ListView fx:id="messageListView" prefHeight="300.0" />
+        <ListView fx:id="messageListView" prefHeight="300.0"/>
         <HBox spacing="10">
-            <TextField fx:id="messageInputField" HBox.hgrow="ALWAYS" promptText="Enter your message..." />
-            <Button text="Send" onAction="#handleSendButtonAction" />
+            <TextField fx:id="messageInputField" HBox.hgrow="ALWAYS" promptText="Enter your message..."/>
+            <Button text="Send" onAction="#handleSendButtonAction"/>
         </HBox>
     </VBox>
 </AnchorPane>

@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.App;
 import model.User;
@@ -13,16 +14,20 @@ import util.DatabaseConnection;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Tools {
-    //Alert
+    // Image
+    public static Image getImage(String imagePath) {
+        return new javafx.scene.image.Image(
+                Objects.requireNonNull(Tools.class.getResource(imagePath))
+                        .toExternalForm());
+    }
+
+    // Alert
     public static void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
@@ -103,6 +108,8 @@ public class Tools {
         return password;
     }
 
+    // Verification
+
     static String generateVerificationCode() {
         Random random = new Random();
         int code = 100000 + random.nextInt(900000);
@@ -135,15 +142,15 @@ public class Tools {
     }
 
     public static void clearUserSession() {
-        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
-        prefs.remove("username");
-        prefs.remove("password");
+        Preferences preferences = Preferences.userNodeForPackage(LoginMenuController.class);
+        preferences.remove("username");
+        preferences.remove("password");
     }
 
     public static void loadUserSession() {
-        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
-        String username = prefs.get("username", null);
-        String password = prefs.get("password", null);
+        Preferences preferences = Preferences.userNodeForPackage(LoginMenuController.class);
+        String username = preferences.get("username", null);
+        String password = preferences.get("password", null);
 
         if (username != null && password != null) {
             try {
@@ -175,9 +182,9 @@ public class Tools {
     }
 
     public static void saveUserSession(User user) {
-        Preferences prefs = Preferences.userNodeForPackage(LoginMenuController.class);
-        prefs.put("username", user.getUsername());
-        prefs.put("password", user.getPassword());  // You might want to encrypt this
+        Preferences preferences = Preferences.userNodeForPackage(LoginMenuController.class);
+        preferences.put("username", user.getUsername());
+        preferences.put("password", user.getPassword());  // You might want to encrypt this
     }
 
 }

@@ -1,30 +1,25 @@
 package view;
 
-import enums.Menu;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import model.App;
-import model.User;
 import util.ServerConnection;
 
 import java.util.Objects;
 
-import static view.Tools.clearUserSession;
 import static view.Tools.loadUserSession;
 
 public class MainApp extends Application {
     public LoginMenuController controller;
     public MediaPlayer mediaPlayer; // Assuming this handles your background music
     boolean isMute;
+
     public static void main(String[] args) {
         launch(args);
     }

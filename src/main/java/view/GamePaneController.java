@@ -15,7 +15,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -26,7 +25,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
@@ -37,44 +35,41 @@ import model.User;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Decoy;
 import model.abilities.instantaneousabilities.Spy;
-import model.abilities.persistentabilities.Weather;
 import model.card.Card;
 import model.card.Leader;
 import util.DatabaseConnection;
 
 import java.io.IOException;
 import java.net.URL;
-
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
-import static view.Tools.showAlert;
 
 public class GamePaneController implements Initializable {
     @FXML
-    public VBox pauseMenu;
+    private VBox pauseMenu;
     @FXML
-    public Button exit;
+    private Button exit;
     @FXML
-    public Button exitSave;
+    private Button exitSave;
     @FXML
-    public Button quit;
+    private Button quit;
     @FXML
-    public VBox cardDisplayVBox;
+    private VBox cardDisplayVBox;
     @FXML
-    public ImageView cardImageView;
+    private ImageView cardImageView;
     @FXML
-    public Text cardDescriptionText;
+    private Text cardDescriptionText;
     @FXML
-    public Text cardNumText;
+    private Text cardNumText;
     @FXML
-    public VBox vetoDisplayVBox;
+    private VBox vetoDisplayVBox;
     @FXML
-    public ImageView vetoImageView;
+    private ImageView vetoImageView;
     @FXML
-    public Text vetoDescriptionText;
+    private Text vetoDescriptionText;
     @FXML
     private Pane gamePane;
     @FXML
@@ -118,7 +113,7 @@ public class GamePaneController implements Initializable {
     @FXML
     private HBox player2SiegeSpell;
     @FXML
-    public HBox weather;
+    private HBox weather;
     @FXML
     private VBox player1Score;
     @FXML
@@ -132,11 +127,11 @@ public class GamePaneController implements Initializable {
     @FXML
     private StackPane player2Leader;
 
-    public MediaPlayer mediaPlayer; // Assuming this handles your background music
-    public boolean isMute;
+    private MediaPlayer mediaPlayer; // Assuming this handles your background music
+    private boolean isMute;
     private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
 
-    boolean fromSaved = false;
+    private boolean fromSaved = false;
 
     private Game game;
     private Card selectedCard;
@@ -211,12 +206,12 @@ public class GamePaneController implements Initializable {
             if (User.getCurrentUser().equals(game.getPlayer1())) {
                 if (!vetoForPLayer1Shown) {
                     showVetoOverlay();
-                    vetoForPLayer1Shown =true;
+                    vetoForPLayer1Shown = true;
                 }
             } else {
                 if (!vetoForPLayer2Shown) {
                     showVetoOverlay();
-                    vetoForPLayer2Shown =true;
+                    vetoForPLayer2Shown = true;
                 }
             }
         }
@@ -352,11 +347,11 @@ public class GamePaneController implements Initializable {
     private void showCard() {
         if (game.isPlayer1Turn()) {
             Card card = (Card) player1Hand.getChildren().get(currentIndex);
-            vetoImageView.setImage(new Image(Objects.requireNonNull(getClass().getResource(card.getImagePath())).toExternalForm()));
+            vetoImageView.setImage(Tools.getImage(card.getImagePath()));
             vetoDescriptionText.setText(card.getDescription().getDescription());
         } else {
             Card card = (Card) player2Hand.getChildren().get(currentIndex);
-            vetoImageView.setImage(new Image(Objects.requireNonNull(getClass().getResource(card.getImagePath())).toExternalForm()));
+            vetoImageView.setImage(Tools.getImage(card.getImagePath()));
             vetoDescriptionText.setText(card.getDescription().getDescription());
         }
 
@@ -443,12 +438,12 @@ public class GamePaneController implements Initializable {
             if (User.getCurrentUser().equals(game.getPlayer1())) {
                 if (!vetoForPLayer1Shown) {
                     showVetoOverlay();
-                    vetoForPLayer1Shown =true;
+                    vetoForPLayer1Shown = true;
                 }
             } else {
                 if (!vetoForPLayer2Shown) {
                     showVetoOverlay();
-                    vetoForPLayer2Shown =true;
+                    vetoForPLayer2Shown = true;
                 }
             }
         } else {
@@ -656,7 +651,7 @@ public class GamePaneController implements Initializable {
             App.loadScene(Menu.MAIN_MENU.getPath());
 
         } catch (SQLException e) {
-            showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
+            Tools.showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -677,13 +672,13 @@ public class GamePaneController implements Initializable {
                 int gameId = game.getID();
                 System.out.println(gameId);
                 DatabaseConnection.deleteGame(gameId);
-                showAlert("Game ended without saving.");
+                Tools.showAlert("Game ended without saving.");
                 App.loadScene(Menu.MAIN_MENU.getPath());
                 hideOverlayMessage();
 
             }
         } catch (SQLException e) {
-            showAlert("Error ending game: " + e.getMessage());
+            Tools.showAlert("Error ending game: " + e.getMessage());
         }
     }
 
@@ -717,7 +712,7 @@ public class GamePaneController implements Initializable {
                 startTurn();
             } else if (input.endsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
-                showAlert(input + " You won!");
+                Tools.showAlert(input + " You won!");
                 App.loadScene(Menu.MAIN_MENU.getPath());
             }
         });
@@ -732,10 +727,7 @@ public class GamePaneController implements Initializable {
         if (imagePath == null || imagePath.isEmpty()) {
             return;
         }
-        Image image = new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm());
-        cardImageView.setImage(image);
+        cardImageView.setImage(Tools.getImage(imagePath));
         cardDescriptionText.setText(description);
         cardDisplayVBox.setVisible(true);
         cardDisplayVBox.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {

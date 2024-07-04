@@ -10,11 +10,7 @@ import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Random;
 
-import static view.Tools.generateVerificationCode;
 import static view.Tools.sendVerificationCode;
 
 public class RegisterMenuController {

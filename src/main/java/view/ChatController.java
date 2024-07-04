@@ -4,11 +4,11 @@ import enums.Menu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import model.App;
-import model.Game;
 import model.User;
 import util.DatabaseConnection;
 
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 import static view.Tools.openMessagingWindow;
 import static view.Tools.showAlert;
@@ -24,13 +23,7 @@ import static view.Tools.showAlert;
 public class ChatController {
 
     @FXML
-    public ListView<String> friendRequestsListView;
-    @FXML
-    public Button acceptFriendRequestButton;
-    @FXML
-    public Button declineFriendRequestButton;
-    @FXML
-    public Button startChatButton;
+    private ListView<String> friendRequestsListView;
     @FXML
     private TextField friendUsernameField;
     @FXML

@@ -7,9 +7,9 @@
            styleClass="main">
 
     <!-- ImageView for background -->
-    <ImageView fx:id="backgroundImageView" fitWidth="600" fitHeight="400" preserveRatio="false"/>
+    <ImageView fx:id="backgroundImageView" fitWidth="600" fitHeight="400"/>
     <!-- Main content -->
-    <VBox fx:id="mainBox" spacing="10" alignment="TOP_CENTER">
+    <VBox spacing="10" alignment="TOP_CENTER">
 
         <VBox prefWidth="20" prefHeight="100"/>
         <HBox spacing="10" alignment="CENTER">
@@ -28,7 +28,8 @@
             <ListView fx:id="savedGamesListView" prefHeight="150" prefWidth="300"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Button fx:id="continueGameButton" text="Continue Selected Game" onAction="#handleContinueGameButtonAction"/>
+            <Button fx:id="continueGameButton" text="Continue Selected Game"
+                    onAction="#handleContinueGameButtonAction"/>
         </HBox>
     </VBox>
 </StackPane>

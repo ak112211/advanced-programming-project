@@ -35,15 +35,15 @@ import java.util.Random;
 public class ChooseDeckMenuController {
 
     @FXML
-    public VBox cardDisplayVBox;
+    private VBox cardDisplayVBox;
     @FXML
-    public ImageView cardImageView;
+    private ImageView cardImageView;
     @FXML
-    public Text cardDescriptionText;
+    private Text cardDescriptionText;
     @FXML
-    public Text cardNumText;
+    private Text cardNumText;
     @FXML
-    public ImageView backgroundImageView;
+    private ImageView backgroundImageView;
     @FXML
     private ComboBox<Faction> factionComboBox;
     @FXML
@@ -67,7 +67,7 @@ public class ChooseDeckMenuController {
     private boolean settingFromSaved = false;
 
     public static String opponent;
-    private List<Leader> leaders = new ArrayList<>();
+    private final List<Leader> leaders = new ArrayList<>();
 
     private boolean isPlayer2Turn = false;
 
@@ -389,7 +389,7 @@ public class ChooseDeckMenuController {
 
 
     @FXML
-    public void startGame(ActionEvent actionEvent) throws SQLException {
+    private void startGame() throws SQLException {
         Deck deck = new Deck();
         deck.setCards(currentDeck.getCards());
         deck.setLeader(currentDeck.getLeader());
