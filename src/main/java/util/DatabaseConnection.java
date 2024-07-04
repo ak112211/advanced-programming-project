@@ -518,6 +518,7 @@ public class DatabaseConnection {
             stmt.setString(1, status);
             stmt.setString(2, sender);
             stmt.setString(3, recipient);
+            stmt.executeUpdate();
         }
     }
 
@@ -598,6 +599,7 @@ public class DatabaseConnection {
             stmt.setString(1, status);
             stmt.setString(2, sender);
             stmt.setString(3, recipient);
+            stmt.executeUpdate();
         }
     }
 
@@ -628,6 +630,7 @@ public class DatabaseConnection {
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, updatedFriendsJson);
             preparedStatement.setString(2, username);
+            preparedStatement.executeUpdate();
         }
     }
 
