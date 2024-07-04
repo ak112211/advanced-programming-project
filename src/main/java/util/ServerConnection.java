@@ -11,7 +11,7 @@ public class ServerConnection {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    private static final String SERVER_ADDRESS = "37.152.188.83";
+    private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 5555;
 
     public ServerConnection() {

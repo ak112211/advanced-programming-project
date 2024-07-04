@@ -15,6 +15,7 @@ public class GwentServer {
 
     // Command patterns
     private static final Pattern LOGIN_PATTERN = Pattern.compile("login:(\\w+)");
+    private static final Pattern REGISTER_PATTERN = Pattern.compile("register:(\\w+)");
     private static final Pattern LOGOUT_PATTERN = Pattern.compile("logout");
     private static final Pattern LOADED_DECK_PATTERN = Pattern.compile("(\\w+):loaded new");
     private static final Pattern LOADED_AFTER_PATTERN = Pattern.compile("(\\w+):loaded after:(\\w+)");
@@ -66,6 +67,8 @@ public class GwentServer {
                     if (matcher != null) {
                         if (matcher.pattern() == LOGIN_PATTERN) {
                             handleLogin(matcher);
+                        } else if (matcher.pattern() == REGISTER_PATTERN) {
+                            handleRegister(matcher);
                         } else if (matcher.pattern() == LOGOUT_PATTERN) {
                             handleLogout();
                         } else if (matcher.pattern() == SEND_VERIFICATION_PATTERN) {
@@ -103,7 +106,7 @@ public class GwentServer {
                 }
                 synchronized (clients) {
                     if (currentPlayer != null) {
-                        clients.remove(currentPlayer.id());
+                        clients.remove(currentPlayer.getId());
                     }
                 }
             }
@@ -111,6 +114,9 @@ public class GwentServer {
 
         private Matcher getMatcher(String input) {
             Matcher matcher = LOGIN_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = REGISTER_PATTERN.matcher(input);
             if (matcher.matches()) return matcher;
 
             matcher = LOGOUT_PATTERN.matcher(input);
@@ -149,6 +155,18 @@ public class GwentServer {
             return null;
         }
 
+        private void handleRegister(Matcher matcher) throws IOException {
+            String id = matcher.group(1);
+            synchronized (players) {
+                if (players.containsKey(id)) {
+                    out.println("Player with this ID already exists");
+                } else {
+                    players.put(id, new Player(id));
+                    out.println("Player registered successfully");
+                }
+            }
+        }
+        
         private void handleLogin(Matcher matcher) throws IOException {
             String id = matcher.group(1);
             synchronized (players) {
@@ -165,7 +183,7 @@ public class GwentServer {
         private void handleLogout() throws IOException {
             if (currentPlayer != null) {
                 synchronized (clients) {
-                    clients.remove(currentPlayer.id());
+                    clients.remove(currentPlayer.getId());
                 }
                 currentPlayer = null;
                 out.println("Logout successful");
@@ -183,49 +201,49 @@ public class GwentServer {
 
         private void handleFriendRequest(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
-            sendToClient(targetId, "Friend request from " + currentPlayer.id());
+            sendToClient(targetId, "Friend request from " + currentPlayer.getId());
         }
 
         private void handleGameRequest(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
-            sendToClient(targetId, "Game request from " + currentPlayer.id());
+            sendToClient(targetId, "Game request from " + currentPlayer.getId());
         }
 
         private void handleMessage(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
             String message = matcher.group(2);
-            sendToClient(targetId, "Message from " + currentPlayer.id() + ": " + message);
+            sendToClient(targetId, "Message from " + currentPlayer.getId() + ": " + message);
         }
 
         private void handleAcceptFriendRequest(Matcher matcher) throws IOException {
             String fromId = matcher.group(1);
-            sendToClient(fromId, "Friend request accepted by " + currentPlayer.id());
+            sendToClient(fromId, "Friend request accepted by " + currentPlayer.getId());
         }
 
         private void handleAcceptGameRequest(Matcher matcher) throws IOException {
             String fromId = matcher.group(1);
-            sendToClient(fromId, "Game request accepted by " + currentPlayer.id());
+            sendToClient(fromId, "Game request accepted by " + currentPlayer.getId());
         }
 
         private void handleMove(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
-            sendToClient(targetId, "Move from " + currentPlayer.id());
+            sendToClient(targetId, "Move from " + currentPlayer.getId());
         }
 
         private void handleEndGame(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
-            sendToClient(targetId, "Game ended by " + currentPlayer.id());
+            sendToClient(targetId, "Game ended by " + currentPlayer.getId());
         }
 
         private void handleDeckLoaded(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
-            sendToClient(targetId, currentPlayer.id() + " loaded deck new");
+            sendToClient(targetId, currentPlayer.getId() + " loaded deck new");
         }
 
         private void handleDeckLoadedAfter(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
             String gameId = matcher.group(2);
-            sendToClient(targetId, currentPlayer.id() + " loaded deck after with id: " + gameId);
+            sendToClient(targetId, currentPlayer.getId() + " loaded deck after with id: " + gameId);
         }
 
         private void sendToClient(String clientId, String message) throws IOException {
@@ -242,5 +260,12 @@ public class GwentServer {
     }
 }
 
-record Player(String id) {
+class Player {
+    private final String id;
+    public Player(String id) {
+        this.id = id;
+    }
+    public String getId() {
+        return id;
+    }
 }

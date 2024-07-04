@@ -68,11 +68,5 @@ public class App {
         return menuPath;
     }
 
-    public static boolean isIsLoggedIn() {
-        return isLoggedIn;
-    }
 
-    public static void setIsLoggedIn(boolean isLoggedIn) {
-        App.isLoggedIn = isLoggedIn;
-    }
 }

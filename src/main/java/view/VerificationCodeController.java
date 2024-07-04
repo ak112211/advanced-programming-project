@@ -38,7 +38,6 @@ public class VerificationCodeController {
     private void handleBack() {
         clearUserSession();
         User.setCurrentUser(null);
-        App.setIsLoggedIn(false);
         App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 

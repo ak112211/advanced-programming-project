@@ -161,7 +161,6 @@ public class Tools {
                         sendVerificationCode(User.getCurrentUser());
                         App.loadScene(Menu.VERIFY_MENU.getPath());
                     } else {
-                        App.setIsLoggedIn(true);
                         if (user.isTwoFactorOn()) {
                             sendVerificationCode(User.getCurrentUser());
                             App.loadScene(Menu.VERIFY_MENU.getPath());

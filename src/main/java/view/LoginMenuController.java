@@ -60,7 +60,6 @@ public class LoginMenuController {
                     App.loadScene(Menu.VERIFY_MENU.getPath());
                 } else {
                     saveUserSession(user);  // Save session
-                    App.setIsLoggedIn(true);
                     if (user.isTwoFactorOn()) {
                         sendVerificationCode(User.getCurrentUser());
                         Tools.showAlert("Code needed", "Login Successful", "User logged in successfully. Please check your email for the verification code.");

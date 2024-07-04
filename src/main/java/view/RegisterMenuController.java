@@ -70,9 +70,9 @@ public class RegisterMenuController {
                 user.setTwoFactorOn(false);
                 User.setCurrentUser(user);
                 DatabaseConnection.saveUser(user);
-                App.setIsLoggedIn(true);
                 // Generate verification code
                 sendVerificationCode(User.getCurrentUser());
+                App.getServerConnection().sendMessage("register:" + username);
                 Tools.showAlert("Success", "Registration Successful", "User registered successfully. Please check your email for the verification code.");
                 App.loadScene(Menu.VERIFY_MENU.getPath()); // Load the verification code scene
             }
