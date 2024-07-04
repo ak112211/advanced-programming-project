@@ -18,9 +18,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/gwent";
-    private static final String USER = "root";
-    private static final String PASSWORD = System.getenv("DB_PASSWORD");
+    private static final String URL = "jdbc:mysql://37.152.188.83:3306/gwent";
+    private static final String USER = "gwentUser";
+    private static final String PASSWORD = "alikh53";
     private static final Gson GSON = new Gson();
 
     public static Connection getConnection() throws SQLException {

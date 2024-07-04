@@ -8,8 +8,8 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    private static final String USERNAME = "alitourguide1@gmail.com";
-    private static final String PASSWORD = System.getenv("G_PASS");
+    private static final String USERNAME = "alikhalaj535@gmail.com";
+    private static final String PASSWORD = "xmtwapnhlqxmvjck";
 
     public static void sendVerificationEmail(String toEmail, String code) {
         Properties properties = new Properties();
