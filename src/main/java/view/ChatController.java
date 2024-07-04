@@ -11,7 +11,9 @@ import javafx.scene.control.TextField;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
+import util.ServerConnection;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -65,7 +67,7 @@ public class ChatController {
         sendGameRequestButton.setOnAction(event -> sendGameRequest());
         acceptRequestButton.setOnAction(event -> acceptGameRequest());
         declineRequestButton.setOnAction(event -> declineGameRequest());
-        startServerListener();
+        new Thread(new IncomingMessageHandler()).start();
     }
 
     private void loadFriendsList() {
@@ -266,38 +268,40 @@ public class ChatController {
         openMessagingWindow(selectedFriend);
     }
 
-    private void handleServerEvent(String input) {
-        Platform.runLater(() -> {
-            if (input.startsWith("Friend request from ")
-                    || input.startsWith("Game request from ")
-                    || input.startsWith("Message from ")
-                    || input.startsWith("Game request accepted by ")
-                    || input.startsWith("Friend request accepted by ")) {
-                loadFriendsList();
-                loadFriendRequests();
-                loadGameRequests();
-                if (input.startsWith("Game request accepted by ")) {
-                    try {
-                        ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    startGame();
-                }
-            }
-        });
-    }
 
-    private void startServerListener() {
-        new Thread(() -> {
+    private class IncomingMessageHandler implements Runnable {
+        @Override
+        public void run() {
             try {
-                String input;
-                while ((input = App.getServerConnection().getIn().readLine()) != null) {
-                    handleServerEvent(input);
+                String incomingMessage;
+                while ((incomingMessage = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(incomingMessage);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }
+
+        private void handleServerEvent(String input) {
+            Platform.runLater(() -> {
+                if (input.startsWith("Friend request from ")
+                        || input.startsWith("Game request from ")
+                        || input.startsWith("Message from ")
+                        || input.startsWith("Game request accepted by ")
+                        || input.startsWith("Friend request accepted by ")) {
+                    loadFriendsList();
+                    loadFriendRequests();
+                    loadGameRequests();
+                    if (input.startsWith("Game request accepted by ")) {
+                        try {
+                            ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                        startGame();
+                    }
+                }
+            });
+        }
     }
 }

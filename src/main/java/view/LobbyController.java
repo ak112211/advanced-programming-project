@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -24,7 +25,7 @@ public class LobbyController {
 
     @FXML
     private void initialize() {
-        startServerListener();
+        new Thread(new IncomingMessageHandler()).start();
     }
 
     @FXML
@@ -41,42 +42,45 @@ public class LobbyController {
         progressIndicator.setVisible(visible);
     }
 
-    private void handleServerEvent(String input) {
-        Platform.runLater(() -> {
-            if (input.endsWith("loaded deck new")) {
-                try {
-                    Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split("")[0]));
-                    game.setCurrentPlayer(User.getCurrentUser());
-                    game.setOnline(true);
-                    DatabaseConnection.saveGame(Game.getCurrentGame());
-                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split("")[0]) + ":loaded after:" + game.getID());
-                    Game.setCurrentGame(game);
-                    new GameLauncher().start(App.getStage());
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            } else if (input.contains("loaded deck after with id: ")) {
-                try {
-                    Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[6]));
-                    Game.setCurrentGame(game);
-                    new GameLauncher().start(App.getStage());
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
-    private void startServerListener() {
-        new Thread(() -> {
+    private class IncomingMessageHandler implements Runnable {
+        @Override
+        public void run() {
             try {
-                String input;
-                while ((input = App.getServerConnection().getIn().readLine()) != null) {
-                    handleServerEvent(input);
+                String incomingMessage;
+                while ((incomingMessage = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(incomingMessage);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }
+
+        private void handleServerEvent(String input) {
+            Platform.runLater(() -> {
+                if (input.endsWith("loaded deck new")) {
+                    try {
+                        Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split("")[0]));
+                        game.setCurrentPlayer(User.getCurrentUser());
+                        game.setOnline(true);
+                        DatabaseConnection.saveGame(Game.getCurrentGame());
+                        App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split("")[0]) + ":loaded after:" + game.getID());
+                        Game.setCurrentGame(game);
+                        new GameLauncher().start(App.getStage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (input.contains("loaded deck after with id: ")) {
+                    try {
+                        Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[6]));
+                        Game.setCurrentGame(game);
+                        new GameLauncher().start(App.getStage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
+
     }
+
 }

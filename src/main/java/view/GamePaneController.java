@@ -226,7 +226,7 @@ public class GamePaneController implements Initializable {
             exitSave.setVisible(false);
             exit.setVisible(false);
             quit.setVisible(true);
-            startServerListener();
+            new Thread(new IncomingMessageHandler()).start();
         } else {
             exitSave.setVisible(true);
             exit.setVisible(true);
@@ -693,30 +693,32 @@ public class GamePaneController implements Initializable {
         }
     }
 
-    private void startServerListener() {
-        new Thread(() -> {
+    private class IncomingMessageHandler implements Runnable {
+        @Override
+        public void run() {
             try {
-                String input;
-                while ((input = App.getServerConnection().getIn().readLine()) != null) {
-                    handleServerEvent(input);
+                String incomingMessage;
+                while ((incomingMessage = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(incomingMessage);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }
+
+        private void handleServerEvent(String input) {
+            Platform.runLater(() -> {
+                if (input.startsWith("Move from ")) {
+                    startTurn();
+                } else if (input.endsWith("Game ended by ")) {
+                    Game.setCurrentGame(null);
+                    Tools.showAlert(input + " You won!");
+                    App.loadScene(Menu.MAIN_MENU.getPath());
+                }
+            });
+        }
     }
 
-    private void handleServerEvent(String input) {
-        Platform.runLater(() -> {
-            if (input.startsWith("Move from ")) {
-                startTurn();
-            } else if (input.endsWith("Game ended by ")) {
-                Game.setCurrentGame(null);
-                Tools.showAlert(input + " You won!");
-                App.loadScene(Menu.MAIN_MENU.getPath());
-            }
-        });
-    }
 
     public void hideCardDisplay() {
         cardDisplayVBox.setVisible(false);

@@ -25,7 +25,7 @@ public class MessagingController {
     public void initialize() {
         currentUser = User.getCurrentUser();
         loadMessages();
-        startServerListener();
+        new Thread(new IncomingMessageHandler()).start();
     }
 
     @FXML
@@ -37,16 +37,8 @@ public class MessagingController {
                 messageInputField.clear();
                 loadMessages();
                 App.getServerConnection().sendMessage(currentChatUser + ":send message:" + message);
-                String input;
-                while ((input = App.getServerConnection().getIn().readLine()) != null) {
-                    if (input.endsWith("message from " + currentChatUser)) {
-                        loadMessages();
-                    }
-                }
             } catch (SQLException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
         }
     }
@@ -67,24 +59,27 @@ public class MessagingController {
         loadMessages();
     }
 
-    private void handleServerEvent(String input) {
-        Platform.runLater(() -> {
-            if (input.startsWith("Message from ")) {
-                loadMessages();
-            }
-        });
-    }
-
-    private void startServerListener() {
-        new Thread(() -> {
+    private class IncomingMessageHandler implements Runnable {
+        @Override
+        public void run() {
             try {
-                String input;
-                while ((input = App.getServerConnection().getIn().readLine()) != null) {
-                    handleServerEvent(input);
+                String incomingMessage;
+                while ((incomingMessage = App.getServerConnection().getIn().readLine()) != null) {
+                    handleServerEvent(incomingMessage);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }
+
+        private void handleServerEvent(String input) {
+            Platform.runLater(() -> {
+                System.out.println("Server Event Received: " + input);
+                if (input.startsWith("Message from ")) {
+                    loadMessages();
+                }
+            });
+        }
     }
+
 }
