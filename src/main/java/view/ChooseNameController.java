@@ -20,7 +20,7 @@ public class ChooseNameController {
 
     @FXML
     private void handleBack() {
-        App.loadScene(Menu.LOGIN_MENU.getPath());
+        App.loadScene(Menu.MAIN_MENU.getPath());
     }
 
 }
