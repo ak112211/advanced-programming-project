@@ -1,23 +1,17 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import enums.Row;
 import enums.cards.SkelligeCards;
 import enums.leaders.SkelligeLeaders;
-import enums.cardsinformation.Description;
-import enums.cardsinformation.Faction;
-import enums.cardsinformation.Type;
 import model.Game;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
 import model.Deck;
-import model.abilities.Ability;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -56,8 +50,8 @@ public class TestCases {
         player2.setDeck(deck2);
 
         game = new Game(player1, player2);
-        game.initializeGameObjects();
-        game.setCurrentPlayer(player1);
+        game.startGame();
+        game.setPlayer1Turn(true);
     }
 
     @Test
@@ -89,10 +83,10 @@ public class TestCases {
     @Test
     public void testSwitchTurns() {
         // Test switching turns
-        game.setCurrentPlayer(player1);
+        game.setPlayer1Turn(true);
         assertTrue(game.isPlayer1Turn());
 
-        game.setCurrentPlayer(player2);
+        game.setPlayer1Turn(false);
         assertTrue(!game.isPlayer1Turn());
     }
 

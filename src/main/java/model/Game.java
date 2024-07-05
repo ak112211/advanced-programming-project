@@ -3,11 +3,14 @@ package model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import enums.Row;
+import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import javafx.application.Platform;
 import model.abilities.Ability;
+import model.abilities.ejectabilities.EjectAbility;
 import model.abilities.instantaneousabilities.InstantaneousAbility;
 import model.abilities.openingabilities.OpeningAbility;
+import model.abilities.passiveabilities.CancelLeaderAbility;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
@@ -15,6 +18,7 @@ import util.CardSerializer;
 import util.DeckDeserializer;
 import util.LeaderSerializer;
 import view.GamePaneController;
+import model.RoundsInfo.Winner;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -22,7 +26,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Game implements Serializable {
@@ -31,13 +34,28 @@ public class Game implements Serializable {
     private static final int STARTING_HAND_SIZE = 10;
     private static Game currentGame;
 
+    private transient GamePaneController gamePaneController;
+    private transient CountDownLatch latch = new CountDownLatch(1);
+    private transient boolean hasSwitchedTurn;
+    private transient int threadCount;
+    private transient Integer chosenCardIndex = null;
+    private transient int player1Points, player2Points;
+    private transient boolean isOnline;
+
+    // these variables must be saved:
     private int ID;
     private final User player1;
     private final User player2;
     private final Date date;
-    private User currentPlayer;
-    private boolean isOnline;
-    private int player1Points, player2Points;
+    private boolean isPlayer1Turn;
+    private boolean vetoForPLayer1Shown;
+    private boolean vetoForPLayer2Shown;
+    private boolean player1HasPassed;
+    private boolean player2HasPassed;
+    private boolean player1UsedLeaderAbility;
+    private boolean player2UsedLeaderAbility;
+    private final Faction player1Faction;
+    private final Faction player2Faction;
     private final Leader player1LeaderCard;
     private final Leader player2LeaderCard;
     private final ArrayList<Card> inGameCards;
@@ -47,38 +65,52 @@ public class Game implements Serializable {
     private final ArrayList<Card> player2Deck;
     private final ArrayList<Card> player1GraveyardCards;
     private final ArrayList<Card> player2GraveyardCards;
+    private final RoundsInfo roundsInfo;
     private GameStatus status;
-    private User winner;
-    private GamePaneController gamePaneController;
-    private CountDownLatch latch = new CountDownLatch(1);
-    private Integer chosenCardIndex = null;
-    private boolean vetoForPLayer1Shown = false;
-    private boolean vetoForPLayer2Shown = false;
-    private boolean hasSwitchedTurn;
-    private int threadCount;
-
-    // New score fields
-    private int player1Round1;
-    private int player1Round2;
-    private int player1Round3;
-    private int player2Round1;
-    private int player2Round2;
-    private int player2Round3;
-    private int player1FinalScore;
-    private int player2FinalScore;
 
     public Game(User player1, User player2) {
-        this(player1, player2, new Date(System.currentTimeMillis()),
-                player1.getDeck().getCards(), player2.getDeck().getCards(),
-                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-                player1.getDeck().getLeader(), player2.getDeck().getLeader(), GameStatus.ACTIVE, null,
-                RANDOM.nextBoolean() ? player1 : player2);
+        this.player1 = player1;
+        this.player2 = player2;
+        this.date = new Date(System.currentTimeMillis());
+
+        this.isPlayer1Turn = RANDOM.nextBoolean();
+        this.vetoForPLayer1Shown = false;
+        this.vetoForPLayer2Shown = false;
+        this.player1HasPassed = false;
+        this.player2HasPassed = false;
+        this.player1UsedLeaderAbility = false;
+        this.player2UsedLeaderAbility = false;
+
+        this.player1Deck = player1.getDeck().getCards();
+        this.player2Deck = player2.getDeck().getCards();
+        this.player1InHandCards = new ArrayList<>();
+        this.player2InHandCards = new ArrayList<>();
+        this.player1GraveyardCards = new ArrayList<>();
+        this.player2GraveyardCards = new ArrayList<>();
+        this.inGameCards = new ArrayList<>();
+        this.player1LeaderCard = player1.getDeck().getLeader();
+        this.player2LeaderCard = player2.getDeck().getLeader();
+        this.player1Faction = player1.getDeck().getFaction();
+        this.player2Faction = player2.getDeck().getFaction();
+
+        this.status = GameStatus.ACTIVE;
+        this.roundsInfo = new RoundsInfo();
     }
 
-    public Game(User player1, User player2, Date date, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, GameStatus status, User winner, User currentPlayer) {
+    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean vetoForPLayer1Shown, boolean vetoForPLayer2Shown, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo) {
+        this.ID = ID;
         this.player1 = player1;
         this.player2 = player2;
         this.date = date;
+
+        this.isPlayer1Turn = isPlayer1Turn;
+        this.vetoForPLayer1Shown = vetoForPLayer1Shown;
+        this.vetoForPLayer2Shown = vetoForPLayer2Shown;
+        this.player1HasPassed = player1HasPassed;
+        this.player2HasPassed = player2HasPassed;
+        this.player1UsedLeaderAbility = player1UsedLeaderAbility;
+        this.player2UsedLeaderAbility = player2UsedLeaderAbility;
+
         this.player1Deck = player1Deck;
         this.player2Deck = player2Deck;
         this.player1InHandCards = player1InHandCards;
@@ -88,44 +120,108 @@ public class Game implements Serializable {
         this.inGameCards = inGameCards;
         this.player1LeaderCard = player1LeaderCard;
         this.player2LeaderCard = player2LeaderCard;
-        this.winner = winner;
-        this.currentPlayer = currentPlayer;
+        this.player1Faction = player1Faction;
+        this.player2Faction = player2Faction;
+
         this.status = status;
+        this.roundsInfo = roundsInfo;
     }
 
-
-    public void initializeGameObjects() {
+    public void startGame() {
         for (int i = 0; i < STARTING_HAND_SIZE; i++) {
             player1GetRandomCard();
             player2GetRandomCard();
         }
         OpeningAbility.StartRound(this);
-        currentPlayer = player1;
+        isPlayer1Turn = true;
     }
 
     public void initializeGameObjectsFromSaved() {
     }
 
+    public void endGame() {
+        status = GameStatus.COMPLETED;
+        Platform.runLater(gamePaneController::showFinishedOverlay);
+    }
+
+    public void startRound() {
+        player2HasPassed = false;
+        player1HasPassed = false;
+        checkHasAnythingToDo();
+        if (player1HasPassed && player2HasPassed) {
+            endGame();
+            return;
+        }
+        if (isPlayer1Turn && player1HasPassed) {
+            isPlayer1Turn = false;
+        } else if (!isPlayer1Turn && player2HasPassed) {
+            isPlayer1Turn = true;
+        }
+    }
+
+    public void endRound() {
+        roundsInfo.finishRound(player1Points, player2Points);
+        resetCards();
+        if (roundsInfo.isGameFinished(this)) {
+            endGame();
+        } else {
+            startRound();
+        }
+    }
+
+    public void startTurn() {
+        EjectAbility.startTurnAffect(this);
+        veto();
+        Platform.runLater(gamePaneController::nextTurn);
+    }
+
     public void nextTurn() {
+        calculatePoints();
         switchSides();
+        if (player2HasPassed && player1HasPassed) {
+            endRound();
+        }
+        startTurn();
     }
 
     public void switchSides() {
-        currentPlayer = (currentPlayer.equals(player1)) ? player2 : player1;
+        checkHasAnythingToDo();
+        if (isPlayer1Turn && !player2HasPassed) {
+            isPlayer1Turn = false;
+        } else if (!isPlayer1Turn && !player1HasPassed) {
+            isPlayer1Turn = true;
+        }
     }
 
+    public void checkHasAnythingToDo() {
+        if (player1InHandCards.isEmpty() && !player1CanUseLeaderAbility()) {
+            player1HasPassed = true;
+        }
+        if (player2InHandCards.isEmpty() && !player2CanUseLeaderAbility()) {
+            player2HasPassed = true;
+        }
+    }
+
+    public void pass() {
+        if (isPlayer1Turn) {
+            player1HasPassed = true;
+        } else {
+            player2HasPassed = true;
+        }
+        nextTurn();
+    }
 
     public void veto() {
         if (!vetoForPLayer1Shown && isPlayer1Turn()) {
             vetoForPLayer1Shown = true;
             Thread thread = new Thread(this::player1VetoCard);
             thread.start();
-            gamePaneController.startTurn();
+            gamePaneController.updateScene();
         } else if (!vetoForPLayer2Shown && !isPlayer1Turn()) {
             vetoForPLayer2Shown = true;
             Thread thread = new Thread(this::player2VetoCard);
             thread.start();
-            gamePaneController.startTurn();
+            gamePaneController.updateScene();
         }
     }
 
@@ -138,7 +234,7 @@ public class Game implements Serializable {
             player1GetRandomCard();
             moveCard(chosenCard.orElseThrow(), player1InHandCards, player1Deck);
         }
-        Platform.runLater(gamePaneController::startTurn);
+        Platform.runLater(gamePaneController::updateScene);
     }
 
     public void player2VetoCard() {
@@ -150,14 +246,15 @@ public class Game implements Serializable {
             player2GetRandomCard();
             moveCard(chosenCard.orElseThrow(), player2InHandCards, player2Deck);
         }
-        Platform.runLater(gamePaneController::startTurn);
+        Platform.runLater(gamePaneController::updateScene);
     }
+
 
     public int calculatePoints(Predicate<Row> predicate) {
         return inGameCards.stream()
-               .filter(card -> predicate.test(card.getRow()))
-               .mapToInt(Card::getPower)
-               .sum();
+                .filter(card -> predicate.test(card.getRow()))
+                .mapToInt(Card::getPower)
+                .sum();
     }
 
     public void calculatePoints() {
@@ -165,43 +262,39 @@ public class Game implements Serializable {
             card.setPower(card.getFirstPower());
         }
         PersistentAbility.calculatePowers(inGameCards);
-        getAllCards().forEach(Card::setPowerText);
         player1Points = calculatePoints(Row::isPlayer1);
         player2Points = calculatePoints(row -> !row.isPlayer1());
+    }
+
+    public boolean player1CanUseLeaderAbility() {
+        return !(player2LeaderCard.getAbility() instanceof CancelLeaderAbility) &&
+                player1LeaderCard.getAbility() instanceof InstantaneousAbility &&
+                !player1UsedLeaderAbility;
+    }
+
+    public boolean player2CanUseLeaderAbility() {
+        return !(player1LeaderCard.getAbility() instanceof CancelLeaderAbility) &&
+                player2LeaderCard.getAbility() instanceof InstantaneousAbility &&
+                !player2UsedLeaderAbility;
+    }
+
+    public void UseLeaderAbility() {
+        if (isPlayer1Turn) {
+            if (player1CanUseLeaderAbility()) {
+                player1UsedLeaderAbility = true;
+                ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
+            }
+        } else {
+            if (player2CanUseLeaderAbility()) {
+                player2UsedLeaderAbility = true;
+                ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
+            }
+        }
     }
 
     public boolean canPlay(Card card, Row row) {
         return card.getType() != Type.SPELL ||
                 inGameCards.stream().noneMatch(inGameCard -> inGameCard.same(card) && inGameCard.getRow() == row);
-    }
-
-    // Functions that move a card:
-
-    public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
-        if (!cards1.remove(card)) {
-            throw new IllegalArgumentException("Card doesn't exist there");
-        }
-        if (cards2.contains(card)) {
-            throw new IllegalArgumentException("Card exists in destination");
-        }
-        cards2.add(card);
-        if (cards2 == inGameCards && card.getAbility() instanceof InstantaneousAbility) {
-            threadCount++;
-            Thread thread = new Thread(() -> {
-                ((InstantaneousAbility) card.getAbility()).affect(this, card);
-                Platform.runLater(gamePaneController::startTurn);
-                threadCount--;
-                if (threadCount == 0) {
-                    hasSwitchedTurn = true;
-                    switchSides();
-                    Platform.runLater(() -> {
-                        calculatePoints();
-                        gamePaneController.nextTurn();
-                    });
-                }
-            });
-            thread.start();
-        }
     }
 
     public void playCard(Card card, Row row) throws SQLException, IOException {
@@ -216,11 +309,38 @@ public class Game implements Serializable {
             }
         }
         if (!hasSwitchedTurn && threadCount == 0) {
-            switchSides();
-            Platform.runLater(() -> {
-                calculatePoints();
-                gamePaneController.nextTurn();
+            nextTurn();
+        }
+    }
+
+    // Functions that move a card:
+
+    public void moveCard(Card card, ArrayList<Card> cards1, ArrayList<Card> cards2) {
+        if (cards1 == cards2) {
+            throw new IllegalArgumentException("Cards1 and cards2 are the same");
+        }
+        if (!cards1.remove(card)) {
+            throw new IllegalArgumentException("Card doesn't exist there");
+        }
+        if (cards2.contains(card)) {
+            throw new IllegalArgumentException("Card exists in destination");
+        }
+        cards2.add(card);
+        if (cards2 == inGameCards && card.getAbility() instanceof InstantaneousAbility) {
+            threadCount++;
+            Thread thread = new Thread(() -> {
+                ((InstantaneousAbility) card.getAbility()).affect(this, card);
+                Platform.runLater(gamePaneController::updateScene);
+                threadCount--;
+                if (threadCount == 0) {
+                    hasSwitchedTurn = true;
+                    nextTurn();
+                }
             });
+            thread.start();
+        }
+        if (cards1 == inGameCards && card.getAbility() instanceof EjectAbility) {
+            ((EjectAbility) card.getAbility()).affect(card);
         }
     }
 
@@ -264,6 +384,43 @@ public class Game implements Serializable {
         moveCard(card, inGameCards, card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
     }
 
+    public void resetCards() {
+        Card player1CardToKeep = null, player2CardToKeep = null;
+        if (player1Faction == Faction.MONSTER) {
+            player1CardToKeep = chooseRandomCard(inGameCards.stream().filter(card -> card.getRow().isPlayer1()).toList(),
+                    true).orElse(null);
+        }
+        if (player2Faction == Faction.MONSTER) {
+            player2CardToKeep = chooseRandomCard(inGameCards.stream().filter(card -> !card.getRow().isPlayer1()).toList(),
+                    true).orElse(null);
+        }
+
+        while (!inGameCards.isEmpty()) {
+            Card card = inGameCards.getFirst();
+            if (card != player1CardToKeep && card != player2CardToKeep) {
+                moveCardToGraveyard(card);
+            }
+        }
+
+        Winner lastWinner = roundsInfo.getRoundWinner(roundsInfo.getCurrentRound() - 1, this);
+        if (player1Faction == Faction.REALMS_NORTHERN && lastWinner == Winner.PLAYER1) {
+            player1GetRandomCard();
+        } else if (player2Faction == Faction.REALMS_NORTHERN && lastWinner == Winner.PLAYER2) {
+            player2GetRandomCard();
+        }
+
+        if (roundsInfo.getCurrentRound() == 3) {
+            if (player1Faction == Faction.SKELLIGE) {
+                player1GetRandomCard();
+                player1GetRandomCard();
+            }
+            if (player2Faction == Faction.SKELLIGE) {
+                player2GetRandomCard();
+                player2GetRandomCard();
+            }
+        }
+    }
+
     // Functions that choose a card:
 
     public Optional<Card> chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
@@ -293,7 +450,7 @@ public class Game implements Serializable {
         }
         List<Card> finalCards = cards;
         Platform.runLater(() -> {
-            gamePaneController.startTurn();
+            gamePaneController.updateScene();
             gamePaneController.showChooseOverlay(false, finalCards);
         });
         try {
@@ -309,7 +466,7 @@ public class Game implements Serializable {
             return Optional.empty();
         }
         Platform.runLater(() -> {
-            gamePaneController.startTurn();
+            gamePaneController.updateScene();
             gamePaneController.showChooseOverlay(true, cards);
         });
         try {
@@ -356,16 +513,26 @@ public class Game implements Serializable {
         return currentGame;
     }
 
-    public void setCurrentPlayer(User currentPlayer) {
-        this.currentPlayer = currentPlayer;
+    public void setCurrentUser(User user) {
+        if (user == player1) {
+            isPlayer1Turn = true;
+        } else if (user == player2) {
+            isPlayer1Turn = false;
+        } else {
+            throw new IllegalArgumentException("User is not a player");
+        }
     }
 
-    public User getCurrentPlayer() {
-        return currentPlayer;
+    public void setPlayer1Turn(boolean player1Turn) {
+        this.isPlayer1Turn = player1Turn;
+    }
+
+    public boolean getPlayer1Turn() {
+        return isPlayer1Turn;
     }
 
     public boolean isPlayer1Turn() {
-        return currentPlayer.equals(player1);
+        return isPlayer1Turn;
     }
 
     public User getPlayer1() {
@@ -388,12 +555,18 @@ public class Game implements Serializable {
         this.status = status;
     }
 
-    public User getWinner() {
-        return winner;
+    public User getWinnerUser() {
+        if (roundsInfo.getWinner() == Winner.PLAYER1) {
+            return player1;
+        }
+        if (roundsInfo.getWinner() == Winner.PLAYER2) {
+            return player2;
+        }
+        return null;
     }
 
-    public void setWinner(User winner) {
-        this.winner = winner;
+    public Winner getWinner() {
+        return roundsInfo.getWinner();
     }
 
     public int getPlayer1Points() {
@@ -402,6 +575,14 @@ public class Game implements Serializable {
 
     public int getPlayer2Points() {
         return player2Points;
+    }
+
+    public Faction getPlayer1Faction() {
+        return player1Faction;
+    }
+
+    public Faction getPlayer2Faction() {
+        return player2Faction;
     }
 
     public Leader getPlayer1LeaderCard() {
@@ -440,6 +621,11 @@ public class Game implements Serializable {
         return player2GraveyardCards;
     }
 
+    public List<Card> getAllCards() {
+        return Stream.of(player1InHandCards, player2InHandCards, player1Deck, player2Deck, inGameCards,
+                player1GraveyardCards, player2GraveyardCards).flatMap(ArrayList::stream).toList();
+    }
+
     public boolean isOnline() {
         return isOnline;
     }
@@ -448,17 +634,8 @@ public class Game implements Serializable {
         isOnline = online;
     }
 
-    public List<Card> getAllCards() {
-        return Stream.of(player1InHandCards, player2InHandCards, player1Deck, player2Deck, inGameCards,
-                player1GraveyardCards, player2GraveyardCards).flatMap(ArrayList::stream).toList();
-    }
-
     public void setGamePaneController(GamePaneController gamePaneController) {
         this.gamePaneController = gamePaneController;
-    }
-
-    public enum GameStatus {
-        PENDING, ACTIVE, COMPLETED
     }
 
     public int getID() {
@@ -469,68 +646,7 @@ public class Game implements Serializable {
         this.ID = ID;
     }
 
-    public int getPlayer1Round1() {
-        return player1Round1;
+    public enum GameStatus {
+        PENDING, ACTIVE, COMPLETED
     }
-
-    public void setPlayer1Round1(int player1Round1) {
-        this.player1Round1 = player1Round1;
-    }
-
-    public int getPlayer1Round2() {
-        return player1Round2;
-    }
-
-    public void setPlayer1Round2(int player1Round2) {
-        this.player1Round2 = player1Round2;
-    }
-
-    public int getPlayer1Round3() {
-        return player1Round3;
-    }
-
-    public void setPlayer1Round3(int player1Round3) {
-        this.player1Round3 = player1Round3;
-    }
-
-    public int getPlayer2Round1() {
-        return player2Round1;
-    }
-
-    public void setPlayer2Round1(int player2Round1) {
-        this.player2Round1 = player2Round1;
-    }
-
-    public int getPlayer2Round2() {
-        return player2Round2;
-    }
-
-    public void setPlayer2Round2(int player2Round2) {
-        this.player2Round2 = player2Round2;
-    }
-
-    public int getPlayer2Round3() {
-        return player2Round3;
-    }
-
-    public void setPlayer2Round3(int player2Round3) {
-        this.player2Round3 = player2Round3;
-    }
-
-    public int getPlayer1FinalScore() {
-        return player1FinalScore;
-    }
-
-    public void setPlayer1FinalScore(int player1FinalScore) {
-        this.player1FinalScore = player1FinalScore;
-    }
-
-    public int getPlayer2FinalScore() {
-        return player2FinalScore;
-    }
-
-    public void setPlayer2FinalScore(int player2FinalScore) {
-        this.player2FinalScore = player2FinalScore;
-    }
-
 }
