@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.text.Text?>
-<Pane fx:id="gamePane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
+<Pane fx:id="gamePane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
     <ImageView fx:id="background" fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
         <Image url="@../gwentImages/img/board.jpg" />
     </ImageView>
@@ -47,19 +47,25 @@
 
     <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
     <Label fx:id="overlayMessage" style="-fx-font-size: 36; -fx-text-fill: black; -fx-background-color: white" visible="false" />
-    <VBox fx:id="pauseMenu" alignment="CENTER" layoutX="540" layoutY="300" spacing="10" visible="false">
+    <VBox fx:id="cardDisplayVBox" alignment="CENTER" layoutX="1025.0" layoutY="150.0" maxHeight="412.0" maxWidth="207.0" prefHeight="386.0" prefWidth="207.0" spacing="10" styleClass="overlay" visible="false">
+        <ImageView fx:id="cardImageView" fitHeight="340" fitWidth="150" preserveRatio="true" />
+        <Text fx:id="cardDescriptionText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" wrappingWidth="170" />
+        <Text fx:id="cardNumText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" wrappingWidth="170" />
+    </VBox>
+    <VBox fx:id="chooseDisplayVBox" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="10" visible="false">
+        <HBox alignment="CENTER" spacing="10">
+         <Button mnemonicParsing="false" onAction="#handlePreviousCard" text="◄" />
+            <ImageView fx:id="chooseImageView" fitHeight="340" fitWidth="150" preserveRatio="true" />
+         <Button mnemonicParsing="false" onAction="#handleNextCard" text="►" />
+        </HBox>
+        <Text fx:id="chooseDescriptionText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" wrappingWidth="170" />
+        <Button fx:id="passButton" mnemonicParsing="false" onAction="#passChoose" text="pass" />
+    </VBox>
+    <VBox fx:id="pauseMenu" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="10" visible="false">
         <Button fx:id="exit" onAction="#handleEndGameWithoutSaving" text="End Game Without Saving" />
         <Button fx:id="exitSave" onAction="#handleSaveGameAndExit" text="Save Game and Exit" />
         <Button fx:id="quit" onAction="#handleQuit" text="Quit" />
         <Button onAction="#handleToggleSound" text="Turn Sound On/Off" />
     </VBox>
-    <VBox fx:id="cardDisplayVBox" maxWidth="170" maxHeight="350" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
-        <ImageView fx:id="cardImageView" fitWidth="150" fitHeight="340" preserveRatio="true" />
-        <Text fx:id="cardDescriptionText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
-        <Text fx:id="cardNumText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"/>
-    </VBox>
-    <VBox fx:id="vetoDisplayVBox" maxWidth="170" maxHeight="350" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
-        <ImageView fx:id="vetoImageView" fitWidth="150" fitHeight="340" preserveRatio="true" />
-        <Text fx:id="vetoDescriptionText" wrappingWidth="170" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
-    </VBox>
+
 </Pane>

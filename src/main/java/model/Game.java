@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.Type;
+import javafx.application.Platform;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.InstantaneousAbility;
 import model.abilities.openingabilities.OpeningAbility;
@@ -13,9 +14,13 @@ import model.card.Leader;
 import util.CardSerializer;
 import util.DeckDeserializer;
 import util.LeaderSerializer;
+import view.GamePaneController;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 
 public class Game implements Serializable {
@@ -42,6 +47,13 @@ public class Game implements Serializable {
     private final ArrayList<Card> player2GraveyardCards;
     private GameStatus status;
     private User winner;
+    private GamePaneController gamePaneController;
+    private CountDownLatch latch = new CountDownLatch(1);
+    private Integer chosenCardIndex = null;
+    private boolean vetoForPLayer1Shown = false;
+    private boolean vetoForPLayer2Shown = false;
+    private boolean hasSwitchedTurn;
+    private int threadCount;
 
     public Game(User player1, User player2) {
         this(player1, player2, new Date(System.currentTimeMillis()),
@@ -69,6 +81,7 @@ public class Game implements Serializable {
         this.status = status;
     }
 
+
     public void initializeGameObjects() {
         for (int i = 0; i < STARTING_HAND_SIZE; i++) {
             player1GetRandomCard();
@@ -79,7 +92,6 @@ public class Game implements Serializable {
     }
 
     public void initializeGameObjectsFromSaved() {
-        OpeningAbility.StartRound(this);
     }
 
     public void nextTurn() {
@@ -88,6 +100,21 @@ public class Game implements Serializable {
 
     public void switchSides() {
         currentPlayer = (currentPlayer.equals(player1)) ? player2 : player1;
+    }
+
+
+    public void veto() {
+        if (!vetoForPLayer1Shown && isPlayer1Turn()) {
+            vetoForPLayer1Shown = true;
+            Thread thread = new Thread(this::player1VetoCard);
+            thread.start();
+            gamePaneController.startTurn();
+        } else if (!vetoForPLayer2Shown && !isPlayer1Turn()) {
+            vetoForPLayer2Shown = true;
+            Thread thread = new Thread(this::player2VetoCard);
+            thread.start();
+            gamePaneController.startTurn();
+        }
     }
 
     public void player1VetoCard() {
@@ -99,6 +126,7 @@ public class Game implements Serializable {
             player1GetRandomCard();
             moveCard(chosenCard.orElseThrow(), player1InHandCards, player1Deck);
         }
+        Platform.runLater(gamePaneController::startTurn);
     }
 
     public void player2VetoCard() {
@@ -110,6 +138,7 @@ public class Game implements Serializable {
             player2GetRandomCard();
             moveCard(chosenCard.orElseThrow(), player2InHandCards, player2Deck);
         }
+        Platform.runLater(gamePaneController::startTurn);
     }
 
     public void calculatePoints() {
@@ -144,7 +173,41 @@ public class Game implements Serializable {
         }
         cards2.add(card);
         if (cards2 == inGameCards && card.getAbility() instanceof InstantaneousAbility) {
-            ((InstantaneousAbility) card.getAbility()).affect(this, card);
+            threadCount++;
+            Thread thread = new Thread(() -> {
+                ((InstantaneousAbility) card.getAbility()).affect(this, card);
+                Platform.runLater(gamePaneController::startTurn);
+                threadCount--;
+                if (threadCount == 0) {
+                    hasSwitchedTurn = true;
+                    switchSides();
+                    Platform.runLater(() -> {
+                        calculatePoints();
+                        gamePaneController.nextTurn();
+                    });
+                }
+            });
+            thread.start();
+        }
+    }
+
+    public void playCard(Card card, Row row) throws SQLException, IOException {
+        hasSwitchedTurn = false;
+        if (isPlayer1Turn()) {
+            if (!player1PlayCard(card, row)) {
+                throw new IllegalArgumentException("card cannot be played");
+            }
+        } else {
+            if (!player2PlayCard(card, row)) {
+                throw new IllegalArgumentException("card cannot be played");
+            }
+        }
+        if (!hasSwitchedTurn && threadCount == 0) {
+            switchSides();
+            Platform.runLater(() -> {
+                calculatePoints();
+                gamePaneController.nextTurn();
+            });
         }
     }
 
@@ -215,14 +278,39 @@ public class Game implements Serializable {
         if (cards.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.empty(); // TODO
+        List<Card> finalCards = cards;
+        Platform.runLater(() -> {
+            gamePaneController.startTurn();
+            gamePaneController.showChooseOverlay(false, finalCards);
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.of(cards.get(chosenCardIndex));
     }
 
     public Optional<Card> chooseCardOrPass(List<Card> cards) {
         if (cards.isEmpty()) {
             return Optional.empty();
         }
-        return null; // TODO
+        Platform.runLater(() -> {
+            gamePaneController.startTurn();
+            gamePaneController.showChooseOverlay(true, cards);
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return chosenCardIndex == null ? null : Optional.of(cards.get(chosenCardIndex));
+    }
+
+    public void finishedChoosing(Integer index) {
+        chosenCardIndex = index;
+        latch.countDown();
+        latch = new CountDownLatch(1);
     }
 
     // Saving functions:
@@ -346,10 +434,14 @@ public class Game implements Serializable {
     public void setOnline(boolean online) {
         isOnline = online;
     }
-    
+
     public List<Card> getAllCards() {
         return Stream.of(player1InHandCards, player2InHandCards, player1Deck, player2Deck, inGameCards,
                 player1GraveyardCards, player2GraveyardCards).flatMap(ArrayList::stream).toList();
+    }
+
+    public void setGamePaneController(GamePaneController gamePaneController) {
+        this.gamePaneController = gamePaneController;
     }
 
     public enum GameStatus {

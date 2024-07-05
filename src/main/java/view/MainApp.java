@@ -26,6 +26,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        // Tools.clearUserSession();
         stage.setResizable(false);
         stage.centerOnScreen();
         App.setStage(stage);
