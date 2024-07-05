@@ -3,9 +3,6 @@ package model;
 import model.card.Card;
 import util.DatabaseConnection;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
