@@ -4,46 +4,50 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseDeckMenuController" prefWidth="1000" prefHeight="600" styleClass="logicPage">
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseDeckMenuController" prefWidth="1000"
+           prefHeight="600" styleClass="logicPage">
     <ScrollPane fitToWidth="true" fitToHeight="true">
         <VBox spacing="10" alignment="TOP_CENTER">
             <HBox spacing="10" alignment="CENTER">
-                <Button text="Back" onAction="#goBack" />
+                <Button text="Back" onAction="#goBack"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER">
-                <Label text="Choose Deck" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+                <Label text="Choose Deck" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER">
-                <Label text="Faction:" />
-                <ComboBox fx:id="factionComboBox" />
-                <Label text="Leader:" />
-                <ComboBox fx:id="leaderComboBox" />
+                <Label text="Faction:"/>
+                <ComboBox fx:id="factionComboBox"/>
+                <Label text="Leader:"/>
+                <ComboBox fx:id="leaderComboBox"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER">
                 <VBox spacing="10" alignment="TOP_CENTER">
-                    <Label text="Faction Cards:" />
-                    <ListView fx:id="factionCardsListView" prefHeight="400" prefWidth="300" />
+                    <Label text="Faction Cards:"/>
+                    <ListView fx:id="factionCardsListView" prefHeight="400" prefWidth="300"/>
                 </VBox>
                 <VBox spacing="10" alignment="TOP_CENTER">
-                    <Label text="Deck Cards:" />
-                    <ListView fx:id="deckCardsListView" prefHeight="400" prefWidth="300" />
+                    <Label text="Deck Cards:"/>
+                    <ListView fx:id="deckCardsListView" prefHeight="400" prefWidth="300"/>
                 </VBox>
             </HBox>
             <HBox spacing="10" alignment="CENTER">
-                <Label fx:id="unitCardsLabel" text="Unit Cards: 0" />
-                <Label fx:id="specialCardsLabel" text="Special Cards: 0" />
+                <Label fx:id="unitCardsLabel" text="Unit Cards: 0"/>
+                <Label fx:id="specialCardsLabel" text="Special Cards: 0"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="startGameButton" onAction="#startGame" text="Start Game" disable="true" />
-                <Button text="Upload Deck" onAction="#uploadDeck" />
-                <Button text="Download Deck" onAction="#downloadDeck" />
-                <Button fx:id="choosePlayer2DeckButton" text="Change turn" onAction="#changeTurn" disable="true" />
+                <Button fx:id="startGameButton" onAction="#startGame" text="Start Game" disable="true"/>
+                <Button text="Upload Deck" onAction="#uploadDeck"/>
+                <Button text="Download Deck" onAction="#downloadDeck"/>
+                <Button fx:id="choosePlayer2DeckButton" text="Change turn" onAction="#changeTurn" disable="true"/>
             </HBox>
         </VBox>
     </ScrollPane>
-    <VBox fx:id="cardDisplayVBox" maxWidth="200" maxHeight="400" alignment="TOP_RIGHT" spacing="10" style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
-        <ImageView fx:id="cardImageView" fitWidth="200" fitHeight="400" preserveRatio="true" />
-        <Text fx:id="cardDescriptionText" wrappingWidth="200" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" />
-        <Text fx:id="cardNumText" wrappingWidth="200" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"/>
+    <VBox fx:id="cardDisplayVBox" maxWidth="200" maxHeight="400" alignment="TOP_RIGHT" spacing="10"
+          style="-fx-padding: 10; -fx-background-color: #000000" visible="false" styleClass="overlay">
+        <ImageView fx:id="cardImageView" fitWidth="200" fitHeight="400" preserveRatio="true"/>
+        <Text fx:id="cardDescriptionText" wrappingWidth="200" style="-fx-padding: 10; -fx-fill: #ffffff;"
+              textAlignment="CENTER"/>
+        <Text fx:id="cardNumText" wrappingWidth="200" style="-fx-padding: 10; -fx-fill: #ffffff;"
+              textAlignment="CENTER"/>
     </VBox>
 </StackPane>

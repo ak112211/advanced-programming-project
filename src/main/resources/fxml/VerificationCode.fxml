@@ -15,5 +15,5 @@
     <Button text="Resend Code" onAction="#handleResend"/>
     <Label text="Enter Verification Code" style="-fx-font-size: 16px;"/>
     <TextField fx:id="codeField" promptText="Verification Code"/>
-    <Button fx:id="verifyButton" text="Verify" onAction="#handleVerifyButtonAction"/>
+    <Button text="Verify" onAction="#handleVerifyButtonAction"/>
 </VBox>

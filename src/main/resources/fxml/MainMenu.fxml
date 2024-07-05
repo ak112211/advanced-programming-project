@@ -28,7 +28,7 @@
             <ListView fx:id="savedGamesListView" prefHeight="150" prefWidth="300"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Button fx:id="continueGameButton" text="Continue Selected Game"
+            <Button text="Continue Selected Game"
                     onAction="#handleContinueGameButtonAction"/>
         </HBox>
     </VBox>

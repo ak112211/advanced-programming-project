@@ -15,8 +15,10 @@
                    GridPane.rowIndex="0"/>
 
         <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <PasswordField fx:id="passwordField" maxHeight="30" maxWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <TextField fx:id="textField" visible="false" maxHeight="30" maxWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <PasswordField fx:id="passwordField" maxHeight="30" maxWidth="250" GridPane.columnIndex="1"
+                       GridPane.rowIndex="1"/>
+        <TextField fx:id="textField" visible="false" maxHeight="30" maxWidth="250" GridPane.columnIndex="1"
+                   GridPane.rowIndex="1"/>
         <CheckBox fx:id="showPasswordCheckBox" styleClass="label" text="Show Password" GridPane.columnIndex="1"
                   GridPane.halignment="LEFT" GridPane.rowIndex="2"/>
 

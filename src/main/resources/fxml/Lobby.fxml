@@ -12,6 +12,6 @@
           AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
         <Label fx:id="waitingLabel" text="Waiting for the other player to choose their deck..."/>
         <ProgressIndicator fx:id="progressIndicator"/>
-        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel"/>
+        <Button text="Cancel" onAction="#handleCancel"/>
     </VBox>
 </AnchorPane>
