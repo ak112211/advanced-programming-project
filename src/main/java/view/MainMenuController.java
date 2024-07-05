@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import model.App;
 import model.Game;
@@ -14,10 +13,8 @@ import util.DatabaseConnection;
 import util.ServerConnection;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 import static view.Tools.clearUserSession;
 
@@ -34,7 +31,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
     @FXML
     private void initialize() {
         usernameField.setText("Hi " + User.getCurrentUser().getUsername() + "!");
-        backgroundImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/maxresdefault.jpg"))));
+        backgroundImageView.setImage(Tools.getImage("/gwentImages/img/maxresdefault.jpg"));
         loadSavedGames();
         App.getServerConnection().addMessageListener(this);
 
