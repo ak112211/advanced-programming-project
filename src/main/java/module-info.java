@@ -16,7 +16,7 @@ module Gwent {
     exports enums;
     exports enums.cardsinformation;
     exports model.card;
-    opens view to javafx.fxml, com.fasterxml.jackson.databind;
+    opens view to javafx.fxml, com.fasterxml.jackson.databind, com.google.gson;
     opens model to com.google.gson, com.fasterxml.jackson.databind;
     opens enums.cardsinformation to com.google.gson, com.fasterxml.jackson.databind;
     opens model.card to com.google.gson, com.fasterxml.jackson.databind;
