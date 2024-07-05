@@ -33,8 +33,7 @@ public class DeckDeserializer implements JsonDeserializer<Deck> {
         deck.setFaction(faction);
         deck.setCards(cards);
         deck.setLeader(Leader.getLeaderFromType(jsonObject.get("leader").getAsJsonObject().get("leader_enum")
-                .toString().replaceAll("\"", ""), Integer.parseInt(jsonObject.get("leader").getAsJsonObject().get("number_of_actions")
-                        .toString().replaceAll("\"", "")))
+                .toString().replaceAll("\"", ""))
                 );
 
         return deck;
