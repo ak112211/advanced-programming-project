@@ -6,7 +6,7 @@ import model.card.Card;
 public abstract class Ability {
     private String iconName;
     public static boolean canBeAffected(Card card) {
-        return card.getType() != Type.SPELL && card.getType() != Type.DECOY && !card.isHero();
+        return !card.getType().isSpecial() && !card.isHero();
     }
 
     public void setIconName(String name) {

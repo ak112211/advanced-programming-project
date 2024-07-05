@@ -2,8 +2,10 @@ package util;
 
 import com.google.gson.*;
 import enums.Row;
+import enums.cardsinformation.Faction;
 import model.Deck;
 import model.Game;
+import model.RoundsInfo;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
@@ -24,10 +26,19 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         User player1 = gson.fromJson(jsonObject.get("player1"), User.class);
         User player2 = gson.fromJson(jsonObject.get("player2"), User.class);
         Date date = context.deserialize(jsonObject.get("date"), Date.class);
-        User currentPlayer = gson.fromJson(jsonObject.get("currentPlayer"), User.class);
+        boolean isPlayer1Turn = jsonObject.get("isPlayer1Turn").getAsBoolean();
+        boolean vetoForPLayer1Shown = jsonObject.get("vetoForPLayer1Shown").getAsBoolean();
+        boolean vetoForPLayer2Shown = jsonObject.get("vetoForPLayer2Shown").getAsBoolean();
+        boolean player1HasPassed = jsonObject.get("player1HasPassed").getAsBoolean();
+        boolean player2HasPassed = jsonObject.get("player2HasPassed").getAsBoolean();
+        boolean player1UsedLeaderAbility = jsonObject.get("player1UsedLeaderAbility").getAsBoolean();
+        boolean player2UsedLeaderAbility = jsonObject.get("player2UsedLeaderAbility").getAsBoolean();
         Game.GameStatus status = Game.GameStatus.valueOf(jsonObject.get("status").getAsString().replaceAll("\"", ""));
-        User winner = gson.fromJson(jsonObject.get("winner"), User.class);
+        RoundsInfo roundsInfo = gson.fromJson(jsonObject.get("roundsInfo"), RoundsInfo.class);
         int ID = jsonObject.get("ID").getAsInt();
+
+        Faction player1Faction = Faction.valueOf(jsonObject.get("player1Faction").getAsString());
+        Faction player2Faction = Faction.valueOf(jsonObject.get("player2Faction").getAsString());
 
         Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""),
                 Integer.parseInt(jsonObject.get("player1LeaderCard").getAsJsonObject().get("number_of_actions").toString().replaceAll("\"", "")));
@@ -42,11 +53,11 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> player1GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player1GraveyardCards"), context);
         ArrayList<Card> player2GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player2GraveyardCards"), context);
 
-        Game game = new Game(player1, player2, date, player1Deck, player2Deck, player1InHandCards, player2InHandCards,
-                player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard, status, winner, currentPlayer.getUsername().equals(player1.getUsername()) ? player1 : player2);
-        game.setID(ID);
-
-        return game;
+        return new Game(ID, player1, player2, date, isPlayer1Turn, vetoForPLayer1Shown, vetoForPLayer2Shown,
+                player1HasPassed, player2HasPassed, player1UsedLeaderAbility, player2UsedLeaderAbility,
+                player1Deck, player2Deck, player1InHandCards, player2InHandCards,
+                player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard,
+                player1Faction, player2Faction, status, roundsInfo);
     }
 
     private ArrayList<Card> deserializeCards(JsonArray jsonArray, JsonDeserializationContext context) {
