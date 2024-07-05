@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -31,8 +32,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
 
     @FXML
     private void handleCancel() {
-        // Handle cancel action, such as going back to the main menu
-        System.out.println("Cancel button clicked");
+        App.loadScene(Menu.DECK_MENU.getPath());
     }
 
     public void setWaitingMessage(String message) {
