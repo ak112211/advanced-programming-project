@@ -1,13 +1,10 @@
 package model.card;
 
-import enums.leaders.*;
 import enums.cardsinformation.Faction;
-import javafx.scene.image.Image;
-import javafx.scene.paint.ImagePattern;
+import enums.leaders.*;
 import javafx.scene.shape.Rectangle;
 import model.abilities.Ability;
-
-import java.util.Objects;
+import view.Tools;
 
 public class Leader extends Rectangle {
     private final String name;
@@ -17,6 +14,7 @@ public class Leader extends Rectangle {
     private int numberOfAction = 1;
     private final LeaderEnum leaderEnum;
     private final String imagePath;
+
     public Leader(String name, Ability ability, Faction faction, String description, String imagePath, LeaderEnum leaderEnum) {
         this.name = name;
         this.imagePath = imagePath;
@@ -33,9 +31,7 @@ public class Leader extends Rectangle {
         this.setArcHeight(10);
         this.setWidth(68);
         this.setHeight(90);
-        this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath.replaceFirst("lg", "sm")))
-                        .toExternalForm())));
+        this.setFill(Tools.getImagePattern(imagePath.replaceFirst("lg", "sm")));
     }
 
     public void setBigImage() {
@@ -43,9 +39,7 @@ public class Leader extends Rectangle {
         this.setArcHeight(10);
         this.setWidth(70);
         this.setHeight(100);
-        this.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm())));
+        this.setFill(Tools.getImagePattern(imagePath));
     }
 
     public String getName() {

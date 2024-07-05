@@ -4,7 +4,6 @@ import enums.Menu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -249,8 +248,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
                 loadGameRequests();
                 if (input.startsWith("Message from ")) {
                     showAlert(input);
-                }
-                else if (input.startsWith("Game request accepted by ")) {
+                } else if (input.startsWith("Game request accepted by ")) {
                     try {
                         ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
                     } catch (SQLException e) {

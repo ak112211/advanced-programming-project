@@ -1,19 +1,15 @@
 package model.card;
 
-import enums.cards.*;
-import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
 import enums.Row;
-import enums.cardsinformation.*;
+import enums.cards.*;
+import enums.cardsinformation.Description;
+import enums.cardsinformation.Faction;
+import enums.cardsinformation.Type;
 import javafx.scene.input.DataFormat;
-import javafx.scene.paint.ImagePattern;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Spy;
 import view.cardpane.CardIcon;
 import view.cardpane.CardPane;
-
-import java.util.Objects;
 
 public class Card extends CardPane {
     public static final DataFormat DATA_FORMAT = new DataFormat("model.card.Card");

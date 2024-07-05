@@ -6,6 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import model.App;
 import model.User;
@@ -20,11 +24,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Tools {
+
+    // Media
+    public static Media getMedia(String path) {
+        return new Media(Objects.requireNonNull(Tools.class.getResource(path)).toExternalForm());
+    }
+
+    public static MediaPlayer getMediaPlayer(String path) {
+        return new MediaPlayer(getMedia(path));
+    }
+
     // Image
-    public static Image getImage(String imagePath) {
-        return new javafx.scene.image.Image(
-                Objects.requireNonNull(Tools.class.getResource(imagePath))
-                        .toExternalForm());
+    public static Image getImage(String path) {
+        return new Image(Objects.requireNonNull(Tools.class.getResource(path)).toExternalForm());
+    }
+
+    public static ImageView getImageView(String path) {
+        return new ImageView(getImage(path));
+    }
+
+    public static ImagePattern getImagePattern(String path) {
+        return new ImagePattern(getImage(path));
     }
 
     // Alert

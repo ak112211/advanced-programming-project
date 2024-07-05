@@ -4,10 +4,8 @@ import model.Game;
 import model.abilities.Ability;
 import model.card.Card;
 
-import java.util.ArrayList;
-
 public abstract class EjectAbility extends Ability {
-    public static void startTurnAffect(Game game){
+    public static void startTurnAffect(Game game) {
         SummonAvenger.startTurnAffect(game);
     }
 
