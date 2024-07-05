@@ -39,7 +39,7 @@ public class Game implements Serializable {
     private transient boolean hasSwitchedTurn;
     private transient int threadCount;
     private transient Integer chosenCardIndex = null;
-    private transient int player1Points, player2Points;
+    private int player1Points, player2Points;
     private transient boolean isOnline;
 
     // these variables must be saved:
@@ -648,5 +648,9 @@ public class Game implements Serializable {
 
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
+    }
+
+    public RoundsInfo getRoundsInfo() {
+        return roundsInfo;
     }
 }

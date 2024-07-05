@@ -80,40 +80,30 @@ public class Leader extends Rectangle {
         return leaderEnum;
     }
 
-    public static Leader getLeaderFromType(String type, int numberOfAction) {
+    public static Leader getLeaderFromType(String type) {
         for (RealmsNorthernLeaders cardEnum : RealmsNorthernLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                Leader leader = cardEnum.getLeader();
-                leader.setNumberOfAction(numberOfAction);
-                return leader;
+                return cardEnum.getLeader();
             }
         }
         for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                Leader leader = cardEnum.getLeader();
-                leader.setNumberOfAction(numberOfAction);
-                return leader;
+                return cardEnum.getLeader();
             }
         }
         for (MonstersLeaders cardEnum : MonstersLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                Leader leader = cardEnum.getLeader();
-                leader.setNumberOfAction(numberOfAction);
-                return leader;
+                return cardEnum.getLeader();
             }
         }
         for (EmpireNilfgaardianLeaders cardEnum : EmpireNilfgaardianLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                Leader leader = cardEnum.getLeader();
-                leader.setNumberOfAction(numberOfAction);
-                return leader;
+                return cardEnum.getLeader();
             }
         }
         for (ScoiaTaelLeaders cardEnum : ScoiaTaelLeaders.values()) {
             if (cardEnum.toString().equals(type)) {
-                Leader leader = cardEnum.getLeader();
-                leader.setNumberOfAction(numberOfAction);
-                return leader;
+                return cardEnum.getLeader();
             }
         }
         return null;

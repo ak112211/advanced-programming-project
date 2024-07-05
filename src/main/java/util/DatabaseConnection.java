@@ -208,14 +208,23 @@ public class DatabaseConnection {
             preparedStatement.setBoolean(7, game.isOnline());
 
             // Set the new score fields
-            preparedStatement.setInt(8, game.getPlayer1Round1());
-            preparedStatement.setInt(9, game.getPlayer1Round2());
-            preparedStatement.setInt(10, game.getPlayer1Round3());
-            preparedStatement.setInt(11, game.getPlayer2Round1());
-            preparedStatement.setInt(12, game.getPlayer2Round2());
-            preparedStatement.setInt(13, game.getPlayer2Round3());
-            preparedStatement.setInt(14, game.getPlayer1FinalScore());
-            preparedStatement.setInt(15, game.getPlayer2FinalScore());
+            preparedStatement.setInt(8, game.getRoundsInfo().getCurrentRound() == 1 ? game.getPlayer1Points() : game.getRoundsInfo().getPlayer1Score(1));
+            preparedStatement.setInt(9, game.getRoundsInfo().getCurrentRound() <= 2  ? game.getPlayer1Points() : game.getRoundsInfo().getPlayer1Score(2));
+            preparedStatement.setInt(10, game.getRoundsInfo().getCurrentRound() <= 3 ? game.getPlayer1Points() : game.getRoundsInfo().getPlayer1Score(3));
+            preparedStatement.setInt(11, game.getRoundsInfo().getCurrentRound() == 1 ? game.getPlayer2Points() : game.getRoundsInfo().getPlayer2Score(1));
+            preparedStatement.setInt(12, game.getRoundsInfo().getCurrentRound() <= 2 ? game.getPlayer2Points() : game.getRoundsInfo().getPlayer2Score(2));
+            preparedStatement.setInt(13, game.getRoundsInfo().getCurrentRound() <= 3 ? game.getPlayer2Points() : game.getRoundsInfo().getPlayer2Score(3));
+
+            int player1TotalScore = 0;
+            int player2TotalScore = 0;
+
+            for (int i = 0 ; i < game.getRoundsInfo().getCurrentRound() - 1; i++) {
+                player1TotalScore += game.getRoundsInfo().getPlayer2Score(i + 1);
+                player2TotalScore += game.getRoundsInfo().getPlayer2Score(i + 1);
+            }
+
+            preparedStatement.setInt(14, player1TotalScore == 0 ? game.getPlayer1Points() : player1TotalScore);
+            preparedStatement.setInt(15, player2TotalScore == 0 ? game.getPlayer2Points() : player2TotalScore);
 
             preparedStatement.setInt(16, game.getID());
             preparedStatement.executeUpdate();

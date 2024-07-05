@@ -79,7 +79,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
     @FXML
     private void goToDeckMenu() {
         ChooseDeckMenuController.isMulti = false;
-        App.loadScene(Menu.DECK_MENU.getPath());
+        App.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
     }
 
     @FXML

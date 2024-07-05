@@ -31,6 +31,8 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         boolean vetoForPLayer2Shown = jsonObject.get("vetoForPLayer2Shown").getAsBoolean();
         boolean player1HasPassed = jsonObject.get("player1HasPassed").getAsBoolean();
         boolean player2HasPassed = jsonObject.get("player2HasPassed").getAsBoolean();
+        int player1Points = jsonObject.get("player1Points").getAsInt();
+        int player2Points = jsonObject.get("player2Points").getAsInt();
         boolean player1UsedLeaderAbility = jsonObject.get("player1UsedLeaderAbility").getAsBoolean();
         boolean player2UsedLeaderAbility = jsonObject.get("player2UsedLeaderAbility").getAsBoolean();
         Game.GameStatus status = Game.GameStatus.valueOf(jsonObject.get("status").getAsString().replaceAll("\"", ""));
@@ -40,10 +42,8 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         Faction player1Faction = Faction.valueOf(jsonObject.get("player1Faction").getAsString());
         Faction player2Faction = Faction.valueOf(jsonObject.get("player2Faction").getAsString());
 
-        Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""),
-                Integer.parseInt(jsonObject.get("player1LeaderCard").getAsJsonObject().get("number_of_actions").toString().replaceAll("\"", "")));
-        Leader player2LeaderCard = Leader.getLeaderFromType(jsonObject.get("player2LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""),
-                Integer.parseInt(jsonObject.get("player2LeaderCard").getAsJsonObject().get("number_of_actions").toString().replaceAll("\"", "")));
+        Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
+        Leader player2LeaderCard = Leader.getLeaderFromType(jsonObject.get("player2LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
 
         ArrayList<Card> inGameCards = deserializeCards(jsonObject.getAsJsonArray("inGameCards"), context);
         ArrayList<Card> player1InHandCards = deserializeCards(jsonObject.getAsJsonArray("player1InHandCards"), context);
