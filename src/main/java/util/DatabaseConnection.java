@@ -502,11 +502,12 @@ public class DatabaseConnection {
 
     public static boolean saveGameRequest(String sender, String recipient) throws SQLException {
 
-        String checkQuery = "SELECT COUNT(*) FROM gamerequests WHERE sender = ? AND recipient = ?";
+        String checkQuery = "SELECT COUNT(*) FROM gamerequests WHERE sender = ? AND recipient = ? AND status = ?";
         try (Connection connection = getConnection();
              PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
             checkStmt.setString(1, sender);
             checkStmt.setString(2, recipient);
+            checkStmt.setString(3, "pending");
             try (ResultSet rs = checkStmt.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
                     return false; // Game request already sent

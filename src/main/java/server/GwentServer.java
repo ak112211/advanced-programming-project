@@ -1,10 +1,15 @@
 package server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +38,11 @@ public class GwentServer {
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is listening on port " + PORT);
+            List<String> usernames = DatabaseConnection.getUsernames();
+            for (String user: usernames) {
+                players.put(user, new Player(user));
+            }
+
             while (true) {
                 Socket socket = serverSocket.accept();
                 new ClientHandler(socket).start();
@@ -170,17 +180,17 @@ public class GwentServer {
                 }
             }
         }
-        
+
         private void handleLogin(Matcher matcher) throws IOException {
             String id = matcher.group(1);
             synchronized (players) {
-             
+
                 currentPlayer = players.get(id);
                 synchronized (clients) {
                     clients.put(id, this);
                 }
                 out.println("Login successful");
-               
+
             }
         }
 
@@ -201,6 +211,13 @@ public class GwentServer {
         private void handleLogout() throws IOException {
             if (currentPlayer != null) {
                 synchronized (clients) {
+                    synchronized (players) {
+                        for (String username: DatabaseConnection.getUsernames()) {
+                            if (players.get(username) != null && clients.get(username) != null && !Objects.equals(username, currentPlayer.getId())) {
+                                sendToClient(username, "update scoreboard");
+                            }
+                        }
+                    }
                     clients.remove(currentPlayer.getId());
                 }
                 currentPlayer = null;

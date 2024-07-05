@@ -57,6 +57,9 @@ public class ScoreboardController implements ServerConnection.ServerEventListene
                 }
                 assert user != null;
                 scoreboardListView.getItems().add(user.getNickname() + " score: " + user.getHighScore() + " status: offline");
+            } else if (input.startsWith("update scoreboard")) {
+                scoreboardListView.getItems().clear();
+                loadScoreboard();
             }
         });
     }

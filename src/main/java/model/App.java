@@ -39,7 +39,6 @@ public class App {
                 } else if (currentController instanceof GamePaneController) {
                     ((GamePaneController) currentController).cleanup();
                 } else if (currentController instanceof MainMenuController) {
-                    System.out.println("hello");
                     ((MainMenuController) currentController).cleanup();
                 } else if (currentController instanceof MessagingController) {
                     ((MessagingController) currentController).cleanup();
