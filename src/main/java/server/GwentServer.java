@@ -39,7 +39,7 @@ public class GwentServer {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is listening on port " + PORT);
             List<String> usernames = DatabaseConnection.getUsernames();
-            for (String user: usernames) {
+            for (String user : usernames) {
                 players.put(user, new Player(user));
             }
 
@@ -212,7 +212,7 @@ public class GwentServer {
             if (currentPlayer != null) {
                 synchronized (clients) {
                     synchronized (players) {
-                        for (String username: DatabaseConnection.getUsernames()) {
+                        for (String username : DatabaseConnection.getUsernames()) {
                             if (players.get(username) != null && clients.get(username) != null && !Objects.equals(username, currentPlayer.getId())) {
                                 sendToClient(username, "update scoreboard");
                             }
@@ -297,9 +297,11 @@ public class GwentServer {
 
 class Player {
     private final String id;
+
     public Player(String id) {
         this.id = id;
     }
+
     public String getId() {
         return id;
     }

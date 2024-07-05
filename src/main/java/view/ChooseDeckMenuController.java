@@ -132,10 +132,7 @@ public class ChooseDeckMenuController {
 
     @FXML
     private void changeTurn() {
-        Deck deck = new Deck();
-        deck.setCards(currentDeck.getCards());
-        deck.setLeader(currentDeck.getLeader());
-        deck.setFaction(currentDeck.getFaction());
+        Deck deck = currentDeck.clone();
         if (isPlayer2Turn) {
             player2.setDeck(deck);
         } else {
@@ -387,10 +384,7 @@ public class ChooseDeckMenuController {
 
     @FXML
     private void startGame() throws SQLException {
-        Deck deck = new Deck();
-        deck.setCards(currentDeck.getCards());
-        deck.setLeader(currentDeck.getLeader());
-        deck.setFaction(currentDeck.getFaction());
+        Deck deck = currentDeck.clone();
         if (isPlayer2Turn) {
             player2.setDeck(deck);
         } else {
