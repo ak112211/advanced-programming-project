@@ -1,31 +1,35 @@
 package view;
 
 import enums.Menu;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
+import util.ServerConnection;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
-public class ScoreboardController {
+public class ScoreboardController implements ServerConnection.ServerEventListener {
 
     @FXML
     private ListView<String> scoreboardListView;
 
     @FXML
     private void initialize() {
+        scoreboardListView.getItems().clear();
         loadScoreboard();
+        App.getServerConnection().addMessageListener(this);
     }
 
     private void loadScoreboard() {
         try {
-            List<User> topUsers = DatabaseConnection.getTopUsers(10); // Get top 10 users
-            scoreboardListView.getItems().clear();
+            List<User> topUsers = DatabaseConnection.getTopUsers(100); // Get top 10 users
             for (User user : topUsers) {
-                scoreboardListView.getItems().add(user.getNickname() + ": " + user.getHighScore());
+                App.getServerConnection().sendMessage("check status:" + user.getUsername());
             }
         } catch (SQLException e) {
             Tools.showAlert("Error", "Database Error", "An error occurred while fetching the scoreboard. Please try again.");
@@ -33,9 +37,37 @@ public class ScoreboardController {
         }
     }
 
+    @Override
+    public void handleServerEvent(String input) {
+        Platform.runLater(() -> {
+            if (input.endsWith("is online")) {
+                try {
+                    User user = DatabaseConnection.getUser(input.split(" ")[0]);
+                    assert user != null;
+                    scoreboardListView.getItems().add(user.getNickname() + " score: " + user.getHighScore() + " status: online");
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (input.endsWith("is offline")) {
+                User user = null;
+                try {
+                    user = DatabaseConnection.getUser(input.split(" ")[0]);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                assert user != null;
+                scoreboardListView.getItems().add(user.getNickname() + " score: " + user.getHighScore() + " status: offline");
+            }
+        });
+    }
 
     @FXML
     private void goToMainMenu() {
         App.loadScene(Menu.MAIN_MENU.getPath());
     }
+
+    public void cleanup() {
+        App.getServerConnection().removeMessageListener(this);
+    }
+
 }

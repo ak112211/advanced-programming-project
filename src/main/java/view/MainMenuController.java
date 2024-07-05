@@ -122,7 +122,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     private void startGame() {
         ChooseDeckMenuController.isMulti = true;
-        App.loadScene("/fxml/ChooseDeckMenu.fxml");
+        App.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
     }
 
     public void cleanup() {

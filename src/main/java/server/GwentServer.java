@@ -12,6 +12,7 @@ public class GwentServer {
     private static final int PORT = 5555;
 
     // Command patterns
+    private static final Pattern CHECK_STATUS_PATTERN = Pattern.compile("check status:(\\w+)");
     private static final Pattern LOGIN_PATTERN = Pattern.compile("login:(\\w+)");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("register:(\\w+)");
     private static final Pattern LOGOUT_PATTERN = Pattern.compile("logout");
@@ -65,6 +66,8 @@ public class GwentServer {
                     if (matcher != null) {
                         if (matcher.pattern() == LOGIN_PATTERN) {
                             handleLogin(matcher);
+                        } else if (matcher.pattern() == CHECK_STATUS_PATTERN) {
+                            handleCheckOnline(matcher);
                         } else if (matcher.pattern() == REGISTER_PATTERN) {
                             handleRegister(matcher);
                         } else if (matcher.pattern() == LOGOUT_PATTERN) {
@@ -112,6 +115,9 @@ public class GwentServer {
 
         private Matcher getMatcher(String input) {
             Matcher matcher = LOGIN_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = CHECK_STATUS_PATTERN.matcher(input);
             if (matcher.matches()) return matcher;
 
             matcher = REGISTER_PATTERN.matcher(input);
@@ -175,6 +181,20 @@ public class GwentServer {
                 }
                 out.println("Login successful");
                
+            }
+        }
+
+        private void handleCheckOnline(Matcher matcher) throws IOException {
+            String id = matcher.group(1);
+
+            ClientHandler clientHandler;
+            synchronized (clients) {
+                clientHandler = clients.get(id);
+            }
+            if (clientHandler == null) {
+                out.println(id + " is offline");
+            } else {
+                out.println(id + " is online");
             }
         }
 

@@ -12,7 +12,8 @@ public enum Menu {
     DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
     VERIFY_MENU("/fxml/VerificationCode.fxml"),
     MESSAGING_MENU("/fxml/MessagingMenu.fxml"),
-    LOBBY_MENU("/fxml/Lobby.fxml");
+    LOBBY_MENU("/fxml/Lobby.fxml"),
+    CHOOSE_NAME_MENU("/fxml/ChooseName.fxml");
 
     private final String path;
 

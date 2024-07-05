@@ -63,6 +63,7 @@ public class ChooseDeckMenuController {
     public static boolean isMulti;
     private static User currentUser;
     public static User player2;
+    public static String name;
     private Deck currentDeck;
     private boolean settingFromSaved = false;
 
@@ -81,7 +82,7 @@ public class ChooseDeckMenuController {
         if (isMulti) {
             choosePlayer2DeckButton.setVisible(false);
         } else {
-            player2 = new User("Player2", null, null, null);
+            player2 = new User(name, null, null, null);
         }
 
         setup();

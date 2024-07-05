@@ -53,7 +53,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         acceptRequestButton.setOnAction(event -> acceptGameRequest());
         declineRequestButton.setOnAction(event -> declineGameRequest());
 
-        App.getServerConnection().addMessageListener(this::handleServerEvent);
+        App.getServerConnection().addMessageListener(this);
     }
 
     private void loadFriendsList() {
