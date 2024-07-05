@@ -3,10 +3,7 @@ package view;
 import enums.Menu;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
-import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
-import enums.leaders.MonstersLeaders;
-import enums.leaders.RealmsNorthernLeaders;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -26,10 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import model.App;
-import model.Deck;
 import model.Game;
 import model.User;
 import model.abilities.Ability;
@@ -49,6 +44,8 @@ import static util.DatabaseConnection.updateUserScore;
 
 public class GamePaneController implements Initializable {
     @FXML
+    private Button passButton;
+    @FXML
     private VBox pauseMenu;
     @FXML
     private Button exit;
@@ -65,11 +62,11 @@ public class GamePaneController implements Initializable {
     @FXML
     private Text cardNumText;
     @FXML
-    private VBox vetoDisplayVBox;
+    private VBox chooseDisplayVBox;
     @FXML
-    private ImageView vetoImageView;
+    private ImageView chooseImageView;
     @FXML
-    private Text vetoDescriptionText;
+    private Text chooseDescriptionText;
     @FXML
     private Pane gamePane;
     @FXML
@@ -135,8 +132,7 @@ public class GamePaneController implements Initializable {
 
     private Game game;
     private Card selectedCard;
-    private boolean vetoForPLayer1Shown = false;
-    private boolean vetoForPLayer2Shown = false;
+    private List<Card> cardChoices;
 
     private int currentIndex;
 
@@ -165,24 +161,14 @@ public class GamePaneController implements Initializable {
             put(Row.PLAYER2_SIEGE, player2SiegeSpell);
         }};
 
-        game = Game.getCurrentGame();
-        if (game == null) {
-            Deck deck1 = new Deck();
-            Deck deck2 = new Deck();
-            deck1.setFaction(Faction.REALMS_NORTHERN);
-            deck2.setFaction(Faction.MONSTER);
-            deck1.addCards(deck1.getFaction().getAllCards());
-            deck2.addCards(deck2.getFaction().getAllCards());
-            deck1.setLeader(RealmsNorthernLeaders.KING_OF_TEMERIA.getLeader());
-            deck2.setLeader(MonstersLeaders.BRINGER_OF_DEATH.getLeader());
 
-            User user1 = new User("username1", "nickname1", "email1", "password1");
-            User user2 = new User("username2", "nickname2", "email2", "password2");
-            user1.setDeck(deck1);
-            user2.setDeck(deck2);
-            game = new Game(user1, user2);
-            Game.setCurrentGame(game);
-        }
+
+        game = Game.getCurrentGame();
+        game.setGamePaneController(this);
+        player1NameLabel.setText(game.getPlayer1().getUsername());
+        player2NameLabel.setText(game.getPlayer2().getUsername());
+        initializeCards();
+        setupLeaderCards();
 
         if (game.getStatus() == Game.GameStatus.PENDING) {
             fromSaved = true;
@@ -196,25 +182,7 @@ public class GamePaneController implements Initializable {
         } else {
             game.initializeGameObjects();
         }
-        player1NameLabel.setText(game.getPlayer1().getUsername());
-        player2NameLabel.setText(game.getPlayer2().getUsername());
-        initializeCards();
-        setupLeaderCards();
         startTurn();
-        if (!fromSaved) {
-            showVetoOverlay(); // Show the veto overlay at the beginning of the game
-            if (User.getCurrentUser().equals(game.getPlayer1())) {
-                if (!vetoForPLayer1Shown) {
-                    showVetoOverlay();
-                    vetoForPLayer1Shown = true;
-                }
-            } else {
-                if (!vetoForPLayer2Shown) {
-                    showVetoOverlay();
-                    vetoForPLayer2Shown = true;
-                }
-            }
-        }
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
@@ -254,13 +222,8 @@ public class GamePaneController implements Initializable {
     }
 
     private void initializeCards() {
-        game.getPlayer1Deck().forEach(this::createCardView);
-        game.getPlayer1InHandCards().forEach(this::createCardView);
-        game.getPlayer1GraveyardCards().forEach(this::createCardView);
+        game.getAllCards().forEach(this::createCardView);
         game.getPlayer1LeaderCard().setSmallImage();
-        game.getPlayer2Deck().forEach(this::createCardView);
-        game.getPlayer2InHandCards().forEach(this::createCardView);
-        game.getPlayer2GraveyardCards().forEach(this::createCardView);
         game.getPlayer2LeaderCard().setSmallImage();
     }
 
@@ -305,10 +268,7 @@ public class GamePaneController implements Initializable {
         player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
 
         for (Card card : CardsPlace.IN_HAND.getPlayerCards(game)) {
-            card.setOnMouseClicked(event -> {
-                System.out.println("clicked");
-                selectCard(card);
-            });
+            card.setOnMouseClicked(event -> selectCard(card));
         }
     }
 
@@ -322,6 +282,7 @@ public class GamePaneController implements Initializable {
         player2ScoreLabel.setText("Score: " + game.getPlayer2Points());
     }
 
+    @FXML
     private void handlePreviousCard() {
         if (currentIndex > 0) {
             currentIndex--;
@@ -329,93 +290,52 @@ public class GamePaneController implements Initializable {
         }
     }
 
+    @FXML
     private void handleNextCard() {
-        if (game.isPlayer1Turn()) {
-            if (currentIndex < player1Hand.getChildren().size() - 1) {
-                currentIndex++;
-                showCard();
-            }
-        } else {
-            if (currentIndex < player2Hand.getChildren().size() - 1) {
-                currentIndex++;
-                showCard();
-            }
+        if (currentIndex < cardChoices.size() - 1) {
+            currentIndex++;
+            showCard();
         }
-
     }
 
     private void showCard() {
-        if (game.isPlayer1Turn()) {
-            Card card = (Card) player1Hand.getChildren().get(currentIndex);
-            vetoImageView.setImage(Tools.getImage(card.getImagePath()));
-            vetoDescriptionText.setText(card.getDescription().getDescription());
-        } else {
-            Card card = (Card) player2Hand.getChildren().get(currentIndex);
-            vetoImageView.setImage(Tools.getImage(card.getImagePath()));
-            vetoDescriptionText.setText(card.getDescription().getDescription());
-        }
-
+        Card card = cardChoices.get(currentIndex);
+        chooseImageView.setImage(Tools.getImage(card.getImagePath()));
+        chooseDescriptionText.setText(card.getDescription().getDescription());
     }
 
-    public void showVetoOverlay() {
-        overlayPane.getChildren().clear();  // Clear any existing children
-
-        VBox overlay = new VBox(10);
-        overlay.setAlignment(Pos.CENTER);
-        overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
-        overlay.setPrefSize(400, 300);
-
-        Button previousButton = new Button("◄");
-        previousButton.setOnAction(event -> handlePreviousCard());
-
-        vetoImageView.setFitWidth(150);
-        vetoImageView.setFitHeight(340);
-        vetoImageView.setPreserveRatio(true);
-
-        Button nextButton = new Button("►");
-        nextButton.setOnAction(event -> handleNextCard());
-
-        HBox navigation = new HBox(10, previousButton, vetoImageView, nextButton);
-        navigation.setAlignment(Pos.CENTER);
-
-        vetoDescriptionText.setWrappingWidth(170);
-        vetoDescriptionText.setStyle("-fx-padding: 10; -fx-fill: #000000;");
-        vetoDescriptionText.setTextAlignment(TextAlignment.CENTER);
-
-        Button passButton = new Button("Pass");
-        passButton.setOnAction(event -> passVeto());
-
-        overlay.getChildren().addAll(navigation, vetoDescriptionText, passButton);
-        overlayPane.getChildren().add(overlay);
+    public void showChooseOverlay(boolean canPass, List<Card> cardChoices) {
+        this.cardChoices = cardChoices;
+        chooseDisplayVBox.setVisible(true);
         overlayPane.setVisible(true);
+        passButton.setVisible(canPass);
 
         currentIndex = 0;
         showCard();
+        chooseImageView.setOnMouseClicked(event -> {
+            overlayPane.setVisible(false);
+            chooseDisplayVBox.setVisible(false);
+            if (game.isOnline()) {
 
-        if (game.isPlayer1Turn()) {
-            vetoImageView.setOnMouseClicked(event -> vetoCard((Card) player1Hand.getChildren().get(currentIndex)));
+            } else {
+                game.finishedChoosing(currentIndex);
+            }
+        });
+    }
+
+    @FXML
+    private void passChoose() {
+        // nextTurn(); // ridam dahane in khate code
+        overlayPane.setVisible(false);
+        chooseDisplayVBox.setVisible(false);
+        if (game.isOnline()) {
+
         } else {
-            vetoImageView.setOnMouseClicked(event -> vetoCard((Card) player2Hand.getChildren().get(currentIndex)));
+            game.finishedChoosing(null);
         }
     }
 
-    private void vetoCard(Card card) {
-        game.getPlayer1InHandCards().remove(card);
-        Card newCard = game.getPlayer1Deck().get(new Random().nextInt(game.getPlayer1Deck().size()));
-        game.getPlayer1InHandCards().add(newCard);
-        setupCardsInHand();
-        currentIndex = 0;
-    }
-
-    private void passVeto() {
-        // nextTurn(); // ridam dahane in khate code
-        overlayPane.setVisible(false);
-        overlayPane.getChildren().clear();
-        currentIndex = 0;
-    }
-
-    private void nextTurn() throws SQLException, IOException {
-        game.switchSides();
+    public void nextTurn() {
         startTurn();
         if (game.isPlayer1Turn()) {
             displayMessage("Turn of " + game.getPlayer1().getUsername());
@@ -423,39 +343,22 @@ public class GamePaneController implements Initializable {
             displayMessage("Turn of " + game.getPlayer2().getUsername());
         }
         if (game.isOnline()) {
-            DatabaseConnection.updateGame(game);
+            try {
+                DatabaseConnection.updateGame(game);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             String player = game.isPlayer1Turn() ? game.getPlayer1().getUsername() : game.getPlayer2().getUsername();
             App.getServerConnection().sendMessage(player + ":other player played move");
         }
     }
 
-    private void startTurn() {
+    public void startTurn() {
         updateScore();
         clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         setupCardsInHand();
         setupCardsOnBoard();
-        if (game.isOnline()) {
-            if (User.getCurrentUser().equals(game.getPlayer1())) {
-                if (!vetoForPLayer1Shown) {
-                    showVetoOverlay();
-                    vetoForPLayer1Shown = true;
-                }
-            } else {
-                if (!vetoForPLayer2Shown) {
-                    showVetoOverlay();
-                    vetoForPLayer2Shown = true;
-                }
-            }
-        } else {
-            if (!fromSaved) {
-                if (!User.getCurrentUser().equals(game.getCurrentPlayer())) {
-                    if (!vetoForPLayer2Shown) {
-                        showVetoOverlay();
-                        vetoForPLayer2Shown = true;
-                    }
-                }
-            }
-        }
+        game.veto();
     }
 
     private void selectCard(Card card) {
@@ -516,7 +419,7 @@ public class GamePaneController implements Initializable {
         rowBox.setStyle("-fx-background-color: rgba(255, 255, 150, 0.2);");
         rowBox.setOnMouseClicked(rowClickEvent -> {
             try {
-                playCard(card, row);
+                game.playCard(card, row);
             } catch (IllegalArgumentException e) {
                 System.out.println("" + rowBox + row + card.getName());
                 throw e;
@@ -531,7 +434,7 @@ public class GamePaneController implements Initializable {
         inGameCard.setOnMouseClicked(rowClickEvent -> {
             ((Decoy) card.getAbility()).setReturnCard(inGameCard);
             try {
-                playCard(card, inGameCard.getRow());
+                game.playCard(card, inGameCard.getRow());
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 System.out.println(card.getType() + card.getName() + inGameCard.getRow());
@@ -550,20 +453,6 @@ public class GamePaneController implements Initializable {
             inGameCard.removeStroke();
             inGameCard.setOnMouseClicked(null);
         });
-    }
-
-    private void playCard(Card card, Row row) throws SQLException, IOException {
-        if (row.isPlayer1() ^ card.getAbility() instanceof Spy) {
-            if (!game.player1PlayCard(card, row)) {
-                throw new IllegalArgumentException("card cannot be played");
-            }
-        } else {
-            if (!game.player2PlayCard(card, row)) {
-                throw new IllegalArgumentException("card cannot be played");
-            }
-        }
-        game.calculatePoints();
-        nextTurn();
     }
 
     private void showLeaderCardOverlay(Leader leaderCard) {
