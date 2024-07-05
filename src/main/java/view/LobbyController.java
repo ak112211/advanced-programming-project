@@ -49,12 +49,12 @@ public class LobbyController implements ServerConnection.ServerEventListener {
         Platform.runLater(() -> {
             if (input.endsWith("loaded deck new")) {
                 try {
-                    Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split("")[0]));
+                    Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split(" ")[0]));
                     game.setCurrentPlayer(User.getCurrentUser());
                     game.setOnline(true);
-                    DatabaseConnection.saveGame(Game.getCurrentGame());
-                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split("")[0]) + ":loaded after:" + game.getID());
                     Game.setCurrentGame(game);
+                    DatabaseConnection.saveGame(Game.getCurrentGame());
+                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split(" ")[0]) + ":loaded after:" + game.getID());
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
