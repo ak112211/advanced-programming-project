@@ -12,6 +12,7 @@ import util.DatabaseConnection;
 import util.ServerConnection;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class LobbyController implements ServerConnection.ServerEventListener {
 
@@ -47,12 +48,12 @@ public class LobbyController implements ServerConnection.ServerEventListener {
         Platform.runLater(() -> {
             if (input.endsWith("loaded deck new")) {
                 try {
-                    Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split("")[0]));
+                    Game game = new Game(User.getCurrentUser(), Objects.requireNonNull(DatabaseConnection.getUser(input.split(" ")[0])));
                     game.setCurrentUser(User.getCurrentUser());
                     game.setOnline(true);
                     Game.setCurrentGame(game);
                     DatabaseConnection.saveGame(Game.getCurrentGame());
-                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split(" ")[0]) + ":loaded after:" + game.getID());
+                    App.getServerConnection().sendMessage(input.split(" ")[0] + ":loaded after:" + game.getID());
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
