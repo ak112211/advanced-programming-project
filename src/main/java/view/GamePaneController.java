@@ -184,9 +184,9 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
                 throw new RuntimeException(e);
             }
         } else {
-            game.initializeGameObjects();
+            game.startGame();
         }
-        startTurn();
+        updateScene();
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
@@ -349,7 +349,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     }
 
     public void nextTurn() {
-        startTurn();
+        updateScene();
         if (game.isPlayer1Turn()) {
             displayMessage("Turn of " + game.getPlayer1().getUsername());
         } else {
@@ -366,12 +366,12 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
         }
     }
 
-    public void startTurn() {
+    public void updateScene() {
         updateScore();
         clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         setupCardsInHand();
         setupCardsOnBoard();
-        game.veto();
+        game.getAllCards().forEach(Card::setPowerText);
     }
 
     private void selectCard(Card card) {
@@ -529,6 +529,14 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
         overlayMessage.setVisible(false);
     }
 
+    public void showFinishedOverlay() {
+        // TODO
+    }
+
+    public void showChooseWhoStartsOverlay() {
+        // TODO
+    }
+
     @FXML
     public void handleQuit(ActionEvent actionEvent) {
         try {
@@ -540,7 +548,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
             }
 
             game.setStatus(Game.GameStatus.COMPLETED);
-            game.setWinner(player);
+            // game.setWinner(player);
             hideOverlayMessage();
             game.getPlayer1().setHighScore(game.getPlayer1Points() + game.getPlayer1().getHighScore());
             game.getPlayer2().setHighScore(game.getPlayer2Points() + game.getPlayer2().getHighScore());
@@ -599,7 +607,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("Move from ")) {
-                startTurn();
+                updateScene();
             } else if (input.endsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
                 Tools.showAlert(input + " You won!");

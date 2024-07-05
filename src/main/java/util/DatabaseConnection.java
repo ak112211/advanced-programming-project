@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://37.152.188.83:3306/gwent";
@@ -193,7 +192,7 @@ public class DatabaseConnection {
             preparedStatement.setString(2, game.getPlayer2().getUsername());
             preparedStatement.setTimestamp(3, new Timestamp(game.getDate().getTime()));
             preparedStatement.setString(4, game.getStatus().name());
-            preparedStatement.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
+            preparedStatement.setString(5, game.getWinnerUser() != null ? game.getWinnerUser().getUsername() : null);
 
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Card.class, new CardSerializer())
@@ -217,7 +216,7 @@ public class DatabaseConnection {
             preparedStatement.setString(2, game.getPlayer2().getUsername());
             preparedStatement.setTimestamp(3, new Timestamp(game.getDate().getTime()));
             preparedStatement.setString(4, game.getStatus().name());
-            preparedStatement.setString(5, game.getWinner() != null ? game.getWinner().getUsername() : null);
+            preparedStatement.setString(5, game.getWinnerUser() != null ? game.getWinnerUser().getUsername() : null);
 
             game.setID(getTotalGamesCount() + 1);
             Gson gson = new GsonBuilder()

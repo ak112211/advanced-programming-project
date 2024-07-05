@@ -1,6 +1,5 @@
 package view;
 
-import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -12,7 +11,6 @@ import model.User;
 import util.DatabaseConnection;
 import util.ServerConnection;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class LobbyController implements ServerConnection.ServerEventListener {
@@ -50,7 +48,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
             if (input.endsWith("loaded deck new")) {
                 try {
                     Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split("")[0]));
-                    game.setCurrentPlayer(User.getCurrentUser());
+                    game.setCurrentUser(User.getCurrentUser());
                     game.setOnline(true);
                     DatabaseConnection.saveGame(Game.getCurrentGame());
                     App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split("")[0]) + ":loaded after:" + game.getID());

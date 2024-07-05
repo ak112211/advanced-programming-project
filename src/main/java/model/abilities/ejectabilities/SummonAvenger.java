@@ -1,12 +1,13 @@
 package model.abilities.ejectabilities;
 
 import enums.cards.CardEnum;
+import model.Game;
 import model.card.Card;
 
 import java.util.ArrayList;
 
 public class SummonAvenger extends EjectAbility {
-    private static final ArrayList<Card> CARDS = new ArrayList<>();
+    private static final ArrayList<Card> cards = new ArrayList<>();
     private final CardEnum NEW_CARD_ENUM;
 
     public SummonAvenger(CardEnum newCardEnum) {
@@ -14,9 +15,14 @@ public class SummonAvenger extends EjectAbility {
         setIconName("avenger");
     }
 
-    public void Affect(Card myCard) {
+    public void affect(Card myCard) {
         Card newCard = NEW_CARD_ENUM.getCard();
         newCard.setDefaultRow(myCard.getRow().isPlayer1());
-        CARDS.add(newCard);
+        cards.add(newCard);
+    }
+
+    public static void startTurnAffect(Game game) {
+        game.getInGameCards().addAll(cards);
+        cards.clear();
     }
 }
