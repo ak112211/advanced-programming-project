@@ -1,25 +1,25 @@
 package view;
 
 import enums.Menu;
-import enums.cardsinformation.Faction;
 import enums.cards.*;
+import enums.cardsinformation.Faction;
 import enums.leaders.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import model.App;
+import model.Deck;
 import model.Game;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
-import model.Deck;
 import util.DatabaseConnection;
 
 import java.io.File;
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class ChooseDeckMenuController {
@@ -132,7 +131,7 @@ public class ChooseDeckMenuController {
     }
 
     @FXML
-    private void changeTurn(ActionEvent event) {
+    private void changeTurn() {
         Deck deck = new Deck();
         deck.setCards(currentDeck.getCards());
         deck.setLeader(currentDeck.getLeader());
@@ -366,14 +365,11 @@ public class ChooseDeckMenuController {
                     count++;
                 }
             }
-            cardNumText.setText("count of this card in deck : " + String.valueOf(count));
+            cardNumText.setText("count of this card in deck : " + count);
         }
 
         // Load the image and set it in the ImageView
-        Image image = new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm());
-        cardImageView.setImage(image);
+        cardImageView.setImage(Tools.getImage(imagePath));
 
         // Set the description text
         cardDescriptionText.setText(description);

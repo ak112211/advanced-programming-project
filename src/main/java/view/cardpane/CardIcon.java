@@ -2,11 +2,9 @@ package view.cardpane;
 
 import enums.cardsinformation.Type;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Paint;
-
-import java.util.Objects;
+import view.Tools;
 
 import static javafx.geometry.Pos.CENTER;
 
@@ -22,7 +20,7 @@ public class CardIcon {
     }
 
     public ImageView getAbilityIcon() {
-        ImageView imageView = new ImageView(getImage("/gwentImages/img/icons/card_ability_" + abilityName + ".png"));
+        ImageView imageView = Tools.getImageView("/gwentImages/img/icons/card_ability_" + abilityName + ".png");
         imageView.setFitWidth(17);
         imageView.setPreserveRatio(true);
         imageView.setLayoutX(15);
@@ -31,8 +29,8 @@ public class CardIcon {
     }
 
     public ImageView getTypeIcon() {
-        ImageView imageView = new ImageView(getImage("/gwentImages/img/icons/card_row_"
-                + type.toString().split("_")[0].toLowerCase() + ".png"));
+        ImageView imageView = Tools.getImageView("/gwentImages/img/icons/card_row_"
+                + type.toString().split("_")[0].toLowerCase() + ".png");
         imageView.setFitWidth(17);
         imageView.setPreserveRatio(true);
         imageView.setLayoutX(34);
@@ -42,7 +40,7 @@ public class CardIcon {
 
     public ImageView getPowerIcon() {
         String powerIconName = type.isSpecial() ? abilityName : isHero ? "hero" : "normal";
-        ImageView imageView = new ImageView(getImage("/gwentImages/img/icons/power_" + powerIconName + ".png"));
+        ImageView imageView = Tools.getImageView("/gwentImages/img/icons/power_" + powerIconName + ".png");
         imageView.setFitWidth(37);
         imageView.setPreserveRatio(true);
         imageView.setLayoutX(-2);
@@ -73,11 +71,7 @@ public class CardIcon {
     }
 
     public ImageView getAnimationIcon() {
-        return new ImageView(getImage("/gwentImages/img/icons/anim_" + abilityName + ".png"));
-    }
-
-    private Image getImage(String path) {
-        return new Image(Objects.requireNonNull(getClass().getResource(path)).toExternalForm());
+        return Tools.getImageView("/gwentImages/img/icons/anim_" + abilityName + ".png");
     }
 
     public Type getType() {

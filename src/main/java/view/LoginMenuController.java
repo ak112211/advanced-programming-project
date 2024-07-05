@@ -5,14 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
 
 import java.sql.SQLException;
-import java.util.Objects;
 
 import static view.Tools.saveUserSession;
 import static view.Tools.sendVerificationCode;
@@ -37,7 +35,7 @@ public class LoginMenuController {
         textField.visibleProperty().bind(showPasswordCheckBox.selectedProperty());
         passwordField.managedProperty().bind(showPasswordCheckBox.selectedProperty().not());
         passwordField.visibleProperty().bind(showPasswordCheckBox.selectedProperty().not());
-        backgroundImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/maxresdefault.jpg"))));
+        backgroundImageView.setImage(Tools.getImage("/gwentImages/img/maxresdefault.jpg"));
 
         // Bind the text properties to keep them synchronized
         textField.textProperty().bindBidirectional(passwordField.textProperty());

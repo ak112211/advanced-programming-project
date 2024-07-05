@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ProfileMenuController {
-    private static final int defaultNumberToShowGameHistory = 5;
+    private static final int DEFAULT_NUMBER_TO_SHOW_GAME_HISTORY = 5;
 
     @FXML
     private TextField usernameField;
@@ -72,7 +72,7 @@ public class ProfileMenuController {
     @FXML
     private void handleShowGameHistory() {
         String numberString = gameHistoryField.getText();
-        int number = defaultNumberToShowGameHistory;
+        int number = DEFAULT_NUMBER_TO_SHOW_GAME_HISTORY;
         if (!numberString.isEmpty()) {
             try {
                 number = Integer.parseInt(numberString);

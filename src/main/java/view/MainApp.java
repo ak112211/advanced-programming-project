@@ -3,16 +3,12 @@ package view;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import model.App;
 import util.ServerConnection;
-
-import java.util.Objects;
 
 import static view.Tools.loadUserSession;
 
@@ -32,8 +28,7 @@ public class MainApp extends Application {
         App.setStage(stage);
         App.setServerConnection(new ServerConnection());
 
-        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/icon.png")));
-        stage.getIcons().add(image);
+        stage.getIcons().add(Tools.getImage("/gwentImages/img/icon.png"));
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         App.setCurrentController(fxmlLoader.getController());
@@ -62,8 +57,7 @@ public class MainApp extends Application {
     }
 
     private void setupBackgroundMusic() {
-        Media media = new Media(getClass().getResource("/media/Ramin-Djawadi-Finale-128.mp3").toExternalForm());
-        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = Tools.getMediaPlayer("/media/Ramin-Djawadi-Finale-128.mp3");
         mediaPlayer.play();
     }
 

@@ -6,7 +6,6 @@ import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -43,7 +42,7 @@ import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
 
-public class GamePaneController implements Initializable , ServerConnection.ServerEventListener {
+public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
             player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
@@ -166,7 +165,6 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
         }};
 
 
-
         game = Game.getCurrentGame();
         game.setGamePaneController(this);
         player1NameLabel.setText(game.getPlayer1().getUsername());
@@ -216,8 +214,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     }
 
     private void setupBackgroundMusic() {
-        Media media = new Media(getClass().getResource("/media/Ramin-Djawadi-Finale-128.mp3").toExternalForm());
-        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = Tools.getMediaPlayer("/media/Ramin-Djawadi-Finale-128.mp3");
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
     }
 
@@ -538,7 +535,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     }
 
     @FXML
-    public void handleQuit(ActionEvent actionEvent) {
+    public void handleQuit() {
         try {
             User player;
             if (game.isPlayer1Turn()) {
@@ -567,7 +564,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     }
 
     @FXML
-    public void handleSaveGameAndExit(ActionEvent actionEvent) throws SQLException {
+    public void handleSaveGameAndExit() throws SQLException {
         game.setStatus(Game.GameStatus.PENDING);
         DatabaseConnection.updateGame(game);
         App.loadScene(Menu.MAIN_MENU.getPath());
@@ -576,7 +573,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     }
 
     @FXML
-    public void handleEndGameWithoutSaving(ActionEvent actionEvent) {
+    public void handleEndGameWithoutSaving() {
         try {
             if (game != null) {
                 int gameId = game.getID();
@@ -593,7 +590,7 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     }
 
     @FXML
-    public void handleToggleSound(ActionEvent actionEvent) {
+    public void handleToggleSound() {
         if (isMute) {
             isMute = false;
             mediaPlayer.play();

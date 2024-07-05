@@ -2,11 +2,8 @@ package view;
 
 import enums.Menu;
 import javafx.fxml.FXML;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import model.App;
-import util.DatabaseConnection;
 
 import java.sql.SQLException;
 

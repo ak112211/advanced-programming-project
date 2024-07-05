@@ -2,7 +2,6 @@ package view;
 
 import enums.Menu;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -187,7 +186,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         App.loadScene(Menu.MAIN_MENU.getPath());
     }
 
-    public void acceptFriendRequest(ActionEvent actionEvent) {
+    public void acceptFriendRequest() {
         String selectedRequest = friendRequestsListView.getSelectionModel().getSelectedItem();
         if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
             showAlert("Error", "No Pending Request Selected", "Please select a pending friend request to accept.");
@@ -207,7 +206,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         }
     }
 
-    public void declineFriendRequest(ActionEvent actionEvent) {
+    public void declineFriendRequest() {
         String selectedRequest = friendRequestsListView.getSelectionModel().getSelectedItem();
         if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
             showAlert("Error", "No Pending Request Selected", "Please select a pending friend request to decline.");
@@ -225,7 +224,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         }
     }
 
-    public void startChat(ActionEvent actionEvent) {
+    public void startChat() {
         String selectedFriend = friendsListView.getSelectionModel().getSelectedItem();
         if (selectedFriend == null) {
             showAlert("Error", "No Friend Selected", "Please select a friend to chat with.");

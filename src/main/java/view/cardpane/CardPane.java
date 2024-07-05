@@ -1,13 +1,10 @@
 package view.cardpane;
 
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-
-import java.util.Objects;
+import view.Tools;
 
 public abstract class CardPane extends Pane {
     public static final int SMALL_WIDTH = 53;
@@ -29,9 +26,9 @@ public abstract class CardPane extends Pane {
 
         getChildren().clear();
         try {
-            image = new Rectangle(SMALL_WIDTH, SMALL_HEIGHT, getImagePattern(imagePath.replaceFirst("/lg/", "/sm/")));
-        } catch (RuntimeException e){
-            image = new Rectangle(SMALL_WIDTH, SMALL_HEIGHT, getImagePattern(imagePath));
+            image = new Rectangle(SMALL_WIDTH, SMALL_HEIGHT, Tools.getImagePattern(imagePath.replaceFirst("/lg/", "/sm/")));
+        } catch (RuntimeException e) {
+            image = new Rectangle(SMALL_WIDTH, SMALL_HEIGHT, Tools.getImagePattern(imagePath));
         }
         image.setArcWidth(5);
         image.setArcHeight(5);
@@ -55,14 +52,10 @@ public abstract class CardPane extends Pane {
         setWidth(70);
         setHeight(100);
         getChildren().clear();
-        image = new Rectangle(70, 100, getImagePattern(imagePath));
+        image = new Rectangle(70, 100, Tools.getImagePattern(imagePath));
         image.setArcWidth(10);
         image.setArcHeight(10);
         getChildren().add(image);
-    }
-
-    private static ImagePattern getImagePattern(String path) {
-        return new ImagePattern(new Image(Objects.requireNonNull(CardPane.class.getResource(path)).toExternalForm()));
     }
 
     public void setStroke() {
@@ -82,9 +75,7 @@ public abstract class CardPane extends Pane {
         rectangle.setArcHeight(10);
         rectangle.setWidth(70);
         rectangle.setHeight(100);
-        rectangle.setFill(new ImagePattern(new Image(
-                Objects.requireNonNull(getClass().getResource(imagePath))
-                        .toExternalForm())));
+        rectangle.setFill(Tools.getImagePattern(imagePath));
         return rectangle;
     }
 
