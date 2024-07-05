@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -12,6 +13,7 @@ import util.DatabaseConnection;
 import util.ServerConnection;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class LobbyController implements ServerConnection.ServerEventListener {
 
@@ -30,8 +32,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
 
     @FXML
     private void handleCancel() {
-        // Handle cancel action, such as going back to the main menu
-        System.out.println("Cancel button clicked");
+        App.loadScene(Menu.DECK_MENU.getPath());
     }
 
     public void setWaitingMessage(String message) {
@@ -47,12 +48,12 @@ public class LobbyController implements ServerConnection.ServerEventListener {
         Platform.runLater(() -> {
             if (input.endsWith("loaded deck new")) {
                 try {
-                    Game game = new Game(User.getCurrentUser(), DatabaseConnection.getUser(input.split("")[0]));
+                    Game game = new Game(User.getCurrentUser(), Objects.requireNonNull(DatabaseConnection.getUser(input.split(" ")[0])));
                     game.setCurrentUser(User.getCurrentUser());
                     game.setOnline(true);
                     Game.setCurrentGame(game);
                     DatabaseConnection.saveGame(Game.getCurrentGame());
-                    App.getServerConnection().sendMessage(DatabaseConnection.getUser(input.split(" ")[0]) + ":loaded after:" + game.getID());
+                    App.getServerConnection().sendMessage(input.split(" ")[0] + ":loaded after:" + game.getID());
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
