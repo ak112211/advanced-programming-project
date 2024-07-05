@@ -167,12 +167,12 @@ public class DatabaseConnection {
                 while (resultSet.next()) {
                     String opponent = resultSet.getString("player1").equals(username) ? resultSet.getString("player2") : resultSet.getString("player1");
                     String date = resultSet.getString("date");
-                    int player1Round1 = resultSet.getInt("player1_round1");
-                    int player1Round2 = resultSet.getInt("player1_round2");
-                    int player1Round3 = resultSet.getInt("player1_round3");
-                    int player2Round1 = resultSet.getInt("player2_round1");
-                    int player2Round2 = resultSet.getInt("player2_round2");
-                    int player2Round3 = resultSet.getInt("player2_round3");
+                    int player1Round1 = resultSet.getInt("player1_round1_score");
+                    int player1Round2 = resultSet.getInt("player1_round2_score");
+                    int player1Round3 = resultSet.getInt("player1_round3_score");
+                    int player2Round1 = resultSet.getInt("player2_round1_score");
+                    int player2Round2 = resultSet.getInt("player2_round2_score");
+                    int player2Round3 = resultSet.getInt("player2_round3_score");
                     int player1FinalScore = resultSet.getInt("player1_final_score");
                     int player2FinalScore = resultSet.getInt("player2_final_score");
                     String winner = resultSet.getString("winner");
@@ -186,7 +186,10 @@ public class DatabaseConnection {
     }
 
     public static void updateGame(Game game) throws SQLException {
-        String query = "UPDATE Games SET player1 = ?, player2 = ?, date = ?, status = ?, winner = ?, game_data = ?, is_online = ? WHERE game_id = ?";
+        String query = "UPDATE Games SET player1 = ?, player2 = ?, date = ?, status = ?, winner = ?, game_data = ?, is_online = ?, " +
+                "player1_round1_score = ?, player1_round2_score = ?, player1_round3_score = ?, " +
+                "player2_round1_score = ?, player2_round2_score = ?, player2_round3_score = ?, " +
+                "player1_final_score = ?, player2_final_score = ? WHERE game_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, game.getPlayer1().getUsername());
@@ -204,7 +207,18 @@ public class DatabaseConnection {
 
             preparedStatement.setString(6, gameData);
             preparedStatement.setBoolean(7, game.isOnline());
-            preparedStatement.setInt(8, game.getID());
+
+            // Set the new score fields
+            preparedStatement.setInt(8, game.getPlayer1Round1());
+            preparedStatement.setInt(9, game.getPlayer1Round2());
+            preparedStatement.setInt(10, game.getPlayer1Round3());
+            preparedStatement.setInt(11, game.getPlayer2Round1());
+            preparedStatement.setInt(12, game.getPlayer2Round2());
+            preparedStatement.setInt(13, game.getPlayer2Round3());
+            preparedStatement.setInt(14, game.getPlayer1FinalScore());
+            preparedStatement.setInt(15, game.getPlayer2FinalScore());
+
+            preparedStatement.setInt(16, game.getID());
             preparedStatement.executeUpdate();
         }
     }

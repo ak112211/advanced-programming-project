@@ -57,6 +57,16 @@ public class Game implements Serializable {
     private boolean hasSwitchedTurn;
     private int threadCount;
 
+    // New score fields
+    private int player1Round1;
+    private int player1Round2;
+    private int player1Round3;
+    private int player2Round1;
+    private int player2Round2;
+    private int player2Round3;
+    private int player1FinalScore;
+    private int player2FinalScore;
+
     public Game(User player1, User player2) {
         this(player1, player2, new Date(System.currentTimeMillis()),
                 player1.getDeck().getCards(), player2.getDeck().getCards(),
@@ -457,6 +467,70 @@ public class Game implements Serializable {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public int getPlayer1Round1() {
+        return player1Round1;
+    }
+
+    public void setPlayer1Round1(int player1Round1) {
+        this.player1Round1 = player1Round1;
+    }
+
+    public int getPlayer1Round2() {
+        return player1Round2;
+    }
+
+    public void setPlayer1Round2(int player1Round2) {
+        this.player1Round2 = player1Round2;
+    }
+
+    public int getPlayer1Round3() {
+        return player1Round3;
+    }
+
+    public void setPlayer1Round3(int player1Round3) {
+        this.player1Round3 = player1Round3;
+    }
+
+    public int getPlayer2Round1() {
+        return player2Round1;
+    }
+
+    public void setPlayer2Round1(int player2Round1) {
+        this.player2Round1 = player2Round1;
+    }
+
+    public int getPlayer2Round2() {
+        return player2Round2;
+    }
+
+    public void setPlayer2Round2(int player2Round2) {
+        this.player2Round2 = player2Round2;
+    }
+
+    public int getPlayer2Round3() {
+        return player2Round3;
+    }
+
+    public void setPlayer2Round3(int player2Round3) {
+        this.player2Round3 = player2Round3;
+    }
+
+    public int getPlayer1FinalScore() {
+        return player1FinalScore;
+    }
+
+    public void setPlayer1FinalScore(int player1FinalScore) {
+        this.player1FinalScore = player1FinalScore;
+    }
+
+    public int getPlayer2FinalScore() {
+        return player2FinalScore;
+    }
+
+    public void setPlayer2FinalScore(int player2FinalScore) {
+        this.player2FinalScore = player2FinalScore;
     }
 
 }
