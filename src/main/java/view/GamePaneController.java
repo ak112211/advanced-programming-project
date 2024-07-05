@@ -38,6 +38,7 @@ import model.abilities.instantaneousabilities.Spy;
 import model.card.Card;
 import model.card.Leader;
 import util.DatabaseConnection;
+import util.ServerConnection;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,7 +48,7 @@ import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
 
-public class GamePaneController implements Initializable {
+public class GamePaneController implements Initializable , ServerConnection.ServerEventListener {
     @FXML
     private VBox pauseMenu;
     @FXML
@@ -226,7 +227,7 @@ public class GamePaneController implements Initializable {
             exitSave.setVisible(false);
             exit.setVisible(false);
             quit.setVisible(true);
-            App.getServerConnection().addMessageListener(this::handleServerEvent);
+            App.getServerConnection().addMessageListener(this);
 
         } else {
             exitSave.setVisible(true);
@@ -694,7 +695,8 @@ public class GamePaneController implements Initializable {
         }
     }
 
-    private void handleServerEvent(String input) {
+    @Override
+    public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("Move from ")) {
                 startTurn();
@@ -723,6 +725,10 @@ public class GamePaneController implements Initializable {
                 hideCardDisplay();
             }
         });
+    }
+
+    public void cleanup() {
+        App.getServerConnection().removeMessageListener(this);
     }
 
 }

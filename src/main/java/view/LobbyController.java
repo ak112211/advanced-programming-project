@@ -10,11 +10,12 @@ import model.App;
 import model.Game;
 import model.User;
 import util.DatabaseConnection;
+import util.ServerConnection;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class LobbyController {
+public class LobbyController implements ServerConnection.ServerEventListener {
 
     @FXML
     private Label waitingLabel;
@@ -25,7 +26,7 @@ public class LobbyController {
 
     @FXML
     private void initialize() {
-        App.getServerConnection().addMessageListener(this::handleServerEvent);
+        App.getServerConnection().addMessageListener(this);
 
     }
 
@@ -43,7 +44,8 @@ public class LobbyController {
         progressIndicator.setVisible(visible);
     }
 
-    private void handleServerEvent(String input) {
+    @Override
+    public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.endsWith("loaded deck new")) {
                 try {
@@ -69,4 +71,7 @@ public class LobbyController {
         });
     }
 
+    public void cleanup() {
+        App.getServerConnection().removeMessageListener(this);
+    }
 }

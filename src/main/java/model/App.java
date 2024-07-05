@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import util.ServerConnection;
+import view.*;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -16,7 +17,7 @@ public class App {
     private static Menu menu;
     private static Stage messagingStage;
     private static String menuPath;
-    private static boolean isLoggedIn;
+    private static boolean isGameIn;
     private static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
@@ -26,10 +27,27 @@ public class App {
     public static Stage getStage() {
         return stage;
     }
+    private static Object currentController;
 
     public static void loadScene(String fxmlPath) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(App.class.getResource(fxmlPath)));
+            if (currentController != null) {
+                if (currentController instanceof ChatController) {
+                    ((ChatController) currentController).cleanup();
+                } else if (currentController instanceof LobbyController) {
+                    ((LobbyController) currentController).cleanup();
+                } else if (currentController instanceof GamePaneController) {
+                    ((GamePaneController) currentController).cleanup();
+                } else if (currentController instanceof MainMenuController) {
+                    System.out.println("hello");
+                    ((MainMenuController) currentController).cleanup();
+                } else if (currentController instanceof MessagingController) {
+                    ((MessagingController) currentController).cleanup();
+                }
+            }
+            FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));
+            Parent root = loader.load();
+            currentController = loader.getController();
             Stage stage = App.getStage();
             menuPath = fxmlPath;
             Scene scene = new Scene(root);
@@ -77,5 +95,19 @@ public class App {
         return menuPath;
     }
 
+    public static boolean isIsGameIn() {
+        return isGameIn;
+    }
 
+    public static void setIsGameIn(boolean isGameIn) {
+        App.isGameIn = isGameIn;
+    }
+
+    public static Object getCurrentController() {
+        return currentController;
+    }
+
+    public static void setCurrentController(Object currentController) {
+        App.currentController = currentController;
+    }
 }

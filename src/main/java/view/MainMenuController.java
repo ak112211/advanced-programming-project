@@ -11,6 +11,7 @@ import model.App;
 import model.Game;
 import model.User;
 import util.DatabaseConnection;
+import util.ServerConnection;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.Objects;
 
 import static view.Tools.clearUserSession;
 
-public class MainMenuController {
+public class MainMenuController implements ServerConnection.ServerEventListener {
     @FXML
     private Label usernameField;
     @FXML
@@ -35,7 +36,7 @@ public class MainMenuController {
         usernameField.setText("Hi " + User.getCurrentUser().getUsername() + "!");
         backgroundImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gwentImages/img/maxresdefault.jpg"))));
         loadSavedGames();
-        App.getServerConnection().addMessageListener(this::handleServerEvent);
+        App.getServerConnection().addMessageListener(this);
 
     }
 
@@ -90,14 +91,17 @@ public class MainMenuController {
         App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 
-    private void handleServerEvent(String input) {
+    @Override
+    public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("Friend request from ")
                     || input.startsWith("Game request from ")
                     || input.startsWith("Message from ")
                     || input.startsWith("Game request accepted by ")
                     || input.startsWith("Friend request accepted by ")) {
-                showAlert(input);
+                if (!App.isIsGameIn()) {
+                    showAlert(input);
+                }
                 if (input.startsWith("Game request accepted by ")) {
                     try {
                         ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
@@ -119,5 +123,9 @@ public class MainMenuController {
     private void startGame() {
         ChooseDeckMenuController.isMulti = true;
         App.loadScene("/fxml/ChooseDeckMenu.fxml");
+    }
+
+    public void cleanup() {
+        App.getServerConnection().removeMessageListener(this);
     }
 }

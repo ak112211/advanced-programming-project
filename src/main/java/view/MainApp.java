@@ -1,6 +1,7 @@
 package view;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -16,7 +17,6 @@ import java.util.Objects;
 import static view.Tools.loadUserSession;
 
 public class MainApp extends Application {
-    public LoginMenuController controller;
     public MediaPlayer mediaPlayer; // Assuming this handles your background music
     boolean isMute;
 
@@ -35,7 +35,8 @@ public class MainApp extends Application {
         stage.getIcons().add(image);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        controller = fxmlLoader.getController();
+        App.setCurrentController(fxmlLoader.getController());
+
         stage.setTitle("Gwent");
 
         loadUserSession();
@@ -46,6 +47,17 @@ public class MainApp extends Application {
                 handleToggleSound();
             }
         });
+    }
+
+    @Override
+    public void stop() {
+        // Perform cleanup tasks here
+        if (App.getServerConnection() != null) {
+            App.getServerConnection().sendMessage("logout");
+            App.getServerConnection().close();
+        }
+        Platform.exit();
+        System.exit(0);
     }
 
     private void setupBackgroundMusic() {

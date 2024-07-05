@@ -143,6 +143,7 @@ public class Tools {
             stage.show();
             App.setMessagingStage(stage);
             stage.setOnCloseRequest(event -> {
+                controller.cleanup();
                 App.setMessagingStage(null);
             });
         } catch (IOException e) {

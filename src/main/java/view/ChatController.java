@@ -19,7 +19,7 @@ import java.util.List;
 import static view.Tools.openMessagingWindow;
 import static view.Tools.showAlert;
 
-public class ChatController {
+public class ChatController implements ServerConnection.ServerEventListener {
 
     @FXML
     private ListView<String> friendRequestsListView;
@@ -129,7 +129,7 @@ public class ChatController {
                 showAlert("Success", "Game Request Sent", "Game request sent successfully.");
                 loadGameRequests();
             } else {
-                showAlert("Error", "Request Failed", "Failed to send game request. Please try again.");
+                showAlert("Error", "Request Failed", "Either sending request failed or already sent pending request.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -145,7 +145,8 @@ public class ChatController {
             return;
         }
 
-        String sender = selectedRequest.split(":")[1];
+        System.out.println(selectedRequest);
+        String sender = selectedRequest.split(" ")[3];
         try {
             DatabaseConnection.acceptGameRequest(sender, currentUser.getUsername());
             App.getServerConnection().sendMessage("accepted game request from:" + sender);
@@ -166,7 +167,7 @@ public class ChatController {
             return;
         }
 
-        String sender = selectedRequest.split(":")[1];
+        String sender = selectedRequest.split(" ")[3];
         try {
             DatabaseConnection.declineGameRequest(sender, currentUser.getUsername());
             showAlert("Success", "Game Request Declined", "Game request declined.");
@@ -235,7 +236,8 @@ public class ChatController {
         openMessagingWindow(selectedFriend);
     }
 
-    private void handleServerEvent(String input) {
+    @Override
+    public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("Friend request from ")
                     || input.startsWith("Game request from ")
@@ -245,7 +247,10 @@ public class ChatController {
                 loadFriendsList();
                 loadFriendRequests();
                 loadGameRequests();
-                if (input.startsWith("Game request accepted by ")) {
+                if (input.startsWith("Message from ")) {
+                    showAlert(input);
+                }
+                else if (input.startsWith("Game request accepted by ")) {
                     try {
                         ChooseDeckMenuController.player2 = DatabaseConnection.getUser(input.split(" ")[4]);
                     } catch (SQLException e) {
@@ -257,8 +262,7 @@ public class ChatController {
         });
     }
 
-    @FXML
     public void cleanup() {
-        App.getServerConnection().removeMessageListener(this::handleServerEvent);
+        App.getServerConnection().removeMessageListener(this);
     }
 }

@@ -1,13 +1,8 @@
 package util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class ServerConnection {
     private Socket socket;
@@ -15,14 +10,16 @@ public class ServerConnection {
     private PrintWriter out;
     private static final String SERVER_ADDRESS = "37.152.188.83";
     private static final int SERVER_PORT = 5555;
-    private final List<Consumer<String>> listeners = new ArrayList<>();
+    private List<ServerEventListener> listeners = new ArrayList<>();
 
     public ServerConnection() {
         try {
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            new Thread(this::listenForMessages).start();
+
+            // Start a thread to listen for incoming messages
+            new Thread(new IncomingMessageHandler()).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,29 +29,12 @@ public class ServerConnection {
         out.println(message);
     }
 
-    public void addMessageListener(Consumer<String> listener) {
+    public void addMessageListener(ServerEventListener listener) {
         listeners.add(listener);
     }
 
-    public void removeMessageListener(Consumer<String> listener) {
+    public void removeMessageListener(ServerEventListener listener) {
         listeners.remove(listener);
-    }
-
-    private void listenForMessages() {
-        try {
-            String incomingMessage;
-            while ((incomingMessage = in.readLine()) != null) {
-                notifyListeners(incomingMessage);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void notifyListeners(String message) {
-        for (Consumer<String> listener : listeners) {
-            listener.accept(message);
-        }
     }
 
     public BufferedReader getIn() {
@@ -63,5 +43,39 @@ public class ServerConnection {
 
     public Socket getSocket() {
         return socket;
+    }
+
+    private class IncomingMessageHandler implements Runnable {
+        @Override
+        public void run() {
+            try {
+                String incomingMessage;
+                while ((incomingMessage = in.readLine()) != null) {
+                    notifyListeners(incomingMessage);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void notifyListeners(String message) {
+            for (ServerEventListener listener : listeners) {
+                listener.handleServerEvent(message);
+            }
+        }
+    }
+
+    public interface ServerEventListener {
+        void handleServerEvent(String message);
+    }
+
+    public void close() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

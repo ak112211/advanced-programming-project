@@ -417,6 +417,7 @@ public class ChooseDeckMenuController {
             game.setOnline(isMulti);
             Game.setCurrentGame(game);
             DatabaseConnection.saveGame(game);
+            App.setIsGameIn(true);
             new GameLauncher().start(App.getStage());
         }
     }

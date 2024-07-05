@@ -12,7 +12,7 @@ import util.ServerConnection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class MessagingController {
+public class MessagingController implements ServerConnection.ServerEventListener {
 
     @FXML
     private ListView<String> messageListView;
@@ -24,7 +24,7 @@ public class MessagingController {
 
     public MessagingController() {
         this.serverConnection = App.getServerConnection();
-        this.serverConnection.addMessageListener(this::handleServerEvent);
+        this.serverConnection.addMessageListener(this);
     }
 
     @FXML
@@ -64,11 +64,16 @@ public class MessagingController {
         loadMessages();
     }
 
-    private void handleServerEvent(String input) {
+    @Override
+    public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("Message from " + currentChatUser)) {
                 loadMessages();
             }
         });
+    }
+
+    public void cleanup() {
+        App.getServerConnection().removeMessageListener(this);
     }
 }
