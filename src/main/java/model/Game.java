@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Game implements Serializable {
@@ -141,20 +143,21 @@ public class Game implements Serializable {
         Platform.runLater(gamePaneController::startTurn);
     }
 
+    public int calculatePoints(Predicate<Row> predicate) {
+        return inGameCards.stream()
+               .filter(card -> predicate.test(card.getRow()))
+               .mapToInt(Card::getPower)
+               .sum();
+    }
+
     public void calculatePoints() {
         for (Card card : getAllCards()) {
             card.setPower(card.getFirstPower());
         }
         PersistentAbility.calculatePowers(inGameCards);
-        player1Points = inGameCards.stream()
-                .filter(card -> card.getRow().isPlayer1())
-                .mapToInt(Card::getPower)
-                .sum();
-        player2Points = inGameCards.stream()
-                .filter(card -> !card.getRow().isPlayer1())
-                .mapToInt(Card::getPower)
-                .sum();
         getAllCards().forEach(Card::setPowerText);
+        player1Points = calculatePoints(Row::isPlayer1);
+        player2Points = calculatePoints(row -> !row.isPlayer1());
     }
 
     public boolean canPlay(Card card, Row row) {

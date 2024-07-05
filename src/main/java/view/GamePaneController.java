@@ -45,6 +45,9 @@ import static util.DatabaseConnection.updateUserScore;
 
 public class GamePaneController implements Initializable , ServerConnection.ServerEventListener {
     @FXML
+    private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
+            player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
+    @FXML
     private Button passButton;
     @FXML
     private VBox pauseMenu;
@@ -282,6 +285,14 @@ public class GamePaneController implements Initializable , ServerConnection.Serv
     public void updateScore() {
         player1ScoreLabel.setText("Score: " + game.getPlayer1Points());
         player2ScoreLabel.setText("Score: " + game.getPlayer2Points());
+        player1TotalScore.setText(Integer.toString(game.getPlayer1Points()));
+        player2TotalScore.setText(Integer.toString(game.getPlayer2Points()));
+        player1CloseCombatTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER1_CLOSE_COMBAT)));
+        player2CloseCombatTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER2_CLOSE_COMBAT)));
+        player1RangedTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER1_RANGED)));
+        player2RangedTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER2_RANGED)));
+        player1SiegeTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER1_SIEGE)));
+        player2SiegeTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER2_SIEGE)));
     }
 
     @FXML
