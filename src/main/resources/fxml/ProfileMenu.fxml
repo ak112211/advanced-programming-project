@@ -18,44 +18,47 @@
     <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <Label text="Current Password:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <PasswordField fx:id="oldPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-    <Label text="Confirm Password:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-    <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-    <Label text="High Score" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-    <Label fx:id="highScoreLabel" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+    <Label text="Confirm Password:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+    <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-    <Label text="Rank" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-    <Label fx:id="rankLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+    <Label text="High Score" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+    <Label fx:id="highScoreLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
-    <Label text="Games Played" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-    <Label fx:id="gamesPlayedLabel" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+    <Label text="Rank" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+    <Label fx:id="rankLabel" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
 
-    <Label text="Draws" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-    <Label fx:id="drawsLabel" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+    <Label text="Games Played" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+    <Label fx:id="gamesPlayedLabel" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
 
-    <Label text="Wins" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
-    <Label fx:id="winsLabel" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+    <Label text="Draws" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+    <Label fx:id="drawsLabel" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
 
-    <Label text="Losses" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
-    <Label fx:id="lossesLabel" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+    <Label text="Wins" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+    <Label fx:id="winsLabel" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
 
-    <Label text="Game History:" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
+    <Label text="Losses" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
+    <Label fx:id="lossesLabel" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+
+    <Label text="Game History:" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
     <TextField fx:id="gameHistoryField" promptText="Input number to show" GridPane.columnIndex="1"
-               GridPane.rowIndex="11"/>
+               GridPane.rowIndex="12"/>
 
     <Button onAction="#handleShowGameHistory" text="Show Game History" GridPane.columnIndex="1"
-            GridPane.halignment="CENTER" GridPane.rowIndex="12"/>
+            GridPane.halignment="CENTER" GridPane.rowIndex="13"/>
 
     <Button onAction="#handleUpdateButtonAction" text="Update Profile" GridPane.columnIndex="1"
-            GridPane.halignment="RIGHT" GridPane.rowIndex="13"/>
+            GridPane.halignment="RIGHT" GridPane.rowIndex="15"/>
     <Button onAction="#handleBack" text="Back" GridPane.columnIndex="1" GridPane.halignment="LEFT"
-            GridPane.rowIndex="13"/>
+            GridPane.rowIndex="15"/>
 
     <!-- Placing the CheckBox at the bottom -->
-    <CheckBox fx:id="isTwoFactorOn" text="FA2 ON" GridPane.columnIndex="1" GridPane.rowIndex="5"
+    <CheckBox fx:id="isTwoFactorOn" text="FA2 ON" GridPane.columnIndex="1" GridPane.rowIndex="14"
               GridPane.halignment="CENTER"/>
 
 </GridPane>

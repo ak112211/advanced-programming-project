@@ -13,6 +13,8 @@ import util.DatabaseConnection;
 import java.sql.SQLException;
 import java.util.List;
 
+import static view.Tools.showAlert;
+
 public class ProfileMenuController {
     private static final int DEFAULT_NUMBER_TO_SHOW_GAME_HISTORY = 5;
 
@@ -22,6 +24,8 @@ public class ProfileMenuController {
     private TextField nicknameField;
     @FXML
     private TextField emailField;
+    @FXML
+    private PasswordField oldPasswordField;
     @FXML
     private PasswordField passwordField;
     @FXML
@@ -50,8 +54,6 @@ public class ProfileMenuController {
             usernameField.setText(user.getUsername());
             nicknameField.setText(user.getNickname());
             emailField.setText(user.getEmail());
-            passwordField.setText(user.getPassword());
-            confirmPasswordField.setText(user.getPassword());
             isTwoFactorOn.setSelected(user.isTwoFactorOn());
             highScoreLabel.setText(String.valueOf(user.getHighScore()));
             rankLabel.setText(String.valueOf(user.getRank()));
@@ -121,6 +123,16 @@ public class ProfileMenuController {
 
         if (!Tools.isValidEmail(email)) {
             Tools.showAlert("Error", "Invalid Email", "Please enter a valid email address.");
+            return;
+        }
+
+        if (!Tools.isValidPassword(password)) {
+            showAlert("Error", "Weak Password", "Invalid password. Password must be at least 8 characters long, include uppercase, lowercase, numbers, and special characters.");
+            return;
+        }
+
+        if (!user.getPassword().equals(oldPasswordField.getText())) {
+            showAlert("Error", "Password incorrect", "Current password incorrect.");
             return;
         }
 

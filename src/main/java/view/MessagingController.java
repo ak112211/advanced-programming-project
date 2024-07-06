@@ -53,6 +53,9 @@ public class MessagingController implements ServerConnection.ServerEventListener
             try {
                 List<String> messages = DatabaseConnection.getMessagesBetweenUsers(currentUser.getUsername(), currentChatUser);
                 messageListView.getItems().setAll(messages);
+                if (!messages.isEmpty()) {
+                    messageListView.scrollTo(messages.size() - 1);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
