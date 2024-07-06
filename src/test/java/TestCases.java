@@ -53,7 +53,7 @@ public class TestCases {
         player2.setDeck(deck2);
 
         game = new Game(player1, player2);
-        game.startGame();
+        game.startGameThread();
         game.setPlayer1Turn(true);
     }
 

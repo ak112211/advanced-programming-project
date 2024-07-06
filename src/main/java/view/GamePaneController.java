@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -34,7 +33,6 @@ import model.card.Leader;
 import util.DatabaseConnection;
 import util.ServerConnection;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
@@ -136,7 +134,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private boolean isMute;
     private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
 
-    private boolean fromSaved = false;
 
     private Game game;
     private Card selectedCard;
@@ -176,19 +173,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         initializeCards();
         setupLeaderCards();
 
-        if (game.getStatus() == Game.GameStatus.PENDING) {
-            game.setStatus(Game.GameStatus.ACTIVE);
-            game.initializeGameObjectsFromSaved();
-            try {
-                DatabaseConnection.updateGame(game);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            fromSaved = true;
-            throw new RuntimeException("Opening game from saved is not allowed yet");
-        } else {
-            game.startGame();
-        }
+        game.startGameThread(); // it handles starting from saved
         updateScene();
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {

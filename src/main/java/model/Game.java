@@ -57,8 +57,7 @@ public class Game implements Serializable {
     private final User player2;
     private final Date date;
     private boolean isPlayer1Turn;
-    private boolean vetoForPLayer1Shown;
-    private boolean vetoForPLayer2Shown;
+    private boolean hasStarted;
     private boolean player1HasPassed;
     private boolean player2HasPassed;
     private boolean player1UsedLeaderAbility;
@@ -83,8 +82,7 @@ public class Game implements Serializable {
         this.date = new Date(System.currentTimeMillis());
 
         this.isPlayer1Turn = RANDOM.nextBoolean();
-        this.vetoForPLayer1Shown = false;
-        this.vetoForPLayer2Shown = false;
+        this.hasStarted = false;
         this.player1HasPassed = false;
         this.player2HasPassed = false;
         this.player1UsedLeaderAbility = false;
@@ -102,19 +100,19 @@ public class Game implements Serializable {
         this.player1Faction = player1.getDeck().getFaction();
         this.player2Faction = player2.getDeck().getFaction();
 
-        this.status = GameStatus.ACTIVE;
+        this.status = GameStatus.PENDING;
         this.roundsInfo = new RoundsInfo();
     }
 
-    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean vetoForPLayer1Shown, boolean vetoForPLayer2Shown, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo, int player1Points, int player2Points) {
+    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean hasStarted, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo, int player1Points, int player2Points) {
         this.ID = ID;
         this.player1 = player1;
         this.player2 = player2;
         this.date = date;
 
         this.isPlayer1Turn = isPlayer1Turn;
-        this.vetoForPLayer1Shown = vetoForPLayer1Shown;
-        this.vetoForPLayer2Shown = vetoForPLayer2Shown;
+        this.hasStarted = hasStarted;
+
         this.player1HasPassed = player1HasPassed;
         this.player2HasPassed = player2HasPassed;
         this.player1UsedLeaderAbility = player1UsedLeaderAbility;
@@ -139,67 +137,57 @@ public class Game implements Serializable {
         this.player2Points = player2Points;
     }
 
-    public void initializeGameObjectsFromSaved() {
-
-    }
-
     // functions for game main logics:
 
-    public void startGame() {
+    public void startGameThread() {
+        status = GameStatus.ACTIVE;
         thread = new Thread(this::start);
         thread.start();
     }
 
     private void start() {
-        for (int i = 0; i < STARTING_HAND_SIZE; i++) {
-            player1GetRandomCard();
-            player2GetRandomCard();
+        if (!hasStarted) {
+            for (int i = 0; i < STARTING_HAND_SIZE; i++) {
+                player1GetRandomCard();
+                player2GetRandomCard();
+            }
+            OpeningAbility.StartRound(this);
+            isPlayer1Turn = true;
+            player1VetoCard();
+            player2VetoCard();
         }
-        OpeningAbility.StartRound(this);
-        isPlayer1Turn = true;
-        player1VetoCard();
-        player2VetoCard();
         while (!roundsInfo.isGameFinished(this)) {
-            player2HasPassed = false;
-            player1HasPassed = false;
-            checkHasAnythingToDo();
-            if (player1HasPassed && player2HasPassed) {
-                break;
+            if (!hasStarted) {
+                player2HasPassed = false;
+                player1HasPassed = false;
+                checkHasAnythingToDo();
+                if (player1HasPassed && player2HasPassed) {
+                    break;
+                }
+                if (isPlayer1Turn && player1HasPassed) {
+                    isPlayer1Turn = false;
+                } else if (!isPlayer1Turn && player2HasPassed) {
+                    isPlayer1Turn = true;
+                }
             }
-            if (isPlayer1Turn && player1HasPassed) {
-                isPlayer1Turn = false;
-            } else if (!isPlayer1Turn && player2HasPassed) {
-                isPlayer1Turn = true;
-            }
+            hasStarted = true;
             while (!player1HasPassed || !player2HasPassed) {
                 try {
-                    startTurn();
+                    DatabaseConnection.updateGame(this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+                EjectAbility.startTurnAffect(this);
+                handleTask("play");
                 calculatePoints();
                 switchSides();
             }
             roundsInfo.finishRound(player1Points, player2Points);
             resetCards();
         }
-        try {
-            endGame();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void endGame() throws SQLException {
         status = GameStatus.COMPLETED;
         task = "show end screen";
         giveTask(); // it doesn't need to be handled
-    }
-
-    private void startTurn() throws SQLException {
-        EjectAbility.startTurnAffect(this);
-        task = "play";
-        handleTask();
     }
 
     private void switchSides() {
@@ -436,12 +424,7 @@ public class Game implements Serializable {
             return Optional.empty();
         }
         cardChoices = cards;
-        task = "choose false";
-        try {
-            handleTask();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        handleTask("choose false");
         return Optional.of(chosenCard);
     }
 
@@ -450,12 +433,7 @@ public class Game implements Serializable {
             return Optional.empty();
         }
         cardChoices = cards;
-        task = "choose true";
-        try {
-            handleTask();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        handleTask("choose true");
         return chosenCard == null ? null : Optional.of(chosenCard);
     }
 
@@ -680,7 +658,8 @@ public class Game implements Serializable {
         taskResult = null;
     }
 
-    private void handleTask() throws SQLException { // this and any other private functions run in game thread
+    private void handleTask(String newTask) { // this and any other private functions run in game thread
+        task = newTask;
         while (task != null) {
             giveTask();
             try {
@@ -693,8 +672,7 @@ public class Game implements Serializable {
         }
     }
 
-    private void giveTask() throws SQLException {
-        DatabaseConnection.updateGame(this);
+    private void giveTask() {
         if (isOnline) {
             //for (String username: DatabaseConnection.getUsernames()) {
             //    sendOutput(username, "online game move made " + this.ID);
@@ -704,7 +682,8 @@ public class Game implements Serializable {
         }
     }
 
-    // Saving functions: ali ina ro nemikhay pakeshoon kon
+    // Saving functions:
+    // TODO ali ina ro nemikhay pakeshoon kon age ham mikhay todo ro bardar
 
     public String toJson() {
         Gson gson = new GsonBuilder()
