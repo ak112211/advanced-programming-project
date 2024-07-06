@@ -16,9 +16,10 @@ import model.abilities.passiveabilities.CancelLeaderAbility;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
-import server.DatabaseConnection;
-import server.GwentServer;
+//import server.DatabaseConnection;
+//import server.GwentServer;
 import util.CardSerializer;
+import util.DatabaseConnection;
 import util.DeckDeserializer;
 import util.LeaderSerializer;
 import view.GamePaneController;
@@ -31,7 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static server.GwentServer.sendOutput;
+//import static server.GwentServer.sendOutput;
 
 public class Game implements Serializable {
     private static final Random RANDOM = new Random();
@@ -695,9 +696,9 @@ public class Game implements Serializable {
     private void giveTask() throws SQLException {
         DatabaseConnection.updateGame(this);
         if (isOnline) {
-            for (String username: DatabaseConnection.getUsernames()) {
-                sendOutput(username, "online game move made " + this.ID);
-            }
+            //for (String username: DatabaseConnection.getUsernames()) {
+            //    sendOutput(username, "online game move made " + this.ID);
+            //}
         } else {
             Platform.runLater(gamePaneController::doTask);
         }

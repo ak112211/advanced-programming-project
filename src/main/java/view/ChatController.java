@@ -180,7 +180,6 @@ public class ChatController implements ServerConnection.ServerEventListener {
             return;
         }
 
-        System.out.println(selectedRequest);
         String sender = selectedRequest.split(" ")[3];
         try {
             DatabaseConnection.acceptGameRequest(sender, currentUser.getUsername());
