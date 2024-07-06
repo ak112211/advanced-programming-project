@@ -236,6 +236,43 @@ public class Game implements Serializable {
         player2Points = calculatePoints(row -> !row.isPlayer1());
     }
 
+    private void resetCards() {
+        Card player1CardToKeep = null, player2CardToKeep = null;
+        if (player1Faction == Faction.MONSTER) {
+            player1CardToKeep = chooseRandomCard(inGameCards.stream().filter(card -> card.getRow().isPlayer1()).toList(),
+                    true).orElse(null);
+        }
+        if (player2Faction == Faction.MONSTER) {
+            player2CardToKeep = chooseRandomCard(inGameCards.stream().filter(card -> !card.getRow().isPlayer1()).toList(),
+                    true).orElse(null);
+        }
+
+        while (!inGameCards.isEmpty()) {
+            Card card = inGameCards.getFirst();
+            if (card != player1CardToKeep && card != player2CardToKeep) {
+                moveCardToGraveyard(card);
+            }
+        }
+
+        Winner lastWinner = roundsInfo.getRoundWinner(roundsInfo.getCurrentRound() - 1, this);
+        if (player1Faction == Faction.REALMS_NORTHERN && lastWinner == Winner.PLAYER1) {
+            player1GetRandomCard();
+        } else if (player2Faction == Faction.REALMS_NORTHERN && lastWinner == Winner.PLAYER2) {
+            player2GetRandomCard();
+        }
+
+        if (roundsInfo.getCurrentRound() == 3) {
+            if (player1Faction == Faction.SKELLIGE) {
+                player1GetRandomCard();
+                player1GetRandomCard();
+            }
+            if (player2Faction == Faction.SKELLIGE) {
+                player2GetRandomCard();
+                player2GetRandomCard();
+            }
+        }
+    }
+
     // functions for play tasks:
 
     private void useLeaderAbility() {
@@ -356,43 +393,6 @@ public class Game implements Serializable {
         moveCard(card, inGameCards, card.getRow().isPlayer1() ? player1GraveyardCards : player2GraveyardCards);
     }
 
-    public void resetCards() {
-        Card player1CardToKeep = null, player2CardToKeep = null;
-        if (player1Faction == Faction.MONSTER) {
-            player1CardToKeep = chooseRandomCard(inGameCards.stream().filter(card -> card.getRow().isPlayer1()).toList(),
-                    true).orElse(null);
-        }
-        if (player2Faction == Faction.MONSTER) {
-            player2CardToKeep = chooseRandomCard(inGameCards.stream().filter(card -> !card.getRow().isPlayer1()).toList(),
-                    true).orElse(null);
-        }
-
-        while (!inGameCards.isEmpty()) {
-            Card card = inGameCards.getFirst();
-            if (card != player1CardToKeep && card != player2CardToKeep) {
-                moveCardToGraveyard(card);
-            }
-        }
-
-        Winner lastWinner = roundsInfo.getRoundWinner(roundsInfo.getCurrentRound() - 1, this);
-        if (player1Faction == Faction.REALMS_NORTHERN && lastWinner == Winner.PLAYER1) {
-            player1GetRandomCard();
-        } else if (player2Faction == Faction.REALMS_NORTHERN && lastWinner == Winner.PLAYER2) {
-            player2GetRandomCard();
-        }
-
-        if (roundsInfo.getCurrentRound() == 3) {
-            if (player1Faction == Faction.SKELLIGE) {
-                player1GetRandomCard();
-                player1GetRandomCard();
-            }
-            if (player2Faction == Faction.SKELLIGE) {
-                player2GetRandomCard();
-                player2GetRandomCard();
-            }
-        }
-    }
-
     // Functions that choose a card:
 
     public Optional<Card> chooseCard(List<Card> cards, boolean onlyAffectables, boolean random) {
@@ -434,11 +434,6 @@ public class Game implements Serializable {
         task = "choose true";
         handleTask();
         return chosenCard == null ? null : Optional.of(chosenCard);
-    }
-
-    public void finishedChoosing(Integer index) {
-        chosenCard = index == null ? null : cardChoices.get(index);
-        latch.countDown();
     }
 
     // Getter and setter functions:
@@ -601,7 +596,7 @@ public class Game implements Serializable {
 
     // functions for handling tasks:
 
-    public void receiveTaskResult(String taskResult, User sender) {
+    public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
         if (isOnline) {
             if ((isPlayer1Turn && !sender.equals(player1)) || (!isPlayer1Turn && !sender.equals(player2))) {
                 System.out.println("wrong user send taskResult");
@@ -612,7 +607,7 @@ public class Game implements Serializable {
         latch.countDown();
     }
 
-    public void handleTaskResult() {
+    private void handleTaskResult() {
         if (taskResult == null) {
             System.out.println("task result is still null");
         }
@@ -622,11 +617,11 @@ public class Game implements Serializable {
                 if (task.endsWith("false")) {
                     System.out.println("can't pass choosing");
                 } else {
-                    finishedChoosing(null);
+                    chosenCard = null;
                     task = null;
                 }
             } else {
-                finishedChoosing(Integer.parseInt(args[1]));
+                chosenCard = cardChoices.get(Integer.parseInt(args[1]));
                 task = null;
             }
         } else if (task.equals("play")) {
@@ -662,7 +657,7 @@ public class Game implements Serializable {
         taskResult = null;
     }
 
-    private void handleTask() {
+    private void handleTask() { // this and any other private functions run in game thread
         while (task != null) {
             giveTask();
             try {
@@ -702,6 +697,8 @@ public class Game implements Serializable {
                 .create();
         return gson.fromJson(json, Game.class);
     }
+
+    // GameStatus enum
 
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED

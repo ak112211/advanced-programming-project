@@ -40,7 +40,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
-
+// TODO use leader ability (taskResult="leader")
+// TODO pass round (taskResult="pass")
+// TODO show players name, avatar, faction, etc.
 public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
@@ -171,7 +173,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         setupLeaderCards();
 
         if (game.getStatus() == Game.GameStatus.PENDING) {
-            fromSaved = true;
             game.setStatus(Game.GameStatus.ACTIVE);
             game.initializeGameObjectsFromSaved();
             try {
@@ -179,6 +180,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            fromSaved = true;
+            throw new RuntimeException("Opening game from saved is not allowed yet");
         } else {
             game.startGame();
         }
@@ -443,7 +446,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         showBigImage(leaderCard.getImagePath(), leaderCard.getDescription(), false, null, leaderCard);
     }
 
-    private void showHandCardOverlay(Card handCard) {  //TODO
+    private void showHandCardOverlay(Card handCard) {  // TODO what the hell is this? remove??
         VBox overlay = new VBox(10);
         overlay.setAlignment(Pos.TOP_RIGHT);
         overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
@@ -465,7 +468,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         pause.play();
     }
 
-    private void showRowOverlay(List<Card> rowCards) {
+    private void showRowOverlay(List<Card> rowCards) { // TODO remove??
         VBox overlay = new VBox(10);
         overlay.setAlignment(Pos.CENTER);
         overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
@@ -504,7 +507,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         // TODO
     }
 
-    public void showChooseWhoStartsOverlay() {
+    public void showChooseWhoStartsOverlay() { // Scoiatael faction has this ability I don't write it in Game class yet
         // TODO
     }
 
