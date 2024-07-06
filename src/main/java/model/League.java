@@ -8,12 +8,12 @@ public class League {
     private ArrayList<String> players;
     private LeagueHierarchy leagueHierarchy;
     private String winner;
-    private Game quarter1;
-    private Game quarter2;
-    private Game quarter3;
-    private Game quarter4;
-    private Game semi1;
-    private Game semi2;
+    private String quarter1Game;
+    private String quarter2Game;
+    private String quarter3Game;
+    private String quarter4Game;
+    private String semi1Game;
+    private String semi2Game;
 
     private Game finalPlay;
 
@@ -54,52 +54,52 @@ public class League {
         this.winner = winner;
     }
 
-    public Game getQuarter1() {
-        return quarter1;
+    public String getQuarter1Game() {
+        return quarter1Game;
     }
 
-    public void setQuarter1(Game quarter1) {
-        this.quarter1 = quarter1;
+    public void setQuarter1Game(String quarter1Game) {
+        this.quarter1Game = quarter1Game;
     }
 
-    public Game getQuarter2() {
-        return quarter2;
+    public String getQuarter2Game() {
+        return quarter2Game;
     }
 
-    public void setQuarter2(Game quarter2) {
-        this.quarter2 = quarter2;
+    public void setQuarter2Game(String quarter2Game) {
+        this.quarter2Game = quarter2Game;
     }
 
-    public Game getQuarter3() {
-        return quarter3;
+    public String getQuarter3Game() {
+        return quarter3Game;
     }
 
-    public void setQuarter3(Game quarter3) {
-        this.quarter3 = quarter3;
+    public void setQuarter3Game(String quarter3Game) {
+        this.quarter3Game = quarter3Game;
     }
 
-    public Game getQuarter4() {
-        return quarter4;
+    public String getQuarter4Game() {
+        return quarter4Game;
     }
 
-    public void setQuarter4(Game quarter4) {
-        this.quarter4 = quarter4;
+    public void setQuarter4Game(String quarter4Game) {
+        this.quarter4Game = quarter4Game;
     }
 
-    public Game getSemi1() {
-        return semi1;
+    public String getSemi1Game() {
+        return semi1Game;
     }
 
-    public void setSemi1(Game semi1) {
-        this.semi1 = semi1;
+    public void setSemi1Game(String semi1Game) {
+        this.semi1Game = semi1Game;
     }
 
-    public Game getSemi2() {
-        return semi2;
+    public String getSemi2Game() {
+        return semi2Game;
     }
 
-    public void setSemi2(Game semi2) {
-        this.semi2 = semi2;
+    public void setSemi2Game(String semi2Game) {
+        this.semi2Game = semi2Game;
     }
 
     public Game getFinalPlay() {
