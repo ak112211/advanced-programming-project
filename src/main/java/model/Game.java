@@ -3,11 +3,13 @@ package model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import enums.Row;
+import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import javafx.application.Platform;
 import model.abilities.Ability;
 import model.abilities.ejectabilities.EjectAbility;
+import model.abilities.instantaneousabilities.Decoy;
 import model.abilities.instantaneousabilities.InstantaneousAbility;
 import model.abilities.openingabilities.OpeningAbility;
 import model.abilities.passiveabilities.CancelLeaderAbility;
@@ -20,9 +22,7 @@ import util.LeaderSerializer;
 import view.GamePaneController;
 import model.RoundsInfo.Winner;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
@@ -36,13 +36,15 @@ public class Game implements Serializable {
 
     private transient GamePaneController gamePaneController;
     private transient CountDownLatch latch = new CountDownLatch(1);
-    private transient boolean hasSwitchedTurn;
-    private transient int threadCount;
-    private transient Integer chosenCardIndex = null;
     private int player1Points, player2Points;
     private transient boolean isOnline;
+    private transient Card chosenCard;
+    private transient Thread thread;
+    private transient String taskResult;
 
     // these variables must be saved:
+    private List<Card> cardChoices; // gharare anidsash az card haye dige bashe yani gharare 2 ta reference be ye chiz eshare konan. vali age sakhtete mohem nist age ye carde dige besazi va reference ha 2 ta chize motafeto neshoon bedan
+    private String task;
     private int ID;
     private final User player1;
     private final User player2;
@@ -127,64 +129,62 @@ public class Game implements Serializable {
         this.roundsInfo = roundsInfo;
     }
 
+    public void initializeGameObjectsFromSaved() {
+
+    }
+
+    // functions for game main logics:
+
     public void startGame() {
+        thread = new Thread(this::start);
+        thread.start();
+    }
+
+    private void start() {
         for (int i = 0; i < STARTING_HAND_SIZE; i++) {
             player1GetRandomCard();
             player2GetRandomCard();
         }
         OpeningAbility.StartRound(this);
         isPlayer1Turn = true;
+        player1VetoCard();
+        player2VetoCard();
+        while (!roundsInfo.isGameFinished(this)) {
+            player2HasPassed = false;
+            player1HasPassed = false;
+            checkHasAnythingToDo();
+            if (player1HasPassed && player2HasPassed) {
+                break;
+            }
+            if (isPlayer1Turn && player1HasPassed) {
+                isPlayer1Turn = false;
+            } else if (!isPlayer1Turn && player2HasPassed) {
+                isPlayer1Turn = true;
+            }
+            while (!player1HasPassed || !player2HasPassed) {
+                startTurn();
+                calculatePoints();
+                switchSides();
+            }
+            roundsInfo.finishRound(player1Points, player2Points);
+            resetCards();
+        }
+        endGame();
     }
 
-    public void initializeGameObjectsFromSaved() {
-    }
-
-    public void endGame() {
+    private void endGame() {
         status = GameStatus.COMPLETED;
-        Platform.runLater(gamePaneController::showFinishedOverlay);
+        task = "show end screen";
+        giveTask(); // it doesn't need to be handled
     }
 
-    public void startRound() {
-        player2HasPassed = false;
-        player1HasPassed = false;
-        checkHasAnythingToDo();
-        if (player1HasPassed && player2HasPassed) {
-            endGame();
-            return;
-        }
-        if (isPlayer1Turn && player1HasPassed) {
-            isPlayer1Turn = false;
-        } else if (!isPlayer1Turn && player2HasPassed) {
-            isPlayer1Turn = true;
-        }
-    }
-
-    public void endRound() {
-        roundsInfo.finishRound(player1Points, player2Points);
-        resetCards();
-        if (roundsInfo.isGameFinished(this)) {
-            endGame();
-        } else {
-            startRound();
-        }
-    }
-
-    public void startTurn() {
+    private void startTurn() {
         EjectAbility.startTurnAffect(this);
-        veto();
-        Platform.runLater(gamePaneController::nextTurn);
+        task = "play";
+        handleTask();
     }
 
-    public void nextTurn() {
-        calculatePoints();
-        switchSides();
-        if (player2HasPassed && player1HasPassed) {
-            endRound();
-        }
-        startTurn();
-    }
-
-    public void switchSides() {
+    private void switchSides() {
         checkHasAnythingToDo();
         if (isPlayer1Turn && !player2HasPassed) {
             isPlayer1Turn = false;
@@ -193,7 +193,7 @@ public class Game implements Serializable {
         }
     }
 
-    public void checkHasAnythingToDo() {
+    private void checkHasAnythingToDo() {
         if (player1InHandCards.isEmpty() && !player1CanUseLeaderAbility()) {
             player1HasPassed = true;
         }
@@ -202,30 +202,7 @@ public class Game implements Serializable {
         }
     }
 
-    public void pass() {
-        if (isPlayer1Turn) {
-            player1HasPassed = true;
-        } else {
-            player2HasPassed = true;
-        }
-        nextTurn();
-    }
-
-    public void veto() {
-        if (!vetoForPLayer1Shown && isPlayer1Turn()) {
-            vetoForPLayer1Shown = true;
-            Thread thread = new Thread(this::player1VetoCard);
-            thread.start();
-            gamePaneController.updateScene();
-        } else if (!vetoForPLayer2Shown && !isPlayer1Turn()) {
-            vetoForPLayer2Shown = true;
-            Thread thread = new Thread(this::player2VetoCard);
-            thread.start();
-            gamePaneController.updateScene();
-        }
-    }
-
-    public void player1VetoCard() {
+    private void player1VetoCard() {
         for (int i = 0; i < VETO_TIMES; i++) {
             Optional<Card> chosenCard = chooseCardOrPass(player1InHandCards);
             if (chosenCard == null) {
@@ -234,10 +211,9 @@ public class Game implements Serializable {
             player1GetRandomCard();
             moveCard(chosenCard.orElseThrow(), player1InHandCards, player1Deck);
         }
-        Platform.runLater(gamePaneController::updateScene);
     }
 
-    public void player2VetoCard() {
+    private void player2VetoCard() {
         for (int i = 0; i < VETO_TIMES; i++) {
             Optional<Card> chosenCard = chooseCardOrPass(player2InHandCards);
             if (chosenCard == null) {
@@ -246,18 +222,9 @@ public class Game implements Serializable {
             player2GetRandomCard();
             moveCard(chosenCard.orElseThrow(), player2InHandCards, player2Deck);
         }
-        Platform.runLater(gamePaneController::updateScene);
     }
 
-
-    public int calculatePoints(Predicate<Row> predicate) {
-        return inGameCards.stream()
-                .filter(card -> predicate.test(card.getRow()))
-                .mapToInt(Card::getPower)
-                .sum();
-    }
-
-    public void calculatePoints() {
+    private void calculatePoints() {
         for (Card card : getAllCards()) {
             card.setPower(card.getFirstPower());
         }
@@ -265,6 +232,47 @@ public class Game implements Serializable {
         player1Points = calculatePoints(Row::isPlayer1);
         player2Points = calculatePoints(row -> !row.isPlayer1());
     }
+
+    // functions for play tasks:
+
+    private void useLeaderAbility() {
+        if (isPlayer1Turn) {
+            if (player1CanUseLeaderAbility()) {
+                player1UsedLeaderAbility = true;
+                ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
+            }
+        } else {
+            if (player2CanUseLeaderAbility()) {
+                player2UsedLeaderAbility = true;
+                ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
+            }
+        }
+        latch.countDown();
+    }
+
+    private void pass() {
+        if (isPlayer1Turn) {
+            player1HasPassed = true;
+        } else {
+            player2HasPassed = true;
+        }
+        latch.countDown();
+    }
+
+    private void playCard(Card card, Row row) {
+        if (isPlayer1Turn) {
+            if (!player1PlayCard(card, row)) {
+                throw new IllegalArgumentException("card cannot be played");
+            }
+        } else {
+            if (!player2PlayCard(card, row)) {
+                throw new IllegalArgumentException("card cannot be played");
+            }
+        }
+        latch.countDown();
+    }
+
+    // functions that say if the player can do a play task:
 
     public boolean player1CanUseLeaderAbility() {
         return !(player2LeaderCard.getAbility() instanceof CancelLeaderAbility) &&
@@ -278,40 +286,11 @@ public class Game implements Serializable {
                 !player2UsedLeaderAbility;
     }
 
-    public void UseLeaderAbility() {
-        if (isPlayer1Turn) {
-            if (player1CanUseLeaderAbility()) {
-                player1UsedLeaderAbility = true;
-                ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
-            }
-        } else {
-            if (player2CanUseLeaderAbility()) {
-                player2UsedLeaderAbility = true;
-                ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
-            }
-        }
-    }
-
     public boolean canPlay(Card card, Row row) {
         return card.getType() != Type.SPELL ||
                 inGameCards.stream().noneMatch(inGameCard -> inGameCard.same(card) && inGameCard.getRow() == row);
     }
 
-    public void playCard(Card card, Row row) throws SQLException, IOException {
-        hasSwitchedTurn = false;
-        if (isPlayer1Turn()) {
-            if (!player1PlayCard(card, row)) {
-                throw new IllegalArgumentException("card cannot be played");
-            }
-        } else {
-            if (!player2PlayCard(card, row)) {
-                throw new IllegalArgumentException("card cannot be played");
-            }
-        }
-        if (!hasSwitchedTurn && threadCount == 0) {
-            nextTurn();
-        }
-    }
 
     // Functions that move a card:
 
@@ -327,17 +306,7 @@ public class Game implements Serializable {
         }
         cards2.add(card);
         if (cards2 == inGameCards && card.getAbility() instanceof InstantaneousAbility) {
-            threadCount++;
-            Thread thread = new Thread(() -> {
-                ((InstantaneousAbility) card.getAbility()).affect(this, card);
-                Platform.runLater(gamePaneController::updateScene);
-                threadCount--;
-                if (threadCount == 0) {
-                    hasSwitchedTurn = true;
-                    nextTurn();
-                }
-            });
-            thread.start();
+            ((InstantaneousAbility) card.getAbility()).affect(this, card);
         }
         if (cards1 == inGameCards && card.getAbility() instanceof EjectAbility) {
             ((EjectAbility) card.getAbility()).affect(card);
@@ -441,66 +410,32 @@ public class Game implements Serializable {
         return Optional.of(cards.get(RANDOM.nextInt(cards.size())));
     }
 
-    public Optional<Card> chooseCard(List<Card> cards, boolean onlyAffectables) { // static?
+    public Optional<Card> chooseCard(List<Card> cards, boolean onlyAffectables) {
         if (onlyAffectables) {
             cards = cards.stream().filter(Ability::canBeAffected).toList();
         }
         if (cards.isEmpty()) {
             return Optional.empty();
         }
-        List<Card> finalCards = cards;
-        Platform.runLater(() -> {
-            gamePaneController.updateScene();
-            gamePaneController.showChooseOverlay(false, finalCards);
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return Optional.of(cards.get(chosenCardIndex));
+        cardChoices = cards;
+        task = "choose false";
+        handleTask();
+        return Optional.of(chosenCard);
     }
 
     public Optional<Card> chooseCardOrPass(List<Card> cards) {
         if (cards.isEmpty()) {
             return Optional.empty();
         }
-        Platform.runLater(() -> {
-            gamePaneController.updateScene();
-            gamePaneController.showChooseOverlay(true, cards);
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return chosenCardIndex == null ? null : Optional.of(cards.get(chosenCardIndex));
+        cardChoices = cards;
+        task = "choose true";
+        handleTask();
+        return chosenCard == null ? null : Optional.of(chosenCard);
     }
 
     public void finishedChoosing(Integer index) {
-        chosenCardIndex = index;
+        chosenCard = index == null ? null : cardChoices.get(index);
         latch.countDown();
-        latch = new CountDownLatch(1);
-    }
-
-    // Saving functions:
-
-    public String toJson() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Card.class, new CardSerializer())
-                .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                .setPrettyPrinting()
-                .create();
-        return gson.toJson(this);
-    }
-
-    public static Game fromJson(String json) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Card.class, new CardSerializer())
-                .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                .registerTypeAdapter(Deck.class, new DeckDeserializer())
-                .create();
-        return gson.fromJson(json, Game.class);
     }
 
     // Getter and setter functions:
@@ -525,10 +460,6 @@ public class Game implements Serializable {
 
     public void setPlayer1Turn(boolean player1Turn) {
         this.isPlayer1Turn = player1Turn;
-    }
-
-    public boolean getPlayer1Turn() {
-        return isPlayer1Turn;
     }
 
     public boolean isPlayer1Turn() {
@@ -621,6 +552,10 @@ public class Game implements Serializable {
         return player2GraveyardCards;
     }
 
+    public List<Card> getCardChoices() {
+        return cardChoices;
+    }
+
     public List<Card> getAllCards() {
         return Stream.of(player1InHandCards, player2InHandCards, player1Deck, player2Deck, inGameCards,
                 player1GraveyardCards, player2GraveyardCards).flatMap(ArrayList::stream).toList();
@@ -638,6 +573,10 @@ public class Game implements Serializable {
         this.gamePaneController = gamePaneController;
     }
 
+    public String getTask() {
+        return task;
+    }
+
     public int getID() {
         return ID;
     }
@@ -646,11 +585,122 @@ public class Game implements Serializable {
         this.ID = ID;
     }
 
-    public enum GameStatus {
-        PENDING, ACTIVE, COMPLETED
-    }
-
     public RoundsInfo getRoundsInfo() {
         return roundsInfo;
+    }
+
+    public int calculatePoints(Predicate<Row> predicate) {
+        return inGameCards.stream()
+                .filter(card -> predicate.test(card.getRow()))
+                .mapToInt(Card::getPower)
+                .sum();
+    }
+
+    // functions for handling tasks:
+
+    public void receiveTaskResult(String taskResult, User sender) {
+        if (isOnline) {
+            if ((isPlayer1Turn && !sender.equals(player1)) || (!isPlayer1Turn && !sender.equals(player2))) {
+                System.out.println("wrong user send taskResult");
+                return;
+            }
+        }
+        this.taskResult = taskResult;
+        latch.countDown();
+    }
+
+    public void handleTaskResult() {
+        if (taskResult == null) {
+            System.out.println("task result is still null");
+        }
+        String[] args = taskResult.split(" ");
+        if (args[0].equals("chose") && task.startsWith("choose ")) {
+            if (args[1].equals("null")) {
+                if (task.endsWith("false")) {
+                    System.out.println("can't pass choosing");
+                } else {
+                    finishedChoosing(null);
+                    task = null;
+                }
+            } else {
+                finishedChoosing(Integer.parseInt(args[1]));
+                task = null;
+            }
+        } else if (task.equals("play")) {
+            switch (args[0]) {
+                case "play" -> {
+                    Card card = CardsPlace.IN_HAND.getPlayerCards(this).get(Integer.parseInt(args[1]));
+                    Row row = Row.valueOf(args[2]);
+                    if (card.getAbility() instanceof Decoy) {
+                        Card returnCard = CardsPlace.IN_HAND.getPlayerCards(this).get(Integer.parseInt(args[3]));
+                        ((Decoy) card.getAbility()).setReturnCard(returnCard);
+                    }
+                    playCard(card, row);
+                    task = null;
+                }
+                case "pass" -> {
+                    pass();
+                    task = null;
+                }
+                case "leader" -> {
+                    useLeaderAbility();
+                    task = null;
+                }
+                default -> {
+                    System.out.println("invalid play task result");
+                    System.out.println("task result: " + taskResult);
+                }
+            }
+        } else {
+            System.out.println("invalid task result");
+            System.out.println("task: " + task);
+            System.out.println("task result: " + taskResult);
+        }
+        taskResult = null;
+    }
+
+    private void handleTask() {
+        while (task != null) {
+            giveTask();
+            try {
+                latch = new CountDownLatch(1);
+                latch.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            handleTaskResult();
+        }
+    }
+
+    private void giveTask() {
+        if (isOnline) {
+            // TODO send game to clients and run gamePaneController.doTask for each player
+        } else {
+            Platform.runLater(gamePaneController::doTask);
+        }
+    }
+
+    // Saving functions: ali ina ro nemikhay pakeshoon kon
+
+    public String toJson() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .setPrettyPrinting()
+                .create();
+        return gson.toJson(this);
+    }
+
+    public static Game fromJson(String json) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Card.class, new CardSerializer())
+                .registerTypeAdapter(Leader.class, new LeaderSerializer())
+                .registerTypeAdapter(Deck.class, new DeckDeserializer())
+                .create();
+        return gson.fromJson(json, Game.class);
+    }
+
+    public enum GameStatus {
+        PENDING, ACTIVE, COMPLETED
     }
 }
