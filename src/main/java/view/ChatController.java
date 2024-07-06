@@ -81,6 +81,24 @@ public class ChatController implements ServerConnection.ServerEventListener {
         }
     }
 
+    private void loadAvailableLeagues() {
+        try {
+            List<String> requests = DatabaseConnection.getFriendRequests(currentUser.getUsername());
+            Platform.runLater(() -> friendRequestsListView.getItems().setAll(requests));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadMemberLeagues() {
+        try {
+            List<String> requests = DatabaseConnection.getFriendRequests(currentUser.getUsername());
+            Platform.runLater(() -> friendRequestsListView.getItems().setAll(requests));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void sendFriendRequest() {
         String friendUsername = friendUsernameField.getText();

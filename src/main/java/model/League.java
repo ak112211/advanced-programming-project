@@ -6,7 +6,6 @@ public class League {
 
     private String name;
     private ArrayList<String> players;
-    private LeagueHierarchy leagueHierarchy;
     private String winner;
     private String quarter1Game;
     private String quarter2Game;
@@ -36,14 +35,6 @@ public class League {
 
     public void setPlayers(ArrayList<String> players) {
         this.players = players;
-    }
-
-    public LeagueHierarchy getLeagueHierarchy() {
-        return leagueHierarchy;
-    }
-
-    public void setLeagueHierarchy(LeagueHierarchy leagueHierarchy) {
-        this.leagueHierarchy = leagueHierarchy;
     }
 
     public String getWinner() {
