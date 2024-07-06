@@ -556,7 +556,13 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @Override
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
-            if (input.startsWith("Move from ")) {
+            if (input.startsWith("online game move made ")) {;
+                try {
+                    game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[4]));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                Game.setCurrentGame(game);
                 updateScene();
             } else if (input.endsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
@@ -615,15 +621,16 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
     }
 
+    @FXML
     public void handleMakePublic(ActionEvent actionEvent) {
         if (Game.getCurrentGame().isPublic()) {
             makePublic.setText("Make game Online");
+            App.getServerConnection().sendMessage("disconnect game:" + game.getID());
             Game.getCurrentGame().setPublic(false);
         } else {
             makePublic.setText("Make game Offline");
             Game.getCurrentGame().setPublic(true);
         }
         DatabaseConnection.updateGamePublicity(Game.getCurrentGame().isPublic(), Game.getCurrentGame().getID());
-        App.getServerConnection().sendMessage("disconnect game:" + game.getID());
     }
 }

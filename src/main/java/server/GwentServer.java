@@ -1,11 +1,14 @@
 package server;
 
+import model.Game;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,7 @@ public class GwentServer {
 
     // Command patterns
     private static final Pattern CHECK_STATUS_PATTERN = Pattern.compile("check status:(\\w+)");
+    private static final Pattern RECIEVE_TASK_PATTERN = Pattern.compile("run task:(\\w+):(\\w+)");
     private static final Pattern SEND_DISCONNECT_PATTERN = Pattern.compile("disconnect game:(\\w+)");
     private static final Pattern UPDATE_VIEWERS_PATTERN = Pattern.compile("update viewers:(\\w+)");
     private static final Pattern LOGIN_PATTERN = Pattern.compile("login:(\\w+)");
@@ -80,6 +84,8 @@ public class GwentServer {
                             handleLogin(matcher);
                         } else if (matcher.pattern() == CHECK_STATUS_PATTERN) {
                             handleCheckOnline(matcher);
+                        } else if (matcher.pattern() == RECIEVE_TASK_PATTERN) {
+                            handleReceiveTask(matcher);
                         } else if (matcher.pattern() == UPDATE_VIEWERS_PATTERN) {
                             handleUpdateViewers(matcher);
                         } else if (matcher.pattern() == SEND_DISCONNECT_PATTERN) {
@@ -115,6 +121,8 @@ public class GwentServer {
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             } finally {
                 try {
                     socket.close();
@@ -134,6 +142,9 @@ public class GwentServer {
             if (matcher.matches()) return matcher;
 
             matcher = UPDATE_VIEWERS_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = RECIEVE_TASK_PATTERN.matcher(input);
             if (matcher.matches()) return matcher;
 
             matcher = SEND_DISCONNECT_PATTERN.matcher(input);
@@ -288,6 +299,14 @@ public class GwentServer {
             }
         }
 
+        private void handleReceiveTask(Matcher matcher) throws IOException, SQLException {
+            String task = matcher.group(1);
+            String gameId = matcher.group(1);
+            Game game = DatabaseConnection.getGame(Integer.parseInt(gameId));
+            assert game != null;
+            game.receiveTaskResult(task, DatabaseConnection.getUser(currentPlayer.getId()));
+        }
+
         private void handleSendDisconnect(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
             synchronized (players) {
@@ -327,6 +346,12 @@ public class GwentServer {
             }
         }
     }
+
+    public static void sendOutput(String targetId, String message) {
+        ClientHandler clientHandler = clients.get(targetId);
+        clientHandler.out.println(message);
+    }
+
 }
 
 class Player {

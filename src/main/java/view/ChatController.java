@@ -94,7 +94,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
 
     private void loadAvailableLeagues() {
         try {
-            List<League> leagues = DatabaseConnection.getAvailableLeagues();
+            List<League> leagues = DatabaseConnection.getAvailableLeagues(User.getCurrentUser().getUsername());
             Platform.runLater(() -> {
                 for (League league : leagues) {
                     availableLeaguesListView.getItems().add(league.getName() + " " + league.getID());

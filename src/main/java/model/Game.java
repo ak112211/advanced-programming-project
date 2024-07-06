@@ -16,6 +16,8 @@ import model.abilities.passiveabilities.CancelLeaderAbility;
 import model.abilities.persistentabilities.PersistentAbility;
 import model.card.Card;
 import model.card.Leader;
+import server.DatabaseConnection;
+import server.GwentServer;
 import util.CardSerializer;
 import util.DeckDeserializer;
 import util.LeaderSerializer;
@@ -23,10 +25,13 @@ import view.GamePaneController;
 import model.RoundsInfo.Winner;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static server.GwentServer.sendOutput;
 
 public class Game implements Serializable {
     private static final Random RANDOM = new Random();
@@ -166,23 +171,31 @@ public class Game implements Serializable {
                 isPlayer1Turn = true;
             }
             while (!player1HasPassed || !player2HasPassed) {
-                startTurn();
+                try {
+                    startTurn();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 calculatePoints();
                 switchSides();
             }
             roundsInfo.finishRound(player1Points, player2Points);
             resetCards();
         }
-        endGame();
+        try {
+            endGame();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void endGame() {
+    private void endGame() throws SQLException {
         status = GameStatus.COMPLETED;
         task = "show end screen";
         giveTask(); // it doesn't need to be handled
     }
 
-    private void startTurn() {
+    private void startTurn() throws SQLException {
         EjectAbility.startTurnAffect(this);
         task = "play";
         handleTask();
@@ -423,7 +436,11 @@ public class Game implements Serializable {
         }
         cardChoices = cards;
         task = "choose false";
-        handleTask();
+        try {
+            handleTask();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return Optional.of(chosenCard);
     }
 
@@ -433,7 +450,11 @@ public class Game implements Serializable {
         }
         cardChoices = cards;
         task = "choose true";
-        handleTask();
+        try {
+            handleTask();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return chosenCard == null ? null : Optional.of(chosenCard);
     }
 
@@ -658,7 +679,7 @@ public class Game implements Serializable {
         taskResult = null;
     }
 
-    private void handleTask() { // this and any other private functions run in game thread
+    private void handleTask() throws SQLException { // this and any other private functions run in game thread
         while (task != null) {
             giveTask();
             try {
@@ -671,9 +692,12 @@ public class Game implements Serializable {
         }
     }
 
-    private void giveTask() {
+    private void giveTask() throws SQLException {
+        DatabaseConnection.updateGame(this);
         if (isOnline) {
-            // TODO send game to clients and run gamePaneController.doTask for each player
+            for (String username: DatabaseConnection.getUsernames()) {
+                sendOutput(username, "online game move made " + this.ID);
+            }
         } else {
             Platform.runLater(gamePaneController::doTask);
         }

@@ -870,15 +870,17 @@ public class DatabaseConnection {
         }
     }
 
-    public static List<League> getAvailableLeagues() throws SQLException {
+    public static List<League> getAvailableLeagues(String username) throws SQLException {
         List<League> leagues = new ArrayList<>();
-        String query = "SELECT * FROM Leagues";
+        String query = "SELECT * FROM Leagues WHERE players NOT LIKE ?";
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                League league = extractLeagueFromResultSet(resultSet);
-                leagues.add(league);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + username + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    League league = extractLeagueFromResultSet(resultSet);
+                    leagues.add(league);
+                }
             }
         }
         return leagues;
