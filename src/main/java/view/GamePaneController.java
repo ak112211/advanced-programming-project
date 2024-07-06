@@ -134,7 +134,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     private Game game;
     private Card selectedCard;
-    private List<Card> cardChoices;
 
     private int currentIndex;
 
@@ -208,8 +207,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         } else {
             displayMessage("Turn of Player 2");
         }
-
-
     }
 
     private void setupBackgroundMusic() {
@@ -301,20 +298,19 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     @FXML
     private void handleNextCard() {
-        if (currentIndex < cardChoices.size() - 1) {
+        if (currentIndex < game.getCardChoices().size() - 1) {
             currentIndex++;
             showCard();
         }
     }
 
     private void showCard() {
-        Card card = cardChoices.get(currentIndex);
+        Card card = game.getCardChoices().get(currentIndex);
         chooseImageView.setImage(Tools.getImage(card.getImagePath()));
         chooseDescriptionText.setText(card.getDescription().getDescription());
     }
 
-    public void showChooseOverlay(boolean canPass, List<Card> cardChoices) {
-        this.cardChoices = cardChoices;
+    public void showChooseOverlay(boolean canPass) {
         chooseDisplayVBox.setVisible(true);
         overlayPane.setVisible(true);
         passButton.setVisible(canPass);
@@ -324,11 +320,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         chooseImageView.setOnMouseClicked(event -> {
             overlayPane.setVisible(false);
             chooseDisplayVBox.setVisible(false);
-            if (game.isOnline()) {
-
-            } else {
-                game.finishedChoosing(currentIndex);
-            }
+            sendTaskResult("chose " + currentIndex);
         });
     }
 
@@ -337,15 +329,10 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         // nextTurn(); // ridam dahane in khate code
         overlayPane.setVisible(false);
         chooseDisplayVBox.setVisible(false);
-        if (game.isOnline()) {
-
-        } else {
-            game.finishedChoosing(null);
-        }
+        sendTaskResult("chose " + "null");
     }
 
     public void nextTurn() {
-        updateScene();
         if (game.isPlayer1Turn()) {
             displayMessage("Turn of " + game.getPlayer1().getUsername());
         } else {
@@ -427,14 +414,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private void highlightRow(HBox rowBox, Row row, Card card) {
         rowBox.setStyle("-fx-background-color: rgba(255, 255, 150, 0.2);");
         rowBox.setOnMouseClicked(rowClickEvent -> {
-            try {
-                game.playCard(card, row);
-            } catch (IllegalArgumentException e) {
-                System.out.println("" + rowBox + row + card.getName());
-                throw e;
-            } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            sendTaskResult("play " + CardsPlace.IN_HAND.getPlayerCards(game).indexOf(card) + " " +
+                    row.toString());
         });
     }
 
@@ -442,14 +423,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         inGameCard.setStroke();
         inGameCard.setOnMouseClicked(rowClickEvent -> {
             ((Decoy) card.getAbility()).setReturnCard(inGameCard);
-            try {
-                game.playCard(card, inGameCard.getRow());
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                System.out.println(card.getType() + card.getName() + inGameCard.getRow());
-            } catch (SQLException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            sendTaskResult("PlayCard " + CardsPlace.IN_HAND.getPlayerCards(game).indexOf(card) + " " +
+                    inGameCard.getRow().toString() + " " + game.getInGameCards().indexOf(card));
         });
     }
 
@@ -525,7 +500,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         overlayMessage.setVisible(false);
     }
 
-    public void showFinishedOverlay() {
+    public void showEndScreenOverlay() {
         // TODO
     }
 
@@ -635,4 +610,29 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         App.getServerConnection().removeMessageListener(this);
     }
 
+    public void doTask() {
+        if (game.isOnline() && (game.getPlayer1().equals(User.getCurrentUser()) ^ game.isPlayer1Turn())){
+            return;
+        }
+        if (game.getTask().equals("show end screen")) {
+            showEndScreenOverlay();
+        } else if (game.getTask().equals("play")) {
+            nextTurn();
+        } else if (game.getTask().equals("choose false")) {
+            showChooseOverlay(false);
+        } else if (game.getTask().equals("choose true")) {
+            showChooseOverlay(true);
+        } else {
+            Tools.showAlert("invalid task: " + game.getTask());
+        }
+        updateScene();
+    }
+
+    public void sendTaskResult(String taskResult) {
+        if (game.isOnline()) {
+            // TODO send taskResult to server and run game.receiveTaskResult
+        } else {
+            game.receiveTaskResult(taskResult, null);
+        }
+    }
 }

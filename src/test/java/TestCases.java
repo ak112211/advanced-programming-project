@@ -17,6 +17,9 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class TestCases {
     private Game game;
     private User player1;
@@ -99,7 +102,13 @@ public class TestCases {
         game.player1PlayCard(card1, Row.PLAYER1_CLOSE_COMBAT);
         game.player2PlayCard(card2, Row.PLAYER2_CLOSE_COMBAT);
 
-        game.calculatePoints();
+        try {
+            Method method = game.getClass().getMethod("calculatePoints");
+            method.setAccessible(true);
+            method.invoke(game);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         int player1Points = game.getPlayer1Points();
         int player2Points = game.getPlayer2Points();

@@ -3,6 +3,7 @@ package view;
 import enums.cardsinformation.Faction;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.RealmsNorthernLeaders;
+import enums.leaders.ScoiaTaelLeaders;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -46,11 +47,11 @@ public class GameLauncher extends Application {
     private void initialize(Stage stage) {
         Deck deck1 = new Deck();
         Deck deck2 = new Deck();
-        deck1.setFaction(Faction.REALMS_NORTHERN);
+        deck1.setFaction(Faction.SCOIA_TAEL);
         deck2.setFaction(Faction.MONSTER);
         deck1.addCards(deck1.getFaction().getAllCards());
         deck2.addCards(deck2.getFaction().getAllCards());
-        deck1.setLeader(RealmsNorthernLeaders.KING_OF_TEMERIA.getLeader());
+        deck1.setLeader(ScoiaTaelLeaders.DAISY_OF_THE_VALLEY.getLeader());
         deck2.setLeader(MonstersLeaders.BRINGER_OF_DEATH.getLeader());
 
         User user1 = new User("username1", "nickname1", "email1", "password1");
