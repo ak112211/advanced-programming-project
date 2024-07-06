@@ -451,41 +451,12 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         showBigImage(leaderCard.getImagePath(), leaderCard.getDescription(), false, null, leaderCard);
     }
 
-    private void showHandCardOverlay(Card handCard) {  // TODO what the hell is this? remove??
-        VBox overlay = new VBox(10);
-        overlay.setAlignment(Pos.TOP_RIGHT);
-        overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
-        overlay.setPrefSize(200, 400);
-
-        Text name = new Text(handCard.getName());
-        Text description = new Text(handCard.getDescription().toString());
-
-        overlay.getChildren().addAll(name, description);
-        overlayPane.getChildren().add(overlay);
-        overlayPane.setVisible(true);
-    }
-
     public void displayMessage(String message) {
         showOverlayMessage(message);
         // Hide message after a few seconds
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> hideOverlayMessage());
         pause.play();
-    }
-
-    private void showRowOverlay(List<Card> rowCards) { // TODO remove??
-        VBox overlay = new VBox(10);
-        overlay.setAlignment(Pos.CENTER);
-        overlay.setStyle("-fx-background-color: white; -fx-padding: 10;");
-        overlay.setPrefSize(400, 600);
-
-        for (Card card : rowCards) {
-            Text cardInfo = new Text(card.getName() + ": " + card.getDescription().toString());
-            overlay.getChildren().add(cardInfo);
-        }
-
-        overlayPane.getChildren().add(overlay);
-        overlayPane.setVisible(true);
     }
 
     private HBox getRowBox(Card card) {
