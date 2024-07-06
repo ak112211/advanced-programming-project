@@ -6,6 +6,7 @@ import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -44,6 +45,9 @@ import static util.DatabaseConnection.updateUserScore;
 // TODO pass round (taskResult="pass")
 // TODO show players name, avatar, faction, etc.
 public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
+
+    @FXML
+    public Button makePublic;
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
             player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
@@ -197,12 +201,13 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             exitSave.setVisible(false);
             exit.setVisible(false);
             quit.setVisible(true);
+            makePublic.setVisible(true);
             App.getServerConnection().addMessageListener(this);
-
         } else {
             exitSave.setVisible(true);
             exit.setVisible(true);
             quit.setVisible(false);
+            makePublic.setVisible(false);
         }
 
         if (game.isPlayer1Turn()) {
@@ -608,5 +613,17 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         } else {
             game.receiveTaskResult(taskResult, null);
         }
+    }
+
+    public void handleMakePublic(ActionEvent actionEvent) {
+        if (Game.getCurrentGame().isPublic()) {
+            makePublic.setText("Make game Online");
+            Game.getCurrentGame().setPublic(false);
+        } else {
+            makePublic.setText("Make game Offline");
+            Game.getCurrentGame().setPublic(true);
+        }
+        DatabaseConnection.updateGamePublicity(Game.getCurrentGame().isPublic(), Game.getCurrentGame().getID());
+        App.getServerConnection().sendMessage("disconnect game:" + game.getID());
     }
 }

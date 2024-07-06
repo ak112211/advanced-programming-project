@@ -44,6 +44,8 @@ public class App {
                     ((MessagingController) currentController).cleanup();
                 } else if (currentController instanceof ScoreboardController) {
                     ((ScoreboardController) currentController).cleanup();
+                } else if (currentController instanceof ViewGamePlayController) {
+                    ((ViewGamePlayController) currentController).cleanup();
                 }
             }
             FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));

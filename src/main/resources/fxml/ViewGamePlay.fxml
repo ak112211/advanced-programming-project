@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <Pane fx:id="gamePane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GamePaneController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ViewGamePlayController">
     <ImageView fx:id="background" fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
         <Image url="@../gwentImages/img/board.jpg"/>
     </ImageView>
@@ -124,22 +124,7 @@
         <Text fx:id="cardNumText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"
               wrappingWidth="170"/>
     </VBox>
-    <VBox fx:id="chooseDisplayVBox" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="10"
-          visible="false">
-        <HBox alignment="CENTER" spacing="10">
-            <Button mnemonicParsing="false" onAction="#handlePreviousCard" text="◄"/>
-            <ImageView fx:id="chooseImageView" fitHeight="340" fitWidth="150" preserveRatio="true"/>
-            <Button mnemonicParsing="false" onAction="#handleNextCard" text="►"/>
-        </HBox>
-        <Text fx:id="chooseDescriptionText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"
-              wrappingWidth="170"/>
-        <Button fx:id="passButton" mnemonicParsing="false" onAction="#passChoose" text="pass"/>
-    </VBox>
     <VBox fx:id="pauseMenu" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="10" visible="false">
-        <Button fx:id="exit" onAction="#handleEndGameWithoutSaving" text="End Game Without Saving"/>
-        <Button fx:id="exitSave" onAction="#handleSaveGameAndExit" text="Save Game and Exit"/>
         <Button fx:id="quit" onAction="#handleQuit" text="Quit"/>
-        <Button fx:id="makePublic" onAction="#handleMakePublic" text="Quit"/>
-        <Button onAction="#handleToggleSound" text="Turn Sound On/Off"/>
     </VBox>
 </Pane>

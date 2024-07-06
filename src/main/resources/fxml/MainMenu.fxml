@@ -19,6 +19,7 @@
             <Button text="Profile" onAction="#goToProfile"/>
             <Button text="Logout" onAction="#logout"/>
             <Button text="Friends and requests" onAction="#goToAddFriends"/>
+            <Button text="Ongoing Games" onAction="#goToOnGoingGames"/>
             <Button text="New Offline Game" onAction="#goToDeckMenu"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">

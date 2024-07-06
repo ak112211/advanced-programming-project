@@ -12,6 +12,8 @@ public enum Menu {
     DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
     VERIFY_MENU("/fxml/VerificationCode.fxml"),
     MESSAGING_MENU("/fxml/MessagingMenu.fxml"),
+    VIEW_GAMEPLAY_MENU("/fxml/ViewGamePlay.fxml"),
+    ONGOING_GAMES_MENU("/fxml/OngoingGames.fxml"),
     LOBBY_MENU("/fxml/Lobby.fxml"),
     CHOOSE_NAME_MENU("/fxml/ChooseName.fxml");
 
