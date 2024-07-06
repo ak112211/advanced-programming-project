@@ -18,6 +18,8 @@ public class GwentServer {
 
     // Command patterns
     private static final Pattern CHECK_STATUS_PATTERN = Pattern.compile("check status:(\\w+)");
+    private static final Pattern SEND_DISCONNECT_PATTERN = Pattern.compile("disconnect game:(\\w+)");
+    private static final Pattern UPDATE_VIEWERS_PATTERN = Pattern.compile("update viewers:(\\w+)");
     private static final Pattern LOGIN_PATTERN = Pattern.compile("login:(\\w+)");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("register:(\\w+)");
     private static final Pattern LOGOUT_PATTERN = Pattern.compile("logout");
@@ -78,6 +80,10 @@ public class GwentServer {
                             handleLogin(matcher);
                         } else if (matcher.pattern() == CHECK_STATUS_PATTERN) {
                             handleCheckOnline(matcher);
+                        } else if (matcher.pattern() == UPDATE_VIEWERS_PATTERN) {
+                            handleUpdateViewers(matcher);
+                        } else if (matcher.pattern() == SEND_DISCONNECT_PATTERN) {
+                            handleSendDisconnect(matcher);
                         } else if (matcher.pattern() == REGISTER_PATTERN) {
                             handleRegister(matcher);
                         } else if (matcher.pattern() == LOGOUT_PATTERN) {
@@ -125,6 +131,12 @@ public class GwentServer {
 
         private Matcher getMatcher(String input) {
             Matcher matcher = LOGIN_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = UPDATE_VIEWERS_PATTERN.matcher(input);
+            if (matcher.matches()) return matcher;
+
+            matcher = SEND_DISCONNECT_PATTERN.matcher(input);
             if (matcher.matches()) return matcher;
 
             matcher = CHECK_STATUS_PATTERN.matcher(input);
@@ -230,7 +242,7 @@ public class GwentServer {
         private void handleSendVerification(Matcher matcher) throws IOException {
             String email = matcher.group(1);
             String code = matcher.group(2);
-            EmailSender.sendVerificationEmail(email, code);
+            EmailService.sendVerificationEmail(email, code);
             out.println("Verification email sent to " + email);
         }
 
@@ -263,6 +275,28 @@ public class GwentServer {
         private void handleMove(Matcher matcher) throws IOException {
             String targetId = matcher.group(1);
             sendToClient(targetId, "Move from " + currentPlayer.getId());
+        }
+
+        private void handleUpdateViewers(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            synchronized (players) {
+                for (String username : DatabaseConnection.getUsernames()) {
+                    if (players.get(username) != null && clients.get(username) != null && !Objects.equals(username, currentPlayer.getId())) {
+                        sendToClient(username, "online game move made " + targetId);
+                    }
+                }
+            }
+        }
+
+        private void handleSendDisconnect(Matcher matcher) throws IOException {
+            String targetId = matcher.group(1);
+            synchronized (players) {
+                for (String username : DatabaseConnection.getUsernames()) {
+                    if (players.get(username) != null && clients.get(username) != null && !Objects.equals(username, currentPlayer.getId())) {
+                        sendToClient(username, "game disconnected " + targetId);
+                    }
+                }
+            }
         }
 
         private void handleEndGame(Matcher matcher) throws IOException {

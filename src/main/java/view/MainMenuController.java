@@ -2,6 +2,7 @@ package view;
 
 import enums.Menu;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -124,5 +125,10 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     public void cleanup() {
         App.getServerConnection().removeMessageListener(this);
+    }
+
+    @FXML
+    public void goToOnGoingGames(ActionEvent actionEvent) {
+        App.loadScene(Menu.ONGOING_GAMES_MENU.getPath());
     }
 }

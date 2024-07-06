@@ -5,8 +5,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class EmailSender {
-
+public class EmailService {
     private static final String USERNAME = "alikhalaj535@gmail.com";
     private static final String PASSWORD = "xmtwapnhlqxmvjck";
 

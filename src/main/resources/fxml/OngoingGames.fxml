@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.OngoingGamesController"
+            prefHeight="400.0" prefWidth="600.0">
+    <ListView fx:id="ongoingGamesListView" layoutX="50.0" layoutY="50.0" prefHeight="250.0" prefWidth="500.0"/>
+    <Button fx:id="viewGameButton" layoutX="250.0" layoutY="320.0" text="View Game" onAction="#viewSelectedGame"/>
+    <Button text="Back" onAction="#handleBack" GridPane.rowIndex="9" GridPane.columnIndex="0"
+            GridPane.halignment="LEFT"/>
+</AnchorPane>
+

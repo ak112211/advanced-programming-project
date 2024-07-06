@@ -46,6 +46,7 @@ public class Game implements Serializable {
     private List<Card> cardChoices; // gharare anidsash az card haye dige bashe yani gharare 2 ta reference be ye chiz eshare konan. vali age sakhtete mohem nist age ye carde dige besazi va reference ha 2 ta chize motafeto neshoon bedan
     private String task;
     private int ID;
+    private boolean isPublic;
     private final User player1;
     private final User player2;
     private final Date date;
@@ -705,5 +706,13 @@ public class Game implements Serializable {
 
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }

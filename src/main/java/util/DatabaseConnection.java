@@ -232,6 +232,20 @@ public class DatabaseConnection {
         }
     }
 
+    public static boolean updateGamePublicity(boolean isPublic, int ID) {
+        String query = "UPDATE Games SET is_public = ? WHERE game_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setBoolean(1, isPublic);
+            preparedStatement.setInt(2, ID);
+            int rowsUpdated = preparedStatement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void saveGame(Game game) throws SQLException {
         String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data, is_online) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
@@ -978,6 +992,20 @@ public class DatabaseConnection {
             preparedStatement.setInt(2, leagueId);
             preparedStatement.executeUpdate();
         }
+    }
+
+    public static List<Game> getActiveGames() throws SQLException {
+        List<Game> activeGames = new ArrayList<>();
+        String query = "SELECT * FROM Games WHERE status = 'ACTIVE' AND is_public = TRUE"; // Adjust query as per your database schema
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                activeGames.add(getGame(resultSet.getInt("game_id")));
+            }
+        }
+        return activeGames;
     }
 
 }
