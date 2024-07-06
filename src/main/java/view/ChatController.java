@@ -341,7 +341,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
     }
 
     private int getLeagueIdByName(String leagueName) throws SQLException {
-        return Integer.parseInt(leagueName.split(" ")[1]);
+        return Integer.parseInt(leagueName.split(" ")[leagueName.split(" ").length - 1]);
     }
 
     private void loadLeagueScreen(League league) {
