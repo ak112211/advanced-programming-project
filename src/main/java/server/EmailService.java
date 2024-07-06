@@ -5,8 +5,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class EmailSender {
-
+public class EmailService {
     private static final String USERNAME = "alikhalaj535@gmail.com";
     private static final String PASSWORD = "xmtwapnhlqxmvjck";
 
@@ -30,7 +29,6 @@ public class EmailSender {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Email Verification Code");
             message.setText("Your verification code is: " + code);
-
             Transport.send(message);
             System.out.println("Verification email sent.");
         } catch (MessagingException e) {

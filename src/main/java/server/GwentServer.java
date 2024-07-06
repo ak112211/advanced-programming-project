@@ -230,7 +230,7 @@ public class GwentServer {
         private void handleSendVerification(Matcher matcher) throws IOException {
             String email = matcher.group(1);
             String code = matcher.group(2);
-            EmailSender.sendVerificationEmail(email, code);
+            EmailService.sendVerificationEmail(email, code);
             out.println("Verification email sent to " + email);
         }
 
