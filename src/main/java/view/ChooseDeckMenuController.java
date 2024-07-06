@@ -392,8 +392,6 @@ public class ChooseDeckMenuController {
         }
 
         if (currentUser.getDeck() == null || (player2.getDeck() == null && !isMulti) || currentUser.getDeck().getCards().size() < 22 || (player2.getDeck().getCards().size() < 22 && !isMulti)) {
-            System.out.println(currentUser.getDeck().getCards().size());
-            System.out.println(player2.getDeck().getCards().size());
             Tools.showAlert("Error", "Deck Error", "Both players must have at least 22 unit cards to start the game.");
             return;
         }

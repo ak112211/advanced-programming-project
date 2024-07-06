@@ -57,7 +57,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
                 player1HasPassed, player2HasPassed, player1UsedLeaderAbility, player2UsedLeaderAbility,
                 player1Deck, player2Deck, player1InHandCards, player2InHandCards,
                 player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard,
-                player1Faction, player2Faction, status, roundsInfo);
+                player1Faction, player2Faction, status, roundsInfo, player1Points, player2Points);
     }
 
     private ArrayList<Card> deserializeCards(JsonArray jsonArray, JsonDeserializationContext context) {

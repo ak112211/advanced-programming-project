@@ -97,7 +97,7 @@ public class Game implements Serializable {
         this.roundsInfo = new RoundsInfo();
     }
 
-    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean vetoForPLayer1Shown, boolean vetoForPLayer2Shown, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo) {
+    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean vetoForPLayer1Shown, boolean vetoForPLayer2Shown, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo, int player1Points, int player2Points) {
         this.ID = ID;
         this.player1 = player1;
         this.player2 = player2;
@@ -125,6 +125,9 @@ public class Game implements Serializable {
 
         this.status = status;
         this.roundsInfo = roundsInfo;
+
+        this.player1Points = player1Points;
+        this.player2Points = player2Points;
     }
 
     public void startGame() {

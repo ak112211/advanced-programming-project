@@ -533,16 +533,22 @@ public class DatabaseConnection {
     }
 
     public static List<String> getGameRequests(String username) throws SQLException {
-        String query = "SELECT * FROM gamerequests WHERE recipient = ? ORDER BY timestamp DESC";
+        String query = "SELECT * FROM gamerequests WHERE recipient = ? OR sender = ? ORDER BY timestamp DESC";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
+            stmt.setString(2, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 List<String> requests = new ArrayList<>();
                 while (rs.next()) {
                     String sender = rs.getString("sender");
+                    String recipient = rs.getString("recipient");
                     String timestamp = rs.getString("timestamp");
                     String status = rs.getString("status");
-                    requests.add("Game request from " + sender + " (" + timestamp + ")" + " status: " + status);
+                    if (sender.equals(User.getCurrentUser().getUsername())) {
+                        requests.add("Game request to " + recipient + " (" + timestamp + ")" + " status: " + status);
+                    } else {
+                        requests.add("Game request from " + sender + " (" + timestamp + ")" + " status: " + status);
+                    }
                 }
                 return requests;
             }
