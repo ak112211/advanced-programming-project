@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import model.Deck;
 import model.Game;
+import model.League;
 import model.User;
 import model.card.Card;
 import model.card.Leader;
@@ -854,5 +855,129 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
     }
-    
+
+    public static List<League> getAvailableLeagues() throws SQLException {
+        List<League> leagues = new ArrayList<>();
+        String query = "SELECT * FROM Leagues";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                League league = extractLeagueFromResultSet(resultSet);
+                leagues.add(league);
+            }
+        }
+        return leagues;
+    }
+
+    public static List<League> getMemberLeagues(String username) throws SQLException {
+        List<League> leagues = new ArrayList<>();
+        String query = "SELECT * FROM Leagues WHERE players LIKE ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + username + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    League league = extractLeagueFromResultSet(resultSet);
+                    leagues.add(league);
+                }
+            }
+        }
+        return leagues;
+    }
+
+    private static League extractLeagueFromResultSet(ResultSet resultSet) throws SQLException {
+        String name = resultSet.getString("name");
+        String winner = resultSet.getString("winner");
+        String quarter1Game = resultSet.getString("quarter1_game");
+        String quarter2Game = resultSet.getString("quarter2_game");
+        String quarter3Game = resultSet.getString("quarter3_game");
+        String quarter4Game = resultSet.getString("quarter4_game");
+        String semi1Game = resultSet.getString("semi1_game");
+        String semi2Game = resultSet.getString("semi2_game");
+        String finalGame = resultSet.getString("final_game");
+        ArrayList<String> players = new ArrayList<>(List.of(resultSet.getString("players").split(",")));
+
+        League league = new League(name);
+        league.setPlayers(players);
+        league.setWinner(winner);
+        league.setQuarter1Game(quarter1Game);
+        league.setQuarter2Game(quarter2Game);
+        league.setQuarter3Game(quarter3Game);
+        league.setQuarter4Game(quarter4Game);
+        league.setSemi1Game(semi1Game);
+        league.setSemi2Game(semi2Game);
+        league.setFinalPlay(finalGame);
+        return league;
+    }
+
+    public static void addNewLeague(League league) throws SQLException {
+        String query = "INSERT INTO Leagues (name, winner, quarter1_game, quarter2_game, quarter3_game, quarter4_game, semi1_game, semi2_game, final_game, players) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, league.getName());
+            preparedStatement.setString(2, league.getWinner());
+            preparedStatement.setString(3, league.getQuarter1Game());
+            preparedStatement.setString(4, league.getQuarter2Game());
+            preparedStatement.setString(5, league.getQuarter3Game());
+            preparedStatement.setString(6, league.getQuarter4Game());
+            preparedStatement.setString(7, league.getSemi1Game());
+            preparedStatement.setString(8, league.getSemi2Game());
+            preparedStatement.setString(9, league.getFinalPlay() != null ? league.getFinalPlay().toString() : null); // Assuming Game has a toString method or store an ID
+            preparedStatement.setString(10, String.join(",", league.getPlayers()));
+
+            preparedStatement.executeUpdate();
+
+            // Retrieve the generated key and set it to the league object
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    league.setID(generatedKeys.getInt(1));
+                }
+            }
+        }
+    }
+
+    public static League getLeagueById(int leagueId) throws SQLException {
+        String query = "SELECT * FROM Leagues WHERE league_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, leagueId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return extractLeagueFromResultSet(resultSet);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void updateLeague(League league) throws SQLException {
+        String query = "UPDATE Leagues SET name = ?, winner = ?, quarter1_game = ?, quarter2_game = ?, quarter3_game = ?, quarter4_game = ?, semi1_game = ?, semi2_game = ?, final_game = ?, players = ? WHERE league_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, league.getName());
+            preparedStatement.setString(2, league.getWinner());
+            preparedStatement.setString(3, league.getQuarter1Game());
+            preparedStatement.setString(4, league.getQuarter2Game());
+            preparedStatement.setString(5, league.getQuarter3Game());
+            preparedStatement.setString(6, league.getQuarter4Game());
+            preparedStatement.setString(7, league.getSemi1Game());
+            preparedStatement.setString(8, league.getSemi2Game());
+            preparedStatement.setString(9, league.getFinalPlay()); // Assuming Game has a toString method or store an ID
+            preparedStatement.setString(10, String.join(",", league.getPlayers()));
+            preparedStatement.setInt(11, league.getID());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void joinLeague(int leagueId, String username) throws SQLException {
+        String query = "UPDATE Leagues SET players = CONCAT(players, ',') || ? WHERE league_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setInt(2, leagueId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
 }

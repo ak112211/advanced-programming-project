@@ -3,10 +3,13 @@ package view;
 import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import model.App;
+import model.League;
 import model.User;
 import util.DatabaseConnection;
 import util.ServerConnection;
@@ -19,6 +22,10 @@ import static view.Tools.showAlert;
 
 public class ChatController implements ServerConnection.ServerEventListener {
 
+    @FXML
+    private ListView<String> availableLeaguesListView;
+    @FXML
+    private ListView<String> memberLeaguesListView;
     @FXML
     private ListView<String> friendRequestsListView;
     @FXML
@@ -35,6 +42,8 @@ public class ChatController implements ServerConnection.ServerEventListener {
     private Button acceptRequestButton;
     @FXML
     private Button declineRequestButton;
+    @FXML
+    private TextField newLeagueNameField;
 
     private User currentUser;
 
@@ -45,6 +54,8 @@ public class ChatController implements ServerConnection.ServerEventListener {
         loadFriendsList();
         loadGameRequests();
         loadFriendRequests();
+        loadMemberLeagues();
+        loadAvailableLeagues();
 
         sendFriendRequestButton.setOnAction(event -> sendFriendRequest());
         sendGameRequestButton.setOnAction(event -> sendGameRequest());
@@ -83,8 +94,12 @@ public class ChatController implements ServerConnection.ServerEventListener {
 
     private void loadAvailableLeagues() {
         try {
-            List<String> requests = DatabaseConnection.getFriendRequests(currentUser.getUsername());
-            Platform.runLater(() -> friendRequestsListView.getItems().setAll(requests));
+            List<League> leagues = DatabaseConnection.getAvailableLeagues();
+            Platform.runLater(() -> {
+                for (League league : leagues) {
+                    availableLeaguesListView.getItems().add(league.getName() + " " + league.getID());
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -92,8 +107,12 @@ public class ChatController implements ServerConnection.ServerEventListener {
 
     private void loadMemberLeagues() {
         try {
-            List<String> requests = DatabaseConnection.getFriendRequests(currentUser.getUsername());
-            Platform.runLater(() -> friendRequestsListView.getItems().setAll(requests));
+            List<League> leagues = DatabaseConnection.getMemberLeagues(currentUser.getUsername());
+            Platform.runLater(() -> {
+                for (League league : leagues) {
+                    memberLeaguesListView.getItems().add(league.getName() + " " + league.getID());
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -275,6 +294,58 @@ public class ChatController implements ServerConnection.ServerEventListener {
                 }
             }
         });
+    }
+
+    @FXML
+    public void createNewLeague() {
+        String leagueName = newLeagueNameField.getText();
+        if (leagueName != null && !leagueName.isEmpty()) {
+            League league = new League(leagueName);
+            league.addPlayer(User.getCurrentUser().getUsername());
+            try {
+                DatabaseConnection.addNewLeague(league);
+                memberLeaguesListView.getItems().add(league.getName() + " " + league.getID());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void joinSelectedLeague() {
+        String selectedLeagueName = availableLeaguesListView.getSelectionModel().getSelectedItem();
+        if (selectedLeagueName != null) {
+            try {
+                int leagueId = getLeagueIdByName(selectedLeagueName); // Implement this method to get the league ID
+                DatabaseConnection.joinLeague(leagueId, User.getCurrentUser().getUsername()); // Replace currentUsername with the actual current user
+                memberLeaguesListView.getItems().add(selectedLeagueName);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void openSelectedLeague() {
+        String selectedLeagueName = memberLeaguesListView.getSelectionModel().getSelectedItem();
+        if (selectedLeagueName != null) {
+            try {
+                int leagueId = getLeagueIdByName(selectedLeagueName); // Implement this method to get the league ID
+                League league = DatabaseConnection.getLeagueById(leagueId);
+                // Load the league screen and pass the league object to it
+                loadLeagueScreen(league);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int getLeagueIdByName(String leagueName) throws SQLException {
+        return Integer.parseInt(leagueName.split(" ")[1]);
+    }
+
+    private void loadLeagueScreen(League league) {
+        App.loadScene("LeagueScreen.fxml");
     }
 
     public void cleanup() {

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class League {
 
+    private int ID;
     private String name;
-    private ArrayList<String> players;
+    private ArrayList<String> players = new ArrayList<>();
     private String winner;
     private String quarter1Game;
     private String quarter2Game;
@@ -13,12 +14,10 @@ public class League {
     private String quarter4Game;
     private String semi1Game;
     private String semi2Game;
+    private String finalPlay;
 
-    private Game finalPlay;
-
-    public League(String name, String firstPlayer) {
+    public League(String name) {
         this.name = name;
-        addPlayer(firstPlayer);
     }
 
     public String getName() {
@@ -93,11 +92,11 @@ public class League {
         this.semi2Game = semi2Game;
     }
 
-    public Game getFinalPlay() {
+    public String getFinalPlay() {
         return finalPlay;
     }
 
-    public void setFinalPlay(Game finalPlay) {
+    public void setFinalPlay(String finalPlay) {
         this.finalPlay = finalPlay;
     }
 
@@ -107,5 +106,13 @@ public class League {
 
     public void removePlayer(String user) {
         this.players.remove(user);
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int id) {
+        ID = id;
     }
 }

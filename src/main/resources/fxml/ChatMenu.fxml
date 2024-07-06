@@ -2,8 +2,9 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChatController" spacing="10" alignment="TOP_CENTER"
-      prefWidth="800" prefHeight="600" styleClass="logicPage">
+      prefWidth="800" prefHeight="750" styleClass="logicPage">
     <HBox spacing="10" alignment="CENTER">
         <Label text="Chat and Game Requests" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
     </HBox>
@@ -31,12 +32,26 @@
         <Button fx:id="acceptRequestButton" text="Accept Game Request" onAction="#acceptGameRequest"/>
         <Button fx:id="declineRequestButton" text="Decline Game Request" onAction="#declineGameRequest"/>
     </HBox>
-
     <HBox spacing="10" alignment="CENTER">
         <Button text="Accept Friend Request" onAction="#acceptFriendRequest"/>
         <Button text="Decline Friend Request" onAction="#declineFriendRequest"/>
     </HBox>
     <HBox spacing="10" alignment="CENTER">
         <Button text="Start chat" onAction="#startChat"/>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <Label text="Available Leagues:"/>
+        <ListView fx:id="availableLeaguesListView" prefHeight="200" prefWidth="300"/>
+        <Button text="Join League" onAction="#joinSelectedLeague"/>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <Label text="Your Leagues:"/>
+        <ListView fx:id="memberLeaguesListView" prefHeight="200" prefWidth="300"/>
+        <Button text="Open League" onAction="#openSelectedLeague"/>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER">
+        <Label text="Create New League:"/>
+        <TextField fx:id="newLeagueNameField" promptText="Enter league name"/>
+        <Button fx:id="createLeagueButton" text="Create League" onAction="#createNewLeague"/>
     </HBox>
 </VBox>
