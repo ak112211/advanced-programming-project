@@ -342,6 +342,15 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         } else {
             displayMessage("Turn of " + game.getPlayer2().getUsername());
         }
+        if (game.isOnline()) {
+            try {
+                DatabaseConnection.updateGame(game);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            String player = game.isPlayer1Turn() ? game.getPlayer1().getUsername() : game.getPlayer2().getUsername();
+            App.getServerConnection().sendMessage(player + ":other player played move");
+        }
     }
 
     public void updateScene() {
@@ -543,10 +552,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @Override
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
-            if (input.equals("Move from ")) {
-                System.out.println(input);
+            if (input.startsWith("online game move made ")) {;
                 try {
-                    game = DatabaseConnection.getGame(game.getID());
+                    game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[4]));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -584,7 +592,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void doTask() {
-        if (game.isOnline() && ((game.getPlayer1().equals(User.getCurrentUser()) && game.isPlayer1Turn()) || (game.getPlayer2().equals(User.getCurrentUser()) && !game.isPlayer1Turn()))){
+        if (game.isOnline() && (game.getPlayer1().equals(User.getCurrentUser()) ^ game.isPlayer1Turn())){
             return;
         }
         if (game.getTask().equals("show end screen")) {
@@ -602,7 +610,11 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void sendTaskResult(String taskResult) {
-        game.receiveTaskResult(taskResult, User.getCurrentUser());
+        if (game.isOnline()) {
+            App.getServerConnection().sendMessage("run task:" + taskResult + ":" + game.getID());
+        } else {
+            game.receiveTaskResult(taskResult, null);
+        }
     }
 
     @FXML

@@ -1,5 +1,7 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
@@ -16,7 +18,10 @@ import model.card.Card;
 import model.card.Leader;
 //import server.DatabaseConnection;
 //import server.GwentServer;
+import util.CardSerializer;
 import util.DatabaseConnection;
+import util.DeckDeserializer;
+import util.LeaderSerializer;
 import view.GamePaneController;
 import model.RoundsInfo.Winner;
 
@@ -77,7 +82,7 @@ public class Game implements Serializable, Cloneable {
         this.player2 = player2;
         this.date = new Date(System.currentTimeMillis());
 
-        this.isPlayer1Turn = true;
+        this.isPlayer1Turn = RANDOM.nextBoolean();
         this.fromSaved = false;
         this.player1HasPassed = false;
         this.player2HasPassed = false;
@@ -577,10 +582,6 @@ public class Game implements Serializable, Cloneable {
         return task;
     }
 
-    public void setTask(String task) {
-        this.task = task;
-    }
-
     public int getID() {
         return ID;
     }
@@ -686,13 +687,16 @@ public class Game implements Serializable, Cloneable {
     }
 
     private void giveTask() {
-        Platform.runLater(gamePaneController::doTask);
-        try {
-            DatabaseConnection.saveGame(this);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (isOnline) {
+            try {
+                DatabaseConnection.updateGame(this);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            App.getServerConnection().sendMessage(User.getCurrentUser().getUsername().equals(player1.getUsername()) ? player2.getUsername() : player1.getUsername() + ":other player played move");
         }
-        App.getServerConnection().sendMessage(User.getCurrentUser().getUsername().equals(player1.getUsername()) ? player2.getUsername() : player1.getUsername() + ":other player played move");
+        Platform.runLater(gamePaneController::doTask);
+
     }
 
     // Saving functions:
@@ -716,6 +720,10 @@ public class Game implements Serializable, Cloneable {
             }
         });
         savingThread.start();
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 
     // GameStatus enum
