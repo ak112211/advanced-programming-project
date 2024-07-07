@@ -3,10 +3,7 @@ package util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import model.Deck;
-import model.Game;
-import model.League;
-import model.User;
+import model.*;
 import model.card.Card;
 import model.card.Leader;
 
@@ -244,6 +241,43 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
         return false;
+    }
+
+
+    public static void insertToken(Token token) throws SQLException {
+        String sql = "INSERT INTO tokens (user_id, token, expiration) VALUES (?, ?, ?)";
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, token.getUserId());
+            stmt.setString(2, token.getToken());
+            stmt.setTimestamp(3, Timestamp.valueOf(token.getExpiration()));
+            stmt.executeUpdate();
+        }
+    }
+
+    public static Token getTokenByToken(String token) throws SQLException {
+        String sql = "SELECT * FROM tokens WHERE token = ?";
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, token);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Token tokenObject = new Token();
+                    tokenObject.setId(rs.getInt("id"));
+                    tokenObject.setUserId(rs.getString("user_id"));
+                    tokenObject.setToken(rs.getString("token"));
+                    tokenObject.setExpiration(rs.getTimestamp("expiration").toLocalDateTime());
+                    return tokenObject;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void deleteTokenByUserId(String userId) throws SQLException {
+        String sql = "DELETE FROM tokens WHERE user_id = ?";
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            stmt.executeUpdate();
+        }
     }
 
     public static void saveGame(Game game) throws SQLException {
