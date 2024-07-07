@@ -59,7 +59,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     game.setCurrentUser(User.getCurrentUser());
                     game.setOnline(true);
                     Game.setCurrentGame(game);
-                    DatabaseConnection.saveGame(Game.getCurrentGame());
+                    DatabaseConnection.saveGame(game);
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -68,9 +68,8 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                 try {
                     Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[6]));
                     Game.setCurrentGame(game);
-                    if (game.isOnline()) {
-                        System.out.println("onlineeee");
-                    }
+                    assert game != null;
+                    game.setOnline(true);
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

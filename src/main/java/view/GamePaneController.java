@@ -207,7 +207,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            App.getServerConnection().sendMessage(game.getPlayer2().getUsername() + ":loaded after:" + game.getID());
+            if (User.getCurrentUser().equals(game.getPlayer1())) {
+                App.getServerConnection().sendMessage(game.getPlayer2().getUsername() + ":loaded after:" + game.getID());
+            }
         }
     }
 
