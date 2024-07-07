@@ -139,7 +139,7 @@
         <Button fx:id="exit" onAction="#handleEndGameWithoutSaving" text="End Game Without Saving"/>
         <Button fx:id="exitSave" onAction="#handleSaveGameAndExit" text="Save Game and Exit"/>
         <Button fx:id="quit" onAction="#handleQuit" text="Quit"/>
-        <Button fx:id="makePublic" onAction="#handleMakePublic" text="Quit"/>
+        <Button fx:id="makePublic" onAction="#handleMakePublic" text="Make public"/>
         <Button onAction="#handleToggleSound" text="Turn Sound On/Off"/>
     </VBox>
 </Pane>
