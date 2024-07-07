@@ -1,7 +1,5 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
@@ -18,10 +16,7 @@ import model.card.Card;
 import model.card.Leader;
 //import server.DatabaseConnection;
 //import server.GwentServer;
-import util.CardSerializer;
 import util.DatabaseConnection;
-import util.DeckDeserializer;
-import util.LeaderSerializer;
 import view.GamePaneController;
 import model.RoundsInfo.Winner;
 
@@ -82,7 +77,7 @@ public class Game implements Serializable, Cloneable {
         this.player2 = player2;
         this.date = new Date(System.currentTimeMillis());
 
-        this.isPlayer1Turn = RANDOM.nextBoolean();
+        this.isPlayer1Turn = true;
         this.fromSaved = false;
         this.player1HasPassed = false;
         this.player2HasPassed = false;
@@ -580,6 +575,10 @@ public class Game implements Serializable, Cloneable {
 
     public String getTask() {
         return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 
     public int getID() {

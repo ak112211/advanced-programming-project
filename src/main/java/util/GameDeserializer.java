@@ -38,6 +38,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         Faction player1Faction = Faction.valueOf(jsonObject.get("player1Faction").getAsString());
         Faction player2Faction = Faction.valueOf(jsonObject.get("player2Faction").getAsString());
 
+        String task = jsonObject.get("task").getAsString();
         Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
         Leader player2LeaderCard = Leader.getLeaderFromType(jsonObject.get("player2LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
 
@@ -49,11 +50,13 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> player1GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player1GraveyardCards"), context);
         ArrayList<Card> player2GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player2GraveyardCards"), context);
 
-        return new Game(ID, player1, player2, date, isPlayer1Turn,
-                player1HasPassed, player2HasPassed, player1UsedLeaderAbility, player2UsedLeaderAbility,
-                player1Deck, player2Deck, player1InHandCards, player2InHandCards,
-                player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard,
-                player1Faction, player2Faction, status, roundsInfo);
+         Game game = new Game(ID, player1, player2, date, isPlayer1Turn,
+                 player1HasPassed, player2HasPassed, player1UsedLeaderAbility, player2UsedLeaderAbility,
+                 player1Deck, player2Deck, player1InHandCards, player2InHandCards,
+                 player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard,
+                 player1Faction, player2Faction, status, roundsInfo);
+         game.setTask(task);
+        return game;
     }
 
     private ArrayList<Card> deserializeCards(JsonArray jsonArray, JsonDeserializationContext context) {
