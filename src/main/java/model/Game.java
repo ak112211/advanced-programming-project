@@ -719,25 +719,6 @@ public class Game implements Serializable, Cloneable {
         savingThread.start();
     }
 
-    // TODO ali ina ro nemikhay pakeshoon kon age ham mikhay todo ro bardar
-    public String toJson() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Card.class, new CardSerializer())
-                .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                .setPrettyPrinting()
-                .create();
-        return gson.toJson(this);
-    }
-
-    public static Game fromJson(String json) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Card.class, new CardSerializer())
-                .registerTypeAdapter(Leader.class, new LeaderSerializer())
-                .registerTypeAdapter(Deck.class, new DeckDeserializer())
-                .create();
-        return gson.fromJson(json, Game.class);
-    }
-
     // GameStatus enum
 
     public enum GameStatus {

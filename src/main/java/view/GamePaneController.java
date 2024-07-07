@@ -331,15 +331,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         } else {
             displayMessage("Turn of " + game.getPlayer2().getUsername());
         }
-        if (game.isOnline()) {
-            try {
-                DatabaseConnection.updateGame(game);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            String player = game.isPlayer1Turn() ? game.getPlayer1().getUsername() : game.getPlayer2().getUsername();
-            App.getServerConnection().sendMessage(player + ":other player played move");
-        }
     }
 
     public void updateScene() {
@@ -548,7 +539,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                     throw new RuntimeException(e);
                 }
                 Game.setCurrentGame(game);
-                updateScene();
+                doTask();
             } else if (input.endsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
                 Tools.showAlert(input + " You won!");
