@@ -301,7 +301,7 @@ public class GwentServer {
 
         private void handleReceiveTask(Matcher matcher) throws IOException, SQLException {
             String task = matcher.group(1);
-            String gameId = matcher.group(1);
+            String gameId = matcher.group(2);
             Game game = DatabaseConnection.getGame(Integer.parseInt(gameId));
             assert game != null;
             game.receiveTaskResult(task, DatabaseConnection.getUser(currentPlayer.getId()));

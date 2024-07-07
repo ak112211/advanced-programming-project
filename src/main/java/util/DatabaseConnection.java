@@ -256,6 +256,7 @@ public class DatabaseConnection {
             preparedStatement.setString(4, game.getStatus().name());
             preparedStatement.setString(5, game.getWinnerUser() != null ? game.getWinnerUser().getUsername() : null);
 
+            game.setID(getTotalGamesCount() + 1);
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Card.class, new CardSerializer())
                     .registerTypeAdapter(Leader.class, new LeaderSerializer())
@@ -271,7 +272,6 @@ public class DatabaseConnection {
                 if (generatedKeys.next()) {
                     int gameId = generatedKeys.getInt(1);
                     game.setID(gameId);
-                    updateGame(game);
                     if (game.isOnline()) {
                         addGameToUser(game.getPlayer1().getUsername(), gameId);
                         addGameToUser(game.getPlayer2().getUsername(), gameId);
