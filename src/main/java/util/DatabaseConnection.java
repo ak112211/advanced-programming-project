@@ -185,7 +185,7 @@ public class DatabaseConnection {
         return Games;
     }
 
-    public static void updateGame(Game game) throws SQLException {
+    public static synchronized void updateGame(Game game) throws SQLException {
         String query = "UPDATE Games SET player1 = ?, player2 = ?, date = ?, status = ?, winner = ?, game_data = ?, is_online = ?, " +
                 "player1_round1_score = ?, player1_round2_score = ?, player1_round3_score = ?, " +
                 "player2_round1_score = ?, player2_round2_score = ?, player2_round3_score = ?, " +

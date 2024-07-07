@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 
 //import static server.GwentServer.sendOutput;
 
-public class Game implements Serializable {
+public class Game implements Serializable, Cloneable {
     private static final Random RANDOM = new Random();
     private static final int VETO_TIMES = 2;
     private static final int STARTING_HAND_SIZE = 10;
@@ -42,22 +42,20 @@ public class Game implements Serializable {
 
     private transient GamePaneController gamePaneController;
     private transient CountDownLatch latch = new CountDownLatch(1);
-    private int player1Points, player2Points;
+    private transient int player1Points, player2Points;
     private transient boolean isOnline;
-    private transient Card chosenCard;
     private transient Thread thread;
+    private transient Card chosenCard;
     private transient String taskResult;
+    private transient boolean fromSaved;
 
     // these variables must be saved:
-    private List<Card> cardChoices; // gharare anidsash az card haye dige bashe yani gharare 2 ta reference be ye chiz eshare konan. vali age sakhtete mohem nist age ye carde dige besazi va reference ha 2 ta chize motafeto neshoon bedan
-    private String task;
     private int ID;
     private boolean isPublic;
     private final User player1;
     private final User player2;
     private final Date date;
     private boolean isPlayer1Turn;
-    private boolean hasStarted;
     private boolean player1HasPassed;
     private boolean player2HasPassed;
     private boolean player1UsedLeaderAbility;
@@ -74,7 +72,10 @@ public class Game implements Serializable {
     private final ArrayList<Card> player1GraveyardCards;
     private final ArrayList<Card> player2GraveyardCards;
     private final RoundsInfo roundsInfo;
-    private GameStatus status;
+    private GameStatus status; // be kar nayoomad
+    // these variables must be send to clients but don't have to be saved:
+    private String task;
+    private transient List<Card> cardChoices;
 
     public Game(User player1, User player2) {
         this.player1 = player1;
@@ -82,7 +83,7 @@ public class Game implements Serializable {
         this.date = new Date(System.currentTimeMillis());
 
         this.isPlayer1Turn = RANDOM.nextBoolean();
-        this.hasStarted = false;
+        this.fromSaved = false;
         this.player1HasPassed = false;
         this.player2HasPassed = false;
         this.player1UsedLeaderAbility = false;
@@ -104,15 +105,15 @@ public class Game implements Serializable {
         this.roundsInfo = new RoundsInfo();
     }
 
-    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean hasStarted, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo, int player1Points, int player2Points) {
+    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard, Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo) {
+        this.fromSaved = true;
+
         this.ID = ID;
         this.player1 = player1;
         this.player2 = player2;
         this.date = date;
 
         this.isPlayer1Turn = isPlayer1Turn;
-        this.hasStarted = hasStarted;
-
         this.player1HasPassed = player1HasPassed;
         this.player2HasPassed = player2HasPassed;
         this.player1UsedLeaderAbility = player1UsedLeaderAbility;
@@ -133,8 +134,7 @@ public class Game implements Serializable {
         this.status = status;
         this.roundsInfo = roundsInfo;
 
-        this.player1Points = player1Points;
-        this.player2Points = player2Points;
+        calculatePoints();
     }
 
     // functions for game main logics:
@@ -146,7 +146,9 @@ public class Game implements Serializable {
     }
 
     private void start() {
-        if (!hasStarted) {
+        // The fromSaved variable is true at first, so it doesn't run some codes until it reaches the first saving.
+        // Then fromSaved becomes false and code runs like normally.
+        if (!fromSaved) {
             for (int i = 0; i < STARTING_HAND_SIZE; i++) {
                 player1GetRandomCard();
                 player2GetRandomCard();
@@ -157,7 +159,9 @@ public class Game implements Serializable {
             player2VetoCard();
         }
         while (!roundsInfo.isGameFinished(this)) {
-            if (!hasStarted) {
+            if (!fromSaved) {
+                player1UsedLeaderAbility = false;
+                player2UsedLeaderAbility = false;
                 player2HasPassed = false;
                 player1HasPassed = false;
                 checkHasAnythingToDo();
@@ -170,14 +174,12 @@ public class Game implements Serializable {
                     isPlayer1Turn = true;
                 }
             }
-            hasStarted = true;
             while (!player1HasPassed || !player2HasPassed) {
-                try {
-                    DatabaseConnection.updateGame(this);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                if (!fromSaved){
+                    EjectAbility.startTurnAffect(this);
                 }
-                EjectAbility.startTurnAffect(this);
+                fromSaved = false;
+                save();
                 handleTask("play");
                 calculatePoints();
                 switchSides();
@@ -485,6 +487,10 @@ public class Game implements Serializable {
         this.status = status;
     }
 
+    public Thread getThread() {
+        return thread;
+    }
+
     public User getWinnerUser() {
         if (roundsInfo.getWinner() == Winner.PLAYER1) {
             return player1;
@@ -582,6 +588,14 @@ public class Game implements Serializable {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 
     public RoundsInfo getRoundsInfo() {
@@ -683,8 +697,29 @@ public class Game implements Serializable {
     }
 
     // Saving functions:
-    // TODO ali ina ro nemikhay pakeshoon kon age ham mikhay todo ro bardar
 
+    public Game clone() {
+        return new Game(ID, player1, player2, date, isPlayer1Turn, player1HasPassed, player2HasPassed,
+                player1UsedLeaderAbility, player2UsedLeaderAbility, (ArrayList<Card>) player1Deck.clone(),
+                (ArrayList<Card>) player2Deck.clone(), (ArrayList<Card>) player1InHandCards.clone(),
+                (ArrayList<Card>) player2InHandCards.clone(), (ArrayList<Card>) player1GraveyardCards.clone(),
+                (ArrayList<Card>) player2GraveyardCards.clone(), (ArrayList<Card>) inGameCards.clone(),
+                player1LeaderCard, player2LeaderCard, player1Faction, player2Faction, status, roundsInfo.clone());
+    }
+
+    public void save() {
+        Game gameClone = clone();
+        Thread savingThread = new Thread(() -> {
+            try {
+                DatabaseConnection.updateGame(gameClone);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        savingThread.start();
+    }
+
+    // TODO ali ina ro nemikhay pakeshoon kon age ham mikhay todo ro bardar
     public String toJson() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Card.class, new CardSerializer())
@@ -707,13 +742,5 @@ public class Game implements Serializable {
 
     public enum GameStatus {
         PENDING, ACTIVE, COMPLETED
-    }
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
     }
 }

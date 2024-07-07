@@ -4,11 +4,12 @@ import enums.cardsinformation.Faction;
 
 import java.util.ArrayList;
 
-public class RoundsInfo {
+public class RoundsInfo implements Cloneable{
     private static final int TOTAL_ROUND_NUMBER = 3;
     private static final int ROUND_TO_WIN = 2;
-    private final ArrayList<Integer> player1Scores = new ArrayList<Integer>();
-    private final ArrayList<Integer> player2Scores = new ArrayList<Integer>();
+
+    private final ArrayList<Integer> player1Scores = new ArrayList<>();
+    private final ArrayList<Integer> player2Scores = new ArrayList<>();
     private int currentRound = 1;
     private Winner winner = null;
 
@@ -88,6 +89,15 @@ public class RoundsInfo {
 
     public int getCurrentRound() {
         return currentRound;
+    }
+
+    public RoundsInfo clone() {
+        RoundsInfo clone = new RoundsInfo();
+        for (int round = 1; round < currentRound; round++) {
+            clone.finishRound(getPlayer1Score(round), getPlayer2Score(round));
+        }
+        clone.winner = winner;
+        return clone;
     }
 
     public enum Winner {
