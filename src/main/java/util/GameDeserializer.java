@@ -38,7 +38,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         Faction player1Faction = Faction.valueOf(jsonObject.get("player1Faction").getAsString());
         Faction player2Faction = Faction.valueOf(jsonObject.get("player2Faction").getAsString());
 
-        String task = jsonObject.get("task").getAsString();
+        String task = jsonObject.get("task") != null ? jsonObject.get("task").getAsString() : null;
         Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
         Leader player2LeaderCard = Leader.getLeaderFromType(jsonObject.get("player2LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
 
