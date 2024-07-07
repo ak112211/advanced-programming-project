@@ -68,6 +68,9 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                 try {
                     Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[6]));
                     Game.setCurrentGame(game);
+                    if (game.isOnline()) {
+                        System.out.println("onlineeee");
+                    }
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
