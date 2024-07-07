@@ -686,13 +686,13 @@ public class Game implements Serializable, Cloneable {
     }
 
     private void giveTask() {
-        if (isOnline) {
-            //for (String username: DatabaseConnection.getUsernames()) {
-            //    sendOutput(username, "online game move made " + this.ID);
-            //}
-        } else {
-            Platform.runLater(gamePaneController::doTask);
+        Platform.runLater(gamePaneController::doTask);
+        try {
+            DatabaseConnection.saveGame(this);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        App.getServerConnection().sendMessage(User.getCurrentUser().getUsername().equals(player1.getUsername()) ? player2.getUsername() : player1.getUsername() + ":other player played move");
     }
 
     // Saving functions:

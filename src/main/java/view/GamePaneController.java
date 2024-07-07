@@ -543,10 +543,10 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @Override
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
-            if (input.equals("online game move made " + game.getID())) {
+            if (input.equals("Move from ")) {
                 System.out.println(input);
                 try {
-                    game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[4]));
+                    game = DatabaseConnection.getGame(game.getID());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -584,7 +584,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void doTask() {
-        if (game.isOnline() && (game.getPlayer1().equals(User.getCurrentUser()) ^ game.isPlayer1Turn())){
+        if (game.isOnline() && ((game.getPlayer1().equals(User.getCurrentUser()) && game.isPlayer1Turn()) || (game.getPlayer2().equals(User.getCurrentUser()) && !game.isPlayer1Turn()))){
             return;
         }
         if (game.getTask().equals("show end screen")) {
@@ -602,11 +602,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void sendTaskResult(String taskResult) {
-        if (game.isOnline()) {
-            App.getServerConnection().sendMessage("run task:" + taskResult + ":" + game.getID());
-        } else {
-            game.receiveTaskResult(taskResult, null);
-        }
+        game.receiveTaskResult(taskResult, User.getCurrentUser());
     }
 
     @FXML
