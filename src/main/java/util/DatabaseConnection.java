@@ -153,6 +153,17 @@ public class DatabaseConnection {
         }
     }
 
+    public static void deleteUser(String username) throws SQLException {
+        String query = "DELETE FROM Users WHERE username = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error deleting user: " + e.getMessage(), e);
+        }
+    }
+
     public static List<String> getRecentGames(String username, int n) throws SQLException {
         String query = "SELECT * FROM Games WHERE player1 = ? OR player2 = ? ORDER BY date DESC LIMIT ?";
         List<String> Games = new ArrayList<>();

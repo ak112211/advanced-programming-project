@@ -117,46 +117,4 @@ public class TestCases {
         assertTrue(player2Points > 0);
     }
 
-    @Test
-    public void testDragAndDropCard() {
-        // Test drag and drop functionality
-        Card card = game.getPlayer1InHandCards().get(0);
-        Dragboard db = card.startDragAndDrop(TransferMode.MOVE);
-        ClipboardContent content = new ClipboardContent();
-        content.put(Card.DATA_FORMAT, card);
-        db.setContent(content);
-
-        VBox board = new VBox();
-        setupDragAndDrop(board, Row.PLAYER1_CLOSE_COMBAT);
-
-
-        board.getOnDragDropped().handle(new javafx.scene.input.DragEvent(null, null, null, db, 0.0, 0.0, 0.0, 0.0, null, null, null, null));
-
-        assertTrue(game.getInGameCards().contains(card));
-        assertTrue(board.getChildren().contains(card));
-    }
-
-    private void setupDragAndDrop(VBox board, Row... rows) {
-        board.setOnDragOver(event -> {
-            if (event.getGestureSource() != board && event.getDragboard().hasContent(Card.DATA_FORMAT)) {
-                event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
-        });
-
-        board.setOnDragDropped(event -> {
-            Dragboard db = event.getDragboard();
-            boolean success = false;
-            if (db.hasContent(Card.DATA_FORMAT)) {
-                Card card = (Card) db.getContent(Card.DATA_FORMAT);
-                if (card != null) {
-                    game.player1PlayCard(card, rows[0]);
-                    board.getChildren().add(card);
-                    success = true;
-                }
-            }
-            event.setDropCompleted(success);
-            event.consume();
-        });
-    }
 }

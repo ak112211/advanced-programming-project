@@ -165,8 +165,12 @@ public class User implements Serializable {
         this.highScore = highScore;
     }
 
-    public int getRank() throws SQLException {
-        return DatabaseConnection.getUserRank(this.username);
+    public int getRank() {
+        try {
+            return DatabaseConnection.getUserRank(this.username);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isVerified() {

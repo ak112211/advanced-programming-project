@@ -13,22 +13,22 @@ import java.sql.SQLException;
 public class ForgotPasswordMenuController {
 
     @FXML
-    private TextField usernameField;
+    public TextField usernameField;
     @FXML
     private VBox securityQuestionBox;
     @FXML
-    private TextField securityQuestionField;
+    public TextField securityQuestionField;
     @FXML
-    private TextField securityAnswerField;
+    public TextField securityAnswerField;
     @FXML
-    private VBox newPasswordBox;
+    public VBox newPasswordBox;
     @FXML
-    private PasswordField newPasswordField;
+    public PasswordField newPasswordField;
     @FXML
-    private PasswordField confirmNewPasswordField;
+    public PasswordField confirmNewPasswordField;
 
     @FXML
-    private void handleSubmitButtonAction() throws SQLException {
+    public void handleSubmitButtonAction() throws SQLException {
         String username = usernameField.getText();
 
         // Check if the username exists using DatabaseUtils.isUserTaken method
@@ -48,7 +48,7 @@ public class ForgotPasswordMenuController {
     }
 
     @FXML
-    private void handleValidateAnswerButtonAction() throws SQLException {
+    public void handleValidateAnswerButtonAction() throws SQLException {
         String username = usernameField.getText();
         String answer = securityAnswerField.getText();
 
@@ -62,7 +62,7 @@ public class ForgotPasswordMenuController {
     }
 
     @FXML
-    private void handleSetPasswordButtonAction() {
+    public void handleSetPasswordButtonAction() {
         String username = usernameField.getText();
         String newPassword = newPasswordField.getText();
         String confirmNewPassword = confirmNewPasswordField.getText();

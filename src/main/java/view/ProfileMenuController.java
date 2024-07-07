@@ -19,36 +19,36 @@ public class ProfileMenuController {
     private static final int DEFAULT_NUMBER_TO_SHOW_GAME_HISTORY = 5;
 
     @FXML
-    private TextField usernameField;
+    public TextField usernameField;
     @FXML
-    private TextField nicknameField;
+    public TextField nicknameField;
     @FXML
-    private TextField emailField;
+    public TextField emailField;
     @FXML
-    private PasswordField oldPasswordField;
+    public PasswordField oldPasswordField;
     @FXML
-    private PasswordField passwordField;
+    public PasswordField passwordField;
     @FXML
-    private PasswordField confirmPasswordField;
+    public PasswordField confirmPasswordField;
     @FXML
-    private Label highScoreLabel;
+    public Label highScoreLabel;
     @FXML
-    private Label rankLabel;
+    public Label rankLabel;
     @FXML
-    private Label gamesPlayedLabel;
+    public Label gamesPlayedLabel;
     @FXML
-    private Label drawsLabel;
+    public Label drawsLabel;
     @FXML
-    private Label winsLabel;
+    public Label winsLabel;
     @FXML
-    private Label lossesLabel;
+    public Label lossesLabel;
     @FXML
-    private TextField gameHistoryField;
+    public TextField gameHistoryField;
     @FXML
-    private CheckBox isTwoFactorOn;
+    public CheckBox isTwoFactorOn;
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         try {
             User user = User.getCurrentUser();
             usernameField.setText(user.getUsername());
@@ -72,7 +72,7 @@ public class ProfileMenuController {
     }
 
     @FXML
-    private void handleShowGameHistory() {
+    public void handleShowGameHistory() {
         String numberString = gameHistoryField.getText();
         int number = DEFAULT_NUMBER_TO_SHOW_GAME_HISTORY;
         if (!numberString.isEmpty()) {
@@ -107,7 +107,7 @@ public class ProfileMenuController {
     }
 
     @FXML
-    private void handleUpdateButtonAction() throws SQLException {
+    public void handleUpdateButtonAction() throws SQLException {
         User user = User.getCurrentUser();
         String oldUsername = user.getUsername();
         String username = usernameField.getText();
@@ -183,7 +183,7 @@ public class ProfileMenuController {
     }
 
     @FXML
-    private void handleBack() {
+    public void handleBack() {
         App.loadScene(Menu.MAIN_MENU.getPath());
     }
 }
