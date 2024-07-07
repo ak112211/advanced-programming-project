@@ -403,7 +403,7 @@ public class ChooseDeckMenuController {
             App.loadScene(Menu.LOBBY_MENU.getPath());
         } else {
             Game game = new Game(currentUser, player2);
-            game.setOnline(isMulti);
+            game.setOnline(false);
             Game.setCurrentGame(game);
             DatabaseConnection.saveGame(game);
             App.setIsGameIn(true);

@@ -48,7 +48,14 @@ public class LobbyController implements ServerConnection.ServerEventListener {
         Platform.runLater(() -> {
             if (input.endsWith("loaded deck new")) {
                 try {
-                    Game game = new Game(User.getCurrentUser(), Objects.requireNonNull(DatabaseConnection.getUser(input.split(" ")[0])));
+                    User currentUser = User.getCurrentUser();
+                    User player2 = DatabaseConnection.getUser(input.split(" ")[0]);
+                    if (currentUser.getDeck() == null || (player2.getDeck() == null) || currentUser.getDeck().getCards().size() < 22 || (player2.getDeck().getCards().size() < 22)) {
+                        Tools.showAlert("Error", "Deck Error", "Both players must have at least 22 unit cards to start the game.");
+                        return;
+                    }
+
+                    Game game = new Game(currentUser, player2);
                     game.setCurrentUser(User.getCurrentUser());
                     game.setOnline(true);
                     Game.setCurrentGame(game);
@@ -60,7 +67,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                 }
             } else if (input.contains("loaded deck after with id: ")) {
                 try {
-                    Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[6]));
+                    Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[5]));
                     Game.setCurrentGame(game);
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
