@@ -74,7 +74,7 @@ public class ChooseDeckMenuController {
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
-        currentDeck = new Deck();
+        currentDeck = currentUser.getDeck() == null ? new Deck() : currentUser.getDeck().clone();
 
         cardNumText.setVisible(false);
 
@@ -84,7 +84,25 @@ public class ChooseDeckMenuController {
             player2 = new User(name, null, null, null);
         }
 
-        setup();
+        if (currentUser.getDeck() != null) {
+            if (currentDeck.getCards().stream().filter(c -> c.getType().isUnit()).count() < 22) {
+                Tools.showAlert("unit cards less than 22");
+            }
+            if (currentDeck.getCards().stream().filter(c -> c.getType().isSpecial()).count() > 10) {
+                Tools.showAlert("special cards more than 10");
+            }
+            factionComboBox.setValue(currentDeck.getFaction());
+            loadLeaders(currentDeck.getFaction());
+            leaderComboBox.setValue(currentDeck.getLeader());
+            deckCardsListView.getItems().clear();
+            deckCardsListView.getItems().addAll(currentDeck.getCards());
+            factionCardsListView.getItems().clear();
+            loadFactionCards(currentDeck.getFaction());
+
+            updateCardCounts();
+        } else {
+            setup();
+        }
 
         factionComboBox.setOnAction(event -> {
             if (!settingFromSaved) {

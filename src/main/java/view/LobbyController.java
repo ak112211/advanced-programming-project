@@ -60,14 +60,13 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     game.setOnline(true);
                     Game.setCurrentGame(game);
                     DatabaseConnection.saveGame(Game.getCurrentGame());
-                    App.getServerConnection().sendMessage(input.split(" ")[0] + ":loaded after:" + game.getID());
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else if (input.contains("loaded deck after with id: ")) {
                 try {
-                    Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[5]));
+                    Game game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[6]));
                     Game.setCurrentGame(game);
                     new GameLauncher().start(App.getStage());
                 } catch (SQLException e) {

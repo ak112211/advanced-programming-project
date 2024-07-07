@@ -200,6 +200,10 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         } else {
             displayMessage("Turn of Player 2");
         }
+
+        if (game.isOnline()) {
+            App.getServerConnection().sendMessage(game.getPlayer2().getUsername() + ":loaded after:" + game.getID());
+        }
     }
 
     private void setupBackgroundMusic() {
