@@ -17,31 +17,31 @@ import static view.Tools.showAlert;
 public class RegisterMenuController {
 
     @FXML
-    private TextField usernameField;
+    public TextField usernameField;
     @FXML
-    private TextField nicknameField;
+    public TextField nicknameField;
     @FXML
-    private TextField emailField;
+    public TextField emailField;
     @FXML
-    private TextField passwordField;
+    public TextField passwordField;
     @FXML
-    private TextField confirmPasswordField;
+    public TextField confirmPasswordField;
     @FXML
-    private ComboBox<SecurityQuestion> securityQuestionComboBox;
+    public ComboBox<SecurityQuestion> securityQuestionComboBox;
     @FXML
-    private TextField securityAnswerField;
+    public TextField securityAnswerField;
     @FXML
-    private TextField securityAnswerConfirmField;
+    public TextField securityAnswerConfirmField;
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         passwordField.setVisible(true);
         confirmPasswordField.setVisible(true);
         securityQuestionComboBox.getItems().setAll(SecurityQuestion.values());
     }
 
     @FXML
-    private void handleRegisterButtonAction() {
+    public void handleRegisterButtonAction() {
         String username = usernameField.getText();
         String nickname = nicknameField.getText();
         String email = emailField.getText();
@@ -85,12 +85,12 @@ public class RegisterMenuController {
     }
 
     @FXML
-    private void handleBack() {
+    public void handleBack() {
         App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 
     @FXML
-    private void handleRandomPassword() {
+    public void handleRandomPassword() {
         String password = Tools.generateRandomPassword();
         passwordField.setText(password);
         confirmPasswordField.setText(password);

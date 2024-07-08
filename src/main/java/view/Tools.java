@@ -12,9 +12,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import model.App;
+import model.Token;
 import model.User;
 import util.DatabaseConnection;
+import util.TokenUtil;
 
+import javax.mail.internet.HeaderTokenizer;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -173,47 +176,48 @@ public class Tools {
 
     public static void clearUserSession() {
         Preferences preferences = Preferences.userNodeForPackage(LoginMenuController.class);
-        preferences.remove("username");
-        preferences.remove("password");
+        preferences.remove("token");
+
+        // Optionally delete token from database
+        User user = User.getCurrentUser();
+        if (user != null) {
+            try {
+                DatabaseConnection.deleteTokenByUserId(user.getUsername());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void loadUserSession() {
         Preferences preferences = Preferences.userNodeForPackage(LoginMenuController.class);
-        String username = preferences.get("username", null);
-        String password = preferences.get("password", null);
+        String token = preferences.get("token", null);
 
-        if (username != null && password != null) {
+        if (token != null) {
             try {
-                User user = DatabaseConnection.getUser(username);
-                if (user != null && DatabaseConnection.checkPassword(username, password)) {
+                if (TokenUtil.isTokenValid(token)) {
+                    Token tokenObject = DatabaseConnection.getTokenByToken(token);
+                    assert tokenObject != null;
+                    User user = DatabaseConnection.getUser(tokenObject.getUserId());
                     User.setCurrentUser(user);
-                    if (!user.isVerified()) {
-                        sendVerificationCode(User.getCurrentUser());
-                        App.loadScene(Menu.VERIFY_MENU.getPath());
-                    } else {
-                        if (user.isTwoFactorOn()) {
-                            sendVerificationCode(User.getCurrentUser());
-                            App.loadScene(Menu.VERIFY_MENU.getPath());
-                        } else {
-
-                            App.loadScene(Menu.MAIN_MENU.getPath());
-                            App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
-
-                        }
-                    }
+                    App.loadScene(Menu.MAIN_MENU.getPath());
+                    assert user != null;
+                    App.getServerConnection().sendMessage("login:" + user.getUsername());
+                    return;
                 }
             } catch (SQLException e) {
                 Tools.showAlert("Error loading session: " + e.getMessage());
             }
-        } else {
-            App.loadScene(Menu.LOGIN_MENU.getPath());
         }
+        App.loadScene(Menu.LOGIN_MENU.getPath());
     }
 
     public static void saveUserSession(User user) {
-        Preferences preferences = Preferences.userNodeForPackage(LoginMenuController.class);
-        preferences.put("username", user.getUsername());
-        preferences.put("password", user.getPassword());  // You might want to encrypt this
+        try {
+            TokenUtil.saveToken(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
