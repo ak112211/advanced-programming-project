@@ -59,9 +59,9 @@ public class RegisterMenuController {
                 Tools.showAlert("Error", "Invalid Username", "Invalid username. Only letters, numbers, and '-' are allowed.");
             } else if (!Tools.isValidEmail(email)) {
                 Tools.showAlert("Error", "Invalid Email", "Invalid email address.");
-            } else if (!Tools.isValidPassword(password)) {
+            } /*else if (!Tools.isValidPassword(password)) {
                 showAlert("Error", "Weak Password", "Invalid password. Password must be at least 8 characters long, include uppercase, lowercase, numbers, and special characters.");
-            } else if (!password.equals(confirmPassword)) {
+            } */ else if (!password.equals(confirmPassword)) {
                 Tools.showAlert("Error", "Password Mismatch", "Password and confirm password do not match.");
             } else if (securityQuestion == null || securityAnswer.isEmpty() || !securityAnswer.equals(securityAnswerConfirm)) {
                 Tools.showAlert("Error", "Security Question", "Security question must be selected and answers must match.");

@@ -915,7 +915,7 @@ public class DatabaseConnection {
         }
     }
 
-    public static List<League> getAvailableLeagues(String username) throws SQLException {
+    public static synchronized List<League> getAvailableLeagues(String username) throws SQLException {
         List<League> leagues = new ArrayList<>();
         String query = "SELECT * FROM Leagues WHERE players NOT LIKE ?";
         try (Connection connection = getConnection();
@@ -949,6 +949,7 @@ public class DatabaseConnection {
 
     private static League extractLeagueFromResultSet(ResultSet resultSet) throws SQLException {
         String name = resultSet.getString("name");
+        int ID = resultSet.getInt("league_id");
         String winner = resultSet.getString("winner");
         String quarter1Game = resultSet.getString("quarter1_game");
         String quarter2Game = resultSet.getString("quarter2_game");
@@ -957,10 +958,10 @@ public class DatabaseConnection {
         String semi1Game = resultSet.getString("semi1_game");
         String semi2Game = resultSet.getString("semi2_game");
         String finalGame = resultSet.getString("final_game");
-        ArrayList<String> players = new ArrayList<>(List.of(resultSet.getString("players").split(",")));
 
         League league = new League(name);
-        league.setPlayers(players);
+        league.setID(ID);
+        league.setPlayers(getPlayersList(league.getID()));
         league.setWinner(winner);
         league.setQuarter1Game(quarter1Game);
         league.setQuarter2Game(quarter2Game);
@@ -985,7 +986,7 @@ public class DatabaseConnection {
             preparedStatement.setString(7, league.getSemi1Game());
             preparedStatement.setString(8, league.getSemi2Game());
             preparedStatement.setString(9, league.getFinalPlay() != null ? league.getFinalPlay().toString() : null); // Assuming Game has a toString method or store an ID
-            preparedStatement.setString(10, String.join(",", league.getPlayers()));
+            preparedStatement.setString(10, GSON.toJson(league.getPlayers()));
 
             preparedStatement.executeUpdate();
 
@@ -1025,23 +1026,23 @@ public class DatabaseConnection {
             preparedStatement.setString(7, league.getSemi1Game());
             preparedStatement.setString(8, league.getSemi2Game());
             preparedStatement.setString(9, league.getFinalPlay()); // Assuming Game has a toString method or store an ID
-            preparedStatement.setString(10, String.join(",", league.getPlayers()));
+            preparedStatement.setString(10, GSON.toJson(league.getPlayers()));
             preparedStatement.setInt(11, league.getID());
             preparedStatement.executeUpdate();
         }
     }
 
     public static List<String> getPlayersList(int league_id) throws SQLException {
-        String query = "SELECT friends FROM Leagues WHERE league_id = ?";
+        String query = "SELECT players FROM Leagues WHERE league_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, league_id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    String friendsJson = resultSet.getString("players");
-                    if (friendsJson != null && !friendsJson.isEmpty()) {
+                    String playersJson = resultSet.getString("players");
+                    if (playersJson != null && !playersJson.isEmpty()) {
                         Type listType = new TypeToken<ArrayList<String>>() {}.getType();
-                        return GSON.fromJson(friendsJson, listType);
+                        return GSON.fromJson(playersJson, listType);
                     }
                 }
             }

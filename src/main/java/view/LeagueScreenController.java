@@ -1,52 +1,66 @@
 package view;
 
+import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import model.App;
 import model.League;
+import util.DatabaseConnection;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
 public class LeagueScreenController {
 
     @FXML
-    public TextField leagueNameField;
+    public VBox results;
     @FXML
-    public ListView<String> playersListView;
+    private TextField leagueNameField;
     @FXML
-    public Label winnerLabel;
+    private ListView<String> playersListView;
+    @FXML
+    private Label quarter1GameLabel;
+    @FXML
+    private Label quarter2GameLabel;
+    @FXML
+    private Label quarter3GameLabel;
+    @FXML
+    private Label quarter4GameLabel;
+    @FXML
+    private Label semi1GameLabel;
+    @FXML
+    private Label semi2GameLabel;
+    @FXML
+    private Label finalGameLabel;
+    @FXML
+    private Label winnerLabel;
 
-    public static League league;
+    public static League league = new League("Default League");
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         leagueNameField.setText(league.getName());
         updatePlayersListView();
+        results.setVisible(league.getPlayers().size() >= 8);
     }
 
-    @FXML
-    private void handleAddPlayer() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Add Player");
-        dialog.setHeaderText("Add a new player to the league");
-        dialog.setContentText("Player name:");
-        dialog.showAndWait().ifPresent(name -> {
-            try {
-                league.addPlayer(name);
-                updatePlayersListView();
-            } catch (IllegalStateException e) {
-                showAlert("Error", "Cannot add player", e.getMessage());
-            }
-        });
+    private void updateGameLabels() {
+        quarter1GameLabel.setText(league.getQuarter1Game());
+        quarter2GameLabel.setText(league.getQuarter2Game());
+        quarter3GameLabel.setText(league.getQuarter3Game());
+        quarter4GameLabel.setText(league.getQuarter4Game());
+        semi1GameLabel.setText(league.getSemi1Game());
+        semi2GameLabel.setText(league.getSemi2Game());
+        finalGameLabel.setText(league.getFinalPlay());
+        winnerLabel.setText(league.getWinner());
     }
 
+
     @FXML
-    private void handleStartQuarterFinals() {
+    public void handleStartQuarterFinals() {
         try {
             league.startQuarterFinals();
-            showAlert("Quarter Finals", "Quarter Finals Started",
-                    "Matches: " + league.getQuarter1Game() + ", " + league.getQuarter2Game() + ", "
-                            + league.getQuarter3Game() + ", " + league.getQuarter4Game());
+            updateGameLabels();
         } catch (IllegalStateException e) {
             showAlert("Error", "Cannot start quarter finals", e.getMessage());
         }
@@ -54,7 +68,6 @@ public class LeagueScreenController {
 
     @FXML
     private void handleStartSemiFinals() {
-        // Assuming winners are manually input for simplicity
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Semi Finals");
         dialog.setHeaderText("Enter winners of quarter finals (comma-separated):");
@@ -63,7 +76,7 @@ public class LeagueScreenController {
             String[] winnerArray = winners.split(",");
             if (winnerArray.length == 4) {
                 league.startSemiFinals(winnerArray[0].trim(), winnerArray[1].trim(), winnerArray[2].trim(), winnerArray[3].trim());
-                showAlert("Semi Finals", "Semi Finals Started", "Matches: " + league.getSemi1Game() + ", " + league.getSemi2Game());
+                updateGameLabels();
             } else {
                 showAlert("Error", "Invalid Input", "Please enter exactly 4 winners.");
             }
@@ -72,7 +85,6 @@ public class LeagueScreenController {
 
     @FXML
     private void handleStartFinals() {
-        // Assuming winners are manually input for simplicity
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Finals");
         dialog.setHeaderText("Enter winners of semi finals (comma-separated):");
@@ -81,7 +93,7 @@ public class LeagueScreenController {
             String[] winnerArray = winners.split(",");
             if (winnerArray.length == 2) {
                 league.startFinals(winnerArray[0].trim(), winnerArray[1].trim());
-                showAlert("Finals", "Finals Started", "Match: " + league.getFinalPlay());
+                updateGameLabels();
             } else {
                 showAlert("Error", "Invalid Input", "Please enter exactly 2 winners.");
             }
@@ -89,19 +101,23 @@ public class LeagueScreenController {
     }
 
     @FXML
-    private void handleDeclareWinner() {
+    public void handleDeclareWinner(String player1) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Declare Winner");
         dialog.setHeaderText("Enter winner of the finals:");
         dialog.setContentText("Winner:");
         dialog.showAndWait().ifPresent(winner -> {
             league.declareWinner(winner.trim());
-            winnerLabel.setText(league.getWinner());
+            updateGameLabels();
         });
     }
 
-    private void updatePlayersListView() {
-        playersListView.getItems().setAll(league.getPlayers());
+    public void updatePlayersListView() {
+        try {
+            playersListView.getItems().setAll(DatabaseConnection.getPlayersList(league.getID()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void showAlert(String title, String header, String content) {
@@ -110,5 +126,16 @@ public class LeagueScreenController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void goBack() {
+        App.loadScene(Menu.CHAT_MENU.getPath());
+    }
+
+    public void handleStartSemiFinals(String player1, String player3, String player5, String player7) {
+    }
+
+    public void handleStartFinals(String player1, String player5) {
     }
 }
