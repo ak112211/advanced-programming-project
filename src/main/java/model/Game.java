@@ -1,14 +1,14 @@
 package model;
 
 import enums.Row;
+import enums.cards.NeutralCards;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import javafx.application.Platform;
 import model.abilities.Ability;
 import model.abilities.ejectabilities.EjectAbility;
-import model.abilities.instantaneousabilities.Decoy;
-import model.abilities.instantaneousabilities.InstantaneousAbility;
+import model.abilities.instantaneousabilities.*;
 import model.abilities.openingabilities.OpeningAbility;
 import model.abilities.passiveabilities.CancelLeaderAbility;
 import model.abilities.persistentabilities.PersistentAbility;
@@ -350,8 +350,10 @@ public class Game implements Serializable, Cloneable {
         if (cards1 == cards2) {
             throw new IllegalArgumentException("Cards1 and cards2 are the same");
         }
-        if (!cards1.remove(card)) {
-            throw new IllegalArgumentException("Card doesn't exist there");
+        if (cards1 != null) {
+            if (!cards1.remove(card)) {
+                throw new IllegalArgumentException("Card doesn't exist there");
+            }
         }
         if (cards2.contains(card)) {
             throw new IllegalArgumentException("Card exists in destination");
@@ -617,7 +619,7 @@ public class Game implements Serializable, Cloneable {
     }
 
     public User getCurrentUser() {
-        return isPlayer1Turn? player1 : player2;
+        return isPlayer1Turn ? player1 : player2;
     }
 
     public Boolean userIsPlayer1() {
@@ -768,6 +770,53 @@ public class Game implements Serializable, Cloneable {
         } else {
             roundsInfo.setPlayer2Hearts(2);
         }
+    }
+
+    public void cheatClearWeather() {
+        new PlayCard(null, NeutralCards.CLEAR_WEATHER, null).affect(this, null);
+        calculatePoints();
+    }
+
+    public void cheatPlayScorch() {
+        new PlayCard(null, NeutralCards.SCORCH, Type.WEATHER).affect(this, null);
+        calculatePoints();
+    }
+
+    public void cheatResetGraveyardToDeck() {
+        new ResetGraveyardToDeck().affect(this, null);
+        calculatePoints();
+    }
+
+    public void cheatDoubleCards() {
+        inGameCards.addAll(inGameCards.stream().filter(card -> card.getRow().isPlayer1() == isPlayer1Turn)
+                .map(card -> {
+                    Card clone = card.getCardEnum().getCard();
+                    clone.setRow(card.getRow());
+                    clone.setSmallImage();
+                    return clone;
+                }).toList());
+        calculatePoints();
+    }
+
+    public void cheatUseLeaderAbility() {
+        if (isPlayer1Turn) {
+            ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
+        } else {
+            ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
+        }
+        calculatePoints();
+    }
+
+    public void cheatRemoveMyCards() {
+        inGameCards.stream().filter(card -> card.getRow().isPlayer1() == isPlayer1Turn).toList()
+                .forEach(inGameCards::remove);
+        calculatePoints();
+    }
+
+    public void cheatRemoveEnemyCards() {
+        inGameCards.stream().filter(card -> card.getRow().isPlayer1() ^ isPlayer1Turn).toList()
+                .forEach(inGameCards::remove);
+        calculatePoints();
     }
 
     // GameStatus enum

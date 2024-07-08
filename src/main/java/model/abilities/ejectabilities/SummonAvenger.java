@@ -17,6 +17,7 @@ public class SummonAvenger extends EjectAbility {
 
     public void affect(Card myCard) {
         Card newCard = NEW_CARD_ENUM.getCard();
+        newCard.setSmallImage();
         newCard.setDefaultRow(myCard.getRow().isPlayer1());
         cards.add(newCard);
     }

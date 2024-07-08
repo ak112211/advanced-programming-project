@@ -16,6 +16,7 @@ public class Berserker extends Ability {
     public void affect(ArrayList<Card> inGameCards, Card myCard) {
         int i = inGameCards.indexOf(myCard);
         Card newCard = newCardEnum.getCard();
+        newCard.setSmallImage();
         newCard.setDefaultRow(myCard.getRow().isPlayer1());
         inGameCards.set(i, newCard);
     }
