@@ -766,14 +766,17 @@ public class Game implements Serializable, Cloneable {
 
     public void cheatClearWeather() {
         new PlayCard(null, NeutralCards.CLEAR_WEATHER, null).affect(this, null);
+        calculatePoints();
     }
 
     public void cheatPlayScorch() {
         new PlayCard(null, NeutralCards.SCORCH, Type.WEATHER).affect(this, null);
+        calculatePoints();
     }
 
     public void cheatResetGraveyardToDeck() {
         new ResetGraveyardToDeck().affect(this, null);
+        calculatePoints();
     }
 
     public void cheatDoubleCards() {
@@ -784,6 +787,7 @@ public class Game implements Serializable, Cloneable {
                     clone.setSmallImage();
                     return clone;
                 }).toList());
+        calculatePoints();
     }
 
     public void cheatUseLeaderAbility() {
@@ -792,16 +796,19 @@ public class Game implements Serializable, Cloneable {
         } else {
             ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
         }
+        calculatePoints();
     }
 
     public void cheatRemoveMyCards() {
         inGameCards.stream().filter(card -> card.getRow().isPlayer1() == isPlayer1Turn).toList()
                 .forEach(inGameCards::remove);
+        calculatePoints();
     }
 
     public void cheatRemoveEnemyCards() {
         inGameCards.stream().filter(card -> card.getRow().isPlayer1() ^ isPlayer1Turn).toList()
                 .forEach(inGameCards::remove);
+        calculatePoints();
     }
 
     // GameStatus enum
