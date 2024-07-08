@@ -562,19 +562,34 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         Platform.runLater(() -> {
             if (input.startsWith("Move from ")) {
                 System.out.println(input);
+                Game newGame;
                 try {
-                    game = DatabaseConnection.getGame(game.getID());
-                    assert game != null;
-                    game.setOnline(true);
+                    newGame = DatabaseConnection.getGame(game.getID());
+                    assert newGame != null;
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                Game.setCurrentGame(game);
-                game.setFromSaved(true);
-                game.setCurrentUser(User.getCurrentUser());
-                game.setGamePaneController(this);
-                game.startGameThread();
-                updateScene();
+                if (game.getThread().isAlive()) { // still in veto state
+                    assert game.getTask().equals("choose true");
+                    if (game.userIsPlayer1()) {
+                        game.getPlayer2InHandCards().clear();
+                        game.getPlayer2InHandCards().addAll(newGame.getPlayer2InHandCards());
+                        game.getPlayer2Deck().clear();
+                        game.getPlayer2Deck().addAll(newGame.getPlayer2Deck());
+                    } else {
+                        game.getPlayer1InHandCards().clear();
+                        game.getPlayer1InHandCards().addAll(newGame.getPlayer1InHandCards());
+                        game.getPlayer1Deck().clear();
+                        game.getPlayer1Deck().addAll(newGame.getPlayer1Deck());
+                    }
+                } else {
+                    Game.setCurrentGame(newGame);
+                    newGame.setOnline(true);
+                    newGame.setFromSaved(true);
+                    newGame.setGamePaneController(this);
+                    newGame.startGameThread();
+                    updateScene();
+                }
             } else if (input.startsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
                 Tools.showAlert(input + " You won!");
