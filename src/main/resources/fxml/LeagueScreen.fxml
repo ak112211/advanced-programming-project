@@ -1,61 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.LeagueScreenController"
-            prefHeight="400.0" prefWidth="600.0">
-    <VBox spacing="20" alignment="CENTER" layoutX="50" layoutY="20">
-        <Label text="League Management" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+<AnchorPane prefHeight="673.0" prefWidth="883.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.LeagueScreenController">
+    <VBox alignment="CENTER" layoutX="201.0" layoutY="14.0" prefHeight="330.0" prefWidth="481.0" spacing="20">
+        <Label centerShape="false" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="League Management" />
 
-        <HBox spacing="10" alignment="CENTER">
-            <Button text="Back" onAction="#goBack"/>
+        <HBox alignment="CENTER" centerShape="false" spacing="10">
+            <Button onAction="#goBack" text="Back" />
         </HBox>
 
-        <HBox spacing="10">
-            <Label text="League Name:"/>
-            <TextField fx:id="leagueNameField" editable="false"/>
+        <HBox centerShape="false" spacing="10">
+            <Label text="League Name:" />
+         <Label text="name" />
         </HBox>
 
-        <HBox spacing="10">
-            <Label text="Players:"/>
+        <HBox centerShape="false" spacing="10">
+            <Label text="Players:" />
             <VBox spacing="10">
-                <ListView fx:id="playersListView" prefHeight="150" prefWidth="200"/>
+                <ListView fx:id="playersListView" prefHeight="150" prefWidth="200" />
             </VBox>
         </HBox>
-
-        <VBox fx:id="results">
-        <HBox spacing="10">
-            <Button text="Start Quarter Finals" onAction="#handleStartQuarterFinals"/>
-            <Button text="Start Semi Finals" onAction="#handleStartSemiFinals"/>
-            <Button text="Start Finals" onAction="#handleStartFinals"/>
-        </HBox>
-
-        <Label text="Quarter Finals:"/>
-        <VBox spacing="5">
-            <Label fx:id="quarter1GameLabel"/>
-            <Label fx:id="quarter2GameLabel"/>
-            <Label fx:id="quarter3GameLabel"/>
-            <Label fx:id="quarter4GameLabel"/>
-        </VBox>
-
-        <Label text="Semi Finals:"/>
-        <VBox spacing="5">
-            <Label fx:id="semi1GameLabel"/>
-            <Label fx:id="semi2GameLabel"/>
-        </VBox>
-
-        <Label text="Final:"/>
-        <VBox spacing="5">
-            <Label fx:id="finalGameLabel"/>
-        </VBox>
-
-        <HBox spacing="10">
-            <Button text="Declare Winner" onAction="#handleDeclareWinner"/>
-            <Label text="Winner:"/>
-            <Label fx:id="winnerLabel"/>
-        </HBox>
-        </VBox>
     </VBox>
+   <Label fx:id="playerFinal1"  layoutX="224.0" layoutY="412.0" text="player final 1:" />
+   <Label fx:id="playerFinal2"  layoutX="585.0" layoutY="412.0" text="player final 2:" />
+   <Label fx:id="player1"  layoutX="101.0" layoutY="589.0" text="player1:" />
+   <Label fx:id="player2"  layoutX="201.0" layoutY="589.0" text="player2:" />
+   <Label fx:id="player3"  layoutX="287.0" layoutY="589.0" text="player3:" />
+   <Label fx:id="player4"  layoutX="392.0" layoutY="589.0" text="player4: " />
+   <Label fx:id="player5"  layoutX="470.0" layoutY="589.0" text="player5: " />
+   <Label fx:id="player6"  layoutX="564.0" layoutY="589.0" text="player6:" />
+   <Label fx:id="player7"  layoutX="654.0" layoutY="589.0" text="player7:" />
+   <Label fx:id="player8"  layoutX="739.0" layoutY="589.0" text="player8:" />
+   <Label fx:id="playerSemiFinal4"  layoutX="661.0" layoutY="505.0" text="player semi final 4:" />
+   <Label fx:id="playerSemiFinal3"  layoutX="486.0" layoutY="505.0" text="player semi final 3:" />
+   <Label fx:id="playerSemiFinal2"  layoutX="308.0" layoutY="505.0" text="player semi final 2:" />
+   <Label fx:id="playerSemiFinal1"  layoutX="124.0" layoutY="505.0" text="player semi final 1:" />
+   <Label fx:id="p1q1"  layoutX="110.0" layoutY="572.0" text="p1q1" />
+   <Label fx:id="p2q1"  layoutX="209.0" layoutY="572.0" text="p2q1" />
+   <Label fx:id="p1q2"  layoutX="294.0" layoutY="572.0" text="p1q2" />
+   <Label fx:id="p2q2"  layoutX="401.0" layoutY="572.0" text="p2q2" />
+   <Label fx:id="p1q3"  layoutX="472.0" layoutY="572.0" text="p1q3" />
+   <Label fx:id="p2q3"  layoutX="571.0" layoutY="572.0" text="p2q3" />
+   <Label fx:id="p1q4"  layoutX="661.0" layoutY="572.0" text="p1q4" />
+   <Label fx:id="p2q4"  layoutX="746.0" layoutY="572.0" text="p2q4" />
+   <Label fx:id="p1s1"  layoutX="160.0" layoutY="488.0" text="p1s1" />
+   <Label fx:id="p2s1"  layoutX="344.0" layoutY="488.0" text="p2s1" />
+   <Label fx:id="p1s2"  layoutX="522.0" layoutY="488.0" text="p1s2" />
+   <Label fx:id="p2s2"  layoutX="697.0" layoutY="488.0" text="p2s2" />
+   <Label fx:id="p1f"  layoutX="246.0" layoutY="395.0" text="p1f" />
+   <Label fx:id="p2f"  layoutX="607.0" layoutY="395.0" text="p2f" />
+   <Label fx:id="Winner"  layoutX="424.0" layoutY="344.0" text="Winner" />
+   <Line endX="254.0" endY="429.0" startX="180.0" startY="488.0" />
+   <Line endX="262.0" endY="419.0" layoutX="10.0" layoutY="10.0" startX="342.0" startY="472.0" />
+   <Line endX="155.0" endY="522.0" layoutX="10.0" layoutY="10.0" startX="127.0" startY="552.0" />
+   <Line endX="159.0" endY="508.0" layoutX="20.0" layoutY="20.0" startX="186.0" startY="540.0" />
+   <Line endX="337.5" endY="502.0" layoutX="20.0" layoutY="20.0" startX="288.0" startY="552.0" />
+   <Line endX="338.0" endY="492.0" layoutX="30.0" layoutY="30.0" startX="385.0" startY="542.0" />
+   <Line endX="495.5" endY="482.0" layoutX="40.0" layoutY="40.0" startX="447.0" startY="533.0" />
+   <Line endX="494.0" endY="472.0" layoutX="50.0" layoutY="50.0" startX="533.0" startY="515.0" />
+   <Line endX="650.5" endY="462.0" layoutX="60.0" layoutY="60.0" startX="615.0" startY="512.0" />
+   <Line endX="649.0" endY="452.0" layoutX="70.0" layoutY="70.0" startX="690.0" startY="502.0" />
+   <Line endX="610.5" endY="419.0" layoutX="10.0" layoutY="10.0" startX="526.0" startY="478.0" />
+   <Line endX="607.0" endY="409.0" layoutX="20.0" layoutY="20.0" startX="691.0" startY="468.0" />
+   <Line endX="418.5" endY="331.0" layoutX="30.0" layoutY="30.0" startX="591.0" startY="365.0" />
+   <Line endX="400.0" endY="321.0" layoutX="40.0" layoutY="40.0" startX="220.0" startY="355.0" />
+   <Button fx:id="startQ1" layoutX="148.0" layoutY="619.0" mnemonicParsing="false" text="start q 1" />
+   <Button fx:id="startQ2" layoutX="332.0" layoutY="619.0" mnemonicParsing="false" text="start q 2" />
+   <Button fx:id="startQ3" layoutX="510.0" layoutY="619.0" mnemonicParsing="false" text="start q 3" />
+   <Button fx:id="startQ4" layoutX="692.0" layoutY="619.0" mnemonicParsing="false" text="start q 4" />
+   <Button fx:id="startSemiFinal1" layoutX="234.0" layoutY="493.0" mnemonicParsing="false" text="start semi final 1" />
+   <Button fx:id="startSemiFinal2" layoutX="600.0" layoutY="493.0" mnemonicParsing="false" text="start semi final 2" />
+   <Button fx:id="startFinal" layoutX="416.0" layoutY="400.0" mnemonicParsing="false" text="start final" />
 </AnchorPane>

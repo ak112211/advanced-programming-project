@@ -61,6 +61,56 @@ public class RegisterMenuControllerTest extends ApplicationTest {
     }
 
     @Test
+    public void testHandleRegisterLeagueItems() throws Exception {
+        controller.usernameField.setText("bbkk");
+        controller.emailField.setText("alikhalaj53@gmail.com");
+        controller.passwordField.setText("1212");
+        controller.confirmPasswordField.setText("1212");
+        controller.securityQuestionComboBox.setValue(SecurityQuestion.FIRST_SCHOOL);
+        controller.securityAnswerField.setText("aa");
+        controller.securityAnswerConfirmField.setText("aa");
+        User user = new User(controller.usernameField.getText(), controller.nicknameField.getText(), controller.emailField.getText(), controller.passwordField.getText());
+        user.setSecurityQuestion(controller.securityQuestionComboBox.getValue().getQuestion());
+        user.setAnswer(controller.securityAnswerField.getText());
+        user.setVerified(false);
+        user.setTwoFactorOn(false);
+        User.setCurrentUser(user);
+        DatabaseConnection.saveUser(user);
+        controller.usernameField.setText("bbk2");
+        user = new User(controller.usernameField.getText(), controller.nicknameField.getText(), controller.emailField.getText(), controller.passwordField.getText());
+        user.setSecurityQuestion(controller.securityQuestionComboBox.getValue().getQuestion());
+        user.setAnswer(controller.securityAnswerField.getText());
+        user.setVerified(false);
+        user.setTwoFactorOn(false);
+        User.setCurrentUser(user);
+        DatabaseConnection.saveUser(user);
+        controller.usernameField.setText("ab12");
+        user = new User(controller.usernameField.getText(), controller.nicknameField.getText(), controller.emailField.getText(), controller.passwordField.getText());
+        user.setSecurityQuestion(controller.securityQuestionComboBox.getValue().getQuestion());
+        user.setAnswer(controller.securityAnswerField.getText());
+        user.setVerified(false);
+        user.setTwoFactorOn(false);
+        User.setCurrentUser(user);
+        DatabaseConnection.saveUser(user);
+        controller.usernameField.setText("bkh2");
+        user = new User(controller.usernameField.getText(), controller.nicknameField.getText(), controller.emailField.getText(), controller.passwordField.getText());
+        user.setSecurityQuestion(controller.securityQuestionComboBox.getValue().getQuestion());
+        user.setAnswer(controller.securityAnswerField.getText());
+        user.setVerified(false);
+        user.setTwoFactorOn(false);
+        User.setCurrentUser(user);
+        DatabaseConnection.saveUser(user);
+        controller.usernameField.setText("ab22");
+        user = new User(controller.usernameField.getText(), controller.nicknameField.getText(), controller.emailField.getText(), controller.passwordField.getText());
+        user.setSecurityQuestion(controller.securityQuestionComboBox.getValue().getQuestion());
+        user.setAnswer(controller.securityAnswerField.getText());
+        user.setVerified(false);
+        user.setTwoFactorOn(false);
+        User.setCurrentUser(user);
+        DatabaseConnection.saveUser(user);
+    }
+
+    @Test
     public void testHandleRegisterButtonAction_PasswordMismatch() throws Exception {
         controller.usernameField.setText("newUser");
         controller.emailField.setText("new@example.com");

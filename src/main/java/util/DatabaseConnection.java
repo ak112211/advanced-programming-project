@@ -960,6 +960,25 @@ public class DatabaseConnection {
         String finalGame = resultSet.getString("final_game");
 
         League league = new League(name);
+
+        String semi1Games = resultSet.getString("finals");
+        if (semi1Games != null && !semi1Games.isEmpty()) {
+            Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+            league.getFinals().addAll(GSON.fromJson(semi1Games, listType));
+        }
+
+        String semi2Games = resultSet.getString("semis");
+        if (semi2Games != null && !semi2Games.isEmpty()) {
+            Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+            league.getSemis().addAll(GSON.fromJson(semi2Games, listType));
+        }
+
+        String finalGames = resultSet.getString("quarters");
+        if (finalGames != null && !finalGames.isEmpty()) {
+            Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+            league.getQuarters().addAll(GSON.fromJson(finalGames, listType));
+        }
+
         league.setID(ID);
         league.setPlayers(getPlayersList(league.getID()));
         league.setWinner(winner);
@@ -1014,7 +1033,7 @@ public class DatabaseConnection {
     }
 
     public static void updateLeague(League league) throws SQLException {
-        String query = "UPDATE Leagues SET name = ?, winner = ?, quarter1_game = ?, quarter2_game = ?, quarter3_game = ?, quarter4_game = ?, semi1_game = ?, semi2_game = ?, final_game = ?, players = ? WHERE league_id = ?";
+        String query = "UPDATE Leagues SET name = ?, winner = ?, quarter1_game = ?, quarter2_game = ?, quarter3_game = ?, quarter4_game = ?, semi1_game = ?, semi2_game = ?, final_game = ?, players = ?, quarters = ?, semis = ?, finals = ? WHERE league_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, league.getName());
@@ -1027,7 +1046,10 @@ public class DatabaseConnection {
             preparedStatement.setString(8, league.getSemi2Game());
             preparedStatement.setString(9, league.getFinalPlay()); // Assuming Game has a toString method or store an ID
             preparedStatement.setString(10, GSON.toJson(league.getPlayers()));
-            preparedStatement.setInt(11, league.getID());
+            preparedStatement.setString(11, GSON.toJson(league.getQuarters()));
+            preparedStatement.setString(12, GSON.toJson(league.getSemis()));
+            preparedStatement.setString(13, GSON.toJson(league.getFinals()));
+            preparedStatement.setInt(14, league.getID());
             preparedStatement.executeUpdate();
         }
     }
