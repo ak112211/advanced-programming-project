@@ -149,11 +149,17 @@ public class Game implements Serializable, Cloneable {
                 player2GetRandomCard();
             }
             OpeningAbility.StartRound(this);
-            isPlayer1Turn = true;
-
-            player1VetoCard();
-            player2VetoCard();
-
+            if (isOnline) {
+                if (userIsPlayer1()) {
+                    player1VetoCard();
+                } else {
+                    player2VetoCard();
+                }
+                save();
+            } else {
+                player1VetoCard();
+                player2VetoCard();
+            }
         }
         while (!roundsInfo.isGameFinished()) {
             if (!fromSaved) {
@@ -177,6 +183,9 @@ public class Game implements Serializable, Cloneable {
                     save();
                 }
                 fromSaved = false;
+                if (isOnline && !isMyTurn()) {
+                    return;
+                }
                 handleTask("play");
                 calculatePoints();
                 switchSides();
@@ -196,16 +205,6 @@ public class Game implements Serializable, Cloneable {
         } else if (!isPlayer1Turn && !player1HasPassed) {
             isPlayer1Turn = true;
         }
-
-        if (isOnline) {
-            try {
-                DatabaseConnection.updateGame(this);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            App.getServerConnection().sendMessage(User.getCurrentUser().getUsername().equals(player1.getUsername()) ? (player2.getUsername() + ":other player played move") : (player1.getUsername() + ":other player played move"));
-        }
-
     }
 
     private void checkHasAnythingToDo() {
@@ -740,6 +739,11 @@ public class Game implements Serializable, Cloneable {
                 DatabaseConnection.updateGame(gameClone);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+            if (isOnline) {
+                App.getServerConnection().sendMessage(
+                        (User.getCurrentUser().equals(player1) ? player2.getUsername() : player1.getUsername())
+                                + ":other player played move");
             }
         });
         savingThread.start();

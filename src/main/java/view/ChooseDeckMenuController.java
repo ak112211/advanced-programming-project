@@ -81,6 +81,9 @@ public class ChooseDeckMenuController {
         }
         currentDeck = currentUser.getDeck() == null ? new Deck() : currentUser.getDeck().clone();
 
+        factionComboBox.getItems().setAll(Faction.values());
+        factionComboBox.getItems().remove(Faction.NEUTRAL);
+
         cardNumText.setVisible(false);
 
         if (isMulti) {
