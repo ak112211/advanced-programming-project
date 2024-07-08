@@ -6,7 +6,6 @@ import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -40,13 +39,14 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
+
 // TODO use leader ability (taskResult="leader")
 // TODO pass round (taskResult="pass")
 // TODO show players name, avatar, faction, etc.
 public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
 
     @FXML
-    public Button makePublic;
+    private Button makePublic;
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
             player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
@@ -142,6 +142,11 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private int currentIndex;
 
     @FXML
+    private VBox cheatMenu;
+    private StringBuilder writtenText = new StringBuilder();
+    private static String CHEAT_TEXT = "ridom to gay pi";
+
+    @FXML
     private Label overlayMessage;
 
     @Override
@@ -179,7 +184,18 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
-                togglePauseMenu();
+                if (cheatMenu.isVisible()) {
+                    cheatMenu.setVisible(false);
+                    overlayPane.setVisible(false);
+                } else {
+                    togglePauseMenu();
+                }
+            } else if (event.getCode().isWhitespaceKey() || event.getCode().isLetterKey()){
+                writtenText.append(event.getCode().getChar().toLowerCase());
+                if (writtenText.toString().endsWith(CHEAT_TEXT) && (!game.isOnline() || game.isMyTurn())) {
+                    cheatMenu.setVisible(true);
+                    overlayPane.setVisible(true);
+                }
             }
         });
 
@@ -594,16 +610,12 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             updateScene();
             return;
         }
-        if (game.getTask().equals("show end screen")) {
-            showEndScreenOverlay();
-        } else if (game.getTask().equals("play")) {
-            nextTurn();
-        } else if (game.getTask().equals("choose false")) {
-            showChooseOverlay(false);
-        } else if (game.getTask().equals("choose true")) {
-            showChooseOverlay(true);
-        } else {
-            Tools.showAlert("invalid task: " + game.getTask());
+        switch (game.getTask()) {
+            case "show end screen" -> showEndScreenOverlay();
+            case "play" -> nextTurn();
+            case "choose false" -> showChooseOverlay(false);
+            case "choose true" -> showChooseOverlay(true);
+            default -> Tools.showAlert("invalid task: " + game.getTask());
         }
         updateScene();
     }
@@ -613,7 +625,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     @FXML
-    public void handleMakePublic(ActionEvent actionEvent) {
+    public void handleMakePublic() {
         if (Game.getCurrentGame().isPublic()) {
             makePublic.setText("Make game Online");
             App.getServerConnection().sendMessage("disconnect game:" + game.getID());
@@ -623,5 +635,25 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             Game.getCurrentGame().setPublic(true);
         }
         DatabaseConnection.updateGamePublicity(Game.getCurrentGame().isPublic(), Game.getCurrentGame().getID());
+    }
+
+    // cheats:
+
+    @FXML
+    private void cheatGetRandomCard() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatGetRandomCard();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatResetHearts() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatResetHearts();
+        updateScene();
     }
 }

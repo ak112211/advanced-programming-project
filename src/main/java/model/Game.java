@@ -1,7 +1,5 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
@@ -18,10 +16,7 @@ import model.card.Card;
 import model.card.Leader;
 //import server.DatabaseConnection;
 //import server.GwentServer;
-import util.CardSerializer;
 import util.DatabaseConnection;
-import util.DeckDeserializer;
-import util.LeaderSerializer;
 import view.GamePaneController;
 import model.RoundsInfo.Winner;
 
@@ -160,7 +155,7 @@ public class Game implements Serializable, Cloneable {
             player2VetoCard();
 
         }
-        while (!roundsInfo.isGameFinished(this)) {
+        while (!roundsInfo.isGameFinished()) {
             if (!fromSaved) {
                 player1UsedLeaderAbility = false;
                 player2UsedLeaderAbility = false;
@@ -177,16 +172,16 @@ public class Game implements Serializable, Cloneable {
                 }
             }
             while (!player1HasPassed || !player2HasPassed) {
-                if (!fromSaved){
+                if (!fromSaved) {
                     EjectAbility.startTurnAffect(this);
+                    save();
                 }
                 fromSaved = false;
-                save();
                 handleTask("play");
                 calculatePoints();
                 switchSides();
             }
-            roundsInfo.finishRound(player1Points, player2Points);
+            roundsInfo.finishRound(player1Points, player2Points, this);
             resetCards();
         }
         status = GameStatus.COMPLETED;
@@ -621,6 +616,29 @@ public class Game implements Serializable, Cloneable {
                 .sum();
     }
 
+    public User getCurrentUser() {
+        return isPlayer1Turn? player1 : player2;
+    }
+
+    public Boolean userIsPlayer1() {
+        if (User.getCurrentUser().equals(player1)) {
+            return true;
+        } else if (User.getCurrentUser().equals(player2)) {
+            return false;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isMyTurn() {
+        return isUserTurn(User.getCurrentUser());
+    }
+
+    public boolean isUserTurn(User user) {
+        return (isPlayer1Turn && user.equals(player1)) ||
+                (!isPlayer1Turn && user.equals(player2));
+    }
+
     // functions for handling tasks:
 
     public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
@@ -729,8 +747,27 @@ public class Game implements Serializable, Cloneable {
         this.task = task;
     }
 
+
     public void setFromSaved(boolean fromSaved) {
         this.fromSaved = fromSaved;
+    }
+
+    // cheats:
+
+    public void cheatGetRandomCard() {
+        if (isPlayer1Turn) {
+            player1GetRandomCard();
+        } else {
+            player2GetRandomCard();
+        }
+    }
+
+    public void cheatResetHearts() {
+        if (isPlayer1Turn) {
+            roundsInfo.setPlayer1Hearts(2);
+        } else {
+            roundsInfo.setPlayer2Hearts(2);
+        }
     }
 
     // GameStatus enum
