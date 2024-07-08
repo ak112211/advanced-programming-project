@@ -29,33 +29,27 @@ public class PlayCard extends InstantaneousAbility {
     public void affect(Game game, Card myCard) {
         Card card;
         Row row;
+        ArrayList<Card> cardsList = null;
         if (cardsPlace != null) {
-            ArrayList<Card> cardsList = cardsPlace.getPlayerCards(game);
+            cardsList = cardsPlace.getPlayerCards(game);
             int index = cardsList.stream().map(Card::getCardEnum).toList().indexOf(cardEnum);
             if (index == -1) {
                 return;
             }
             card = cardsList.remove(index);
-            if (type == null) {
-                row = card.getDefaultRow(game.isPlayer1Turn());
-            } else {
-                row = type.getRow(game.isPlayer1Turn());
-            }
-            if (game.canPlay(card, row)) {
-                card.setRow(row);
-                game.moveCard(card, cardsList, game.getInGameCards());
-            }
         } else {
             card = cardEnum.getCard();
-            if (type == null) {
-                row = card.getDefaultRow(game.isPlayer1Turn());
-            } else {
-                row = type.getRow(game.isPlayer1Turn());
-            }
-            if (game.canPlay(card, row)) {
-                card.setRow(row);
-                game.getInGameCards().add(card);
-            }
+            card.setSmallImage();
+        }
+
+        if (type == null) {
+            row = card.getDefaultRow(game.isPlayer1Turn());
+        } else {
+            row = type.getRow(game.isPlayer1Turn());
+        }
+        if (game.canPlay(card, row)) {
+            card.setRow(row);
+            game.moveCard(card, cardsList, game.getInGameCards());
         }
     }
 }
