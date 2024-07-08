@@ -1031,12 +1031,35 @@ public class DatabaseConnection {
         }
     }
 
-    public static void joinLeague(int leagueId, String username) throws SQLException {
-        String query = "UPDATE Leagues SET players = CONCAT(players, ',') || ? WHERE league_id = ?";
+    public static List<String> getPlayersList(int league_id) throws SQLException {
+        String query = "SELECT friends FROM Leagues WHERE league_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setInt(2, leagueId);
+            preparedStatement.setInt(1, league_id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String friendsJson = resultSet.getString("players");
+                    if (friendsJson != null && !friendsJson.isEmpty()) {
+                        Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+                        return GSON.fromJson(friendsJson, listType);
+                    }
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public static void joinLeague(int league_id) throws SQLException {
+        List<String> players = getPlayersList(league_id);
+
+        players.add(User.getCurrentUser().getUsername());
+        String updatedPlayersJson = GSON.toJson(players);
+
+        String query = "UPDATE Leagues SET players = ? WHERE league_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, updatedPlayersJson);
+            preparedStatement.setInt(2, league_id);
             preparedStatement.executeUpdate();
         }
     }

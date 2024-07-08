@@ -313,10 +313,11 @@ public class ChatController implements ServerConnection.ServerEventListener {
     @FXML
     public void joinSelectedLeague() {
         String selectedLeagueName = availableLeaguesListView.getSelectionModel().getSelectedItem();
+        availableLeaguesListView.getItems().remove(selectedLeagueName);
         if (selectedLeagueName != null) {
             try {
                 int leagueId = getLeagueIdByName(selectedLeagueName); // Implement this method to get the league ID
-                DatabaseConnection.joinLeague(leagueId, User.getCurrentUser().getUsername()); // Replace currentUsername with the actual current user
+                DatabaseConnection.joinLeague(leagueId); // Replace currentUsername with the actual current user
                 memberLeaguesListView.getItems().add(selectedLeagueName);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -344,7 +345,8 @@ public class ChatController implements ServerConnection.ServerEventListener {
     }
 
     private void loadLeagueScreen(League league) {
-        App.loadScene("LeagueScreen.fxml");
+        LeagueScreenController.league = league;
+        App.loadScene(Menu.LEAGUE_MENU.getPath());
     }
 
     public void cleanup() {

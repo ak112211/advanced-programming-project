@@ -10,17 +10,16 @@ import java.util.List;
 public class LeagueScreenController {
 
     @FXML
-    private TextField leagueNameField;
+    public TextField leagueNameField;
     @FXML
-    private ListView<String> playersListView;
+    public ListView<String> playersListView;
     @FXML
-    private Label winnerLabel;
+    public Label winnerLabel;
 
-    private League league;
+    public static League league;
 
     @FXML
     private void initialize() {
-        league = new League("Default League");
         leagueNameField.setText(league.getName());
         updatePlayersListView();
     }
