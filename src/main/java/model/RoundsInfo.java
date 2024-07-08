@@ -100,6 +100,10 @@ public class RoundsInfo implements Cloneable{
         return clone;
     }
 
+    public void setWinner(Winner winner) {
+        this.winner = winner;
+    }
+
     public enum Winner {
         DRAW, PLAYER1, PLAYER2
     }

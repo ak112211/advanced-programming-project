@@ -20,6 +20,51 @@ public class League {
         this.name = name;
     }
 
+    // Getters and Setters
+
+    public void addPlayer(String user) {
+        if (this.players.size() < 8) {
+            this.players.add(user);
+        } else {
+            throw new IllegalStateException("League is already full with 8 players.");
+        }
+    }
+
+    public void removePlayer(String user) {
+        this.players.remove(user);
+    }
+
+    public void startQuarterFinals() {
+        if (players.size() != 8) {
+            throw new IllegalStateException("Need exactly 8 players to start the league.");
+        }
+        quarter1Game = players.get(0) + " vs " + players.get(1);
+        quarter2Game = players.get(2) + " vs " + players.get(3);
+        quarter3Game = players.get(4) + " vs " + players.get(5);
+        quarter4Game = players.get(6) + " vs " + players.get(7);
+    }
+
+    public void startSemiFinals(String winner1, String winner2, String winner3, String winner4) {
+        semi1Game = winner1 + " vs " + winner2;
+        semi2Game = winner3 + " vs " + winner4;
+    }
+
+    public void startFinals(String semiWinner1, String semiWinner2) {
+        finalPlay = semiWinner1 + " vs " + semiWinner2;
+    }
+
+    public void declareWinner(String finalWinner) {
+        winner = finalWinner;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     public String getName() {
         return name;
     }
@@ -98,21 +143,5 @@ public class League {
 
     public void setFinalPlay(String finalPlay) {
         this.finalPlay = finalPlay;
-    }
-
-    public void addPlayer(String user) {
-        this.players.add(user);
-    }
-
-    public void removePlayer(String user) {
-        this.players.remove(user);
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int id) {
-        ID = id;
     }
 }

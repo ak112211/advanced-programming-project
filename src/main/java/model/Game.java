@@ -155,8 +155,10 @@ public class Game implements Serializable, Cloneable {
             }
             OpeningAbility.StartRound(this);
             isPlayer1Turn = true;
+
             player1VetoCard();
             player2VetoCard();
+
         }
         while (!roundsInfo.isGameFinished(this)) {
             if (!fromSaved) {
@@ -199,6 +201,16 @@ public class Game implements Serializable, Cloneable {
         } else if (!isPlayer1Turn && !player1HasPassed) {
             isPlayer1Turn = true;
         }
+
+        if (isOnline) {
+            try {
+                DatabaseConnection.updateGame(this);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            App.getServerConnection().sendMessage(User.getCurrentUser().getUsername().equals(player1.getUsername()) ? (player2.getUsername() + ":other player played move") : (player1.getUsername() + ":other player played move"));
+        }
+
     }
 
     private void checkHasAnythingToDo() {
@@ -450,9 +462,9 @@ public class Game implements Serializable, Cloneable {
     }
 
     public void setCurrentUser(User user) {
-        if (user == player1) {
+        if (Objects.equals(user.getUsername(), player1.getUsername())) {
             isPlayer1Turn = true;
-        } else if (user == player2) {
+        } else if (Objects.equals(user.getUsername(), player2.getUsername())) {
             isPlayer1Turn = false;
         } else {
             throw new IllegalArgumentException("User is not a player");
@@ -613,7 +625,7 @@ public class Game implements Serializable, Cloneable {
 
     public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
         if (isOnline) {
-            if ((isPlayer1Turn && !sender.equals(player1)) || (!isPlayer1Turn && !sender.equals(player2))) {
+            if ((isPlayer1Turn && !sender.getUsername().equals(player1.getUsername())) || (!isPlayer1Turn && !sender.getUsername().equals(player2.getUsername()))) {
                 System.out.println("wrong user send taskResult");
                 return;
             }
@@ -687,16 +699,7 @@ public class Game implements Serializable, Cloneable {
     }
 
     private void giveTask() {
-        if (isOnline) {
-            try {
-                DatabaseConnection.updateGame(this);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            App.getServerConnection().sendMessage(User.getCurrentUser().getUsername().equals(player1.getUsername()) ? player2.getUsername() : player1.getUsername() + ":other player played move");
-        }
         Platform.runLater(gamePaneController::doTask);
-
     }
 
     // Saving functions:
@@ -724,6 +727,10 @@ public class Game implements Serializable, Cloneable {
 
     public void setTask(String task) {
         this.task = task;
+    }
+
+    public void setFromSaved(boolean fromSaved) {
+        this.fromSaved = fromSaved;
     }
 
     // GameStatus enum

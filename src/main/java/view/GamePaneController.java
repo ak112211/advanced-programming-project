@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.App;
 import model.Game;
+import model.RoundsInfo;
 import model.User;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Decoy;
@@ -349,6 +350,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         setupCardsInHand();
         setupCardsOnBoard();
+        game.getAllCards().forEach(this::createCardView);
         game.getAllCards().forEach(Card::setPowerText);
     }
 
@@ -478,14 +480,13 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     public void handleQuit() {
         try {
             User player;
-            if (game.isPlayer1Turn()) {
-                player = game.getPlayer2();
+            if (game.getPlayer1().getUsername().equals(User.getCurrentUser().getUsername())) {
+                game.getRoundsInfo().setWinner(RoundsInfo.Winner.PLAYER2);
             } else {
-                player = game.getPlayer1();
+                game.getRoundsInfo().setWinner(RoundsInfo.Winner.PLAYER1);
             }
 
             game.setStatus(Game.GameStatus.COMPLETED);
-            // game.setWinner(player);
             hideOverlayMessage();
             game.getPlayer1().setHighScore(game.getPlayer1Points() + game.getPlayer1().getHighScore());
             game.getPlayer2().setHighScore(game.getPlayer2Points() + game.getPlayer2().getHighScore());
@@ -493,10 +494,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
             updateUserScore(game.getPlayer1());
             updateUserScore(game.getPlayer2());
-
+            App.getServerConnection().sendMessage(game.getWinnerUser().getUsername() + ":ended game");
             Game.setCurrentGame(null);
             App.loadScene(Menu.MAIN_MENU.getPath());
-
         } catch (SQLException e) {
             Tools.showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
             e.printStackTrace();
@@ -543,16 +543,22 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @Override
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
-            if (input.equals("online game move made " + game.getID())) {
+            if (input.startsWith("Move from ")) {
                 System.out.println(input);
                 try {
-                    game = DatabaseConnection.getGame(Integer.parseInt(input.split(" ")[4]));
+                    game = DatabaseConnection.getGame(game.getID());
+                    assert game != null;
+                    game.setOnline(true);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 Game.setCurrentGame(game);
-                doTask();
-            } else if (input.endsWith("Game ended by ")) {
+                game.setFromSaved(true);
+                game.setCurrentUser(User.getCurrentUser());
+                game.setGamePaneController(this);
+                game.startGameThread();
+                updateScene();
+            } else if (input.startsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
                 Tools.showAlert(input + " You won!");
                 App.loadScene(Menu.MAIN_MENU.getPath());
@@ -584,7 +590,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void doTask() {
-        if (game.isOnline() && (game.getPlayer1().equals(User.getCurrentUser()) ^ game.isPlayer1Turn())){
+        if (game.isOnline() && !((game.getPlayer1().equals(User.getCurrentUser()) && game.isPlayer1Turn()) || (game.getPlayer2().equals(User.getCurrentUser()) && !game.isPlayer1Turn()))){
+            updateScene();
             return;
         }
         if (game.getTask().equals("show end screen")) {
@@ -602,11 +609,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void sendTaskResult(String taskResult) {
-        if (game.isOnline()) {
-            App.getServerConnection().sendMessage("run task:" + taskResult + ":" + game.getID());
-        } else {
-            game.receiveTaskResult(taskResult, null);
-        }
+        game.receiveTaskResult(taskResult, User.getCurrentUser());
     }
 
     @FXML
