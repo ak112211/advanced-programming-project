@@ -143,7 +143,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private VBox cheatMenu;
     private StringBuilder writtenText = new StringBuilder();
-    private static String CHEAT_TEXT = "heil hitler";
+    private static String CHEAT_TEXT = "ridom to gay pi";
 
     @FXML
     private Label overlayMessage;
@@ -191,7 +191,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 }
             } else if (event.getCode().isWhitespaceKey() || event.getCode().isLetterKey()){
                 writtenText.append(event.getCode().getChar().toLowerCase());
-                System.out.println(writtenText);
                 if (writtenText.toString().endsWith(CHEAT_TEXT) && (!game.isOnline() || game.isMyTurn())) {
                     cheatMenu.setVisible(true);
                     overlayPane.setVisible(true);

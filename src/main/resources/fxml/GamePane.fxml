@@ -112,5 +112,6 @@
     <VBox fx:id="cheatMenu" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="5" visible="false">
         <Button onAction="#cheatGetRandomCard" text="Get Random Card" />
         <Button onAction="#cheatResetHearts" text="Reset Hearts" />
-    </VBox>
+    </VB
+            ox>
 </Pane>
