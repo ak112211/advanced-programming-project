@@ -21,16 +21,16 @@ import static view.Tools.clearUserSession;
 
 public class MainMenuController implements ServerConnection.ServerEventListener {
     @FXML
-    private Label usernameField;
+    public Label usernameField;
     @FXML
-    private ImageView backgroundImageView;
+    public ImageView backgroundImageView;
     @FXML
-    private ListView<String> savedGamesListView;
+    public ListView<String> savedGamesListView;
 
-    private List<Game> savedGames;
+    public List<Game> savedGames;
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         usernameField.setText("Hi " + User.getCurrentUser().getUsername() + "!");
         backgroundImageView.setImage(Tools.getImage("/gwentImages/img/maxresdefault.jpg"));
         loadSavedGames();

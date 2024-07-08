@@ -68,7 +68,7 @@ public class TestCases {
     @Test
     public void testPlayer1PlayCard() {
         // Test if Player 1 can play a card
-        Card card = game.getPlayer1InHandCards().get(0);
+        Card card = game.getPlayer1InHandCards().getFirst();
         boolean result = game.player1PlayCard(card, Row.PLAYER1_CLOSE_COMBAT);
         assertTrue(result);
         assertTrue(game.getInGameCards().contains(card));
@@ -77,7 +77,7 @@ public class TestCases {
     @Test
     public void testPlayer2PlayCard() {
         // Test if Player 2 can play a card
-        Card card = game.getPlayer2InHandCards().get(0);
+        Card card = game.getPlayer2InHandCards().getFirst();
         boolean result = game.player2PlayCard(card, Row.PLAYER2_CLOSE_COMBAT);
         assertTrue(result);
         assertTrue(game.getInGameCards().contains(card));
@@ -96,8 +96,8 @@ public class TestCases {
     @Test
     public void testCalculatePoints() {
         // Test if points are calculated correctly
-        Card card1 = game.getPlayer1InHandCards().get(0);
-        Card card2 = game.getPlayer2InHandCards().get(0);
+        Card card1 = game.getPlayer1InHandCards().getFirst();
+        Card card2 = game.getPlayer2InHandCards().getFirst();
 
         game.player1PlayCard(card1, Row.PLAYER1_CLOSE_COMBAT);
         game.player2PlayCard(card2, Row.PLAYER2_CLOSE_COMBAT);
