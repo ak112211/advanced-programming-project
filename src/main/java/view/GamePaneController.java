@@ -585,6 +585,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     public void doTask() {
         if (game.isOnline() && (game.getPlayer1().equals(User.getCurrentUser()) ^ game.isPlayer1Turn())) {
+
             return;
         }
         switch (game.getTask()) {
