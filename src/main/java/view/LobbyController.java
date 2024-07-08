@@ -61,6 +61,8 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     Game.setCurrentGame(game);
                     DatabaseConnection.saveGame(game);
                     new GameLauncher().start(App.getStage());
+                    Tools.openMessagingWindow(Game.getCurrentGame().getPlayer2().getUsername());
+
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -71,6 +73,8 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     assert game != null;
                     game.setOnline(true);
                     new GameLauncher().start(App.getStage());
+                    Tools.openMessagingWindow(Game.getCurrentGame().getPlayer1().getUsername());
+
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
