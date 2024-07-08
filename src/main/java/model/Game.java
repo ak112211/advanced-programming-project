@@ -177,9 +177,9 @@ public class Game implements Serializable, Cloneable {
             while (!player1HasPassed || !player2HasPassed) {
                 if (!fromSaved) {
                     EjectAbility.startTurnAffect(this);
+                    save();
                 }
                 fromSaved = false;
-                save();
                 handleTask("play");
                 calculatePoints();
                 switchSides();

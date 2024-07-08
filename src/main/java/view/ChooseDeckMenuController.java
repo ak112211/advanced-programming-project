@@ -74,6 +74,11 @@ public class ChooseDeckMenuController {
     @FXML
     private void initialize() {
         currentUser = User.getCurrentUser();
+        if (currentUser.getDeck() != null) {
+            if (currentUser.getDeck().getFaction() == null || currentUser.getDeck().getLeader() == null) {
+                User.getCurrentUser().setDeck(null);
+            }
+        }
         currentDeck = currentUser.getDeck() == null ? new Deck() : currentUser.getDeck().clone();
 
         cardNumText.setVisible(false);
