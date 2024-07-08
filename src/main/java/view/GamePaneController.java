@@ -656,4 +656,67 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         game.cheatResetHearts();
         updateScene();
     }
+
+    @FXML
+    private void cheatClearWeather() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatClearWeather();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatPlayScorch() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatPlayScorch();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatResetGraveyardToDeck() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatResetGraveyardToDeck();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatDoubleCards() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatDoubleCards();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatUseLeaderAbility() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatUseLeaderAbility();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatRemoveMyCards() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatRemoveMyCards();
+        updateScene();
+    }
+
+    @FXML
+    private void cheatRemoveEnemyCards() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatRemoveEnemyCards();
+        updateScene();
+    }
 }
