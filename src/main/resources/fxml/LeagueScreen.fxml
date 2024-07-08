@@ -6,17 +6,56 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="view.LeagueScreenController"
             prefHeight="400.0" prefWidth="600.0">
-    <VBox spacing="10" alignment="CENTER" layoutX="100" layoutY="50">
-        <Label text="League Name:"/>
-        <TextField fx:id="leagueNameField"/>
-        <Label text="Players:"/>
-        <ListView fx:id="playersListView"/>
-        <Button text="Add Player" onAction="#handleAddPlayer"/>
-        <Button text="Start Quarter Finals" onAction="#handleStartQuarterFinals"/>
-        <Button text="Start Semi Finals" onAction="#handleStartSemiFinals"/>
-        <Button text="Start Finals" onAction="#handleStartFinals"/>
-        <Button text="Declare Winner" onAction="#handleDeclareWinner"/>
-        <Label text="Winner:"/>
-        <Label fx:id="winnerLabel"/>
+    <VBox spacing="20" alignment="CENTER" layoutX="50" layoutY="20">
+        <Label text="League Management" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Back" onAction="#goBack"/>
+        </HBox>
+
+        <HBox spacing="10">
+            <Label text="League Name:"/>
+            <TextField fx:id="leagueNameField" editable="false"/>
+        </HBox>
+
+        <HBox spacing="10">
+            <Label text="Players:"/>
+            <VBox spacing="10">
+                <ListView fx:id="playersListView" prefHeight="150" prefWidth="200"/>
+            </VBox>
+        </HBox>
+
+        <VBox fx:id="results">
+        <HBox spacing="10">
+            <Button text="Start Quarter Finals" onAction="#handleStartQuarterFinals"/>
+            <Button text="Start Semi Finals" onAction="#handleStartSemiFinals"/>
+            <Button text="Start Finals" onAction="#handleStartFinals"/>
+        </HBox>
+
+        <Label text="Quarter Finals:"/>
+        <VBox spacing="5">
+            <Label fx:id="quarter1GameLabel"/>
+            <Label fx:id="quarter2GameLabel"/>
+            <Label fx:id="quarter3GameLabel"/>
+            <Label fx:id="quarter4GameLabel"/>
+        </VBox>
+
+        <Label text="Semi Finals:"/>
+        <VBox spacing="5">
+            <Label fx:id="semi1GameLabel"/>
+            <Label fx:id="semi2GameLabel"/>
+        </VBox>
+
+        <Label text="Final:"/>
+        <VBox spacing="5">
+            <Label fx:id="finalGameLabel"/>
+        </VBox>
+
+        <HBox spacing="10">
+            <Button text="Declare Winner" onAction="#handleDeclareWinner"/>
+            <Label text="Winner:"/>
+            <Label fx:id="winnerLabel"/>
+        </HBox>
+        </VBox>
     </VBox>
 </AnchorPane>

@@ -97,7 +97,9 @@ public class ChatController implements ServerConnection.ServerEventListener {
             List<League> leagues = DatabaseConnection.getAvailableLeagues(User.getCurrentUser().getUsername());
             Platform.runLater(() -> {
                 for (League league : leagues) {
-                    availableLeaguesListView.getItems().add(league.getName() + " " + league.getID());
+                    if (league.getPlayers().size() < 8) {
+                        availableLeaguesListView.getItems().add(league.getName() + " " + league.getID());
+                    }
                 }
             });
         } catch (SQLException e) {
@@ -304,6 +306,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
             try {
                 DatabaseConnection.addNewLeague(league);
                 memberLeaguesListView.getItems().add(league.getName() + " " + league.getID());
+                memberLeaguesListView.scrollTo(memberLeaguesListView.getItems().size() - 1);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

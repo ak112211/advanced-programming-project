@@ -1,12 +1,13 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class League {
 
     private int ID;
     private String name;
-    private ArrayList<String> players = new ArrayList<>();
+    private List<String> players = new ArrayList<>();
     private String winner;
     private String quarter1Game;
     private String quarter2Game;
@@ -73,11 +74,11 @@ public class League {
         this.name = name;
     }
 
-    public ArrayList<String> getPlayers() {
+    public List<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(ArrayList<String> players) {
+    public void setPlayers(List<String> players) {
         this.players = players;
     }
 
