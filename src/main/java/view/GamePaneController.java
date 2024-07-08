@@ -6,6 +6,7 @@ import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -45,7 +46,7 @@ import static util.DatabaseConnection.updateUserScore;
 public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
 
     @FXML
-    public Button makePublic;
+    private Button makePublic;
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
             player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
@@ -139,6 +140,11 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private Card selectedCard;
 
     private int currentIndex;
+
+    @FXML
+    private VBox cheatMenu;
+    private StringBuilder writtenText = new StringBuilder();
+    private static String cheatText = "heil hitler";
 
     @FXML
     private Label overlayMessage;
@@ -617,5 +623,16 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             Game.getCurrentGame().setPublic(true);
         }
         DatabaseConnection.updateGamePublicity(Game.getCurrentGame().isPublic(), Game.getCurrentGame().getID());
+    }
+
+    // cheats:
+
+    @FXML
+    private void cheatGetACard() {
+        if (game.isOnline() && !game.is)
+    }
+
+    @FXML
+    private void cheatResetHearts() {
     }
 }

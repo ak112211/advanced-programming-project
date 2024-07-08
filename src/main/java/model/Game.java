@@ -7,6 +7,8 @@ import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import model.abilities.Ability;
 import model.abilities.ejectabilities.EjectAbility;
 import model.abilities.instantaneousabilities.Decoy;
@@ -158,7 +160,7 @@ public class Game implements Serializable, Cloneable {
             player1VetoCard();
             player2VetoCard();
         }
-        while (!roundsInfo.isGameFinished(this)) {
+        while (!roundsInfo.isGameFinished()) {
             if (!fromSaved) {
                 player1UsedLeaderAbility = false;
                 player2UsedLeaderAbility = false;
@@ -184,7 +186,7 @@ public class Game implements Serializable, Cloneable {
                 calculatePoints();
                 switchSides();
             }
-            roundsInfo.finishRound(player1Points, player2Points);
+            roundsInfo.finishRound(player1Points, player2Points, this);
             resetCards();
         }
         status = GameStatus.COMPLETED;
@@ -724,6 +726,14 @@ public class Game implements Serializable, Cloneable {
 
     public void setTask(String task) {
         this.task = task;
+    }
+
+    // cheats:
+
+    public void cheatGetACard() {
+    }
+
+    public void cheatResetHearts() {
     }
 
     // GameStatus enum
