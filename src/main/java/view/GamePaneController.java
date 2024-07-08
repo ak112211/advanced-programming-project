@@ -368,6 +368,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         setupCardsOnBoard();
         game.getAllCards().forEach(this::createCardView);
         game.getAllCards().forEach(Card::setPowerText);
+        App.getServerConnection().sendMessage("update viewers:" + game.getID());
     }
 
     private void selectCard(Card card) {
