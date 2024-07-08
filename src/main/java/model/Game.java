@@ -1,14 +1,10 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import model.abilities.Ability;
 import model.abilities.ejectabilities.EjectAbility;
 import model.abilities.instantaneousabilities.Decoy;
@@ -20,10 +16,7 @@ import model.card.Card;
 import model.card.Leader;
 //import server.DatabaseConnection;
 //import server.GwentServer;
-import util.CardSerializer;
 import util.DatabaseConnection;
-import util.DeckDeserializer;
-import util.LeaderSerializer;
 import view.GamePaneController;
 import model.RoundsInfo.Winner;
 
@@ -611,11 +604,34 @@ public class Game implements Serializable, Cloneable {
                 .sum();
     }
 
+    public User getCurrentUser() {
+        return isPlayer1Turn? player1 : player2;
+    }
+
+    public Boolean userIsPlayer1() {
+        if (User.getCurrentUser().equals(player1)) {
+            return true;
+        } else if (User.getCurrentUser().equals(player2)) {
+            return false;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean isMyTurn() {
+        return isUserTurn(User.getCurrentUser());
+    }
+
+    public boolean isUserTurn(User user) {
+        return (isPlayer1Turn && user.equals(player1)) ||
+                (!isPlayer1Turn && user.equals(player2));
+    }
+
     // functions for handling tasks:
 
     public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
         if (isOnline) {
-            if ((isPlayer1Turn && !sender.equals(player1)) || (!isPlayer1Turn && !sender.equals(player2))) {
+            if (!isUserTurn(sender)) {
                 System.out.println("wrong user send taskResult");
                 return;
             }
@@ -730,10 +746,20 @@ public class Game implements Serializable, Cloneable {
 
     // cheats:
 
-    public void cheatGetACard() {
+    public void cheatGetRandomCard() {
+        if (isPlayer1Turn) {
+            player1GetRandomCard();
+        } else {
+            player2GetRandomCard();
+        }
     }
 
     public void cheatResetHearts() {
+        if (isPlayer1Turn) {
+            roundsInfo.setPlayer1Hearts(2);
+        } else {
+            roundsInfo.setPlayer2Hearts(2);
+        }
     }
 
     // GameStatus enum

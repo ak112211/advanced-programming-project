@@ -109,10 +109,8 @@
         <Button fx:id="makePublic" onAction="#handleMakePublic" text="Make public" />
         <Button onAction="#handleToggleSound" text="Turn Sound On/Off" />
     </VBox>
-    <VBox fx:id="cheatMenu" prefHeight="720.0" prefWidth="1280.0" spacing="5">
-        <HBox spacing="5">
-            <Button onAction="#cheatGetACard" text="Get a card" />
-            <Button onAction="#cheatResetHearts" text="Get a card" />
-        </HBox>
+    <VBox fx:id="cheatMenu" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="5" visible="false">
+        <Button onAction="#cheatGetRandomCard" text="Get Random Card" />
+        <Button onAction="#cheatResetHearts" text="Reset Hearts" />
     </VBox>
 </Pane>

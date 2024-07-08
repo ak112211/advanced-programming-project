@@ -117,6 +117,22 @@ public class RoundsInfo implements Cloneable{
         return clone;
     }
 
+    public int getPlayer1Hearts() {
+        return player1Hearts;
+    }
+
+    public void setPlayer1Hearts(int player1Hearts) {
+        this.player1Hearts = player1Hearts;
+    }
+
+    public int getPlayer2Hearts() {
+        return player2Hearts;
+    }
+
+    public void setPlayer2Hearts(int player2Hearts) {
+        this.player2Hearts = player2Hearts;
+    }
+
     public enum Winner {
         DRAW, PLAYER1, PLAYER2
     }

@@ -6,7 +6,6 @@ import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -144,7 +143,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private VBox cheatMenu;
     private StringBuilder writtenText = new StringBuilder();
-    private static String cheatText = "heil hitler";
+    private static String CHEAT_TEXT = "heil hitler";
 
     @FXML
     private Label overlayMessage;
@@ -184,7 +183,19 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
-                togglePauseMenu();
+                if (cheatMenu.isVisible()) {
+                    cheatMenu.setVisible(false);
+                    overlayPane.setVisible(false);
+                } else {
+                    togglePauseMenu();
+                }
+            } else if (event.getCode().isWhitespaceKey() || event.getCode().isLetterKey()){
+                writtenText.append(event.getCode().getChar().toLowerCase());
+                System.out.println(writtenText);
+                if (writtenText.toString().endsWith(CHEAT_TEXT) && (!game.isOnline() || game.isMyTurn())) {
+                    cheatMenu.setVisible(true);
+                    overlayPane.setVisible(true);
+                }
             }
         });
 
@@ -628,11 +639,20 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     // cheats:
 
     @FXML
-    private void cheatGetACard() {
-        if (game.isOnline() && !game.is)
+    private void cheatGetRandomCard() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatGetRandomCard();
+        updateScene();
     }
 
     @FXML
     private void cheatResetHearts() {
+        if (game.isOnline() && !game.isMyTurn()) {
+            return;
+        }
+        game.cheatResetHearts();
+        updateScene();
     }
 }
