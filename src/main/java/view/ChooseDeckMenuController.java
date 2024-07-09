@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import enums.cards.*;
 import enums.cardsinformation.Faction;
@@ -311,7 +312,7 @@ public class ChooseDeckMenuController {
     private void goBack() {
         isMulti = false;
         opponent = null;
-        App.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU.getPath());
     }
 
     @FXML
@@ -426,7 +427,7 @@ public class ChooseDeckMenuController {
 
         if (isMulti) {
             App.getServerConnection().sendMessage(player2.getUsername() + ":loaded new");
-            App.loadScene(Menu.LOBBY_MENU.getPath());
+            AppController.loadScene(Menu.LOBBY_MENU.getPath());
         } else {
             Game game = new Game(currentUser, player2);
             game.setOnline(false);

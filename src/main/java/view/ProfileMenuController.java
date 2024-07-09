@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -184,6 +185,6 @@ public class ProfileMenuController {
 
     @FXML
     public void handleBack() {
-        App.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU.getPath());
     }
 }

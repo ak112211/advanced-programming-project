@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -65,7 +66,7 @@ public class ScoreboardController implements ServerConnection.ServerEventListene
 
     @FXML
     private void goToMainMenu() {
-        App.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU.getPath());
     }
 
     public void cleanup() {

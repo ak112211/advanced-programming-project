@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -61,23 +62,23 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     @FXML
     private void goToProfile() {
-        App.loadScene(Menu.PROFILE_MENU.getPath());
+        AppController.loadScene(Menu.PROFILE_MENU.getPath());
     }
 
     @FXML
     private void goToAddFriends() {
-        App.loadScene(Menu.CHAT_MENU.getPath());
+        AppController.loadScene(Menu.CHAT_MENU.getPath());
     }
 
     @FXML
     private void showScoreboard() {
-        App.loadScene(Menu.SCORE_MENU.getPath());
+        AppController.loadScene(Menu.SCORE_MENU.getPath());
     }
 
     @FXML
     private void goToDeckMenu() {
         ChooseDeckMenuController.isMulti = false;
-        App.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
+        AppController.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
     }
 
     @FXML
@@ -86,7 +87,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
         User.setCurrentUser(null);
         Game.setCurrentGame(null);
         clearUserSession();
-        App.loadScene(Menu.LOGIN_MENU.getPath());
+        AppController.loadScene(Menu.LOGIN_MENU.getPath());
     }
 
     @Override
@@ -120,7 +121,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     private void startGame() {
         ChooseDeckMenuController.isMulti = true;
-        App.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
+        AppController.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
     }
 
     public void cleanup() {
@@ -129,6 +130,6 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     @FXML
     public void goToOnGoingGames(ActionEvent actionEvent) {
-        App.loadScene(Menu.ONGOING_GAMES_MENU.getPath());
+        AppController.loadScene(Menu.ONGOING_GAMES_MENU.getPath());
     }
 }

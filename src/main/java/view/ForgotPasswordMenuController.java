@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -77,7 +78,7 @@ public class ForgotPasswordMenuController {
 
         if (isPasswordUpdated) {
             Tools.showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
-            App.loadScene(Menu.LOGIN_MENU.getPath());
+            AppController.loadScene(Menu.LOGIN_MENU.getPath());
         } else {
             Tools.showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
@@ -85,7 +86,7 @@ public class ForgotPasswordMenuController {
 
     @FXML
     private void handleBack() {
-        App.loadScene(Menu.LOGIN_MENU.getPath());
+        AppController.loadScene(Menu.LOGIN_MENU.getPath());
     }
 
 }
