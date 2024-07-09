@@ -1,5 +1,8 @@
 package view;
 
+import controller.AppController;
+import enums.Menu;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.League;
@@ -159,6 +162,13 @@ public class LeagueScreenController {
         player6.setText(league.getPlayers().get(5));
         player7.setText(league.getPlayers().get(6));
         player8.setText(league.getPlayers().get(7));
+        if (!league.getQuarter1Game().isEmpty()) {
+
+        }
     }
 
+    @FXML
+    public void goBack(ActionEvent actionEvent) {
+        AppController.loadScene(Menu.CHAT_MENU.getPath());
+    }
 }
