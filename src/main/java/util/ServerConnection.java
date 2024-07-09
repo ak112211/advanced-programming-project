@@ -65,10 +65,6 @@ public class ServerConnection {
         }
     }
 
-    public interface ServerEventListener {
-        void handleServerEvent(String message);
-    }
-
     public void close() {
         try {
             if (socket != null && !socket.isClosed()) {
@@ -77,5 +73,9 @@ public class ServerConnection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public interface ServerEventListener {
+        void handleServerEvent(String message);
     }
 }

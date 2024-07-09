@@ -24,6 +24,8 @@ import static view.Tools.showAlert;
 public class ChatController implements ServerConnection.ServerEventListener {
 
     @FXML
+    public ListView<String> randomGamesList;
+    @FXML
     private ListView<String> availableLeaguesListView;
     @FXML
     private ListView<String> memberLeaguesListView;
@@ -53,6 +55,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         currentUser = User.getCurrentUser();
 
         loadFriendsList();
+        loadRandomGamesList();
         loadGameRequests();
         loadFriendRequests();
         loadMemberLeagues();
@@ -70,6 +73,15 @@ public class ChatController implements ServerConnection.ServerEventListener {
         try {
             List<String> friends = DatabaseConnection.getFriendsList(currentUser.getUsername());
             Platform.runLater(() -> friendsListView.getItems().setAll(friends));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadRandomGamesList() {
+        try {
+            List<String> randomGames = DatabaseConnection.getRandomGameApplicants();
+            Platform.runLater(() -> randomGamesList.getItems().setAll(randomGames));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -215,6 +227,38 @@ public class ChatController implements ServerConnection.ServerEventListener {
         }
     }
 
+    @FXML
+    private void startRandomGame() {
+        String selectedApplicant = randomGamesList.getSelectionModel().getSelectedItem();
+        if (selectedApplicant == null) {
+            showAlert("Error", "No Random Game Request Selected", "Please select a random game request to start game.");
+            return;
+        }
+
+        String applicant = selectedApplicant.split(" ")[1];
+        try {
+            DatabaseConnection.deleteRandomGame(applicant, Integer.parseInt(selectedApplicant.split(" ")[0]));
+            App.getServerConnection().sendMessage("accepted game request from:" + applicant);
+            showAlert("Success", "Game Request Accepted", "Game request accepted. Starting game...");
+            ChooseDeckMenuController.player2 = DatabaseConnection.getUser(applicant);
+            startGame();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Request Failed", "Failed to decline game request. Please try again.");
+        }
+    }
+
+    @FXML
+    private void createRandomGame() {
+        try {
+            DatabaseConnection.createRandomGame();
+            showAlert("random game request sent.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Database Error", "An error occurred while sending the random game request. Please try again.");
+        }
+    }
+
     private void startGame() {
         ChooseDeckMenuController.isMulti = true;
         AppController.loadScene("/fxml/ChooseDeckMenu.fxml");
@@ -225,6 +269,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         AppController.loadScene(Menu.MAIN_MENU.getPath());
     }
 
+    @FXML
     public void acceptFriendRequest() {
         String selectedRequest = friendRequestsListView.getSelectionModel().getSelectedItem();
         if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {
@@ -245,6 +290,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
         }
     }
 
+    @FXML
     public void declineFriendRequest() {
         String selectedRequest = friendRequestsListView.getSelectionModel().getSelectedItem();
         if (selectedRequest == null || !selectedRequest.split(" ")[7].equals("pending")) {

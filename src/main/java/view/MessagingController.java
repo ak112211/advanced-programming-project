@@ -1,9 +1,12 @@
 package view;
 
+import enums.DefaultMessages;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import model.App;
 import model.User;
 import util.DatabaseConnection;
@@ -18,6 +21,11 @@ public class MessagingController implements ServerConnection.ServerEventListener
     private ListView<String> messageListView;
     @FXML
     private TextField messageInputField;
+    @FXML
+    private HBox defaultMessagesHBox;
+    @FXML
+    private HBox emojiButtonsHBox;
+
     private User currentUser;
     private String currentChatUser;
     private ServerConnection serverConnection;
@@ -31,11 +39,16 @@ public class MessagingController implements ServerConnection.ServerEventListener
     public void initialize() {
         currentUser = User.getCurrentUser();
         loadMessages();
+        initializeDefaultMessages();
+        initializeEmojiButtons();
     }
 
     @FXML
     private void handleSendButtonAction() {
-        String message = messageInputField.getText().trim();
+        sendMessage(messageInputField.getText().trim());
+    }
+
+    private void sendMessage(String message) {
         if (!message.isEmpty() && currentChatUser != null) {
             try {
                 DatabaseConnection.saveMessage(currentUser.getUsername(), currentChatUser, message);
@@ -59,6 +72,23 @@ public class MessagingController implements ServerConnection.ServerEventListener
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void initializeDefaultMessages() {
+        for (DefaultMessages defaultMessage : DefaultMessages.values()) {
+            Button button = new Button(defaultMessage.getMessage());
+            button.setOnAction(e -> sendMessage(defaultMessage.getMessage()));
+            defaultMessagesHBox.getChildren().add(button);
+        }
+    }
+
+    private void initializeEmojiButtons() {
+        String[] emojis = {"😊", "😂", "😍", "😢", "👍", "❤️", "🔥", "🎉", "😎", "👏"};
+        for (String emoji : emojis) {
+            Button button = new Button(emoji);
+            button.setOnAction(e -> sendMessage(emoji));
+            emojiButtonsHBox.getChildren().add(button);
         }
     }
 

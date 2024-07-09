@@ -1079,4 +1079,35 @@ public class DatabaseConnection {
         return activeGames;
     }
 
+    public static void createRandomGame() throws SQLException {
+        String query = "INSERT INTO RandomGameApplicants (username) VALUES (?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, User.getCurrentUser().getUsername());
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static void deleteRandomGame(String username, int id) throws SQLException {
+        String sql = "DELETE FROM RandomGameApplicants WHERE username = ? AND id = ?";
+        try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
+    public static List<String> getRandomGameApplicants() throws SQLException {
+        List<String> applicants = new ArrayList<>();
+        String query = "SELECT * FROM RandomGameApplicants";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                applicants.add(rs.getInt("id") + " " + rs.getString("username") + " " + rs.getString("applied_at"));
+            }
+        }
+        return applicants;
+    }
+
 }

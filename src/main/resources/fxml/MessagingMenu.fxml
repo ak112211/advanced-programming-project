@@ -14,5 +14,7 @@
             <TextField fx:id="messageInputField" HBox.hgrow="ALWAYS" promptText="Enter your message..."/>
             <Button text="Send" onAction="#handleSendButtonAction"/>
         </HBox>
+        <HBox fx:id="defaultMessagesHBox" spacing="10" />
+        <HBox fx:id="emojiButtonsHBox" spacing="10" />
     </VBox>
 </AnchorPane>
