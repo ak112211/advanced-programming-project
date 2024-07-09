@@ -9,10 +9,6 @@ public class League {
     private String name;
     private List<String> players = new ArrayList<>();
     private String winner;
-    private List<String> quarters = new ArrayList<>();
-    private List<String> semis = new ArrayList<>();
-    private List<String> finals = new ArrayList<>();
-
     private String quarter1Game;
     private String quarter2Game;
     private String quarter3Game;
@@ -25,8 +21,6 @@ public class League {
     public League(String name) {
         this.name = name;
     }
-
-    // Existing fields, constructors, and methods...
 
     // Getters and Setters for new fields
 
@@ -122,50 +116,4 @@ public class League {
         this.finalPlay = finalPlay;
     }
 
-    public List<String> getQuarters() {
-        return quarters;
-    }
-
-    public void setQuarters(List<String> quarters) {
-        this.quarters = quarters;
-    }
-
-    public List<String> getSemis() {
-        return semis;
-    }
-
-    public void setSemis(List<String> semis) {
-        this.semis = semis;
-    }
-
-    public List<String> getFinals() {
-        return finals;
-    }
-
-    public void setFinals(List<String> finals) {
-        this.finals = finals;
-    }
-
-    // Overriding existing methods to use new lists
-    public void startQuarterFinals() {
-        if (players.size() != 8) {
-            throw new IllegalStateException("Need exactly 8 players to start the league.");
-        }
-        quarters.clear();
-        quarters.add(players.get(0) + " vs " + players.get(1));
-        quarters.add(players.get(2) + " vs " + players.get(3));
-        quarters.add(players.get(4) + " vs " + players.get(5));
-        quarters.add(players.get(6) + " vs " + players.get(7));
-    }
-
-    public void startSemiFinals(String winner1, String winner2, String winner3, String winner4) {
-        semis.clear();
-        semis.add(winner1 + " vs " + winner2);
-        semis.add(winner3 + " vs " + winner4);
-    }
-
-    public void startFinals(String semiWinner1, String semiWinner2) {
-        finals.clear();
-        finals.add(semiWinner1 + " vs " + semiWinner2);
-    }
 }

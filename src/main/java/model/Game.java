@@ -67,8 +67,6 @@ public class Game implements Serializable, Cloneable {
     private final ArrayList<Card> player1GraveyardCards;
     private final ArrayList<Card> player2GraveyardCards;
     private final RoundsInfo roundsInfo;
-    private boolean isLeagueGame;
-    private String leagueId;
     private GameStatus status; // be kar nayoomad
     // these variables must be send to clients but don't have to be saved:
     private String task;
@@ -103,7 +101,7 @@ public class Game implements Serializable, Cloneable {
     }
 
     public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard,
-                Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo, boolean isLeagueGame, String leagueId) {
+                Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo) {
         this.fromSaved = true;
 
         this.ID = ID;
@@ -131,9 +129,6 @@ public class Game implements Serializable, Cloneable {
 
         this.status = status;
         this.roundsInfo = roundsInfo;
-
-        this.isLeagueGame = isLeagueGame;
-        this.leagueId = leagueId;
 
         calculatePoints();
     }
@@ -735,7 +730,7 @@ public class Game implements Serializable, Cloneable {
                 (ArrayList<Card>) player2Deck.clone(), (ArrayList<Card>) player1InHandCards.clone(),
                 (ArrayList<Card>) player2InHandCards.clone(), (ArrayList<Card>) player1GraveyardCards.clone(),
                 (ArrayList<Card>) player2GraveyardCards.clone(), (ArrayList<Card>) inGameCards.clone(),
-                player1LeaderCard, player2LeaderCard, player1Faction, player2Faction, status, roundsInfo.clone(), isLeagueGame, leagueId);
+                player1LeaderCard, player2LeaderCard, player1Faction, player2Faction, status, roundsInfo.clone());
     }
 
     public void save() {

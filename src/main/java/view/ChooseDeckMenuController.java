@@ -15,10 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import model.App;
-import model.Deck;
-import model.Game;
-import model.User;
+import model.*;
 import model.card.Card;
 import model.card.Leader;
 import util.DatabaseConnection;
@@ -61,6 +58,8 @@ public class ChooseDeckMenuController {
     @FXML
     private Button choosePlayer2DeckButton;
     public static boolean isMulti;
+    public static League league;
+    public static String leagueGameStep;
     private static User currentUser;
     public static User player2;
     public static String name;
@@ -311,8 +310,14 @@ public class ChooseDeckMenuController {
     @FXML
     private void goBack() {
         isMulti = false;
-        opponent = null;
-        AppController.loadScene(Menu.MAIN_MENU.getPath());
+        player2 = null;
+        if (league != null) {
+            AppController.loadScene(Menu.LEAGUE_MENU.getPath());
+        } else {
+            AppController.loadScene(Menu.MAIN_MENU.getPath());
+        }
+        league = null;
+        leagueGameStep = null;
     }
 
     @FXML

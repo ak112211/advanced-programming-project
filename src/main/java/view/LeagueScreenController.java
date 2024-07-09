@@ -2,14 +2,28 @@ package view;
 
 import controller.AppController;
 import enums.Menu;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import model.App;
 import model.League;
+import model.User;
+import util.DatabaseConnection;
+
+import java.sql.SQLException;
+import java.util.Objects;
 
 
 public class LeagueScreenController {
 
+    @FXML
+    public Pane results;
+    @FXML
+    public ListView<String> playersListView;
+    @FXML
+    public Label leagueName;
     @FXML
     private Label playerFinal1;
     @FXML
@@ -87,83 +101,294 @@ public class LeagueScreenController {
 
     @FXML
     public void initialize() {
+        leagueName.setText(league.getName());
+        Platform.runLater(() -> playersListView.getItems().addAll(league.getPlayers()));
         updateUI();
     }
 
     @FXML
     public void handleStartQ1() {
-        league.setQuarter1Game("Q1 Game ID");
-        p1q1.setText(league.getPlayers().get(0));
-        p2q1.setText(league.getPlayers().get(1));
-        // Additional logic for starting Quarter Final 1
+        if (player1.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player2.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player1.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "q1";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     @FXML
     public void handleStartQ2() {
-        league.setQuarter2Game("Q2 Game ID");
-        p1q2.setText(league.getPlayers().get(2));
-        p2q2.setText(league.getPlayers().get(3));
-        // Additional logic for starting Quarter Final 2
+        if (player3.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player4.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player3.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "q2";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     @FXML
     public void handleStartQ3() {
-        league.setQuarter3Game("Q3 Game ID");
-        p1q3.setText(league.getPlayers().get(4));
-        p2q3.setText(league.getPlayers().get(5));
-        // Additional logic for starting Quarter Final 3
+        if (player5.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player6.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player5.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "q3";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     @FXML
     public void handleStartQ4() {
-        league.setQuarter4Game("Q4 Game ID");
-        p1q4.setText(league.getPlayers().get(6));
-        p2q4.setText(league.getPlayers().get(7));
-        // Additional logic for starting Quarter Final 4
+        if (player7.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player8.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(player7.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "q4";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     @FXML
     public void handleStartSemiFinal1() {
-        league.setSemi1Game("S1 Game ID");
-        // Logic to determine and set semi-final players
-        // Example:
-        playerSemiFinal1.setText(p1q1.getText());  // Replace with logic to get the winner
-        playerSemiFinal2.setText(p2q2.getText());  // Replace with logic to get the winner
-        // Additional logic for starting Semi Final 1
+        if (playerSemiFinal1.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(playerSemiFinal2.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(playerSemiFinal1.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "s1";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     @FXML
     public void handleStartSemiFinal2() {
-        league.setSemi2Game("S2 Game ID");
-        // Logic to determine and set semi-final players
-        // Example:
-        playerSemiFinal3.setText(p1q3.getText());  // Replace with logic to get the winner
-        playerSemiFinal4.setText(p2q4.getText());  // Replace with logic to get the winner
-        // Additional logic for starting Semi Final 2
+        if (playerSemiFinal3.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(playerSemiFinal4.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(playerSemiFinal3.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "s2";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     @FXML
     public void handleStartFinal() {
-        league.setFinalPlay("Final Game ID");
-        // Logic to determine and set final players
-        // Example:
-        p1f.setText(playerSemiFinal1.getText());  // Replace with logic to get the winner
-        p2f.setText(playerSemiFinal3.getText());  // Replace with logic to get the winner
-        // Additional logic for starting the Final
+        if (playerFinal1.getText().equals(User.getCurrentUser().getUsername())) {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(playerFinal2.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                ChooseDeckMenuController.player2 = DatabaseConnection.getUser(playerFinal1.getText());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ChooseDeckMenuController.leagueGameStep = "f";
+        ChooseDeckMenuController.league = league;
+        assert ChooseDeckMenuController.player2 != null;
+        App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
+        AppController.loadScene(Menu.DECK_MENU.getPath());
     }
 
     private void updateUI() {
-        // Set initial text for labels based on league state
-        player1.setText(league.getPlayers().get(0));
-        player2.setText(league.getPlayers().get(1));
-        player3.setText(league.getPlayers().get(2));
-        player4.setText(league.getPlayers().get(3));
-        player5.setText(league.getPlayers().get(4));
-        player6.setText(league.getPlayers().get(5));
-        player7.setText(league.getPlayers().get(6));
-        player8.setText(league.getPlayers().get(7));
-        if (!league.getQuarter1Game().isEmpty()) {
+        if (league.getPlayers().size() < 8) {
+            results.setVisible(false);
+        } else {
+            results.setVisible(true);
+            // Set initial text for labels based on league state
+            player1.setText(league.getPlayers().get(0));
+            player2.setText(league.getPlayers().get(1));
+            player3.setText(league.getPlayers().get(2));
+            player4.setText(league.getPlayers().get(3));
+            player5.setText(league.getPlayers().get(4));
+            player6.setText(league.getPlayers().get(5));
+            player7.setText(league.getPlayers().get(6));
+            player8.setText(league.getPlayers().get(7));
 
+            if (league.getQuarter1Game() != null) {
+                startQ1.setVisible(false);
+                try {
+                    p1q1.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter1Game()))).getPlayer1Points()));
+                    p2q1.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter1Game()))).getPlayer2Points()));
+                    playerSemiFinal1.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter1Game()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                startQ1.setVisible(player1.getText().equals(User.getCurrentUser().getUsername()) || player2.getText().equals(User.getCurrentUser().getUsername()));
+                p1q1.setVisible(false);
+                p2q1.setVisible(false);
+                playerSemiFinal1.setText("?");
+            }
+
+            if (league.getQuarter2Game() != null) {
+                startQ2.setVisible(false);
+                try {
+                    p1q2.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter2Game()))).getPlayer1Points()));
+                    p2q2.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter2Game()))).getPlayer2Points()));
+                    playerSemiFinal2.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter2Game()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                startQ2.setVisible(player3.getText().equals(User.getCurrentUser().getUsername()) || player4.getText().equals(User.getCurrentUser().getUsername()));
+                p1q2.setVisible(false);
+                p2q2.setVisible(false);
+                playerSemiFinal2.setText("?");
+            }
+
+            startSemiFinal1.setVisible(league.getSemi1Game() == null && league.getQuarter1Game() != null && league.getQuarter2Game() != null &&
+                    (playerSemiFinal1.getText().equals(User.getCurrentUser().getUsername()) || playerSemiFinal2.getText().equals(User.getCurrentUser().getUsername())));
+
+            if (league.getQuarter3Game() != null) {
+                startQ3.setVisible(false);
+                try {
+                    p1q3.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter3Game()))).getPlayer1Points()));
+                    p2q3.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter3Game()))).getPlayer2Points()));
+                    playerSemiFinal3.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter3Game()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                startQ3.setVisible(player5.getText().equals(User.getCurrentUser().getUsername()) || player6.getText().equals(User.getCurrentUser().getUsername()));
+                p1q3.setVisible(false);
+                p2q3.setVisible(false);
+                playerSemiFinal3.setText("?");
+            }
+
+            if (league.getQuarter4Game() != null) {
+                startQ4.setVisible(false);
+                try {
+                    p1q4.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter4Game()))).getPlayer1Points()));
+                    p2q4.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter4Game()))).getPlayer2Points()));
+                    playerSemiFinal4.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getQuarter4Game()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                startQ4.setVisible(player7.getText().equals(User.getCurrentUser().getUsername()) || player8.getText().equals(User.getCurrentUser().getUsername()));
+                p1q4.setVisible(false);
+                p2q4.setVisible(false);
+                playerSemiFinal4.setText("?");
+            }
+
+            startSemiFinal2.setVisible(league.getSemi2Game() == null && league.getQuarter3Game() != null && league.getQuarter4Game() != null &&
+                    (playerSemiFinal3.getText().equals(User.getCurrentUser().getUsername()) || playerSemiFinal4.getText().equals(User.getCurrentUser().getUsername())));
+
+            if (league.getSemi1Game() != null) {
+                try {
+                    p1s1.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getSemi1Game()))).getPlayer1Points()));
+                    p2s1.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getSemi1Game()))).getPlayer2Points()));
+                    playerFinal1.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getSemi1Game()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                p1s1.setVisible(false);
+                p2s1.setVisible(false);
+                playerFinal1.setText("?");
+            }
+
+            if (league.getSemi2Game() != null) {
+                try {
+                    p1s2.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getSemi2Game()))).getPlayer1Points()));
+                    p2s2.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getSemi2Game()))).getPlayer2Points()));
+                    playerFinal2.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getSemi2Game()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                p1s2.setVisible(false);
+                p2s2.setVisible(false);
+                playerFinal2.setText("?");
+            }
+
+            startFinal.setVisible(league.getFinalPlay() == null && league.getSemi1Game() != null && league.getSemi2Game() != null &&
+                    (playerFinal1.getText().equals(User.getCurrentUser().getUsername()) || playerFinal2.getText().equals(User.getCurrentUser().getUsername())));
+
+            if (league.getFinalPlay() != null) {
+                try {
+                    p1f.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getFinalPlay()))).getPlayer1Points()));
+                    p2f.setText(String.valueOf(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getFinalPlay()))).getPlayer2Points()));
+                    Winner.setText(Objects.requireNonNull(DatabaseConnection.getGame(Integer.parseInt(league.getFinalPlay()))).getWinnerUser().getUsername());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                p1f.setVisible(false);
+                p2f.setVisible(false);
+                Winner.setText("?");
+            }
         }
     }
 

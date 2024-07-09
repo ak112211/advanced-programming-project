@@ -26,7 +26,6 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         User player1 = gson.fromJson(jsonObject.get("player1"), User.class);
         User player2 = gson.fromJson(jsonObject.get("player2"), User.class);
         Date date = context.deserialize(jsonObject.get("date"), Date.class);
-        boolean isLeagueGame = jsonObject.get("isLeagueGame").getAsBoolean();
         boolean isPlayer1Turn = jsonObject.get("isPlayer1Turn").getAsBoolean();
         boolean player1HasPassed = jsonObject.get("player1HasPassed").getAsBoolean();
         boolean player2HasPassed = jsonObject.get("player2HasPassed").getAsBoolean();
@@ -38,8 +37,6 @@ public class GameDeserializer implements JsonDeserializer<Game> {
 
         Faction player1Faction = Faction.valueOf(jsonObject.get("player1Faction").getAsString());
         Faction player2Faction = Faction.valueOf(jsonObject.get("player2Faction").getAsString());
-
-        String leagueId = jsonObject.get("leagueId") != null ? jsonObject.get("leagueId").getAsString() : null;
 
         String task = jsonObject.get("task") != null ? jsonObject.get("task").getAsString() : null;
         Leader player1LeaderCard = Leader.getLeaderFromType(jsonObject.get("player1LeaderCard").getAsJsonObject().get("leader_enum").toString().replaceAll("\"", ""));
@@ -57,7 +54,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
                  player1HasPassed, player2HasPassed, player1UsedLeaderAbility, player2UsedLeaderAbility,
                  player1Deck, player2Deck, player1InHandCards, player2InHandCards,
                  player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard,
-                 player1Faction, player2Faction, status, roundsInfo, isLeagueGame, leagueId);
+                 player1Faction, player2Faction, status, roundsInfo);
          game.setTask(task);
         return game;
     }
