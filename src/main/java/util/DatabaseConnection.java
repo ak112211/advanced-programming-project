@@ -1093,7 +1093,7 @@ public class DatabaseConnection {
         String sql = "DELETE FROM RandomGameApplicants WHERE username = ? AND id = ?";
         try (Connection connection = getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
-            stmt.setInt(1, id);
+            stmt.setInt(2, id);
             stmt.executeUpdate();
         }
     }
