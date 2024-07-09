@@ -76,3 +76,13 @@
     -fx-margin: 5px 5px;
     -fx-effect: dropshadow(three-pass-box, rgba(93, 93, 93, 0.98), 10, 0, 0, 0);
 }
+
+.pass-button {
+    -fx-background-color: #333333; /* Dark background */
+    -fx-text-fill: #d4a017; /* Gold text */
+    -fx-font-size: 18px; /* Font size */
+    -fx-background-radius: 10; /* Rounded corners */
+    -fx-border-color: #d4a017; /* Border color */
+    -fx-border-width: 2; /* Border width */
+    -fx-border-radius: 10; /* Border radius */
+}
