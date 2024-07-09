@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class App {
-    private static User user;
-    private static Stage stage;
-    private static Menu menu;
-    private static Stage messagingStage;
-    private static String menuPath;
-    private static boolean isGameIn;
-    private static ServerConnection serverConnection;
+    public static User user;
+    public static Stage stage;
+    public static Menu menu;
+    public static Stage messagingStage;
+    public static String menuPath;
+    public static boolean isGameIn;
+    public static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
         App.stage = stage;
@@ -27,40 +27,7 @@ public class App {
     public static Stage getStage() {
         return stage;
     }
-    private static Object currentController;
-
-    public static void loadScene(String fxmlPath) {
-        try {
-            if (currentController != null) {
-                if (currentController instanceof ChatController) {
-                    ((ChatController) currentController).cleanup();
-                } else if (currentController instanceof LobbyController) {
-                    ((LobbyController) currentController).cleanup();
-                } else if (currentController instanceof GamePaneController) {
-                    ((GamePaneController) currentController).cleanup();
-                } else if (currentController instanceof MainMenuController) {
-                    ((MainMenuController) currentController).cleanup();
-                } else if (currentController instanceof MessagingController) {
-                    ((MessagingController) currentController).cleanup();
-                } else if (currentController instanceof ScoreboardController) {
-                    ((ScoreboardController) currentController).cleanup();
-                } else if (currentController instanceof ViewGamePlayController) {
-                    ((ViewGamePlayController) currentController).cleanup();
-                }
-            }
-            FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));
-            Parent root = loader.load();
-            currentController = loader.getController();
-            Stage stage = App.getStage();
-            menuPath = fxmlPath;
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(App.class.getResource("/css/styles.css")).toExternalForm());
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public static Object currentController;
 
     public static User getUser() {
         return user;

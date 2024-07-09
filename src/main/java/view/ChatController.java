@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -216,12 +217,12 @@ public class ChatController implements ServerConnection.ServerEventListener {
 
     private void startGame() {
         ChooseDeckMenuController.isMulti = true;
-        App.loadScene("/fxml/ChooseDeckMenu.fxml");
+        AppController.loadScene("/fxml/ChooseDeckMenu.fxml");
     }
 
     @FXML
     private void goBack() {
-        App.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU.getPath());
     }
 
     public void acceptFriendRequest() {
@@ -349,7 +350,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
 
     private void loadLeagueScreen(League league) {
         LeagueScreenController.league = league;
-        App.loadScene(Menu.LEAGUE_MENU.getPath());
+        AppController.loadScene(Menu.LEAGUE_MENU.getPath());
     }
 
     public void cleanup() {

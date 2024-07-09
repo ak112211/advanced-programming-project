@@ -1,5 +1,6 @@
 package view;
 
+import controller.AppController;
 import enums.Menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -56,13 +57,13 @@ public class OngoingGamesController {
             if (selectedGame != null) {
                 // Load the view gameplay screen and pass the selected game
                 ViewGamePlayController.game = selectedGame;
-                App.loadScene(Menu.VIEW_GAMEPLAY_MENU.getPath());
+                AppController.loadScene(Menu.VIEW_GAMEPLAY_MENU.getPath());
             }
         }
     }
 
     @FXML
     private void handleBack() {
-        App.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU.getPath());
     }
 }
