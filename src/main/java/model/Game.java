@@ -279,7 +279,15 @@ public class Game implements Serializable, Cloneable {
             Card card = inGameCards.getFirst();
             if (card != player1CardToKeep && card != player2CardToKeep) {
                 moveCardToGraveyard(card);
+            } else {
+                inGameCards.removeFirst();
             }
+        }
+        if (player1CardToKeep != null) {
+            inGameCards.add(player1CardToKeep);
+        }
+        if (player2CardToKeep != null) {
+            inGameCards.add(player2CardToKeep);
         }
 
         Winner lastWinner = roundsInfo.getRoundWinner(roundsInfo.getCurrentRound() - 1, this);

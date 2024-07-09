@@ -416,7 +416,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         setupCardsInHand();
         setupCardsOnBoard();
         setupGemsAndCardNumber();
-        System.out.println("update");
         game.getAllCards().forEach(Card::setPowerText);
         if (game.isOnline()) {
             App.getServerConnection().sendMessage("update viewers:" + game.getID());
@@ -612,7 +611,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("Move from ")) {
-                System.out.println(input);
                 Game newGame;
                 try {
                     newGame = DatabaseConnection.getGame(game.getID());
