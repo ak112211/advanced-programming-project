@@ -21,10 +21,10 @@ public class RoundsInfo implements Cloneable{
         Winner winner = getRoundWinner(currentRound, game);
         switch (winner) {
             case PLAYER1:
-                player1Hearts--;
+                player2Hearts--;
                 break;
             case PLAYER2:
-                player2Hearts--;
+                player1Hearts--;
                 break;
             case DRAW:
                 player1Hearts--;

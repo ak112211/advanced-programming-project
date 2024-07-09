@@ -42,7 +42,8 @@ public class Game implements Serializable, Cloneable {
     private transient Thread thread;
     private transient Card chosenCard;
     private transient String taskResult;
-    private transient boolean fromSaved;
+    private transient boolean skipCode;
+    // private transient boolean otherPlayerFinishedVeto
 
     // these variables must be saved:
     private int ID;
@@ -51,6 +52,7 @@ public class Game implements Serializable, Cloneable {
     private final User player2;
     private final Date date;
     private boolean isPlayer1Turn;
+    private boolean finishedVeto;
     private boolean player1HasPassed;
     private boolean player2HasPassed;
     private boolean player1UsedLeaderAbility;
@@ -78,7 +80,8 @@ public class Game implements Serializable, Cloneable {
         this.date = new Date(System.currentTimeMillis());
 
         this.isPlayer1Turn = RANDOM.nextBoolean();
-        this.fromSaved = false;
+        this.finishedVeto = false;
+        this.skipCode = false;
         this.player1HasPassed = false;
         this.player2HasPassed = false;
         this.player1UsedLeaderAbility = false;
@@ -100,9 +103,9 @@ public class Game implements Serializable, Cloneable {
         this.roundsInfo = new RoundsInfo();
     }
 
-    public Game(int ID, User player1, User player2, Date date, boolean isPlayer1Turn, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard,
+    public Game(int ID, User player1, User player2, Date date, boolean finishedVeto, boolean isPlayer1Turn, boolean player1HasPassed, boolean player2HasPassed, boolean player1UsedLeaderAbility, boolean player2UsedLeaderAbility, ArrayList<Card> player1Deck, ArrayList<Card> player2Deck, ArrayList<Card> player1InHandCards, ArrayList<Card> player2InHandCards, ArrayList<Card> player1GraveyardCards, ArrayList<Card> player2GraveyardCards, ArrayList<Card> inGameCards, Leader player1LeaderCard,
                 Leader player2LeaderCard, Faction player1Faction, Faction player2Faction, GameStatus status, RoundsInfo roundsInfo) {
-        this.fromSaved = true;
+        this.skipCode = true;
 
         this.ID = ID;
         this.player1 = player1;
@@ -110,6 +113,7 @@ public class Game implements Serializable, Cloneable {
         this.date = date;
 
         this.isPlayer1Turn = isPlayer1Turn;
+        this.finishedVeto = finishedVeto;
         this.player1HasPassed = player1HasPassed;
         this.player2HasPassed = player2HasPassed;
         this.player1UsedLeaderAbility = player1UsedLeaderAbility;
@@ -144,26 +148,37 @@ public class Game implements Serializable, Cloneable {
     private void start() {
         // The fromSaved variable is true at first, so it doesn't run some codes until it reaches the first saving.
         // Then fromSaved becomes false and code runs like normally.
-        if (!fromSaved) {
+        if (!skipCode) {
             for (int i = 0; i < STARTING_HAND_SIZE; i++) {
                 player1GetRandomCard();
                 player2GetRandomCard();
             }
             OpeningAbility.StartRound(this);
+            save(true);
+        }
+        if (!finishedVeto) {
+            skipCode = false;
+        }
+        if (!skipCode) {
             if (isOnline) {
                 if (userIsPlayer1()) {
                     player1VetoCard();
                 } else {
                     player2VetoCard();
                 }
-                save();
+                if (!finishedVeto) {
+                    finishedVeto = true;
+                    save(false);
+                    return;
+                }
             } else {
                 player1VetoCard();
                 player2VetoCard();
             }
         }
+        finishedVeto = true;
         while (!roundsInfo.isGameFinished()) {
-            if (!fromSaved) {
+            if (!skipCode) {
                 player1UsedLeaderAbility = false;
                 player2UsedLeaderAbility = false;
                 player2HasPassed = false;
@@ -179,11 +194,11 @@ public class Game implements Serializable, Cloneable {
                 }
             }
             while (!player1HasPassed || !player2HasPassed) {
-                if (!fromSaved) {
+                if (!skipCode) {
                     EjectAbility.startTurnAffect(this);
-                    save();
+                    save(false);
                 }
-                fromSaved = false;
+                skipCode = false;
                 if (isOnline && !isMyTurn()) {
                     return;
                 }
@@ -193,6 +208,7 @@ public class Game implements Serializable, Cloneable {
             }
             roundsInfo.finishRound(player1Points, player2Points, this);
             resetCards();
+            calculatePoints();
         }
         status = GameStatus.COMPLETED;
         task = "show end screen";
@@ -641,6 +657,14 @@ public class Game implements Serializable, Cloneable {
                 (!isPlayer1Turn && user.equals(player2));
     }
 
+    public boolean hasFinishedVeto() {
+        return finishedVeto;
+    }
+
+    public void setFinishedVeto(boolean finishedVeto) {
+        this.finishedVeto = finishedVeto;
+    }
+
     // functions for handling tasks:
 
     public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
@@ -725,7 +749,7 @@ public class Game implements Serializable, Cloneable {
     // Saving functions:
 
     public Game clone() {
-        return new Game(ID, player1, player2, date, isPlayer1Turn, player1HasPassed, player2HasPassed,
+        return new Game(ID, player1, player2, date, isPlayer1Turn, finishedVeto, player1HasPassed, player2HasPassed,
                 player1UsedLeaderAbility, player2UsedLeaderAbility, (ArrayList<Card>) player1Deck.clone(),
                 (ArrayList<Card>) player2Deck.clone(), (ArrayList<Card>) player1InHandCards.clone(),
                 (ArrayList<Card>) player2InHandCards.clone(), (ArrayList<Card>) player1GraveyardCards.clone(),
@@ -733,7 +757,7 @@ public class Game implements Serializable, Cloneable {
                 player1LeaderCard, player2LeaderCard, player1Faction, player2Faction, status, roundsInfo.clone());
     }
 
-    public void save() {
+    public void save(boolean isFirst) {
         Game gameClone = clone();
         Thread savingThread = new Thread(() -> {
             try {
@@ -742,9 +766,14 @@ public class Game implements Serializable, Cloneable {
                 throw new RuntimeException(e);
             }
             if (isOnline) {
-                App.getServerConnection().sendMessage(
-                        (User.getCurrentUser().equals(player1) ? player2.getUsername() : player1.getUsername())
-                                + ":other player played move");
+                if (isFirst) {
+                    App.getServerConnection().sendMessage(
+                            player2.getUsername() + ":loaded after:" + ID);
+                } else {
+                    App.getServerConnection().sendMessage(
+                            (User.getCurrentUser().equals(player1) ? player2.getUsername() : player1.getUsername())
+                                    + ":other player played move");
+                }
             }
         });
         savingThread.start();
@@ -755,8 +784,8 @@ public class Game implements Serializable, Cloneable {
     }
 
 
-    public void setFromSaved(boolean fromSaved) {
-        this.fromSaved = fromSaved;
+    public void setSkipCode(boolean skipCode) {
+        this.skipCode = skipCode;
     }
 
     // cheats:

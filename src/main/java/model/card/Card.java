@@ -1,13 +1,16 @@
 package model.card;
 
+import controller.AppController;
 import enums.Row;
 import enums.cards.*;
 import enums.cardsinformation.Description;
 import enums.cardsinformation.Faction;
 import enums.cardsinformation.Type;
 import javafx.scene.input.DataFormat;
+import model.App;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Spy;
+import view.GamePaneController;
 import view.cardpane.CardIcon;
 import view.cardpane.CardPane;
 
@@ -38,8 +41,11 @@ public class Card extends CardPane {
         this.description = description;
         this.cardEnum = cardEnum;
         this.ability = ability;
-
-        setBigImage();
+        if (App.getCurrentController() instanceof GamePaneController) {
+            setSmallImage();
+        } else {
+            setBigImage();
+        }
     }
 
     public String getName() {

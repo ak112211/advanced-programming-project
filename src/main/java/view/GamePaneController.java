@@ -56,6 +56,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private ImageView player1Faction, player2Faction;
     @FXML
+    private Button player2PassRoundButton;
+    @FXML
     private Button makePublic;
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
@@ -213,6 +215,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         });
 
         if (game.isOnline()) {
+            player2PassRoundButton.setVisible(false);
             exitSave.setVisible(false);
             exit.setVisible(false);
             quit.setVisible(true);
@@ -222,6 +225,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 makePublic.setText("Make game Offline");
             }
         } else {
+            player2PassRoundButton.setVisible(true);
             exitSave.setVisible(true);
             exit.setVisible(true);
             quit.setVisible(false);
@@ -232,17 +236,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             displayMessage("Turn of Player 1");
         } else {
             displayMessage("Turn of Player 2");
-        }
-
-        if (game.isOnline()) {
-            if (User.getCurrentUser().equals(game.getPlayer1())) {
-                try {
-                    DatabaseConnection.updateGame(game);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                App.getServerConnection().sendMessage(game.getPlayer2().getUsername() + ":loaded after:" + game.getID());
-            }
         }
     }
 
@@ -321,7 +314,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
 
         player2CardNumber.setText(Integer.toString(game.getPlayer2InHandCards().size()));
-        if (game.getRoundsInfo().getPlayer1Hearts() >= 1) {
+        if (game.getRoundsInfo().getPlayer2Hearts() >= 1) {
             player2Gem1.setImage(GEM_ON);
         } else {
             player2Gem1.setImage(GEM_OFF);
@@ -395,6 +388,20 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         sendTaskResult("chose " + "null");
     }
 
+    @FXML
+    private void player1PassRound() {
+        if (game.isPlayer1Turn()) {
+            sendTaskResult("pass");
+        }
+    }
+
+    @FXML
+    private void player2PassRound() {
+        if (!game.isPlayer1Turn()) {
+            sendTaskResult("pass");
+        }
+    }
+
     public void nextTurn() {
         if (game.isPlayer1Turn()) {
             displayMessage("Turn of " + game.getPlayer1().getUsername());
@@ -409,7 +416,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         setupCardsInHand();
         setupCardsOnBoard();
         setupGemsAndCardNumber();
-        game.getAllCards().forEach(this::createCardView);
+        System.out.println("update");
         game.getAllCards().forEach(Card::setPowerText);
         if (game.isOnline()) {
             App.getServerConnection().sendMessage("update viewers:" + game.getID());
@@ -613,8 +620,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                if (game.getThread().isAlive()) { // still in veto state
+                if (!game.hasFinishedVeto()) { // still in veto state
                     assert game.getTask().equals("choose true");
+                    game.setFinishedVeto(true);
                     if (game.userIsPlayer1()) {
                         game.getPlayer2InHandCards().clear();
                         game.getPlayer2InHandCards().addAll(newGame.getPlayer2InHandCards());
@@ -629,7 +637,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 } else {
                     Game.setCurrentGame(newGame);
                     newGame.setOnline(true);
-                    newGame.setFromSaved(true);
+                    newGame.setSkipCode(true);
                     newGame.setGamePaneController(this);
                     newGame.startGameThread();
                     updateScene();

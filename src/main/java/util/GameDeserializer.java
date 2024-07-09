@@ -27,6 +27,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         User player2 = gson.fromJson(jsonObject.get("player2"), User.class);
         Date date = context.deserialize(jsonObject.get("date"), Date.class);
         boolean isPlayer1Turn = jsonObject.get("isPlayer1Turn").getAsBoolean();
+        boolean finishedVeto = jsonObject.get("finishedVeto").getAsBoolean();
         boolean player1HasPassed = jsonObject.get("player1HasPassed").getAsBoolean();
         boolean player2HasPassed = jsonObject.get("player2HasPassed").getAsBoolean();
         boolean player1UsedLeaderAbility = jsonObject.get("player1UsedLeaderAbility").getAsBoolean();
@@ -50,7 +51,7 @@ public class GameDeserializer implements JsonDeserializer<Game> {
         ArrayList<Card> player1GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player1GraveyardCards"), context);
         ArrayList<Card> player2GraveyardCards = deserializeCards(jsonObject.getAsJsonArray("player2GraveyardCards"), context);
 
-         Game game = new Game(ID, player1, player2, date, isPlayer1Turn,
+         Game game = new Game(ID, player1, player2, date, isPlayer1Turn, finishedVeto,
                  player1HasPassed, player2HasPassed, player1UsedLeaderAbility, player2UsedLeaderAbility,
                  player1Deck, player2Deck, player1InHandCards, player2InHandCards,
                  player1GraveyardCards, player2GraveyardCards, inGameCards, player1LeaderCard, player2LeaderCard,

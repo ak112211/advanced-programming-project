@@ -91,8 +91,6 @@
         </VBox>
     </HBox>
 
-
-
     <!--   player2   -->
     <HBox alignment="CENTER" layoutY="171.0" prefHeight="102.0" prefWidth="301.0" spacing="10" style="-fx-background-color: #00000060; ">
         <Pane prefHeight="102.0" prefWidth="116.0">
@@ -130,7 +128,7 @@
                 </ImageView>
                 <ImageView fx:id="player2Gem2" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
                     <image>
-                        <Image  url="@../gwentImages/img/icons/icon_gem_on.png" />
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
                     </image>
                 </ImageView>
             </HBox>
@@ -138,6 +136,9 @@
             <Label style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
         </VBox>
     </HBox>
+
+    <Button onAction="#player1PassRound" layoutX="211.0" layoutY="588.0" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
+    <Button fx:id="player2PassRoundButton" onAction="#player2PassRound" layoutX="211.0" layoutY="86.0" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
 
     <StackPane layoutX="283.0" layoutY="470.0">
         <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">

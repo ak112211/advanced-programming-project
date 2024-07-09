@@ -15,7 +15,6 @@ import util.DatabaseConnection;
 import util.ServerConnection;
 
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class LobbyController implements ServerConnection.ServerEventListener {
 
@@ -87,8 +86,6 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     Game.setCurrentGame(game);
                     assert game != null;
                     game.setOnline(true);
-                    // if (game is new)
-                    game.setFromSaved(false);
                     new GameLauncher().start(App.getStage());
                     Tools.openMessagingWindow(Game.getCurrentGame().getPlayer1().getUsername());
 
