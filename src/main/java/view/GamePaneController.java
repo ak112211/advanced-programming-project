@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -46,6 +47,14 @@ import static util.DatabaseConnection.updateUserScore;
 // TODO show players name, avatar, faction, etc.
 public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
 
+    private static final Image GEM_ON = Tools.getImage("/gwentImages/img/icons/icon_gem_on.png");
+    private static final Image GEM_OFF = Tools.getImage("/gwentImages/img/icons/icon_gem_off.png");
+    @FXML
+    private Label player1CardNumber, player2CardNumber;
+    @FXML
+    private ImageView player1Gem1, player1Gem2, player2Gem1, player2Gem2;
+    @FXML
+    private ImageView player1Faction, player2Faction;
     @FXML
     private Button makePublic;
     @FXML
@@ -177,6 +186,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         game.setGamePaneController(this);
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
+        player1Faction.setImage(game.getPlayer1Faction().getIcon());
+        player2Faction.setImage(game.getPlayer2Faction().getIcon());
+
         initializeCards();
         setupLeaderCards();
 
@@ -191,7 +203,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 } else {
                     togglePauseMenu();
                 }
-            } else if (event.getCode().isWhitespaceKey() || event.getCode().isLetterKey()){
+            } else if (event.getCode().isWhitespaceKey() || event.getCode().isLetterKey()) {
                 writtenText.append(event.getCode().getChar().toLowerCase());
                 if (writtenText.toString().endsWith(CHEAT_TEXT) && (!game.isOnline() || game.isMyTurn())) {
                     cheatMenu.setVisible(true);
@@ -292,6 +304,32 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
     }
 
+    private void setupGemsAndCardNumber() {
+        player1CardNumber.setText(Integer.toString(game.getPlayer1InHandCards().size()));
+        if (game.getRoundsInfo().getPlayer1Hearts() >= 1) {
+            player1Gem1.setImage(GEM_ON);
+        } else {
+            player1Gem1.setImage(GEM_OFF);
+        }
+        if (game.getRoundsInfo().getPlayer1Hearts() >= 2) {
+            player1Gem2.setImage(GEM_ON);
+        } else {
+            player1Gem2.setImage(GEM_OFF);
+        }
+
+        player2CardNumber.setText(Integer.toString(game.getPlayer2InHandCards().size()));
+        if (game.getRoundsInfo().getPlayer1Hearts() >= 1) {
+            player2Gem1.setImage(GEM_ON);
+        } else {
+            player2Gem1.setImage(GEM_OFF);
+        }
+        if (game.getRoundsInfo().getPlayer2Hearts() >= 2) {
+            player2Gem2.setImage(GEM_ON);
+        } else {
+            player2Gem2.setImage(GEM_OFF);
+        }
+    }
+
     private void createCardView(Card card) {
         card.setSmallImage();
         card.setPowerText();
@@ -367,9 +405,12 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
         setupCardsInHand();
         setupCardsOnBoard();
+        setupGemsAndCardNumber();
         game.getAllCards().forEach(this::createCardView);
         game.getAllCards().forEach(Card::setPowerText);
-        App.getServerConnection().sendMessage("update viewers:" + game.getID());
+        if (game.isOnline()) {
+            App.getServerConnection().sendMessage("update viewers:" + game.getID());
+        }
     }
 
     private void selectCard(Card card) {
@@ -623,7 +664,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void doTask() {
-        if (game.isOnline() && !((game.getPlayer1().equals(User.getCurrentUser()) && game.isPlayer1Turn()) || (game.getPlayer2().equals(User.getCurrentUser()) && !game.isPlayer1Turn()))){
+        if (game.isOnline() && !((game.getPlayer1().equals(User.getCurrentUser()) && game.isPlayer1Turn()) || (game.getPlayer2().equals(User.getCurrentUser()) && !game.isPlayer1Turn()))) {
             updateScene();
             return;
         }

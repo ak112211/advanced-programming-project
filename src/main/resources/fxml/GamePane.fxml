@@ -45,16 +45,124 @@
     <VBox fx:id="player1Score" alignment="CENTER" layoutX="10" layoutY="400" spacing="3" />
     <VBox fx:id="player2Score" alignment="CENTER" layoutX="1150" layoutY="400" spacing="3" />
 
-    <Text fx:id="player1TotalScore" layoutX="283.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
-        <font>
-            <Font size="18.0" />
-        </font>
-    </Text>
-    <Text fx:id="player2TotalScore" layoutX="282.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.5">
-        <font>
-            <Font size="18.0" />
-        </font>
-    </Text>
+    <!--   player1   -->
+    <HBox alignment="CENTER" layoutY="438.0" prefHeight="102.0" prefWidth="301.0" spacing="10" style="-fx-background-color: #00000060; ">
+        <Pane prefHeight="102.0" prefWidth="116.0">
+            <StackPane layoutX="14.0" layoutY="4.0" prefWidth="77.0">
+                <ImageView fitHeight="80.0" fitWidth="74.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/profile.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="99.0" fitWidth="87.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_player_border.png" />
+                    </image>
+                </ImageView>
+            </StackPane>
+            <ImageView fx:id="player1Faction" fitHeight="40.0" fitWidth="40.0" layoutX="7.0" layoutY="60.0" preserveRatio="true">
+                <image>
+                    <Image url="@../gwentImages/img/icons/deck_shield_realms.png" />
+                </image>
+            </ImageView>
+        </Pane>
+
+        <VBox alignment="CENTER_LEFT" prefHeight="102.0" prefWidth="147.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="103.0" spacing="5">
+                <ImageView fitHeight="36.0" fitWidth="24.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_card_count.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="player1CardNumber" prefHeight="35.0" prefWidth="36.0" style="-fx-text-fill: yellow; -fx-font-size: 24px;" text="10" />
+                <ImageView fx:id="player1Gem1" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="player1Gem2" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+            <Label alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="56.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
+            <Label style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
+        </VBox>
+    </HBox>
+
+
+
+    <!--   player2   -->
+    <HBox alignment="CENTER" layoutY="171.0" prefHeight="102.0" prefWidth="301.0" spacing="10" style="-fx-background-color: #00000060; ">
+        <Pane prefHeight="102.0" prefWidth="116.0">
+            <StackPane layoutX="14.0" layoutY="4.0" prefWidth="77.0">
+                <ImageView fitHeight="80.0" fitWidth="74.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/profile.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="99.0" fitWidth="87.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_player_border.png" />
+                    </image>
+                </ImageView>
+            </StackPane>
+            <ImageView fx:id="player2Faction" fitHeight="40.0" fitWidth="40.0" layoutX="7.0" layoutY="60.0" preserveRatio="true">
+                <image>
+                    <Image url="@../gwentImages/img/icons/deck_shield_realms.png" />
+                </image>
+            </ImageView>
+        </Pane>
+
+        <VBox alignment="CENTER_LEFT" prefHeight="102.0" prefWidth="147.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="103.0" spacing="5">
+                <ImageView fitHeight="36.0" fitWidth="24.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_card_count.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="player2CardNumber" prefHeight="35.0" prefWidth="36.0" style="-fx-text-fill: yellow; -fx-font-size: 24px;" text="10" />
+                <ImageView fx:id="player2Gem1" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="player2Gem2" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image  url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+            <Label alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="56.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
+            <Label style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
+        </VBox>
+    </HBox>
+
+    <StackPane layoutX="283.0" layoutY="470.0">
+        <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../gwentImages/img/icons/score_total_me.png" />
+            </image>
+        </ImageView>
+        <Text fx:id="player1TotalScore" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+    </StackPane>
+    <StackPane layoutX="282.0" layoutY="203.0">
+        <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../gwentImages/img/icons/score_total_op.png" />
+            </image>
+        </ImageView>
+        <Text fx:id="player2TotalScore" layoutX="282.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.5">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+    </StackPane>
     <Text fx:id="player1SiegeTotalScore" layoutX="338.0" layoutY="513.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
             <Font size="16.0" />
