@@ -218,6 +218,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             quit.setVisible(true);
             makePublic.setVisible(true);
             App.getServerConnection().addMessageListener(this);
+            if (game.isPublic()) {
+                makePublic.setText("Make game Offline");
+            }
         } else {
             exitSave.setVisible(true);
             exit.setVisible(true);
@@ -538,7 +541,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     public void handleQuit() {
         try {
-            User player;
             if (game.getPlayer1().getUsername().equals(User.getCurrentUser().getUsername())) {
                 game.getRoundsInfo().setWinner(RoundsInfo.Winner.PLAYER2);
             } else {

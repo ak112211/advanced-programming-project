@@ -60,7 +60,6 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     game.setCurrentUser(User.getCurrentUser());
                     game.setOnline(true);
                     Game.setCurrentGame(game);
-                    DatabaseConnection.saveGame(game);
                     if (ChooseDeckMenuController.league != null) {
                         League league = ChooseDeckMenuController.league;
                         switch (ChooseDeckMenuController.leagueGameStep) {
@@ -72,7 +71,10 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                             case "s2" -> league.setSemi2Game(String.valueOf(game.getID()));
                             case "f" -> league.setFinalPlay(String.valueOf(game.getID()));
                         }
+                        DatabaseConnection.updateLeague(league);
+                        game.setPublic(true);
                     }
+                    DatabaseConnection.saveGame(game);
                     new GameLauncher().start(App.getStage());
                     Tools.openMessagingWindow(Game.getCurrentGame().getPlayer2().getUsername());
 

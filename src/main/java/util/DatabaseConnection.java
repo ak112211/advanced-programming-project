@@ -292,7 +292,7 @@ public class DatabaseConnection {
     }
 
     public static void saveGame(Game game) throws SQLException {
-        String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data, is_online) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Games (player1, player2, date, status, winner, game_data, is_online, is_public) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, game.getPlayer1().getUsername());
@@ -311,6 +311,7 @@ public class DatabaseConnection {
 
             preparedStatement.setString(6, gameData);
             preparedStatement.setBoolean(7, game.isOnline());
+            preparedStatement.setBoolean(8, game.isPublic());
             preparedStatement.executeUpdate();
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
