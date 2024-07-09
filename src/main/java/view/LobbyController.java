@@ -9,6 +9,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import model.App;
 import model.Game;
+import model.League;
 import model.User;
 import util.DatabaseConnection;
 import util.ServerConnection;
@@ -28,7 +29,6 @@ public class LobbyController implements ServerConnection.ServerEventListener {
     @FXML
     private void initialize() {
         App.getServerConnection().addMessageListener(this);
-
     }
 
     @FXML
@@ -61,6 +61,18 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     game.setOnline(true);
                     Game.setCurrentGame(game);
                     DatabaseConnection.saveGame(game);
+                    if (ChooseDeckMenuController.league != null) {
+                        League league = ChooseDeckMenuController.league;
+                        switch (ChooseDeckMenuController.leagueGameStep) {
+                            case "q1" -> league.setQuarter1Game(String.valueOf(game.getID()));
+                            case "q2" -> league.setQuarter2Game(String.valueOf(game.getID()));
+                            case "q3" -> league.setQuarter3Game(String.valueOf(game.getID()));
+                            case "q4" -> league.setQuarter4Game(String.valueOf(game.getID()));
+                            case "s1" -> league.setSemi1Game(String.valueOf(game.getID()));
+                            case "s2" -> league.setSemi2Game(String.valueOf(game.getID()));
+                            case "f" -> league.setFinalPlay(String.valueOf(game.getID()));
+                        }
+                    }
                     new GameLauncher().start(App.getStage());
                     Tools.openMessagingWindow(Game.getCurrentGame().getPlayer2().getUsername());
 
