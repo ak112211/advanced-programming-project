@@ -252,7 +252,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
     private void createRandomGame() {
         try {
             DatabaseConnection.createRandomGame();
-            showAlert("random game request sent.");
+            showAlert("random game request sent to users.");
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Database Error", "An error occurred while sending the random game request. Please try again.");

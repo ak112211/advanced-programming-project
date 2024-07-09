@@ -1104,7 +1104,9 @@ public class DatabaseConnection {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                applicants.add(rs.getInt("id") + " " + rs.getString("username") + " " + rs.getString("applied_at"));
+                if (!rs.getString("username").equals(User.getCurrentUser().getUsername())) {
+                    applicants.add(rs.getInt("id") + " " + rs.getString("username") + " " + rs.getString("applied_at"));
+                }
             }
         }
         return applicants;
