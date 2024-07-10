@@ -594,7 +594,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     @Override
     public void handleServerEvent(String input) {
-        System.out.println(input);
         if (input.startsWith("Move from ")) {
             Game newGame;
             try {
