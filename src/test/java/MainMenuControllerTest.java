@@ -1,18 +1,14 @@
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.testfx.framework.junit5.ApplicationTest;
 import view.MainMenuController;
-import view.RegisterMenuController;
 
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MainMenuControllerTest extends ApplicationTest {
     private MainMenuController controller;

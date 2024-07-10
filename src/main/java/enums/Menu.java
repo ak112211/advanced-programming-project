@@ -16,7 +16,11 @@ public enum Menu {
     ONGOING_GAMES_MENU("/fxml/OngoingGames.fxml"),
     LOBBY_MENU("/fxml/Lobby.fxml"),
     CHOOSE_NAME_MENU("/fxml/ChooseName.fxml"),
-    LEAGUE_MENU("/fxml/LeagueScreen.fxml");
+    LEAGUE_MENU("/fxml/LeagueScreen.fxml"),
+    CHOOSE_DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
+    LEAGUE_SCREEN("/fxml/LeagueScreen.fxml"),
+    LOBBY("/fxml/Lobby.fxml"),
+    ;
 
     private final String path;
 

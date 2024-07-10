@@ -12,13 +12,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class App {
-    public static User user;
-    public static Stage stage;
-    public static Menu menu;
-    public static Stage messagingStage;
-    public static String menuPath;
-    public static boolean isGameIn;
-    public static ServerConnection serverConnection;
+    private static User user;
+    private static Stage stage;
+    private static Menu menu;
+    private static Stage messagingStage;
+    private static boolean isGameIn;
+    private static ServerConnection serverConnection;
 
     public static void setStage(Stage stage) {
         App.stage = stage;
@@ -27,7 +26,8 @@ public class App {
     public static Stage getStage() {
         return stage;
     }
-    public static Object currentController;
+
+    private static Object currentController;
 
     public static User getUser() {
         return user;
@@ -59,10 +59,6 @@ public class App {
 
     public static void setServerConnection(ServerConnection serverConnection) {
         App.serverConnection = serverConnection;
-    }
-
-    public static String getMenuPath() {
-        return menuPath;
     }
 
     public static boolean isIsGameIn() {

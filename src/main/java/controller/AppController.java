@@ -1,5 +1,6 @@
 package controller;
 
+import enums.Menu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,10 +11,9 @@ import view.*;
 import java.io.IOException;
 import java.util.Objects;
 
-import static model.App.currentController;
-
 public class AppController {
-    public static void loadScene(String fxmlPath) {
+    public static void loadScene(Menu menu) {
+        Object currentController = App.getCurrentController();
         try {
             if (currentController != null) {
                 switch (currentController) {
@@ -28,11 +28,11 @@ public class AppController {
                     }
                 }
             }
-            FXMLLoader loader = new FXMLLoader(Tools.class.getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource(menu.getPath()));
             Parent root = loader.load();
-            currentController = loader.getController();
+            App.setCurrentController(loader.getController());
             Stage stage = App.getStage();
-            App.menuPath = fxmlPath;
+            App.setMenu(menu);
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(App.class.getResource("/css/styles.css")).toExternalForm());
             stage.setScene(scene);
