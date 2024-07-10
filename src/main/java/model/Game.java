@@ -169,6 +169,8 @@ public class Game implements Serializable, Cloneable {
                 if (!finishedVeto) {
                     finishedVeto = true;
                     save(false);
+                    task = "update";
+                    giveTask();
                     return;
                 }
             } else {
@@ -200,6 +202,8 @@ public class Game implements Serializable, Cloneable {
                 }
                 skipCode = false;
                 if (isOnline && !isMyTurn()) {
+                    task = "update";
+                    giveTask();
                     return;
                 }
                 handleTask("play");

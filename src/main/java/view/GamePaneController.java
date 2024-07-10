@@ -661,6 +661,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     public void doTask() {
         switch (game.getTask()) {
+            case "update" -> {}
             case "show end screen" -> showEndScreenOverlay();
             case "play" -> nextTurn();
             case "choose" -> showChooseOverlay(false);
