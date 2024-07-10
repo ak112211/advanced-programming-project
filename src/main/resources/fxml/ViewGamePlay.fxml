@@ -1,130 +1,258 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane fx:id="gamePane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ViewGamePlayController">
+<Pane fx:id="gamePane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ViewGamePlayController">
     <ImageView fx:id="background" fitHeight="720" fitWidth="1280" pickOnBounds="true" preserveRatio="true">
-        <Image url="@../gwentImages/img/board.jpg"/>
+        <Image url="@../gwentImages/img/board.jpg" />
     </ImageView>
 
-    <Label fx:id="player1NameLabel" layoutX="10" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;"/>
-    <Label fx:id="player2NameLabel" layoutX="1100" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;"/>
-    <Label fx:id="player1ScoreLabel" layoutX="10" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;"/>
-    <Label fx:id="player2ScoreLabel" layoutX="1100" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;"/>
+    <HBox fx:id="player1CloseCombat" alignment="CENTER" layoutX="469.0" layoutY="289.0" prefHeight="79" prefWidth="546.0" spacing="3" />
+    <HBox fx:id="player2CloseCombat" alignment="CENTER" layoutX="469.0" layoutY="190.0" prefHeight="79" prefWidth="546.0" spacing="3" />
 
-    <HBox fx:id="player1CloseCombat" alignment="CENTER" layoutX="469.0" layoutY="289.0" prefHeight="79"
-          prefWidth="546.0" spacing="3"/>
-    <HBox fx:id="player2CloseCombat" alignment="CENTER" layoutX="469.0" layoutY="190.0" prefHeight="79"
-          prefWidth="546.0" spacing="3"/>
+    <HBox fx:id="player1Ranged" alignment="CENTER" layoutX="469.0" layoutY="378.0" prefHeight="79" prefWidth="546.0" spacing="3" />
+    <HBox fx:id="player2Ranged" alignment="CENTER" layoutX="469.0" layoutY="99.0" prefHeight="79" prefWidth="546.0" spacing="3" />
 
-    <HBox fx:id="player1Ranged" alignment="CENTER" layoutX="469.0" layoutY="378.0" prefHeight="79" prefWidth="546.0"
-          spacing="3"/>
-    <HBox fx:id="player2Ranged" alignment="CENTER" layoutX="469.0" layoutY="99.0" prefHeight="79" prefWidth="546.0"
-          spacing="3"/>
+    <HBox fx:id="player1Siege" alignment="CENTER" layoutX="469.0" layoutY="469.0" prefHeight="79" prefWidth="546.0" spacing="3" />
+    <HBox fx:id="player2Siege" alignment="CENTER" layoutX="469.0" layoutY="11.0" prefHeight="79" prefWidth="546.0" spacing="3" />
 
-    <HBox fx:id="player1Siege" alignment="CENTER" layoutX="469.0" layoutY="469.0" prefHeight="79" prefWidth="546.0"
-          spacing="3"/>
-    <HBox fx:id="player2Siege" alignment="CENTER" layoutX="469.0" layoutY="11.0" prefHeight="79" prefWidth="546.0"
-          spacing="3"/>
+    <HBox fx:id="weather" alignment="CENTER" layoutX="94.0" layoutY="306.0" prefHeight="79" prefWidth="185.0" spacing="3" />
 
-    <HBox fx:id="weather" alignment="CENTER" layoutX="94.0" layoutY="306.0" prefHeight="79" prefWidth="185.0"
-          spacing="3"/>
+    <HBox fx:id="player1SiegeSpell" alignment="CENTER" layoutX="377.0" layoutY="469.0" prefHeight="79" prefWidth="92.0" spacing="3" />
+    <HBox fx:id="player1RangedSpell" alignment="CENTER" layoutX="377.0" layoutY="378.0" prefHeight="79" prefWidth="92.0" spacing="3" />
+    <HBox fx:id="player1CloseCombatSpell" alignment="CENTER" layoutX="377.0" layoutY="289.0" prefHeight="79" prefWidth="92.0" spacing="3" />
+    <HBox fx:id="player2CloseCombatSpell" alignment="CENTER" layoutX="377.0" layoutY="190.0" prefHeight="79" prefWidth="92.0" spacing="3" />
+    <HBox fx:id="player2RangedSpell" alignment="CENTER" layoutX="377.0" layoutY="99.0" prefHeight="79" prefWidth="92.0" spacing="3" />
+    <HBox fx:id="player2SiegeSpell" alignment="CENTER" layoutX="377.0" layoutY="11.0" prefHeight="79" prefWidth="92.0" spacing="3" />
 
-    <HBox fx:id="player1SiegeSpell" alignment="CENTER" layoutX="377.0" layoutY="469.0" prefHeight="79" prefWidth="92.0"
-          spacing="3"/>
-    <HBox fx:id="player1RangedSpell" alignment="CENTER" layoutX="377.0" layoutY="378.0" prefHeight="79" prefWidth="92.0"
-          spacing="3"/>
-    <HBox fx:id="player1CloseCombatSpell" alignment="CENTER" layoutX="377.0" layoutY="289.0" prefHeight="79"
-          prefWidth="92.0" spacing="3"/>
-    <HBox fx:id="player2CloseCombatSpell" alignment="CENTER" layoutX="377.0" layoutY="190.0" prefHeight="79"
-          prefWidth="92.0" spacing="3"/>
-    <HBox fx:id="player2RangedSpell" alignment="CENTER" layoutX="377.0" layoutY="99.0" prefHeight="79" prefWidth="92.0"
-          spacing="3"/>
-    <HBox fx:id="player2SiegeSpell" alignment="CENTER" layoutX="377.0" layoutY="11.0" prefHeight="79" prefWidth="92.0"
-          spacing="3"/>
+    <HBox fx:id="player1Hand" alignment="CENTER" layoutX="385" layoutY="564" prefHeight="79" prefWidth="623" spacing="3" />
+    <HBox fx:id="player2Hand" alignment="CENTER" layoutX="385" layoutY="-25" prefHeight="79" prefWidth="623" spacing="3" />
 
-    <HBox fx:id="player1Hand" alignment="CENTER" layoutX="385" layoutY="564" prefHeight="79" prefWidth="623"
-          spacing="3"/>
-    <HBox fx:id="player2Hand" alignment="CENTER" layoutX="385" layoutY="-25" prefHeight="79" prefWidth="623"
-          spacing="3"/>
+    <StackPane fx:id="player2Leader" layoutX="92.0" layoutY="53.0" prefHeight="90.0" prefWidth="68.0" />
+    <StackPane fx:id="player1Leader" layoutX="92.0" layoutY="555.0" prefHeight="90.0" prefWidth="68.0" />
 
-    <StackPane fx:id="player2Leader" layoutX="92.0" layoutY="53.0" prefHeight="90.0" prefWidth="68.0"/>
-    <StackPane fx:id="player1Leader" layoutX="92.0" layoutY="555.0" prefHeight="90.0" prefWidth="68.0"/>
+    <HBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="1031.0" layoutY="577.0" prefHeight="120.0" prefWidth="90" rotate="60.0" spacing="-56">
+        <children>
+            <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-60.0">
+                <image>
+                    <Image url="@../gwentImages/img/sm/monsters_fire_elemental.jpg" />
+                </image>
+            </ImageView>
+        </children>
+    </HBox>
+    <HBox fx:id="player2Graveyard" alignment="CENTER_LEFT" layoutX="1031.0" layoutY="71.0" prefHeight="120.0" prefWidth="90" rotate="60.0" spacing="-56">
+        <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-60.0">
+            <image>
+                <Image url="@../gwentImages/img/sm/monsters_fire_elemental.jpg" />
+            </image>
+        </ImageView>
+    </HBox>
 
-    <StackPane fx:id="player1Graveyard" alignment="BOTTOM_LEFT" layoutX="1018.0" layoutY="536.0" prefHeight="111.0"
-               prefWidth="82.0"/>
-    <StackPane fx:id="player2Graveyard" alignment="BOTTOM_LEFT" layoutX="1018.0" layoutY="30.0" prefHeight="111.0"
-               prefWidth="82.0"/>
+    <VBox fx:id="player1Score" alignment="CENTER" layoutX="10" layoutY="400" spacing="3" />
+    <VBox fx:id="player2Score" alignment="CENTER" layoutX="1150" layoutY="400" spacing="3" />
 
-    <VBox fx:id="player1Score" alignment="CENTER" layoutX="10" layoutY="400" spacing="3"/>
-    <VBox fx:id="player2Score" alignment="CENTER" layoutX="1150" layoutY="400" spacing="3"/>
+    <!--   player1   -->
+    <HBox alignment="CENTER" layoutY="438.0" prefHeight="102.0" prefWidth="301.0" spacing="10" style="-fx-background-color: #00000060; ">
+        <Pane prefHeight="102.0" prefWidth="116.0">
+            <StackPane layoutX="14.0" layoutY="4.0" prefWidth="77.0">
+                <ImageView fitHeight="80.0" fitWidth="74.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/profile.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="99.0" fitWidth="87.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_player_border.png" />
+                    </image>
+                </ImageView>
+            </StackPane>
+            <ImageView fx:id="player1Faction" fitHeight="40.0" fitWidth="40.0" layoutX="7.0" layoutY="60.0" preserveRatio="true">
+                <image>
+                    <Image url="@../gwentImages/img/icons/deck_shield_realms.png" />
+                </image>
+            </ImageView>
+        </Pane>
 
-    <Text fx:id="player1TotalScore" layoutX="283.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0"
-          textAlignment="CENTER" wrappingWidth="39.0">
+        <VBox alignment="CENTER_LEFT" prefHeight="102.0" prefWidth="147.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="103.0" spacing="5">
+                <ImageView fitHeight="36.0" fitWidth="24.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_card_count.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="player1CardNumber" prefHeight="35.0" prefWidth="36.0" style="-fx-text-fill: yellow; -fx-font-size: 24px;" text="10" />
+                <ImageView fx:id="player1Gem1" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="player1Gem2" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+            <Label fx:id="player1NameLabel" alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="246.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
+            <Label fx:id="player1FactionLabel" prefHeight="20.0" prefWidth="235.0" style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
+        </VBox>
+    </HBox>
+
+    <!--   player2   -->
+    <HBox alignment="CENTER" layoutY="171.0" prefHeight="102.0" prefWidth="301.0" spacing="10" style="-fx-background-color: #00000060; ">
+        <Pane prefHeight="102.0" prefWidth="116.0">
+            <StackPane layoutX="14.0" layoutY="4.0" prefWidth="77.0">
+                <ImageView fitHeight="80.0" fitWidth="74.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/profile.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="99.0" fitWidth="87.0" layoutX="14.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_player_border.png" />
+                    </image>
+                </ImageView>
+            </StackPane>
+            <ImageView fx:id="player2Faction" fitHeight="40.0" fitWidth="40.0" layoutX="7.0" layoutY="60.0" preserveRatio="true">
+                <image>
+                    <Image url="@../gwentImages/img/icons/deck_shield_realms.png" />
+                </image>
+            </ImageView>
+        </Pane>
+
+        <VBox alignment="CENTER_LEFT" prefHeight="102.0" prefWidth="147.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="103.0" spacing="5">
+                <ImageView fitHeight="36.0" fitWidth="24.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_card_count.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="player2CardNumber" prefHeight="35.0" prefWidth="36.0" style="-fx-text-fill: yellow; -fx-font-size: 24px;" text="10" />
+                <ImageView fx:id="player2Gem1" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="player2Gem2" fitHeight="30.0" fitWidth="31.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../gwentImages/img/icons/icon_gem_on.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+            <Label fx:id="player2NameLabel" alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="163.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
+            <Label fx:id="player2FactionLabel" prefHeight="20.0" prefWidth="215.0" style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
+        </VBox>
+    </HBox>
+    <StackPane layoutX="283.0" layoutY="470.0">
+        <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../gwentImages/img/icons/score_total_me.png" />
+            </image>
+        </ImageView>
+        <Text fx:id="player1TotalScore" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+    </StackPane>
+    <StackPane layoutX="282.0" layoutY="203.0">
+        <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../gwentImages/img/icons/score_total_op.png" />
+            </image>
+        </ImageView>
+        <Text fx:id="player2TotalScore" layoutX="282.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.5">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Text>
+    </StackPane>
+    <Text fx:id="player1SiegeTotalScore" layoutX="338.0" layoutY="513.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
-            <Font size="18.0"/>
+            <Font size="16.0" />
         </font>
     </Text>
-    <Text fx:id="player2TotalScore" layoutX="282.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0"
-          textAlignment="CENTER" wrappingWidth="39.5">
+    <Text fx:id="player1RangedTotalScore" layoutX="338.0" layoutY="423.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
-            <Font size="18.0"/>
+            <Font size="16.0" />
         </font>
     </Text>
-    <Text fx:id="player1SiegeTotalScore" layoutX="338.0" layoutY="513.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0"
-          textAlignment="CENTER" wrappingWidth="39.0">
+    <Text fx:id="player1CloseCombatTotalScore" layoutX="338.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
     </Text>
-    <Text fx:id="player1RangedTotalScore" layoutX="338.0" layoutY="423.0" strokeType="OUTSIDE" strokeWidth="0.0"
-          text="0" textAlignment="CENTER" wrappingWidth="39.0">
+    <Text fx:id="player2CloseCombatTotalScore" layoutX="338.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
     </Text>
-    <Text fx:id="player1CloseCombatTotalScore" layoutX="338.0" layoutY="333.0" strokeType="OUTSIDE" strokeWidth="0.0"
-          text="0" textAlignment="CENTER" wrappingWidth="39.0">
+    <Text fx:id="player2RangedTotalScore" layoutX="338.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
     </Text>
-    <Text fx:id="player2CloseCombatTotalScore" layoutX="338.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0"
-          text="0" textAlignment="CENTER" wrappingWidth="39.0">
+    <Text fx:id="player2SiegeTotalScore" layoutX="338.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="39.0">
         <font>
-            <Font size="16.0"/>
-        </font>
-    </Text>
-    <Text fx:id="player2RangedTotalScore" layoutX="338.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0"
-          text="0" textAlignment="CENTER" wrappingWidth="39.0">
-        <font>
-            <Font size="16.0"/>
-        </font>
-    </Text>
-    <Text fx:id="player2SiegeTotalScore" layoutX="338.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0"
-          textAlignment="CENTER" wrappingWidth="39.0">
-        <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
     </Text>
 
-    <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);"
-          visible="false"/>
-    <Label fx:id="overlayMessage" style="-fx-font-size: 36; -fx-text-fill: black; -fx-background-color: white"
-           visible="false"/>
-    <VBox fx:id="cardDisplayVBox" alignment="CENTER" layoutX="1025.0" layoutY="150.0" maxHeight="412.0" maxWidth="207.0"
-          prefHeight="386.0" prefWidth="207.0" spacing="10" styleClass="overlay" visible="false">
-        <ImageView fx:id="cardImageView" fitHeight="340" fitWidth="150" preserveRatio="true"/>
-        <Text fx:id="cardDescriptionText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"
-              wrappingWidth="170"/>
-        <Text fx:id="cardNumText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER"
-              wrappingWidth="170"/>
-    </VBox>
+    <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
+    <Label fx:id="overlayMessage" style="-fx-font-size: 36; -fx-text-fill: black; -fx-background-color: white" visible="false" />
     <VBox fx:id="pauseMenu" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="10" visible="false">
         <Button fx:id="quit" onAction="#handleQuit" text="Quit"/>
+    </VBox>
+    <VBox fx:id="endScreenOverlay" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="40.0" style="-fx-background-color: #000000E8;" visible="false">
+        <children>
+            <ImageView fx:id="endScreenStatusImage" fitHeight="195.0" fitWidth="301.0" preserveRatio="true">
+                <image>
+                    <Image url="@../gwentImages/img/icons/end_lose.png" />
+                </image>
+            </ImageView>
+            <Label fx:id="endScreenWinStatus" text="Defeat" textFill="#ff0000">
+                <font>
+                    <Font name="Arial" size="48.0" />
+                </font>
+            </Label>
+            <HBox fx:id="endScreenVBoxes" alignment="CENTER" spacing="100.0">
+                <children>
+                    <VBox alignment="CENTER" spacing="40.0">
+                        <children>
+                            <Label />
+                            <Label fx:id="endScreenPlayer1NameLabel" text="Player 1" textFill="#ffcc00">
+                                <font>
+                                    <Font name="Arial" size="18.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="endScreenPlayer2NameLabel" text="Player 2" textFill="#ffcc00">
+                                <font>
+                                    <Font name="Arial" size="18.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+            <Label />
+            <HBox alignment="CENTER" spacing="60.0">
+                <children>
+                    <Button mnemonicParsing="false" onAction="#endScreenExit" style="-fx-background-color: #4d4d4d; -fx-text-fill: #ffcc00; -fx-background-radius: 25;">
+                        <padding>
+                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                        </padding>
+                        <text>
+                            Exit to Main Menu
+                        </text>
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Button>
+                </children>
+            </HBox>
+        </children>
     </VBox>
 </Pane>
