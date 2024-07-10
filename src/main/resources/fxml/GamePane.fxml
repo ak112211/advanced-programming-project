@@ -207,7 +207,7 @@
 
     <Pane fx:id="overlayPane" prefHeight="720" prefWidth="1280" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" />
     <Label fx:id="overlayMessage" style="-fx-font-size: 36; -fx-text-fill: black; -fx-background-color: white" visible="false" />
-    <VBox fx:id="cardDisplayVBox" alignment="CENTER" layoutX="1025.0" layoutY="150.0" maxHeight="412.0" maxWidth="207.0" prefHeight="386.0" prefWidth="207.0" spacing="10" styleClass="overlay" visible="false">
+    <VBox fx:id="cardDisplayVBox" alignment="CENTER" layoutX="1025.0" layoutY="150.0" maxHeight="412.0" maxWidth="207.0" prefHeight="386.0" prefWidth="207.0" spacing="10" styleClass="overlay">
         <ImageView fx:id="cardImageView" fitHeight="340" fitWidth="150" preserveRatio="true" />
         <Text fx:id="cardDescriptionText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" wrappingWidth="170" />
         <Text fx:id="cardNumText" style="-fx-padding: 10; -fx-fill: #ffffff;" textAlignment="CENTER" wrappingWidth="170" />
