@@ -39,17 +39,17 @@
     <StackPane fx:id="player2Leader" layoutX="92.0" layoutY="53.0" prefHeight="90.0" prefWidth="68.0" />
     <StackPane fx:id="player1Leader" layoutX="92.0" layoutY="555.0" prefHeight="90.0" prefWidth="68.0" />
 
-    <HBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="1034.0" layoutY="573.0" prefHeight="120.0" prefWidth="90" rotate="45.0" spacing="-56">
+    <HBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="1031.0" layoutY="577.0" prefHeight="120.0" prefWidth="90" rotate="60.0" spacing="-56">
         <children>
-            <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-45.0">
+            <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-60.0">
                 <image>
                     <Image url="@../gwentImages/img/sm/monsters_fire_elemental.jpg" />
                 </image>
             </ImageView>
         </children>
     </HBox>
-    <HBox fx:id="player2Graveyard" alignment="CENTER_LEFT" layoutX="1034.0" layoutY="67.0" prefHeight="120.0" prefWidth="90" rotate="45.0" spacing="-56.5">
-        <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-45.0">
+    <HBox fx:id="player2Graveyard" alignment="CENTER_LEFT" layoutX="1031.0" layoutY="71.0" prefHeight="120.0" prefWidth="90" rotate="60.0" spacing="-56">
+        <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-60.0">
             <image>
                 <Image url="@../gwentImages/img/sm/monsters_fire_elemental.jpg" />
             </image>

@@ -286,8 +286,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         player2Graveyard.getChildren().addAll(game.getPlayer2GraveyardCards());
 
         game.getAllCards().forEach(inGameCard -> inGameCard.setRotate(0));
-        game.getPlayer1GraveyardCards().forEach(card -> card.setRotate(-45));
-        game.getPlayer2GraveyardCards().forEach(card -> card.setRotate(-45));
+        game.getPlayer1GraveyardCards().forEach(card -> card.setRotate(-60));
+        game.getPlayer2GraveyardCards().forEach(card -> card.setRotate(-60));
     }
 
     private void setupGemsAndCardNumber() {
