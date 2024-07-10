@@ -1,6 +1,5 @@
 package model.card;
 
-import controller.AppController;
 import enums.Row;
 import enums.cards.*;
 import enums.cardsinformation.Description;

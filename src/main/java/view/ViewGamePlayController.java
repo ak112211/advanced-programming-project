@@ -1,22 +1,17 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import enums.Row;
-import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -26,22 +21,12 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.App;
 import model.Game;
-import model.User;
-import model.abilities.Ability;
-import model.abilities.instantaneousabilities.Decoy;
-import model.abilities.instantaneousabilities.Spy;
 import model.card.Card;
 import model.card.Leader;
-import util.DatabaseConnection;
 import util.ServerConnection;
 
-import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Stream;
-
-import static util.DatabaseConnection.updateUserScore;
 
 public class ViewGamePlayController implements Initializable, ServerConnection.ServerEventListener {
     @FXML
@@ -301,7 +286,7 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
             } else if (input.startsWith("game disconnected")) {
                 if (Integer.parseInt(input.split(" ")[2]) == game.getID()) {
                     game = null;
-                    AppController.loadScene(Menu.ONGOING_GAMES_MENU);
+                    Tools.loadScene(Menu.ONGOING_GAMES_MENU);
                 }
             }
         });
@@ -314,6 +299,6 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
     @FXML
     public void handleQuit() {
         game = null;
-        AppController.loadScene(Menu.ONGOING_GAMES_MENU);
+        Tools.loadScene(Menu.ONGOING_GAMES_MENU);
     }
 }

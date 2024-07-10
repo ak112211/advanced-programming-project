@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -15,12 +14,12 @@ public class ChooseNameMenuController {
     @FXML
     private void handleSubmitButtonAction() throws SQLException {
         ChooseDeckMenuController.name = usernameField.getText();
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
     private void handleBack() {
-        AppController.loadScene(Menu.MAIN_MENU);
+        Tools.loadScene(Menu.MAIN_MENU);
     }
 
 }

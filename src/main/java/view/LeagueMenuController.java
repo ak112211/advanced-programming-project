@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -125,7 +124,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -147,7 +146,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -169,7 +168,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -191,7 +190,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -213,7 +212,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -235,7 +234,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -257,7 +256,7 @@ public class LeagueMenuController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     private void updateUI() {
@@ -394,6 +393,6 @@ public class LeagueMenuController {
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        AppController.loadScene(Menu.CHAT_MENU);
+        Tools.loadScene(Menu.CHAT_MENU);
     }
 }

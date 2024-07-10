@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import enums.SecurityQuestion;
 import javafx.fxml.FXML;
@@ -78,7 +77,7 @@ public class RegisterMenuController {
                 sendVerificationCode(User.getCurrentUser());
                 App.getServerConnection().sendMessage("register:" + username);
                 Tools.showAlert("Success", "Registration Successful", "User registered successfully. Please check your email for the verification code.");
-                AppController.loadScene(Menu.VERIFY_MENU); // Load the verification code scene
+                Tools.loadScene(Menu.VERIFY_MENU); // Load the verification code scene
             }
         } catch (SQLException e) {
             Tools.showAlert("Error", "Registration Failed", "Error registering user: " + e.getMessage());
@@ -87,7 +86,7 @@ public class RegisterMenuController {
 
     @FXML
     public void handleBack() {
-        AppController.loadScene(Menu.LOGIN_MENU);
+        Tools.loadScene(Menu.LOGIN_MENU);
     }
 
     @FXML

@@ -10,7 +10,7 @@ public class ServerConnection {
     private PrintWriter out;
     private static final String SERVER_ADDRESS = "37.152.188.83";
     private static final int SERVER_PORT = 5555;
-    private List<ServerEventListener> listeners = new ArrayList<>();
+    private final List<ServerEventListener> listeners = new ArrayList<>();
 
     public ServerConnection() {
         try {

@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
@@ -549,7 +548,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             updateUserScore(game.getPlayer2());
             App.getServerConnection().sendMessage(game.getWinnerUser().getUsername() + ":ended game");
             Game.setCurrentGame(null);
-            AppController.loadScene(Menu.MAIN_MENU);
+            Tools.loadScene(Menu.MAIN_MENU);
         } catch (SQLException e) {
             Tools.showAlert("Error", "Failed to end game", "An error occurred while ending the game: " + e.getMessage());
             e.printStackTrace();
@@ -560,7 +559,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     public void handleSaveGameAndExit() throws SQLException {
         game.setStatus(Game.GameStatus.PENDING);
         DatabaseConnection.updateGame(game);
-        AppController.loadScene(Menu.MAIN_MENU);
+        Tools.loadScene(Menu.MAIN_MENU);
         hideOverlayMessage();
         Game.setCurrentGame(null);
     }
@@ -573,7 +572,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 System.out.println(gameId);
                 DatabaseConnection.deleteGame(gameId);
                 Tools.showAlert("Game ended without saving.");
-                AppController.loadScene(Menu.MAIN_MENU);
+                Tools.loadScene(Menu.MAIN_MENU);
                 hideOverlayMessage();
 
             }
@@ -629,7 +628,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             } else if (input.startsWith("Game ended by ")) {
                 Game.setCurrentGame(null);
                 Tools.showAlert(input + " You won!");
-                AppController.loadScene(Menu.MAIN_MENU);
+                Tools.loadScene(Menu.MAIN_MENU);
             }
         });
     }

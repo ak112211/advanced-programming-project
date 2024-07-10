@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -32,7 +31,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
 
     @FXML
     private void handleCancel() {
-        AppController.loadScene(Menu.DECK_MENU);
+        Tools.loadScene(Menu.DECK_MENU);
     }
 
     public void setWaitingMessage(String message) {

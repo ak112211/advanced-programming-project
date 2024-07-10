@@ -1,12 +1,10 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Button;
-import model.App;
 import model.Game;
 import util.DatabaseConnection;
 
@@ -57,13 +55,13 @@ public class OngoingGamesController {
             if (selectedGame != null) {
                 // Load the view gameplay screen and pass the selected game
                 ViewGamePlayController.game = selectedGame;
-                AppController.loadScene(Menu.VIEW_GAMEPLAY_MENU);
+                Tools.loadScene(Menu.VIEW_GAMEPLAY_MENU);
             }
         }
     }
 
     @FXML
     private void handleBack() {
-        AppController.loadScene(Menu.MAIN_MENU);
+        Tools.loadScene(Menu.MAIN_MENU);
     }
 }

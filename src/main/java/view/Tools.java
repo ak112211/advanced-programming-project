@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +17,6 @@ import model.User;
 import util.DatabaseConnection;
 import util.TokenUtil;
 
-import javax.mail.internet.HeaderTokenizer;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -64,6 +62,37 @@ public class Tools {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    // Load
+    public static void loadScene(Menu menu) {
+        Object currentController = App.getCurrentController();
+        try {
+            if (currentController != null) {
+                switch (currentController) {
+                    case ChatMenuController chatMenuController -> chatMenuController.cleanup();
+                    case LobbyController lobbyController -> lobbyController.cleanup();
+                    case GamePaneController gamePaneController -> gamePaneController.cleanup();
+                    case MainMenuController mainMenuController -> mainMenuController.cleanup();
+                    case MessagingController messagingController -> messagingController.cleanup();
+                    case ScoreboardController scoreboardController -> scoreboardController.cleanup();
+                    case ViewGamePlayController viewGamePlayController -> viewGamePlayController.cleanup();
+                    default -> {
+                    }
+                }
+            }
+            FXMLLoader loader = new FXMLLoader(App.class.getResource(menu.getPath()));
+            Parent root = loader.load();
+            App.setCurrentController(loader.getController());
+            Stage stage = App.getStage();
+            App.setMenu(menu);
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(App.class.getResource("/css/styles.css")).toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Check User Information Format
@@ -201,7 +230,7 @@ public class Tools {
                     assert tokenObject != null;
                     User user = DatabaseConnection.getUser(tokenObject.getUserId());
                     User.setCurrentUser(user);
-                    AppController.loadScene(Menu.MAIN_MENU);
+                    loadScene(Menu.MAIN_MENU);
                     assert user != null;
                     App.getServerConnection().sendMessage("login:" + user.getUsername());
                     return;
@@ -210,7 +239,7 @@ public class Tools {
                 Tools.showAlert("Error loading session: " + e.getMessage());
             }
         }
-        AppController.loadScene(Menu.LOGIN_MENU);
+        loadScene(Menu.LOGIN_MENU);
     }
 
     public static void saveUserSession(User user) {

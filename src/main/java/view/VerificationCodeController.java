@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -25,7 +24,7 @@ public class VerificationCodeController {
             if (DatabaseConnection.verifyCode(User.getCurrentUser().getUsername(), code)) {
                 Tools.showAlert("Success", "Verification Successful", "Your account has been successfully verified.");
                 App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
-                AppController.loadScene(Menu.MAIN_MENU);
+                Tools.loadScene(Menu.MAIN_MENU);
                 saveUserSession(User.getCurrentUser());  // Save session
             } else {
                 Tools.showAlert("Error", "Verification Failed", "Invalid or expired verification code.");
@@ -39,7 +38,7 @@ public class VerificationCodeController {
     private void handleBack() {
         clearUserSession();
         User.setCurrentUser(null);
-        AppController.loadScene(Menu.LOGIN_MENU);
+        Tools.loadScene(Menu.LOGIN_MENU);
     }
 
     @FXML

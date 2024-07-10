@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -56,15 +55,15 @@ public class LoginMenuController {
                 if (!user.isVerified()) {
                     sendVerificationCode(User.getCurrentUser());
                     Tools.showAlert("Account not verified. Redirecting to verification screen.");
-                    AppController.loadScene(Menu.VERIFY_MENU);
+                    Tools.loadScene(Menu.VERIFY_MENU);
                 } else {
                     saveUserSession(user);  // Save session
                     if (user.isTwoFactorOn()) {
                         sendVerificationCode(User.getCurrentUser());
                         Tools.showAlert("Code needed for 2FA", "Login Successful", "User logged in successfully. Please check your email for the verification code.");
-                        AppController.loadScene(Menu.VERIFY_MENU);
+                        Tools.loadScene(Menu.VERIFY_MENU);
                     } else {
-                        AppController.loadScene(Menu.MAIN_MENU);
+                        Tools.loadScene(Menu.MAIN_MENU);
                         App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
                         Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
                     }
@@ -79,12 +78,12 @@ public class LoginMenuController {
 
     @FXML
     private void handleForgotPasswordButtonAction() {
-        AppController.loadScene(Menu.FORGET_PASSWORD_MENU);
+        Tools.loadScene(Menu.FORGET_PASSWORD_MENU);
     }
 
     @FXML
     private void handleRegisterButtonAction() {
-        AppController.loadScene(Menu.REGISTER_MENU);
+        Tools.loadScene(Menu.REGISTER_MENU);
     }
 
 

@@ -1,13 +1,11 @@
 package view;
 
-import controller.AppController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import model.App;
 import model.User;
 import util.DatabaseConnection;
 
@@ -185,6 +183,6 @@ public class ProfileMenuController {
 
     @FXML
     public void handleBack() {
-        AppController.loadScene(Menu.MAIN_MENU);
+        Tools.loadScene(Menu.MAIN_MENU);
     }
 }
