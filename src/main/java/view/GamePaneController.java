@@ -628,8 +628,10 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             Platform.runLater(this::updateScene);
         } else if (input.startsWith("Game ended by ")) {
             Game.setCurrentGame(null);
-            Tools.showAlert(input + " You won!");
-            Tools.loadScene(Menu.MAIN_MENU);
+            Platform.runLater(() -> {
+                Tools.showAlert(input + " You won!");
+                Tools.loadScene(Menu.MAIN_MENU);
+            });
         }
 
     }

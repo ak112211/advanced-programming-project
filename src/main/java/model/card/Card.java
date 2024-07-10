@@ -40,6 +40,7 @@ public class Card extends CardPane {
         this.description = description;
         this.cardEnum = cardEnum;
         this.ability = ability;
+        System.out.println(App.getCurrentController().getClass());
         if (App.getCurrentController() instanceof GamePaneController) {
             setSmallImage();
         } else {

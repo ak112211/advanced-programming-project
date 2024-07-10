@@ -1,5 +1,6 @@
 package view;
 
+import enums.Menu;
 import enums.cardsinformation.Faction;
 import enums.leaders.MonstersLeaders;
 import enums.leaders.RealmsNorthernLeaders;
@@ -8,6 +9,7 @@ import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -24,12 +26,15 @@ public class GameLauncher extends Application {
     public void start(Stage primaryStage) {
         try {
             if (Game.getCurrentGame() == null) { // for opening project with GameLauncher.main for testing game only
-                initialize(primaryStage);
+                initialize();
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GamePane.fxml"));
-            Pane gamePane = loader.load();
+            Parent root = loader.load();
+            App.setCurrentController(loader.getController());
+            App.setMenu(Menu.GAME_PANE);
+            App.setStage(primaryStage);
 
-            Scene scene = new Scene(gamePane, 1280, 720);
+            Scene scene = new Scene(root, 1280, 720);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Gwent Game");
             primaryStage.setResizable(false);
@@ -44,7 +49,7 @@ public class GameLauncher extends Application {
         launch(args);
     }
 
-    private void initialize(Stage stage) {
+    private void initialize() {
         Deck deck1 = new Deck();
         Deck deck2 = new Deck();
         deck1.setFaction(Faction.SCOIA_TAEL);
@@ -60,6 +65,5 @@ public class GameLauncher extends Application {
         user2.setDeck(deck2);
         Game.setCurrentGame(new Game(user1, user2));
         User.setCurrentUser(user1);
-        App.setStage(stage);
     }
 }
