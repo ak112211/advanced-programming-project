@@ -215,6 +215,7 @@ public class Game implements Serializable, Cloneable {
             calculatePoints();
         }
         status = GameStatus.COMPLETED;
+        save(false);
         task = "show end screen";
         giveTask(); // it doesn't need to be handled
     }
