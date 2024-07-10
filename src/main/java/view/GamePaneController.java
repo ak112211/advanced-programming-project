@@ -647,8 +647,15 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         cardImageView.setImage(Tools.getImage(imagePath));
         cardDescriptionText.setText(description);
         cardDisplayVBox.setVisible(true);
+
+        // Add the event filter to the scene
         cardDisplayVBox.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if (!cardDisplayVBox.contains(event.getScreenX(), event.getScreenY())) {
+            // Get the coordinates of the mouse event relative to the cardDisplayVBox
+            double x = event.getScreenX();
+            double y = event.getScreenY();
+
+            // Check if the click is outside the bounds of cardDisplayVBox
+            if (!cardDisplayVBox.localToScreen(cardDisplayVBox.getBoundsInLocal()).contains(x, y)) {
                 hideCardDisplay();
             }
         });
