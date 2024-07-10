@@ -39,8 +39,22 @@
     <StackPane fx:id="player2Leader" layoutX="92.0" layoutY="53.0" prefHeight="90.0" prefWidth="68.0" />
     <StackPane fx:id="player1Leader" layoutX="92.0" layoutY="555.0" prefHeight="90.0" prefWidth="68.0" />
 
-    <StackPane fx:id="player1Graveyard" alignment="BOTTOM_LEFT" layoutX="1018.0" layoutY="536.0" prefHeight="111.0" prefWidth="82.0" />
-    <StackPane fx:id="player2Graveyard" alignment="BOTTOM_LEFT" layoutX="1018.0" layoutY="30.0" prefHeight="111.0" prefWidth="82.0" />
+    <HBox fx:id="player1Graveyard" alignment="CENTER_LEFT" layoutX="1034.0" layoutY="573.0" prefHeight="120.0" prefWidth="90" rotate="45.0" spacing="-56">
+        <children>
+            <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-45.0">
+                <image>
+                    <Image url="@../gwentImages/img/sm/monsters_fire_elemental.jpg" />
+                </image>
+            </ImageView>
+        </children>
+    </HBox>
+    <HBox fx:id="player2Graveyard" alignment="CENTER_LEFT" layoutX="1034.0" layoutY="67.0" prefHeight="120.0" prefWidth="90" rotate="45.0" spacing="-56.5">
+        <ImageView fitHeight="81.0" fitWidth="55.0" rotate="-45.0">
+            <image>
+                <Image url="@../gwentImages/img/sm/monsters_fire_elemental.jpg" />
+            </image>
+        </ImageView>
+    </HBox>
 
     <VBox fx:id="player1Score" alignment="CENTER" layoutX="10" layoutY="400" spacing="3" />
     <VBox fx:id="player2Score" alignment="CENTER" layoutX="1150" layoutY="400" spacing="3" />
@@ -137,8 +151,8 @@
         </VBox>
     </HBox>
 
-    <Button onAction="#player1PassRound" layoutX="211.0" layoutY="588.0" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
-    <Button fx:id="player2PassRoundButton" onAction="#player2PassRound" layoutX="211.0" layoutY="86.0" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
+    <Button layoutX="211.0" layoutY="588.0" onAction="#player1PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
+    <Button fx:id="player2PassRoundButton" layoutX="211.0" layoutY="86.0" onAction="#player2PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
 
     <StackPane layoutX="283.0" layoutY="470.0">
         <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">

@@ -8,15 +8,15 @@ import java.util.ArrayList;
 
 public class SummonAvenger extends EjectAbility {
     private static final ArrayList<Card> cards = new ArrayList<>();
-    private final CardEnum NEW_CARD_ENUM;
+    private final CardEnum newCardEnum;
 
     public SummonAvenger(CardEnum newCardEnum) {
-        this.NEW_CARD_ENUM = newCardEnum;
+        this.newCardEnum = newCardEnum;
         setIconName("avenger");
     }
 
     public void affect(Card myCard) {
-        Card newCard = NEW_CARD_ENUM.getCard();
+        Card newCard = newCardEnum.getCard();
         newCard.setSmallImage();
         newCard.setDefaultRow(myCard.getRow().isPlayer1());
         cards.add(newCard);

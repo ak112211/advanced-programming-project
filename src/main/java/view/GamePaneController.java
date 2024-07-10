@@ -101,43 +101,16 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private Label player2ScoreLabel;
     @FXML
-    private HBox player1Hand;
+    private HBox player1Graveyard, player2Graveyard;
     @FXML
-    private HBox player2Hand;
+    private HBox player1Hand, player2Hand;
     @FXML
-    private HBox player1CloseCombat;
+    private HBox player1CloseCombat, player2CloseCombat, player1Ranged, player2Ranged, player1Siege, player2Siege;
     @FXML
-    private HBox player2CloseCombat;
+    private HBox player1CloseCombatSpell, player2CloseCombatSpell, player1RangedSpell, player2RangedSpell,
+            player1SiegeSpell, player2SiegeSpell, weather;
     @FXML
-    private HBox player1Ranged;
-    @FXML
-    private HBox player2Ranged;
-    @FXML
-    private HBox player1Siege;
-    @FXML
-    private HBox player2Siege;
-    @FXML
-    private HBox player1CloseCombatSpell;
-    @FXML
-    private HBox player2CloseCombatSpell;
-    @FXML
-    private HBox player1RangedSpell;
-    @FXML
-    private HBox player2RangedSpell;
-    @FXML
-    private HBox player1SiegeSpell;
-    @FXML
-    private HBox player2SiegeSpell;
-    @FXML
-    private HBox weather;
-    @FXML
-    private VBox player1Score;
-    @FXML
-    private VBox player2Score;
-    @FXML
-    private StackPane player1Graveyard;
-    @FXML
-    private StackPane player2Graveyard;
+    private VBox player1Score, player2Score;
     @FXML
     private StackPane player1Leader;
     @FXML
@@ -156,7 +129,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private VBox cheatMenu;
     private StringBuilder writtenText = new StringBuilder();
-    private static String CHEAT_TEXT = "ridom to gay pi";
+    private static String CHEAT_TEXT = "ang";
 
     @FXML
     private Label overlayMessage;
@@ -193,9 +166,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
         initializeCards();
         setupLeaderCards();
+        updateScene();
 
         game.startGameThread(); // it handles starting from saved
-        updateScene();
 
         App.getStage().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
@@ -255,6 +228,24 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         game.getPlayer2LeaderCard().setSmallImage();
     }
 
+    private void createCardView(Card card) {
+        card.setSmallImage();
+        card.setPowerText();
+    }
+
+    private void setupLeaderCards() {
+        player1Leader.getChildren().clear();
+        player2Leader.getChildren().clear();
+
+        Leader player1LeaderCard = game.getPlayer1LeaderCard();
+        player1Leader.getChildren().add(player1LeaderCard);
+        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player1LeaderCard));
+
+        Leader player2LeaderCard = game.getPlayer2LeaderCard();
+        player2Leader.getChildren().add(player2LeaderCard);
+        player2LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player2LeaderCard));
+    }
+
     private void setupCardsOnBoard() {
         player1CloseCombat.getChildren().clear();
         player2CloseCombat.getChildren().clear();
@@ -275,19 +266,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
     }
 
-    private void setupLeaderCards() {
-        player1Leader.getChildren().clear();
-        player2Leader.getChildren().clear();
-
-        Leader player1LeaderCard = game.getPlayer1LeaderCard();
-        player1Leader.getChildren().add(player1LeaderCard);
-        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player1LeaderCard));
-
-        Leader player2LeaderCard = game.getPlayer2LeaderCard();
-        player2Leader.getChildren().add(player2LeaderCard);
-        player2LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player2LeaderCard));
-    }
-
     private void setupCardsInHand() {
         player1Hand.getChildren().clear();
         player2Hand.getChildren().clear();
@@ -298,6 +276,18 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         for (Card card : CardsPlace.IN_HAND.getPlayerCards(game)) {
             card.setOnMouseClicked(event -> selectCard(card));
         }
+    }
+
+    private void setupGraveyardCards() {
+        player1Graveyard.getChildren().clear();
+        player2Graveyard.getChildren().clear();
+
+        player1Graveyard.getChildren().addAll(game.getPlayer1GraveyardCards());
+        player2Graveyard.getChildren().addAll(game.getPlayer2GraveyardCards());
+
+        game.getAllCards().forEach(inGameCard -> inGameCard.setRotate(0));
+        game.getPlayer1GraveyardCards().forEach(card -> card.setRotate(-45));
+        game.getPlayer2GraveyardCards().forEach(card -> card.setRotate(-45));
     }
 
     private void setupGemsAndCardNumber() {
@@ -326,9 +316,28 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
     }
 
-    private void createCardView(Card card) {
-        card.setSmallImage();
-        card.setPowerText();
+    public void updateScene() {
+        clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
+        updateScore();
+        setupCardsInHand();
+        setupCardsOnBoard();
+        setupGraveyardCards();
+        setupGemsAndCardNumber();
+        game.getAllCards().forEach(Card::setPowerText);
+        if (game.isOnline()) {
+            App.getServerConnection().sendMessage("update viewers:" + game.getID());
+        }
+    }
+
+    private void clearHighlights() { // removes every highlight and removes onMouseClick of every card and row boxes
+        getAllRowBoxes().forEach(rowBox -> {
+            rowBox.setStyle("");
+            rowBox.setOnMouseClicked(null);
+        });
+        game.getAllCards().forEach(inGameCard -> {
+            inGameCard.removeStroke();
+            inGameCard.setOnMouseClicked(null);
+        });
     }
 
     public void updateScore() {
@@ -410,18 +419,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
     }
 
-    public void updateScene() {
-        updateScore();
-        clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
-        setupCardsInHand();
-        setupCardsOnBoard();
-        setupGemsAndCardNumber();
-        game.getAllCards().forEach(Card::setPowerText);
-        if (game.isOnline()) {
-            App.getServerConnection().sendMessage("update viewers:" + game.getID());
-        }
-    }
-
     private void selectCard(Card card) {
         selectedCard = card;
 
@@ -490,17 +487,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             ((Decoy) card.getAbility()).setReturnCard(inGameCard);
             sendTaskResult("PlayCard " + CardsPlace.IN_HAND.getPlayerCards(game).indexOf(card) + " " +
                     inGameCard.getRow().toString() + " " + game.getInGameCards().indexOf(card));
-        });
-    }
-
-    private void clearHighlights() { // removes every highlight and removes onMouseClick of every card and row boxes
-        getAllRowBoxes().forEach(rowBox -> {
-            rowBox.setStyle("");
-            rowBox.setOnMouseClicked(null);
-        });
-        game.getAllCards().forEach(inGameCard -> {
-            inGameCard.removeStroke();
-            inGameCard.setOnMouseClicked(null);
         });
     }
 
