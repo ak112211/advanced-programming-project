@@ -52,7 +52,12 @@ public abstract class CardPane extends Pane {
         setWidth(70);
         setHeight(100);
         getChildren().clear();
-        image = new Rectangle(70, 100, Tools.getImagePattern(imagePath));
+        try {
+            image = new Rectangle(70, 100, Tools.getImagePattern(imagePath));
+        } catch (Exception e) {
+            System.out.println(imagePath);
+            throw e;
+        }
         image.setArcWidth(10);
         image.setArcHeight(10);
         getChildren().add(image);

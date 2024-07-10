@@ -21,7 +21,7 @@ public enum NeutralCards implements CardEnum {
     COMMANDERS_HORN("Commander’s Horn", 0, 3, Type.SPELL, new CommandersHorn(), Description.DOUBLES_POWER_IN_ROW, false, "/gwentImages/img/lg/special_horn.jpg"),
     DECOY("Decoy", 0, 3, Type.DECOY, new Decoy(), Description.DECOY_CARD, false, "/gwentImages/img/lg/special_decoy.jpg"),
     DANDELION("Dandelion", 2, 1, Type.CLOSE_COMBAT_UNIT, new CommandersHorn(), Description.NOTHING, false, "/gwentImages/img/lg/neutral_dandelion.jpg"),
-    BOVINE_DEFENCE_FORCE("Bovine Defence Force", 8, 0, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/neutral_chort.png"),
+    BOVINE_DEFENCE_FORCE("Bovine Defence Force", 8, 0, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/neutral_chort.jpg"),
     COW("Cow", 0, 1, Type.RANGED_UNIT, new SummonAvenger(NeutralCards.BOVINE_DEFENCE_FORCE), Description.BECOMES_STRONGER_NEXT_ROUND, false, "/gwentImages/img/lg/neutral_cow.jpg"),
     EMIEL_REGIS("Emiel Regis", 5, 1, Type.CLOSE_COMBAT_UNIT, null, Description.NOTHING, false, "/gwentImages/img/lg/neutral_emiel.jpg"),
     GAUNTER_ODIMM("Gaunter O’Dimm", 2, 1, Type.SIEGE_UNIT, new Muster("Gaunter O’Dimm Darkness"), Description.NOTHING, false, "/gwentImages/img/lg/neutral_gaunter_odimm.jpg"),
