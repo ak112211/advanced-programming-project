@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="view.VerificationCodeController" spacing="10" alignment="CENTER"
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="view.VerificationCodeMenuController" spacing="10" alignment="CENTER"
       styleClass="logicPage">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>

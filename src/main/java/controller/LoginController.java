@@ -12,8 +12,8 @@ import static view.Tools.sendVerificationCode;
 
 public class LoginController {
     public static Result login(String username, String password) {
-        User user;
         try {
+            User user;
             if ((user = DatabaseConnection.getUser(username)) == null) {
                 return new Result(false, "", "Invalid username.");
             } else if (DatabaseConnection.checkPassword(username, password)) {

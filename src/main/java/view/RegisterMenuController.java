@@ -6,15 +6,7 @@ import enums.SecurityQuestion;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import model.App;
 import model.Result;
-import model.User;
-import util.DatabaseConnection;
-
-import java.sql.SQLException;
-
-import static view.Tools.sendVerificationCode;
-import static view.Tools.showAlert;
 
 public class RegisterMenuController {
 
@@ -55,7 +47,7 @@ public class RegisterMenuController {
         Result result = RegisterController.register(username, nickname, email, password, confirmPassword,
                 securityQuestion, securityAnswer, securityAnswerConfirm);
 
-        showAlert(result);
+        Tools.showAlert(result);
         if (result.isSuccess()) {
             Tools.loadScene(Menu.VERIFY_MENU); // Load the verification code scene
         }
