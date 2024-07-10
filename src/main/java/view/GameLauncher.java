@@ -25,14 +25,14 @@ public class GameLauncher extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            App.setMenu(Menu.GAME_PANE);
+            App.setStage(primaryStage);
             if (Game.getCurrentGame() == null) { // for opening project with GameLauncher.main for testing game only
                 initialize();
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GamePane.fxml"));
             Parent root = loader.load();
             App.setCurrentController(loader.getController());
-            App.setMenu(Menu.GAME_PANE);
-            App.setStage(primaryStage);
 
             Scene scene = new Scene(root, 1280, 720);
             primaryStage.setScene(scene);
