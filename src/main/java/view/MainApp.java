@@ -65,8 +65,8 @@ public class MainApp extends Application {
                 }
 
                 game.setStatus(Game.GameStatus.COMPLETED);
-                game.getPlayer1().setHighScore(game.getPlayer1Points() + game.getPlayer1().getHighScore());
-                game.getPlayer2().setHighScore(game.getPlayer2Points() + game.getPlayer2().getHighScore());
+                game.getPlayer1().setHighScore(game.getRoundsInfo().getPlayer1TotalScore() + game.getPlayer1().getHighScore());
+                game.getPlayer2().setHighScore(game.getRoundsInfo().getPlayer2TotalScore() + game.getPlayer2().getHighScore());
                 try {
                     DatabaseConnection.updateGame(game);
                     updateUserScore(game.getPlayer1());
