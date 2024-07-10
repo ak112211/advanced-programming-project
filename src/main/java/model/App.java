@@ -18,16 +18,15 @@ public class App {
     private static Stage messagingStage;
     private static boolean isGameIn;
     private static ServerConnection serverConnection;
-
-    public static void setStage(Stage stage) {
-        App.stage = stage;
-    }
+    private static Object currentController;
 
     public static Stage getStage() {
         return stage;
     }
 
-    private static Object currentController;
+    public static void setStage(Stage stage) {
+        App.stage = stage;
+    }
 
     public static User getUser() {
         return user;

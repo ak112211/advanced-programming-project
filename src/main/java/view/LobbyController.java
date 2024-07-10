@@ -73,7 +73,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                         game.setPublic(true);
                     }
                     DatabaseConnection.saveGame(game);
-                    new GameLauncher().start(App.getStage());
+                    Tools.loadScene(Menu.GAME_PANE);
                     Tools.openMessagingWindow(Game.getCurrentGame().getPlayer2().getUsername());
 
                 } catch (SQLException e) {
@@ -85,7 +85,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
                     Game.setCurrentGame(game);
                     assert game != null;
                     game.setOnline(true);
-                    new GameLauncher().start(App.getStage());
+                    Tools.loadScene(Menu.GAME_PANE);
                     Tools.openMessagingWindow(Game.getCurrentGame().getPlayer1().getUsername());
 
                 } catch (SQLException e) {

@@ -605,7 +605,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             }
             if (!game.hasFinishedVeto()) { // still in veto state
                 System.out.println();
-                assert game.getTask().equals("choose true");
+                assert game.getTask().equals("veto");
                 game.setFinishedVeto(true);
                 if (game.userIsPlayer1()) {
                     game.getPlayer2InHandCards().clear();
@@ -624,8 +624,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 newGame.setSkipCode(true);
                 newGame.setGamePaneController(this);
                 newGame.startGameThread();
-                Platform.runLater(this::updateScene);
             }
+            Platform.runLater(this::updateScene);
         } else if (input.startsWith("Game ended by ")) {
             Game.setCurrentGame(null);
             Tools.showAlert(input + " You won!");
@@ -661,8 +661,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         switch (game.getTask()) {
             case "show end screen" -> showEndScreenOverlay();
             case "play" -> nextTurn();
-            case "choose false" -> showChooseOverlay(false);
-            case "choose true" -> showChooseOverlay(true);
+            case "choose" -> showChooseOverlay(false);
+            case "veto" -> showChooseOverlay(true);
             default -> Tools.showAlert("invalid task: " + game.getTask());
         }
         updateScene();

@@ -459,7 +459,7 @@ public class Game implements Serializable, Cloneable {
             return Optional.empty();
         }
         cardChoices = cards;
-        handleTask("choose false");
+        handleTask("choose");
         return Optional.of(chosenCard);
     }
 
@@ -468,7 +468,7 @@ public class Game implements Serializable, Cloneable {
             return Optional.empty();
         }
         cardChoices = cards;
-        handleTask("choose true");
+        handleTask("veto");
         return chosenCard == null ? null : Optional.of(chosenCard);
     }
 
@@ -679,7 +679,7 @@ public class Game implements Serializable, Cloneable {
 
     public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
         if (isOnline) {
-            if (!isUserTurn(sender)) {
+            if (!isUserTurn(sender) && !task.equals("veto")) {
                 System.out.println("wrong user send taskResult");
                 return;
             }
@@ -693,17 +693,24 @@ public class Game implements Serializable, Cloneable {
             System.out.println("task result is still null");
         }
         String[] args = taskResult.split(" ");
-        if (args[0].equals("chose") && task.startsWith("choose ")) {
+        if (task.equals("veto") && args[0].equals("chose")) {
             if (args[1].equals("null")) {
-                if (task.endsWith("false")) {
-                    System.out.println("can't pass choosing");
-                } else {
-                    chosenCard = null;
-                    task = null;
-                }
+                chosenCard = null;
+                task = null;
             } else {
+                try {
+                    chosenCard = cardChoices.get(Integer.parseInt(args[1]));
+                    task = null;
+                } catch (Exception e) {
+                    System.out.println("can't choose " + args[1]);
+                }
+            }
+        } else if (task.equals("choose") && args[0].equals("chose")) {
+            try {
                 chosenCard = cardChoices.get(Integer.parseInt(args[1]));
                 task = null;
+            } catch (Exception e) {
+                System.out.println("can't choose " + args[1]);
             }
         } else if (task.equals("play")) {
             switch (args[0]) {

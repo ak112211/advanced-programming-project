@@ -20,6 +20,6 @@ public class SeeCards extends InstantaneousAbility {
         while (cardsToBeSeen.size() < amount && cardsToBeSeen.size() < enemyInHandCards.size()) {
             cardsToBeSeen.add(Game.chooseRandomCard(enemyInHandCards, false).orElseThrow());
         }
-        game.chooseCardOrPass(cardsToBeSeen.stream().toList());
+        game.chooseCard(cardsToBeSeen.stream().toList(), false);
     }
 }

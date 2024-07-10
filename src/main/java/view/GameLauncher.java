@@ -23,7 +23,7 @@ public class GameLauncher extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            if (Game.getCurrentGame() == null) {
+            if (Game.getCurrentGame() == null) { // for opening project with GameLauncher.main for testing game only
                 initialize(primaryStage);
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GamePane.fxml"));

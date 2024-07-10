@@ -438,7 +438,7 @@ public class ChooseDeckMenuController {
             Game.setCurrentGame(game);
             DatabaseConnection.saveGame(game);
             App.setIsGameIn(true);
-            new GameLauncher().start(App.getStage());
+            Tools.loadScene(Menu.GAME_PANE);
         }
     }
 

@@ -55,7 +55,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
         if (selectedGame != null) {
             int selectedGameId = Integer.parseInt(selectedGame.split(" ")[2]);
             Game.setCurrentGame(savedGames.stream().filter(game -> game.getID() == selectedGameId).findFirst().orElse(null));
-            new GameLauncher().start(App.getStage());
+            Tools.loadScene(Menu.GAME_PANE);
         }
     }
 
