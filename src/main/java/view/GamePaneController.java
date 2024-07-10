@@ -187,7 +187,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         });
 
         if (game.isOnline()) {
-            player2PassRoundButton.setVisible(false);
             exitSave.setVisible(false);
             exit.setVisible(false);
             quit.setVisible(true);
@@ -197,7 +196,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 makePublic.setText("Make game Offline");
             }
         } else {
-            player2PassRoundButton.setVisible(true);
             exitSave.setVisible(true);
             exit.setVisible(true);
             quit.setVisible(false);

@@ -202,7 +202,7 @@ public class Game implements Serializable, Cloneable {
                 }
                 skipCode = false;
                 if (isOnline && !isMyTurn()) {
-                    task = "update";
+                    task = "play";
                     giveTask();
                     return;
                 }
