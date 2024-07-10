@@ -12,6 +12,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.stage.Stage;
 import model.App;
+import model.Result;
 import model.Token;
 import model.User;
 import util.DatabaseConnection;
@@ -62,6 +63,11 @@ public class Tools {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public static void showAlert(Result result) {
+        String title = result.isSuccess() ? "Success" : "Error";
+        showAlert(title, result.getHeader(), result.getMessage());
     }
 
     // Load
