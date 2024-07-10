@@ -48,7 +48,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     private static final Image GEM_ON = Tools.getImage("/gwentImages/img/icons/icon_gem_on.png");
     private static final Image GEM_OFF = Tools.getImage("/gwentImages/img/icons/icon_gem_off.png");
-    private static final String CHEAT_TEXT = "ang";
+    private static final String CHEAT_TEXT = "alo pedarsag";
     @FXML
     private ImageView endScreenStatusImage;
     @FXML
