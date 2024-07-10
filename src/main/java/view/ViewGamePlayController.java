@@ -43,6 +43,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
+import static view.Tools.showAlert;
 
 // TODO use leader ability (taskResult="leader")
 // TODO pass round (taskResult="pass")
@@ -393,6 +394,7 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
             } else if (input.startsWith("game disconnected")) {
                 if (Integer.parseInt(input.split(" ")[2]) == game.getID()) {
                     game = null;
+                    showAlert("game ended or made private");
                     Tools.loadScene(Menu.ONGOING_GAMES_MENU);
                 }
             }

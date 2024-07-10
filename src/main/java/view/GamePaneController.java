@@ -546,6 +546,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             updateUserScore(game.getPlayer1());
             updateUserScore(game.getPlayer2());
             App.getServerConnection().sendMessage(game.getWinnerUser().getUsername() + ":ended game");
+            App.getServerConnection().sendMessage("disconnect game:" + game.getID());
             Game.setCurrentGame(null);
             Tools.loadScene(Menu.MAIN_MENU);
         } catch (SQLException e) {
@@ -808,6 +809,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_lose.png"));
             }
         }
+        App.getServerConnection().sendMessage("disconnect game:" + game.getID());
     }
 
     public VBox createEndScreenVBox(int roundNumber, int firstNumber, int secondNumber) {
