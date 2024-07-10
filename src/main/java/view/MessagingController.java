@@ -4,8 +4,10 @@ import enums.DefaultMessages;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import model.App;
 import model.User;
@@ -25,9 +27,12 @@ public class MessagingController implements ServerConnection.ServerEventListener
     private HBox defaultMessagesHBox;
     @FXML
     private HBox emojiButtonsHBox;
+    @FXML
+    private Label replyContextLabel;
 
     private User currentUser;
     private String currentChatUser;
+    private String replyContextMessage;
     private ServerConnection serverConnection;
 
     public MessagingController() {
@@ -41,6 +46,7 @@ public class MessagingController implements ServerConnection.ServerEventListener
         loadMessages();
         initializeDefaultMessages();
         initializeEmojiButtons();
+        setupMessageListClickListener();
     }
 
     @FXML
@@ -51,10 +57,16 @@ public class MessagingController implements ServerConnection.ServerEventListener
     private void sendMessage(String message) {
         if (!message.isEmpty() && currentChatUser != null) {
             try {
-                DatabaseConnection.saveMessage(currentUser.getUsername(), currentChatUser, message);
+                String fullMessage = message;
+                if (replyContextMessage != null) {
+                    fullMessage = "Reply to: " + replyContextMessage + "\n" + message;
+                }
+                DatabaseConnection.saveMessage(currentUser.getUsername(), currentChatUser, fullMessage);
                 messageInputField.clear();
+                replyContextMessage = null;
+                replyContextLabel.setVisible(false);
                 loadMessages();
-                serverConnection.sendMessage(currentChatUser + ":send message:" + message);
+                serverConnection.sendMessage(currentChatUser + ":send message:" + fullMessage);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -90,6 +102,19 @@ public class MessagingController implements ServerConnection.ServerEventListener
             button.setOnAction(e -> sendMessage(emoji));
             emojiButtonsHBox.getChildren().add(button);
         }
+    }
+
+    private void setupMessageListClickListener() {
+        messageListView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                String selectedMessage = messageListView.getSelectionModel().getSelectedItem();
+                if (selectedMessage != null) {
+                    replyContextMessage = selectedMessage;
+                    replyContextLabel.setText("Replying to: " + selectedMessage);
+                    replyContextLabel.setVisible(true);
+                }
+            }
+        });
     }
 
     public void setCurrentChatUser(String username) {

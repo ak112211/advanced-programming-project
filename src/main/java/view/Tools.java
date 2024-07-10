@@ -192,6 +192,7 @@ public class Tools {
 
             Stage stage = new Stage();
             stage.setTitle("Messaging");
+            stage.getIcons().add(Tools.getImage("/gwentImages/img/icon.png"));
             stage.setScene(new Scene(root));
             stage.show();
             App.setMessagingStage(stage);

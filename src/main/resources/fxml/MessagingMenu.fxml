@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -10,11 +11,12 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.MessagingController">
     <VBox prefHeight="400.0" prefWidth="600.0" spacing="10">
         <ListView fx:id="messageListView" prefHeight="300.0"/>
+        <Label fx:id="replyContextLabel" text="Replying to:" visible="false"/>
         <HBox spacing="10">
             <TextField fx:id="messageInputField" HBox.hgrow="ALWAYS" promptText="Enter your message..."/>
             <Button text="Send" onAction="#handleSendButtonAction"/>
         </HBox>
-        <HBox fx:id="defaultMessagesHBox" spacing="10" />
-        <HBox fx:id="emojiButtonsHBox" spacing="10" />
+        <HBox fx:id="defaultMessagesHBox" spacing="10"/>
+        <HBox fx:id="emojiButtonsHBox" spacing="10"/>
     </VBox>
 </AnchorPane>
