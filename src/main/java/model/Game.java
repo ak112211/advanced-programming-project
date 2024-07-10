@@ -166,9 +166,11 @@ public class Game implements Serializable, Cloneable {
                 } else {
                     player2VetoCard();
                 }
+                System.out.println(1);
                 if (!finishedVeto) {
                     finishedVeto = true;
                     save(false);
+                    System.out.println("no here");
                     task = "update";
                     giveTask();
                     return;
@@ -179,7 +181,9 @@ public class Game implements Serializable, Cloneable {
             }
         }
         finishedVeto = true;
+        System.out.println(2);
         while (!roundsInfo.isGameFinished()) {
+            System.out.println(3);
             if (!skipCode) {
                 player1UsedLeaderAbility = false;
                 player2UsedLeaderAbility = false;
@@ -197,6 +201,7 @@ public class Game implements Serializable, Cloneable {
             }
             while (!player1HasPassed || !player2HasPassed) {
                 if (!skipCode) {
+                    System.out.println(4);
                     EjectAbility.startTurnAffect(this);
                     save(false);
                 }
@@ -786,6 +791,8 @@ public class Game implements Serializable, Cloneable {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            System.out.println(isOnline);
+            System.out.println(isFirst);
             if (isOnline) {
                 if (isFirst) {
                     App.getServerConnection().sendMessage(

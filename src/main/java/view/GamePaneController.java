@@ -624,6 +624,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                 newGame.setSkipCode(true);
                 newGame.setGamePaneController(this);
                 newGame.startGameThread();
+                game = newGame;
             }
             Platform.runLater(this::updateScene);
         } else if (input.startsWith("Game ended by ")) {
