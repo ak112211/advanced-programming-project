@@ -5,7 +5,7 @@ public class Result {
     private final boolean success;
     private final String header;
 
-    public Result(boolean success, String header, String message,) {
+    public Result(boolean success, String header, String message) {
         this.message = message;
         this.success = success;
         this.header = header;
