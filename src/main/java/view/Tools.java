@@ -241,6 +241,9 @@ public class Tools {
                     assert user != null;
                     App.getServerConnection().sendMessage("login:" + user.getUsername());
                     return;
+                } else {
+                    clearUserSession();
+                    loadScene(Menu.LOGIN_MENU);
                 }
             } catch (SQLException e) {
                 Tools.showAlert("Error loading session: " + e.getMessage());
