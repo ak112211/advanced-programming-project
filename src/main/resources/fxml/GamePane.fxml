@@ -10,11 +10,6 @@
         <Image url="@../gwentImages/img/board.jpg" />
     </ImageView>
 
-    <Label fx:id="player1NameLabel" layoutX="10" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
-    <Label fx:id="player2NameLabel" layoutX="1100" layoutY="10" style="-fx-font-size: 18; -fx-text-fill: white;" />
-    <Label fx:id="player1ScoreLabel" layoutX="10" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
-    <Label fx:id="player2ScoreLabel" layoutX="1100" layoutY="30" style="-fx-font-size: 18; -fx-text-fill: white;" />
-
     <HBox fx:id="player1CloseCombat" alignment="CENTER" layoutX="469.0" layoutY="289.0" prefHeight="79" prefWidth="546.0" spacing="3" />
     <HBox fx:id="player2CloseCombat" alignment="CENTER" layoutX="469.0" layoutY="190.0" prefHeight="79" prefWidth="546.0" spacing="3" />
 
@@ -100,8 +95,8 @@
                     </image>
                 </ImageView>
             </HBox>
-            <Label alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="56.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
-            <Label style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
+            <Label fx:id="player1NameLabel" alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="246.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
+            <Label fx:id="player1FactionLabel" prefHeight="20.0" prefWidth="235.0" style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
         </VBox>
     </HBox>
 
@@ -146,13 +141,13 @@
                     </image>
                 </ImageView>
             </HBox>
-            <Label alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="56.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
-            <Label style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
+            <Label fx:id="player2NameLabel" alignment="BOTTOM_LEFT" prefHeight="30.0" prefWidth="163.0" style="-fx-text-fill: yellow; -fx-font-size: 16px;" text="Player 1" />
+            <Label fx:id="player2FactionLabel" prefHeight="20.0" prefWidth="215.0" style="-fx-text-fill: lightgrey; -fx-font-size: 14px;" text="Northern Realms" />
         </VBox>
     </HBox>
 
     <Button layoutX="211.0" layoutY="588.0" onAction="#player1PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
-    <Button fx:id="player2PassRoundButton" layoutX="211.0" layoutY="86.0" onAction="#player2PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
+    <Button layoutX="211.0" layoutY="86.0" onAction="#player2PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
 
     <StackPane layoutX="283.0" layoutY="470.0">
         <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">

@@ -205,7 +205,7 @@ public class ChooseDeckMenuController {
         List<Card> factionCards = new ArrayList<>();
 
         switch (faction) {
-            case EMPIRE_NILFGAARDIAM:
+            case EMPIRE_NILFGAARDIAN:
                 for (EmpireNilfgaardianCards cardEnum : EmpireNilfgaardianCards.values()) {
                     factionCards.add(cardEnum.getCard());
                 }
@@ -252,7 +252,7 @@ public class ChooseDeckMenuController {
 
     private void setUpLeaders(Faction faction) {
         switch (faction) {
-            case EMPIRE_NILFGAARDIAM:
+            case EMPIRE_NILFGAARDIAN:
                 for (EmpireNilfgaardianLeaders leaderEnum : EmpireNilfgaardianLeaders.values()) {
                     leaders.add(leaderEnum.getLeader());
                 }

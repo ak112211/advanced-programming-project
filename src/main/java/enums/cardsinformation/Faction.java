@@ -9,19 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Faction {
-    MONSTER(MonstersCards.values(), "monsters"),
-    EMPIRE_NILFGAARDIAM(EmpireNilfgaardianCards.values(), "nilfgaard"),
-    REALMS_NORTHERN(RealmsNorthernCards.values(), "realms"),
-    SCOIA_TAEL(ScoiaTaelCards.values(), "scoiatael"),
-    NEUTRAL(NeutralCards.values(), null),
-    SKELLIGE(SkelligeCards.values(), "skellige"),;
+    MONSTER(MonstersCards.values(), "monsters", "Monsters"),
+    EMPIRE_NILFGAARDIAN(EmpireNilfgaardianCards.values(), "nilfgaard", "Nilfgaardian Empire"),
+    REALMS_NORTHERN(RealmsNorthernCards.values(), "realms", "Northern Realms"),
+    SCOIA_TAEL(ScoiaTaelCards.values(), "scoiatael", "Scoia'tael"),
+    NEUTRAL(NeutralCards.values(), null, null),
+    SKELLIGE(SkelligeCards.values(), "skellige", "Skellige"),;
 
     private final CardEnum[] cardEnumList;
     private final String iconName;
+    private final String name;
 
-    Faction(CardEnum[] cardEnumList, String iconName) {
+    Faction(CardEnum[] cardEnumList, String iconName, String name) {
         this.cardEnumList = cardEnumList;
         this.iconName = iconName;
+        this.name = name;
     }
 
     public Image getIcon() {
@@ -44,5 +46,9 @@ public enum Faction {
             }
         }
         return cards;
+    }
+
+    public String getName() {
+        return name;
     }
 }
