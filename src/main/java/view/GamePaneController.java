@@ -20,11 +20,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.App;
 import model.Game;
 import model.RoundsInfo;
+import model.RoundsInfo.Winner;
 import model.User;
 import model.abilities.Ability;
 import model.abilities.instantaneousabilities.Decoy;
@@ -48,6 +51,16 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     private static final Image GEM_ON = Tools.getImage("/gwentImages/img/icons/icon_gem_on.png");
     private static final Image GEM_OFF = Tools.getImage("/gwentImages/img/icons/icon_gem_off.png");
+    private static final String CHEAT_TEXT = "ang";
+    @FXML
+    private ImageView endScreenStatusImage;
+    @FXML
+    private Label endScreenPlayer1NameLabel, endScreenPlayer2NameLabel, endScreenWinStatus;
+    @FXML
+    private VBox endScreenOverlay;
+    @FXML
+    private HBox endScreenVBoxes;
+
     @FXML
     private Label player1CardNumber, player2CardNumber;
     @FXML
@@ -108,24 +121,51 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private StackPane player1Leader;
     @FXML
     private StackPane player2Leader;
-
     private MediaPlayer mediaPlayer; // Assuming this handles your background music
     private boolean isMute;
     private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
-
-
     private Game game;
     private Card selectedCard;
-
     private int currentIndex;
-
     @FXML
     private VBox cheatMenu;
     private StringBuilder writtenText = new StringBuilder();
-    private static String CHEAT_TEXT = "ang";
-
     @FXML
     private Label overlayMessage;
+
+    public static VBox createEndScreenVBox(int roundNumber, int firstNumber, int secondNumber) {
+        // Create the VBox with spacing set to 40.0
+        VBox vbox = new VBox(40);
+        vbox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Create the round label
+        Label roundLabel = new Label("Round " + roundNumber);
+        roundLabel.setTextFill(Color.WHITE);
+        roundLabel.setFont(new Font("Arial", 18));
+
+        // Create the labels for the numbers
+        Label firstNumberLabel = new Label(String.valueOf(firstNumber));
+        Label secondNumberLabel = new Label(String.valueOf(secondNumber));
+        firstNumberLabel.setFont(new Font("Arial", 18));
+        secondNumberLabel.setFont(new Font("Arial", 18));
+
+        // Determine the colors based on the values of the numbers
+        if (firstNumber > secondNumber) {
+            firstNumberLabel.setTextFill(Color.YELLOW);
+            secondNumberLabel.setTextFill(Color.WHITE);
+        } else if (firstNumber < secondNumber) {
+            firstNumberLabel.setTextFill(Color.WHITE);
+            secondNumberLabel.setTextFill(Color.YELLOW);
+        } else {
+            firstNumberLabel.setTextFill(Color.WHITE);
+            secondNumberLabel.setTextFill(Color.WHITE);
+        }
+
+        // Add the labels to the VBox
+        vbox.getChildren().addAll(roundLabel, firstNumberLabel, secondNumberLabel);
+
+        return vbox;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -519,10 +559,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         overlayMessage.setVisible(false);
     }
 
-    public void showEndScreenOverlay() {
-        // TODO
-    }
-
     public void showChooseWhoStartsOverlay() { // Scoiatael faction has this ability I don't write it in Game class yet
         // TODO
     }
@@ -667,7 +703,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     public void doTask() {
         switch (game.getTask()) {
-            case "update" -> {}
+            case "update" -> {
+            }
             case "show end screen" -> showEndScreenOverlay();
             case "play" -> nextTurn();
             case "choose" -> showChooseOverlay(false);
@@ -681,6 +718,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         game.receiveTaskResult(taskResult, User.getCurrentUser());
     }
 
+    // cheats:
+
     @FXML
     public void handleMakePublic() {
         if (Game.getCurrentGame().isPublic()) {
@@ -693,8 +732,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
         DatabaseConnection.updateGamePublicity(Game.getCurrentGame().isPublic(), Game.getCurrentGame().getID());
     }
-
-    // cheats:
 
     @FXML
     private void cheatGetRandomCard() {
@@ -768,6 +805,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         updateScene();
     }
 
+    // End Game Overlay
+
     @FXML
     private void cheatRemoveEnemyCards() {
         if (game.isOnline() && !game.isMyTurn()) {
@@ -775,5 +814,50 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
         game.cheatRemoveEnemyCards();
         updateScene();
+    }
+
+    public void showEndScreenOverlay() {
+        endScreenOverlay.setVisible(true);
+        RoundsInfo roundsInfo = game.getRoundsInfo();
+        endScreenVBoxes.getChildren().remove(1, endScreenVBoxes.getChildren().size());
+        for (int i = 1; i < roundsInfo.getCurrentRound(); i++) {
+            VBox vbox = createEndScreenVBox(i, roundsInfo.getPlayer1Score(i), roundsInfo.getPlayer2Score(i));
+            endScreenVBoxes.getChildren().add(i, vbox);
+        }
+        endScreenPlayer1NameLabel.setText(game.getPlayer1().getUsername());
+        endScreenPlayer2NameLabel.setText(game.getPlayer2().getUsername());
+        Label adjustingLabel = new Label();
+        adjustingLabel.setPrefWidth(((VBox) endScreenVBoxes.getChildren().getFirst()).getWidth());
+        endScreenVBoxes.getChildren().add(adjustingLabel);
+
+        assert roundsInfo.getWinner() != null;
+        if (game.isOnline()) {
+            if (roundsInfo.getWinner() == Winner.DRAW) {
+                endScreenWinStatus.setText("Draw");
+                endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_draw.png"));
+            } else if ((roundsInfo.getWinner() == Winner.PLAYER1) == game.userIsPlayer1()) {
+                endScreenWinStatus.setText("Victory");
+                endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_win.png"));
+            } else {
+                endScreenWinStatus.setText("Defeat");
+                endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_lose.png"));
+            }
+        } else {
+            if (roundsInfo.getWinner() == Winner.DRAW) {
+                endScreenWinStatus.setText("Draw");
+                endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_draw.png"));
+            } else if (roundsInfo.getWinner() == Winner.PLAYER1) {
+                endScreenWinStatus.setText(game.getPlayer1().getUsername() + " Won");
+                endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_win.png"));
+            } else {
+                endScreenWinStatus.setText(game.getPlayer2().getUsername() + " Won");
+                endScreenStatusImage.setImage(Tools.getImage("/gwentImages/img/icons/end_lose.png"));
+            }
+        }
+    }
+
+    @FXML
+    private void endScreenExit() {
+        Tools.loadScene(Menu.MAIN_MENU);
     }
 }

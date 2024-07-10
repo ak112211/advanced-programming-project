@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -237,5 +238,55 @@
         <Button onAction="#cheatUseLeaderAbility" text="Use LeaderAbility" />
         <Button onAction="#cheatRemoveEnemyCards" text="Remove Enemy's Cards" />
         <Button onAction="#cheatRemoveMyCards" text="Remove Your Cards" />
+    </VBox>
+
+    <VBox fx:id="endScreenOverlay" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="40.0" style="-fx-background-color: #000000E8;" visible="false">
+        <children>
+            <ImageView fx:id="endScreenStatusImage" fitHeight="195.0" fitWidth="301.0" preserveRatio="true">
+                <image>
+                    <Image url="@../gwentImages/img/icons/end_lose.png" />
+                </image>
+            </ImageView>
+            <Label fx:id="endScreenWinStatus" text="Defeat" textFill="#ff0000">
+                <font>
+                    <Font name="Arial" size="48.0" />
+                </font>
+            </Label>
+            <HBox fx:id="endScreenVBoxes" alignment="CENTER" spacing="100.0">
+                <children>
+                    <VBox alignment="CENTER" spacing="40.0">
+                        <children>
+                            <Label />
+                            <Label fx:id="endScreenPlayer1NameLabel" text="Player 1" textFill="#ffcc00">
+                                <font>
+                                    <Font name="Arial" size="18.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="endScreenPlayer2NameLabel" text="Player 2" textFill="#ffcc00">
+                                <font>
+                                    <Font name="Arial" size="18.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+            <Label />
+            <HBox alignment="CENTER" spacing="60.0">
+                <children>
+                    <Button mnemonicParsing="false" onAction="#endScreenExit" style="-fx-background-color: #4d4d4d; -fx-text-fill: #ffcc00; -fx-background-radius: 25;">
+                        <padding>
+                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                        </padding>
+                        <text>
+                            Exit to Main Menu
+                        </text>
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Button>
+                </children>
+            </HBox>
+        </children>
     </VBox>
 </Pane>
