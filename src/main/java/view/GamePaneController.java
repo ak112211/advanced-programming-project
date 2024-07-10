@@ -594,43 +594,44 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     @Override
     public void handleServerEvent(String input) {
-        Platform.runLater(() -> {
-            if (input.startsWith("Move from ")) {
-                Game newGame;
-                try {
-                    newGame = DatabaseConnection.getGame(game.getID());
-                    assert newGame != null;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                if (!game.hasFinishedVeto()) { // still in veto state
-                    assert game.getTask().equals("choose true");
-                    game.setFinishedVeto(true);
-                    if (game.userIsPlayer1()) {
-                        game.getPlayer2InHandCards().clear();
-                        game.getPlayer2InHandCards().addAll(newGame.getPlayer2InHandCards());
-                        game.getPlayer2Deck().clear();
-                        game.getPlayer2Deck().addAll(newGame.getPlayer2Deck());
-                    } else {
-                        game.getPlayer1InHandCards().clear();
-                        game.getPlayer1InHandCards().addAll(newGame.getPlayer1InHandCards());
-                        game.getPlayer1Deck().clear();
-                        game.getPlayer1Deck().addAll(newGame.getPlayer1Deck());
-                    }
-                } else {
-                    Game.setCurrentGame(newGame);
-                    newGame.setOnline(true);
-                    newGame.setSkipCode(true);
-                    newGame.setGamePaneController(this);
-                    newGame.startGameThread();
-                    updateScene();
-                }
-            } else if (input.startsWith("Game ended by ")) {
-                Game.setCurrentGame(null);
-                Tools.showAlert(input + " You won!");
-                Tools.loadScene(Menu.MAIN_MENU);
+        System.out.println(input);
+        if (input.startsWith("Move from ")) {
+            Game newGame;
+            try {
+                newGame = DatabaseConnection.getGame(game.getID());
+                assert newGame != null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        });
+            if (!game.hasFinishedVeto()) { // still in veto state
+                System.out.println();
+                assert game.getTask().equals("choose true");
+                game.setFinishedVeto(true);
+                if (game.userIsPlayer1()) {
+                    game.getPlayer2InHandCards().clear();
+                    game.getPlayer2InHandCards().addAll(newGame.getPlayer2InHandCards());
+                    game.getPlayer2Deck().clear();
+                    game.getPlayer2Deck().addAll(newGame.getPlayer2Deck());
+                } else {
+                    game.getPlayer1InHandCards().clear();
+                    game.getPlayer1InHandCards().addAll(newGame.getPlayer1InHandCards());
+                    game.getPlayer1Deck().clear();
+                    game.getPlayer1Deck().addAll(newGame.getPlayer1Deck());
+                }
+            } else {
+                Game.setCurrentGame(newGame);
+                newGame.setOnline(true);
+                newGame.setSkipCode(true);
+                newGame.setGamePaneController(this);
+                newGame.startGameThread();
+                Platform.runLater(this::updateScene);
+            }
+        } else if (input.startsWith("Game ended by ")) {
+            Game.setCurrentGame(null);
+            Tools.showAlert(input + " You won!");
+            Tools.loadScene(Menu.MAIN_MENU);
+        }
+
     }
 
     public void hideCardDisplay() {
@@ -657,10 +658,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void doTask() {
-        if (game.isOnline() && !((game.getPlayer1().equals(User.getCurrentUser()) && game.isPlayer1Turn()) || (game.getPlayer2().equals(User.getCurrentUser()) && !game.isPlayer1Turn()))) {
-            updateScene();
-            return;
-        }
         switch (game.getTask()) {
             case "show end screen" -> showEndScreenOverlay();
             case "play" -> nextTurn();
