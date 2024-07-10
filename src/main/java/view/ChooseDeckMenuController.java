@@ -312,9 +312,9 @@ public class ChooseDeckMenuController {
         isMulti = false;
         player2 = null;
         if (league != null) {
-            AppController.loadScene(Menu.LEAGUE_MENU.getPath());
+            AppController.loadScene(Menu.LEAGUE_MENU);
         } else {
-            AppController.loadScene(Menu.MAIN_MENU.getPath());
+            AppController.loadScene(Menu.MAIN_MENU);
         }
         league = null;
         leagueGameStep = null;
@@ -432,7 +432,7 @@ public class ChooseDeckMenuController {
 
         if (isMulti) {
             App.getServerConnection().sendMessage(player2.getUsername() + ":loaded new");
-            AppController.loadScene(Menu.LOBBY_MENU.getPath());
+            AppController.loadScene(Menu.LOBBY_MENU);
         } else {
             Game game = new Game(currentUser, player2);
             game.setOnline(false);

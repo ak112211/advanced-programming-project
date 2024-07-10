@@ -17,7 +17,7 @@ public class AppController {
         try {
             if (currentController != null) {
                 switch (currentController) {
-                    case ChatController chatController -> chatController.cleanup();
+                    case ChatMenuController chatMenuController -> chatMenuController.cleanup();
                     case LobbyController lobbyController -> lobbyController.cleanup();
                     case GamePaneController gamePaneController -> gamePaneController.cleanup();
                     case MainMenuController mainMenuController -> mainMenuController.cleanup();

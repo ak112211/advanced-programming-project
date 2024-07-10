@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 
-public class LeagueScreenController {
+public class LeagueMenuController {
 
     @FXML
     public Pane results;
@@ -125,7 +125,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -147,7 +147,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -169,7 +169,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -191,7 +191,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -213,7 +213,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -235,7 +235,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     @FXML
@@ -257,7 +257,7 @@ public class LeagueScreenController {
         ChooseDeckMenuController.league = league;
         assert ChooseDeckMenuController.player2 != null;
         App.getServerConnection().sendMessage(ChooseDeckMenuController.player2.getUsername() + ":send message:" + User.getCurrentUser().getUsername() + " sent request for league game");
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     private void updateUI() {
@@ -394,6 +394,6 @@ public class LeagueScreenController {
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        AppController.loadScene(Menu.CHAT_MENU.getPath());
+        AppController.loadScene(Menu.CHAT_MENU);
     }
 }

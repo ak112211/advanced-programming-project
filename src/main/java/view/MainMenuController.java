@@ -62,23 +62,23 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     @FXML
     private void goToProfile() {
-        AppController.loadScene(Menu.PROFILE_MENU.getPath());
+        AppController.loadScene(Menu.PROFILE_MENU);
     }
 
     @FXML
     private void goToAddFriends() {
-        AppController.loadScene(Menu.CHAT_MENU.getPath());
+        AppController.loadScene(Menu.CHAT_MENU);
     }
 
     @FXML
     private void showScoreboard() {
-        AppController.loadScene(Menu.SCORE_MENU.getPath());
+        AppController.loadScene(Menu.SCORE_MENU);
     }
 
     @FXML
     private void goToDeckMenu() {
         ChooseDeckMenuController.isMulti = false;
-        AppController.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
+        AppController.loadScene(Menu.CHOOSE_NAME_MENU);
     }
 
     @FXML
@@ -87,7 +87,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
         User.setCurrentUser(null);
         Game.setCurrentGame(null);
         clearUserSession();
-        AppController.loadScene(Menu.LOGIN_MENU.getPath());
+        AppController.loadScene(Menu.LOGIN_MENU);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     private void startGame() {
         ChooseDeckMenuController.isMulti = true;
-        AppController.loadScene(Menu.CHOOSE_NAME_MENU.getPath());
+        AppController.loadScene(Menu.CHOOSE_NAME_MENU);
     }
 
     public void cleanup() {
@@ -130,6 +130,6 @@ public class MainMenuController implements ServerConnection.ServerEventListener 
 
     @FXML
     public void goToOnGoingGames(ActionEvent actionEvent) {
-        AppController.loadScene(Menu.ONGOING_GAMES_MENU.getPath());
+        AppController.loadScene(Menu.ONGOING_GAMES_MENU);
     }
 }

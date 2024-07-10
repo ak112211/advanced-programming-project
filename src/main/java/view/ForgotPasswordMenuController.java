@@ -78,7 +78,7 @@ public class ForgotPasswordMenuController {
 
         if (isPasswordUpdated) {
             Tools.showAlert("Success", "Password Reset Successful", "Your password has been reset successfully.");
-            AppController.loadScene(Menu.LOGIN_MENU.getPath());
+            AppController.loadScene(Menu.LOGIN_MENU);
         } else {
             Tools.showAlert("Error", "Database Error", "An error occurred while updating the password. Please try again.");
         }
@@ -86,7 +86,7 @@ public class ForgotPasswordMenuController {
 
     @FXML
     private void handleBack() {
-        AppController.loadScene(Menu.LOGIN_MENU.getPath());
+        AppController.loadScene(Menu.LOGIN_MENU);
     }
 
 }

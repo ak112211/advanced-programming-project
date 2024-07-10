@@ -301,7 +301,7 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
             } else if (input.startsWith("game disconnected")) {
                 if (Integer.parseInt(input.split(" ")[2]) == game.getID()) {
                     game = null;
-                    AppController.loadScene(Menu.ONGOING_GAMES_MENU.getPath());
+                    AppController.loadScene(Menu.ONGOING_GAMES_MENU);
                 }
             }
         });
@@ -312,8 +312,8 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
     }
 
     @FXML
-    public void handleQuit(ActionEvent actionEvent) {
+    public void handleQuit() {
         game = null;
-        AppController.loadScene(Menu.ONGOING_GAMES_MENU.getPath());
+        AppController.loadScene(Menu.ONGOING_GAMES_MENU);
     }
 }

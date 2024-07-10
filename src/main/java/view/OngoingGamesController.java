@@ -57,13 +57,13 @@ public class OngoingGamesController {
             if (selectedGame != null) {
                 // Load the view gameplay screen and pass the selected game
                 ViewGamePlayController.game = selectedGame;
-                AppController.loadScene(Menu.VIEW_GAMEPLAY_MENU.getPath());
+                AppController.loadScene(Menu.VIEW_GAMEPLAY_MENU);
             }
         }
     }
 
     @FXML
     private void handleBack() {
-        AppController.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU);
     }
 }

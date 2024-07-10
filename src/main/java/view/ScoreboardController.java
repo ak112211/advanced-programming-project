@@ -66,7 +66,7 @@ public class ScoreboardController implements ServerConnection.ServerEventListene
 
     @FXML
     private void goToMainMenu() {
-        AppController.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU);
     }
 
     public void cleanup() {

@@ -185,6 +185,6 @@ public class ProfileMenuController {
 
     @FXML
     public void handleBack() {
-        AppController.loadScene(Menu.MAIN_MENU.getPath());
+        AppController.loadScene(Menu.MAIN_MENU);
     }
 }

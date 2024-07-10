@@ -32,7 +32,7 @@ public class LobbyController implements ServerConnection.ServerEventListener {
 
     @FXML
     private void handleCancel() {
-        AppController.loadScene(Menu.DECK_MENU.getPath());
+        AppController.loadScene(Menu.DECK_MENU);
     }
 
     public void setWaitingMessage(String message) {

@@ -19,7 +19,7 @@ import java.util.List;
 import static view.Tools.openMessagingWindow;
 import static view.Tools.showAlert;
 
-public class ChatController implements ServerConnection.ServerEventListener {
+public class ChatMenuController implements ServerConnection.ServerEventListener {
 
     @FXML
     public ListView<String> randomGamesList;
@@ -393,7 +393,7 @@ public class ChatController implements ServerConnection.ServerEventListener {
     }
 
     private void loadLeagueScreen(League league) {
-        LeagueScreenController.league = league;
+        LeagueMenuController.league = league;
         AppController.loadScene(Menu.LEAGUE_MENU);
     }
 
