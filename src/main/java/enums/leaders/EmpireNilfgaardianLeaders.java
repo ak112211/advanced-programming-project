@@ -31,6 +31,6 @@ public enum EmpireNilfgaardianLeaders implements LeaderEnum {
     }
 
     public Leader getLeader() {
-        return new Leader(name, ability, Faction.EMPIRE_NILFGAARDIAM, description, imagePath, this);
+        return new Leader(name, ability, Faction.EMPIRE_NILFGAARDIAN, description, imagePath, this);
     }
 }

@@ -64,6 +64,6 @@ public enum EmpireNilfgaardianCards implements CardEnum {
     }
 
     public Card getCard() {
-        return new Card(name, type, noOfCardsInGame, power, ability, isHero, Faction.EMPIRE_NILFGAARDIAM, description, imagePath, this);
+        return new Card(name, type, noOfCardsInGame, power, ability, isHero, Faction.EMPIRE_NILFGAARDIAN, description, imagePath, this);
     }
 }

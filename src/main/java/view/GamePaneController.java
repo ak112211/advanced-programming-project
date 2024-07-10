@@ -55,12 +55,12 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private ImageView player1Faction, player2Faction;
     @FXML
-    private Button player2PassRoundButton;
-    @FXML
     private Button makePublic;
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
             player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
+    @FXML
+    private Label player1FactionLabel, player2FactionLabel;
     @FXML
     private Button passButton;
     @FXML
@@ -92,13 +92,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private Pane overlayPane;
     @FXML
-    private Label player1NameLabel;
-    @FXML
-    private Label player2NameLabel;
-    @FXML
-    private Label player1ScoreLabel;
-    @FXML
-    private Label player2ScoreLabel;
+    private Label player1NameLabel, player2NameLabel;
     @FXML
     private HBox player1Graveyard, player2Graveyard;
     @FXML
@@ -160,6 +154,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         game.setGamePaneController(this);
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
+        player1FactionLabel.setText(game.getPlayer1Faction().getName());
+        player2FactionLabel.setText(game.getPlayer2Faction().getName());
         player1Faction.setImage(game.getPlayer1Faction().getIcon());
         player2Faction.setImage(game.getPlayer2Faction().getIcon());
 
@@ -236,11 +232,11 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
         Leader player1LeaderCard = game.getPlayer1LeaderCard();
         player1Leader.getChildren().add(player1LeaderCard);
-        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player1LeaderCard));
+        player1LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(true));
 
         Leader player2LeaderCard = game.getPlayer2LeaderCard();
         player2Leader.getChildren().add(player2LeaderCard);
-        player2LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(player2LeaderCard));
+        player2LeaderCard.setOnMouseClicked(event -> showLeaderCardOverlay(false));
     }
 
     private void setupCardsOnBoard() {
@@ -338,8 +334,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     public void updateScore() {
-        player1ScoreLabel.setText("Score: " + game.getPlayer1Points());
-        player2ScoreLabel.setText("Score: " + game.getPlayer2Points());
         player1TotalScore.setText(Integer.toString(game.getPlayer1Points()));
         player2TotalScore.setText(Integer.toString(game.getPlayer2Points()));
         player1CloseCombatTotalScore.setText(Integer.toString(game.calculatePoints(row -> row == Row.PLAYER1_CLOSE_COMBAT)));
@@ -487,8 +481,14 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         });
     }
 
-    private void showLeaderCardOverlay(Leader leaderCard) {
+    private void showLeaderCardOverlay(boolean player1Leader) {
+        Leader leaderCard = player1Leader ? game.getPlayer1LeaderCard() : game.getPlayer2LeaderCard();
         showBigImage(leaderCard.getImagePath(), leaderCard.getDescription(), false, null, leaderCard);
+
+        if (player1Leader == game.isPlayer1Turn() &&
+                (player1Leader ? game.player1CanUseLeaderAbility() : game.player2CanUseLeaderAbility())) {
+            cardImageView.setOnMouseClicked((event) -> sendTaskResult("leader"));
+        }
     }
 
     public void displayMessage(String message) {
@@ -643,6 +643,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         if (imagePath == null || imagePath.isEmpty()) {
             return;
         }
+        cardImageView.setOnMouseClicked(null);
         cardImageView.setImage(Tools.getImage(imagePath));
         cardDescriptionText.setText(description);
         cardDisplayVBox.setVisible(true);

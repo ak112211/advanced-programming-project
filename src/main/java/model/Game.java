@@ -320,14 +320,17 @@ public class Game implements Serializable, Cloneable {
             if (player1CanUseLeaderAbility()) {
                 player1UsedLeaderAbility = true;
                 ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
+            } else {
+                throw new RuntimeException("Can't use leader ability");
             }
         } else {
             if (player2CanUseLeaderAbility()) {
                 player2UsedLeaderAbility = true;
                 ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
+            } else {
+                throw new RuntimeException("Can't use leader ability");
             }
         }
-        latch.countDown();
     }
 
     private void pass() {
@@ -336,7 +339,6 @@ public class Game implements Serializable, Cloneable {
         } else {
             player2HasPassed = true;
         }
-        latch.countDown();
     }
 
     private void playCard(Card card, Row row) {
@@ -349,7 +351,6 @@ public class Game implements Serializable, Cloneable {
                 throw new IllegalArgumentException("card cannot be played");
             }
         }
-        latch.countDown();
     }
 
     // functions that say if the player can do a play task:
@@ -854,12 +855,14 @@ public class Game implements Serializable, Cloneable {
     }
 
     public void cheatUseLeaderAbility() {
-        if (isPlayer1Turn) {
-            ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
-        } else {
-            ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
-        }
-        calculatePoints();
+        try {
+            if (isPlayer1Turn) {
+                ((InstantaneousAbility) player1LeaderCard.getAbility()).affect(this, null);
+            } else {
+                ((InstantaneousAbility) player2LeaderCard.getAbility()).affect(this, null);
+            }
+            calculatePoints();
+        } catch (Exception ignored) {}
     }
 
     public void cheatRemoveMyCards() {

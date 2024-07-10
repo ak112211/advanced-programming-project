@@ -64,13 +64,13 @@ public class RoundsInfo implements Cloneable{
         } else if (getPlayer2Score(round) > getPlayer1Score(round)) {
             return Winner.PLAYER2;
         } else {
-            if (game.getPlayer1Faction() == Faction.EMPIRE_NILFGAARDIAM) {
-                if (game.getPlayer2Faction() == Faction.EMPIRE_NILFGAARDIAM) {
+            if (game.getPlayer1Faction() == Faction.EMPIRE_NILFGAARDIAN) {
+                if (game.getPlayer2Faction() == Faction.EMPIRE_NILFGAARDIAN) {
                     return Winner.DRAW;
                 } else {
                     return Winner.PLAYER1;
                 }
-            } else if (game.getPlayer2Faction() == Faction.EMPIRE_NILFGAARDIAM) {
+            } else if (game.getPlayer2Faction() == Faction.EMPIRE_NILFGAARDIAN) {
                 return Winner.PLAYER2;
             } else {
                 return Winner.DRAW;
