@@ -483,12 +483,10 @@ public class Game implements Serializable, Cloneable {
     }
 
     public void setCurrentUser(User user) {
-        if (Objects.equals(user.getUsername(), player1.getUsername())) {
-            isPlayer1Turn = true;
-        } else if (Objects.equals(user.getUsername(), player2.getUsername())) {
-            isPlayer1Turn = false;
-        } else {
+        if (userIsPlayer1() == null) {
             throw new IllegalArgumentException("User is not a player");
+        } else {
+            isPlayer1Turn = userIsPlayer1();
         }
     }
 
@@ -647,9 +645,13 @@ public class Game implements Serializable, Cloneable {
     }
 
     public Boolean userIsPlayer1() {
-        if (User.getCurrentUser().equals(player1)) {
+        return userIsPlayer1(User.getCurrentUser());
+    }
+
+    public Boolean userIsPlayer1(User user) {
+        if (user.equals(player1)) {
             return true;
-        } else if (User.getCurrentUser().equals(player2)) {
+        } else if (user.equals(player2)) {
             return false;
         } else {
             return null;
@@ -677,7 +679,7 @@ public class Game implements Serializable, Cloneable {
 
     public void receiveTaskResult(String taskResult, User sender) { // done in javafx thread
         if (isOnline) {
-            if ((isPlayer1Turn && !sender.getUsername().equals(player1.getUsername())) || (!isPlayer1Turn && !sender.getUsername().equals(player2.getUsername()))) {
+            if (!isUserTurn(sender)) {
                 System.out.println("wrong user send taskResult");
                 return;
             }
@@ -779,7 +781,7 @@ public class Game implements Serializable, Cloneable {
                             player2.getUsername() + ":loaded after:" + ID);
                 } else {
                     App.getServerConnection().sendMessage(
-                            (User.getCurrentUser().equals(player1) ? player2.getUsername() : player1.getUsername())
+                            (userIsPlayer1() ? player2.getUsername() : player1.getUsername())
                                     + ":other player played move");
                 }
             }

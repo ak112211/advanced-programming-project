@@ -532,7 +532,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     public void handleQuit() {
         try {
-            if (game.getPlayer1().getUsername().equals(User.getCurrentUser().getUsername())) {
+            if (game.userIsPlayer1()) {
                 game.getRoundsInfo().setWinner(RoundsInfo.Winner.PLAYER2);
             } else {
                 game.getRoundsInfo().setWinner(RoundsInfo.Winner.PLAYER1);

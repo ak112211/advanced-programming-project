@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class User implements Serializable {
 
@@ -187,5 +188,12 @@ public class User implements Serializable {
 
     public void setTwoFactorOn(boolean twoFactorOn) {
         this.twoFactorOn = twoFactorOn;
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof User) {
+            return username.equals(((User) o).username);
+        }
+        return false;
     }
 }
