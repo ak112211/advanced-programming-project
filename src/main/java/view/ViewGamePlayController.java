@@ -190,8 +190,6 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
             put(Row.PLAYER2_SIEGE, player2SiegeSpell);
         }};
 
-
-        game = Game.getCurrentGame();
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
         player1FactionLabel.setText(game.getPlayer1Faction().getName());

@@ -117,7 +117,6 @@ public class RoundsInfo implements Cloneable{
         return clone;
     }
 
-
     public void setWinner(Winner winner) {
         this.winner = winner;
     }
@@ -136,6 +135,14 @@ public class RoundsInfo implements Cloneable{
 
     public void setPlayer2Hearts(int player2Hearts) {
         this.player2Hearts = player2Hearts;
+    }
+
+    public int getPlayer1TotalScore() {
+        return player1Scores.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public int getPlayer2TotalScore() {
+        return player2Scores.stream().mapToInt(Integer::intValue).sum();
     }
 
     public enum Winner {

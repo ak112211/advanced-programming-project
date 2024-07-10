@@ -133,8 +133,6 @@ public class Game implements Serializable, Cloneable {
 
         this.status = status;
         this.roundsInfo = roundsInfo;
-
-        calculatePoints();
     }
 
     // functions for game main logics:
@@ -148,6 +146,7 @@ public class Game implements Serializable, Cloneable {
     private void start() {
         // The fromSaved variable is true at first, so it doesn't run some codes until it reaches the first saving.
         // Then fromSaved becomes false and code runs like normally.
+        calculatePoints();
         if (!skipCode) {
             for (int i = 0; i < STARTING_HAND_SIZE; i++) {
                 player1GetRandomCard();
