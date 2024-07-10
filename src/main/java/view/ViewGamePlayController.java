@@ -201,21 +201,7 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
         setupLeaderCards();
         updateScene();
 
-        if (game.isOnline()) {
-            exitSave.setVisible(false);
-            exit.setVisible(false);
-            quit.setVisible(true);
-            makePublic.setVisible(true);
-            App.getServerConnection().addMessageListener(this);
-            if (game.isPublic()) {
-                makePublic.setText("Make game Offline");
-            }
-        } else {
-            exitSave.setVisible(true);
-            exit.setVisible(true);
-            quit.setVisible(false);
-            makePublic.setVisible(false);
-        }
+        App.getServerConnection().addMessageListener(this);
 
         if (game.isPlayer1Turn()) {
             displayMessage("Turn of Player 1");
@@ -321,6 +307,7 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
         setupCardsOnBoard();
         setupGraveyardCards();
         setupGemsAndCardNumber();
+        game.getAllCards().forEach(this::createCardView);
         game.getAllCards().forEach(Card::setPowerText);
         if (game.isOnline()) {
             App.getServerConnection().sendMessage("update viewers:" + game.getID());
@@ -385,8 +372,14 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
     @Override
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
-            if (input.startsWith("online game move made")) {
+            if (input.startsWith("online game move made ")) {
+                System.out.println(Integer.parseInt(input.split(" ")[4]));
                 if (Integer.parseInt(input.split(" ")[4]) == game.getID()) {
+                    try {
+                        game = DatabaseConnection.getGame(game.getID());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     updateScene();
                 }
             } else if (input.startsWith("game disconnected")) {
