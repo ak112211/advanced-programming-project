@@ -15,10 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -133,40 +130,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private Label overlayMessage;
 
-    public static VBox createEndScreenVBox(int roundNumber, int firstNumber, int secondNumber) {
-        // Create the VBox with spacing set to 40.0
-        VBox vbox = new VBox(40);
-        vbox.setAlignment(javafx.geometry.Pos.CENTER);
-
-        // Create the round label
-        Label roundLabel = new Label("Round " + roundNumber);
-        roundLabel.setTextFill(Color.WHITE);
-        roundLabel.setFont(new Font("Arial", 18));
-
-        // Create the labels for the numbers
-        Label firstNumberLabel = new Label(String.valueOf(firstNumber));
-        Label secondNumberLabel = new Label(String.valueOf(secondNumber));
-        firstNumberLabel.setFont(new Font("Arial", 18));
-        secondNumberLabel.setFont(new Font("Arial", 18));
-
-        // Determine the colors based on the values of the numbers
-        if (firstNumber > secondNumber) {
-            firstNumberLabel.setTextFill(Color.YELLOW);
-            secondNumberLabel.setTextFill(Color.WHITE);
-        } else if (firstNumber < secondNumber) {
-            firstNumberLabel.setTextFill(Color.WHITE);
-            secondNumberLabel.setTextFill(Color.YELLOW);
-        } else {
-            firstNumberLabel.setTextFill(Color.WHITE);
-            secondNumberLabel.setTextFill(Color.WHITE);
-        }
-
-        // Add the labels to the VBox
-        vbox.getChildren().addAll(roundLabel, firstNumberLabel, secondNumberLabel);
-
-        return vbox;
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GET_ROW_BOX = new HashMap<>() {{
@@ -198,6 +161,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         player2FactionLabel.setText(game.getPlayer2Faction().getName());
         player1Faction.setImage(game.getPlayer1Faction().getIcon());
         player2Faction.setImage(game.getPlayer2Faction().getIcon());
+        background.setOnMouseClicked(event -> hideCardDisplay());
 
         initializeCards();
         setupLeaderCards();
@@ -351,6 +315,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     public void updateScene() {
         clearHighlights(); // Clear any row highlights, reset onMouseClick function of both cards and rows in game
+        hideCardDisplay();
         updateScore();
         setupCardsInHand();
         setupCardsOnBoard();
@@ -684,17 +649,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         cardDescriptionText.setText(description);
         cardDisplayVBox.setVisible(true);
 
-        // Add the event filter to the scene
-        cardDisplayVBox.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            // Get the coordinates of the mouse event relative to the cardDisplayVBox
-            double x = event.getScreenX();
-            double y = event.getScreenY();
-
-            // Check if the click is outside the bounds of cardDisplayVBox
-            if (!cardDisplayVBox.localToScreen(cardDisplayVBox.getBoundsInLocal()).contains(x, y)) {
-                hideCardDisplay();
-            }
-        });
     }
 
     public void cleanup() {
@@ -855,6 +809,41 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             }
         }
     }
+
+    public VBox createEndScreenVBox(int roundNumber, int firstNumber, int secondNumber) {
+        // Create the VBox with spacing set to 40.0
+        VBox vbox = new VBox(40);
+        vbox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Create the round label
+        Label roundLabel = new Label("Round " + roundNumber);
+        roundLabel.setTextFill(Color.WHITE);
+        roundLabel.setFont(new Font("Arial", 18));
+
+        // Create the labels for the numbers
+        Label firstNumberLabel = new Label(String.valueOf(firstNumber));
+        Label secondNumberLabel = new Label(String.valueOf(secondNumber));
+        firstNumberLabel.setFont(new Font("Arial", 18));
+        secondNumberLabel.setFont(new Font("Arial", 18));
+
+        // Determine the colors based on the values of the numbers
+        if (firstNumber > secondNumber) {
+            firstNumberLabel.setTextFill(Color.YELLOW);
+            secondNumberLabel.setTextFill(Color.WHITE);
+        } else if (firstNumber < secondNumber) {
+            firstNumberLabel.setTextFill(Color.WHITE);
+            secondNumberLabel.setTextFill(Color.YELLOW);
+        } else {
+            firstNumberLabel.setTextFill(Color.WHITE);
+            secondNumberLabel.setTextFill(Color.WHITE);
+        }
+
+        // Add the labels to the VBox
+        vbox.getChildren().addAll(roundLabel, firstNumberLabel, secondNumberLabel);
+
+        return vbox;
+    }
+
 
     @FXML
     private void endScreenExit() {
