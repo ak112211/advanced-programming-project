@@ -1,19 +1,13 @@
 package view;
 
+import controller.LoginController;
 import enums.Menu;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import model.App;
-import model.User;
-import util.DatabaseConnection;
-
-import java.sql.SQLException;
-
-import static view.Tools.saveUserSession;
-import static view.Tools.sendVerificationCode;
+import model.Result;
 
 public class LoginMenuController {
 
@@ -46,33 +40,16 @@ public class LoginMenuController {
     private void handleLoginButtonAction() {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        User user;
-        try {
-            if ((user = DatabaseConnection.getUser(username)) == null) {
-                Tools.showAlert("Invalid username.");
-            } else if (DatabaseConnection.checkPassword(username, password)) {
-                User.setCurrentUser(user);
-                if (!user.isVerified()) {
-                    sendVerificationCode(User.getCurrentUser());
-                    Tools.showAlert("Account not verified. Redirecting to verification screen.");
-                    Tools.loadScene(Menu.VERIFY_MENU);
-                } else {
-                    saveUserSession(user);  // Save session
-                    if (user.isTwoFactorOn()) {
-                        sendVerificationCode(User.getCurrentUser());
-                        Tools.showAlert("Code needed for 2FA", "Login Successful", "User logged in successfully. Please check your email for the verification code.");
-                        Tools.loadScene(Menu.VERIFY_MENU);
-                    } else {
-                        Tools.loadScene(Menu.MAIN_MENU);
-                        App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
-                        Tools.showAlert("Login successful. Welcome " + user.getNickname() + "!");
-                    }
-                }
-            } else {
-                Tools.showAlert("Invalid password.");
-            }
-        } catch (SQLException e) {
-            Tools.showAlert("Error during login: " + e.getMessage());
+
+        Result result = LoginController.login(username, password);
+        Tools.showAlert(result);
+
+        if (result.getHeader().equals("Not verified")) {
+            Tools.loadScene(Menu.VERIFY_MENU);
+        } else if (result.getHeader().equals("Code needed for 2FA")) {
+            Tools.loadScene(Menu.VERIFY_MENU);
+        } else if (result.isSuccess()) {
+            Tools.loadScene(Menu.MAIN_MENU);
         }
     }
 
