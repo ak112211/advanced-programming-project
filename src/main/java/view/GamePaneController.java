@@ -148,7 +148,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         if (game.isOnline()){
             player2Hand.setVisible(false);
             player2PassRoundButton.setVisible(false);
-            if (game.userIsPlayer1()) {
+            if (!game.userIsPlayer1()) {
                 swapPlayers();
             }
         }
