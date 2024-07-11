@@ -149,6 +149,7 @@ public class ChatMenuController implements ServerConnection.ServerEventListener 
         try {
             if (DatabaseConnection.sendFriendRequest(userId, friendUsername)) {
                 showAlert("Success", "Friend Request Sent", "Friend request sent successfully.");
+                loadFriendRequests();
             } else if (DatabaseConnection.getUser(friendUsername) == null) {
                 showAlert("Error", "Request Failed", "No such user");
             } else {
