@@ -17,6 +17,7 @@ import model.App;
 import model.Deck;
 import model.Game;
 import model.User;
+import util.ServerConnection;
 
 import java.io.IOException;
 
@@ -50,6 +51,7 @@ public class GameLauncher extends Application {
     }
 
     private void initialize() {
+        App.setServerConnection(new ServerConnection());
         Deck deck1 = new Deck();
         Deck deck2 = new Deck();
         deck1.setFaction(Faction.SCOIA_TAEL);
@@ -63,7 +65,8 @@ public class GameLauncher extends Application {
         User user2 = new User("username2", "nickname2", "email2", "password2");
         user1.setDeck(deck1);
         user2.setDeck(deck2);
-        Game.setCurrentGame(new Game(user1, user2));
+        Game game = new Game(user1, user2);
+        Game.setCurrentGame(game);
         User.setCurrentUser(user1);
     }
 }
