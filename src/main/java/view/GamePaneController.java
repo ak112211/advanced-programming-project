@@ -41,9 +41,6 @@ import java.util.stream.Stream;
 
 import static util.DatabaseConnection.updateUserScore;
 
-// TODO use leader ability (taskResult="leader")
-// TODO pass round (taskResult="pass")
-// TODO show players name, avatar, faction, etc.
 public class GamePaneController implements Initializable, ServerConnection.ServerEventListener {
 
     private static final Image GEM_ON = Tools.getImage("/gwentImages/img/icons/icon_gem_on.png");
