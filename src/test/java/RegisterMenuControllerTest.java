@@ -1,23 +1,21 @@
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import enums.SecurityQuestion;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import model.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import util.DatabaseConnection;
-import enums.SecurityQuestion;
 import view.RegisterMenuController;
 import view.Tools;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterMenuControllerTest extends ApplicationTest {
     private RegisterMenuController controller;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         controller = new RegisterMenuController();
 
         controller.usernameField = new TextField();

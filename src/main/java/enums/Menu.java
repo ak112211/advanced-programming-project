@@ -18,7 +18,6 @@ public enum Menu {
     CHOOSE_NAME_MENU("/fxml/ChooseName.fxml"),
     LEAGUE_MENU("/fxml/LeagueMenu.fxml"),
     CHOOSE_DECK_MENU("/fxml/ChooseDeckMenu.fxml"),
-    LOBBY("/fxml/LobbyMenu.fxml"),
     ;
 
     private final String path;

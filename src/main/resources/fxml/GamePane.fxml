@@ -52,9 +52,6 @@
         </ImageView>
     </HBox>
 
-    <VBox fx:id="player1Score" alignment="CENTER" layoutX="10" layoutY="400" spacing="3" />
-    <VBox fx:id="player2Score" alignment="CENTER" layoutX="1150" layoutY="400" spacing="3" />
-
     <!--   player1   -->
     <HBox alignment="CENTER" layoutY="438.0" prefHeight="102.0" prefWidth="301.0" spacing="10" style="-fx-background-color: #00000060; ">
         <Pane prefHeight="102.0" prefWidth="116.0">
@@ -148,7 +145,7 @@
     </HBox>
 
     <Button layoutX="211.0" layoutY="588.0" onAction="#player1PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
-    <Button layoutX="211.0" layoutY="86.0" onAction="#player2PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
+    <Button fx:id="player2PassRoundButton" layoutX="211.0" layoutY="86.0" onAction="#player2PassRound" prefWidth="74.0" style="-fx-background-color: #111111A0; /* Dark background */                 -fx-text-fill: #d4a017; /* Gold text */                 -fx-font-size: 21px; /* Font size */                 -fx-padding: -3px; /* padding */                 -fx-background-radius: 5; /* Rounded corners */                 -fx-border-color: #d4a017; /* Border color */                 -fx-border-width: 1; /* Border width */                 -fx-border-radius: 5; /* Border radius */" text="Pass" />
 
     <StackPane layoutX="283.0" layoutY="470.0">
         <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
