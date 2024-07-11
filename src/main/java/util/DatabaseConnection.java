@@ -223,18 +223,8 @@ public class DatabaseConnection {
             preparedStatement.setInt(11, game.getRoundsInfo().getCurrentRound() == 1 ? game.getPlayer2Points() : game.getRoundsInfo().getPlayer2Score(1));
             preparedStatement.setInt(12, game.getRoundsInfo().getCurrentRound() <= 2 ? game.getPlayer2Points() : game.getRoundsInfo().getPlayer2Score(2));
             preparedStatement.setInt(13, game.getRoundsInfo().getCurrentRound() <= 3 ? game.getPlayer2Points() : game.getRoundsInfo().getPlayer2Score(3));
-
-            int player1TotalScore = 0;
-            int player2TotalScore = 0;
-
-            for (int i = 0 ; i < game.getRoundsInfo().getCurrentRound() - 1; i++) {
-                player1TotalScore += game.getRoundsInfo().getPlayer2Score(i + 1);
-                player2TotalScore += game.getRoundsInfo().getPlayer2Score(i + 1);
-            }
-
-            preparedStatement.setInt(14, player1TotalScore == 0 ? game.getPlayer1Points() : player1TotalScore);
-            preparedStatement.setInt(15, player2TotalScore == 0 ? game.getPlayer2Points() : player2TotalScore);
-
+            preparedStatement.setInt(14, game.getRoundsInfo().getPlayer1TotalScore());
+            preparedStatement.setInt(15, game.getRoundsInfo().getPlayer2TotalScore());
             preparedStatement.setInt(16, game.getID());
             preparedStatement.executeUpdate();
         }

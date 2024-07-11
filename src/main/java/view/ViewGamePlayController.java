@@ -373,7 +373,6 @@ public class ViewGamePlayController implements Initializable, ServerConnection.S
     public void handleServerEvent(String input) {
         Platform.runLater(() -> {
             if (input.startsWith("online game move made ")) {
-                System.out.println(Integer.parseInt(input.split(" ")[4]));
                 if (Integer.parseInt(input.split(" ")[4]) == game.getID()) {
                     try {
                         game = DatabaseConnection.getGame(game.getID());
