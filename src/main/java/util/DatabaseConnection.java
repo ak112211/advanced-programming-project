@@ -667,17 +667,23 @@ public class DatabaseConnection {
     }
 
     public static List<String> getFriendRequests(String username) throws SQLException {
-        String query = "SELECT * FROM friendrequests WHERE recipient = ? ORDER BY timestamp DESC";
+        String query = "SELECT * FROM friendrequests WHERE recipient = ? OR sender = ? ORDER BY timestamp DESC";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, username);
+            stmt.setString(2, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 List<String> requests = new ArrayList<>();
                 while (rs.next()) {
                     String sender = rs.getString("sender");
+                    String recipient = rs.getString("recipient");
                     String status = rs.getString("status");
                     String timestamp = rs.getString("timestamp");
-                    requests.add("Friend request from " + sender + " (" + timestamp + ")" + " status: " + status);
+                    if (sender.equals(User.getCurrentUser().getUsername())) {
+                        requests.add("Friend request to " + recipient + " (" + timestamp + ")" + " status: " + status);
+                    } else {
+                        requests.add("Friend request from " + sender + " (" + timestamp + ")" + " status: " + status);
+                    }
                 }
                 return requests;
             }
