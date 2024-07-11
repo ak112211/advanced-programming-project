@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -46,6 +45,31 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private static final Image GEM_ON = Tools.getImage("/gwentImages/img/icons/icon_gem_on.png");
     private static final Image GEM_OFF = Tools.getImage("/gwentImages/img/icons/icon_gem_off.png");
     private static final String CHEAT_TEXT = "alo pedarsag";
+
+    @FXML
+    private Pane gamePane;
+    @FXML
+    private ImageView background;
+    @FXML
+    private Pane overlayPane;
+    @FXML
+    private VBox cheatMenu;
+    @FXML
+    private Label overlayMessage;
+
+    // Pause Menu
+    @FXML
+    private VBox pauseMenu;
+    @FXML
+    private Button makePublic;
+    @FXML
+    private Button exit;
+    @FXML
+    private Button exitSave;
+    @FXML
+    private Button quit;
+
+    // End Screen
     @FXML
     private ImageView endScreenStatusImage;
     @FXML
@@ -55,6 +79,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private HBox endScreenVBoxes;
 
+    // Left Screen
     @FXML
     private Label player1CardNumber, player2CardNumber;
     @FXML
@@ -62,22 +87,20 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private ImageView player1Faction, player2Faction;
     @FXML
-    private Button makePublic;
+    private Label player1NameLabel, player2NameLabel;
+    @FXML
+    private Label player1FactionLabel, player2FactionLabel;
     @FXML
     private Text player1TotalScore, player2TotalScore, player1CloseCombatTotalScore, player1RangedTotalScore,
             player1SiegeTotalScore, player2SiegeTotalScore, player2RangedTotalScore, player2CloseCombatTotalScore;
     @FXML
-    private Label player1FactionLabel, player2FactionLabel;
+    private Button player2PassRoundButton;
     @FXML
-    private Button passButton;
+    private StackPane player1Leader;
     @FXML
-    private VBox pauseMenu;
-    @FXML
-    private Button exit;
-    @FXML
-    private Button exitSave;
-    @FXML
-    private Button quit;
+    private StackPane player2Leader;
+
+    // Card Display
     @FXML
     private VBox cardDisplayVBox;
     @FXML
@@ -86,6 +109,8 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private Text cardDescriptionText;
     @FXML
     private Text cardNumText;
+
+    // Choose Menu
     @FXML
     private VBox chooseDisplayVBox;
     @FXML
@@ -93,13 +118,9 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private Text chooseDescriptionText;
     @FXML
-    private Pane gamePane;
-    @FXML
-    private ImageView background;
-    @FXML
-    private Pane overlayPane;
-    @FXML
-    private Label player1NameLabel, player2NameLabel;
+    private Button passButton;
+
+    // In Game Row Boxes
     @FXML
     private HBox player1Graveyard, player2Graveyard;
     @FXML
@@ -109,23 +130,15 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     @FXML
     private HBox player1CloseCombatSpell, player2CloseCombatSpell, player1RangedSpell, player2RangedSpell,
             player1SiegeSpell, player2SiegeSpell, weather;
-    @FXML
-    private VBox player1Score, player2Score;
-    @FXML
-    private StackPane player1Leader;
-    @FXML
-    private StackPane player2Leader;
-    private MediaPlayer mediaPlayer; // Assuming this handles your background music
+
+    // Backend Variables
+    private MediaPlayer mediaPlayer;
     private boolean isMute;
     private HashMap<Row, HBox> GET_ROW_BOX, GET_ROW_BOX_SPELL;
     private Game game;
     private Card selectedCard;
     private int currentIndex;
-    @FXML
-    private VBox cheatMenu;
-    private StringBuilder writtenText = new StringBuilder();
-    @FXML
-    private Label overlayMessage;
+    private final StringBuilder writtenText = new StringBuilder();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -149,9 +162,17 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             put(Row.PLAYER2_SIEGE, player2SiegeSpell);
         }};
 
-
         game = Game.getCurrentGame();
         game.setGamePaneController(this);
+
+        if (game.isOnline()){
+            player2Hand.setVisible(false);
+            player2PassRoundButton.setVisible(false);
+            if (game.userIsPlayer1()) {
+                swapPlayers();
+            }
+        }
+
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
         player1FactionLabel.setText(game.getPlayer1Faction().getName());
@@ -260,12 +281,25 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         }
     }
 
+    private HBox getRowBox(Card card) {
+        return Objects.requireNonNull(card.getType() == Type.SPELL ?
+                GET_ROW_BOX_SPELL.get(card.getRow()) : GET_ROW_BOX.get(card.getRow()));
+    }
+
     private void setupCardsInHand() {
         player1Hand.getChildren().clear();
         player2Hand.getChildren().clear();
 
-        player1Hand.getChildren().addAll(game.getPlayer1InHandCards());
-        player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
+        if (game.isOnline()) {
+            if (game.userIsPlayer1()) {
+                player1Hand.getChildren().addAll(game.getPlayer1InHandCards());
+            } else {
+                player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
+            }
+        } else {
+            player1Hand.getChildren().addAll(game.getPlayer1InHandCards());
+            player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
+        }
 
         for (Card card : CardsPlace.IN_HAND.getPlayerCards(game)) {
             card.setOnMouseClicked(event -> selectCard(card));
@@ -392,8 +426,14 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     @FXML
     private void player1PassRound() {
-        if (game.isPlayer1Turn()) {
-            sendTaskResult("pass");
+        if (game.isOnline()) {
+            if (game.isMyTurn()) {
+                sendTaskResult("pass");
+            }
+        } else {
+            if (game.isPlayer1Turn()) {
+                sendTaskResult("pass");
+            }
         }
     }
 
@@ -487,7 +527,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         Leader leaderCard = player1Leader ? game.getPlayer1LeaderCard() : game.getPlayer2LeaderCard();
         showBigImage(leaderCard.getImagePath(), leaderCard.getDescription(), false, null, leaderCard);
 
-        if (player1Leader == game.isPlayer1Turn() &&
+        if (player1Leader == game.isPlayer1Turn() && (!game.isOnline() || game.isMyTurn()) &&
                 (player1Leader ? game.player1CanUseLeaderAbility() : game.player2CanUseLeaderAbility())) {
             cardImageView.setOnMouseClicked((event) -> sendTaskResult("leader"));
         }
@@ -499,11 +539,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> hideOverlayMessage());
         pause.play();
-    }
-
-    private HBox getRowBox(Card card) {
-        return Objects.requireNonNull(card.getType() == Type.SPELL ?
-                GET_ROW_BOX_SPELL.get(card.getRow()) : GET_ROW_BOX.get(card.getRow()));
     }
 
     private List<HBox> getAllRowBoxes() {
@@ -843,9 +878,96 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         return vbox;
     }
 
-
     @FXML
     private void endScreenExit() {
         Tools.loadScene(Menu.MAIN_MENU);
+    }
+
+    @FXML
+    private void swapPlayers() {
+        // Swap Labels
+        Label tempLabel;
+        tempLabel = player1CardNumber;
+        player1CardNumber = player2CardNumber;
+        player2CardNumber = tempLabel;
+
+        tempLabel = player1NameLabel;
+        player1NameLabel = player2NameLabel;
+        player2NameLabel = tempLabel;
+
+        tempLabel = player1FactionLabel;
+        player1FactionLabel = player2FactionLabel;
+        player2FactionLabel = tempLabel;
+
+        Text tempText;
+        tempText = player1TotalScore;
+        player1TotalScore = player2TotalScore;
+        player2TotalScore = tempText;
+
+        tempText = player1CloseCombatTotalScore;
+        player1CloseCombatTotalScore = player2CloseCombatTotalScore;
+        player2CloseCombatTotalScore = tempText;
+
+        tempText = player1RangedTotalScore;
+        player1RangedTotalScore = player2RangedTotalScore;
+        player2RangedTotalScore = tempText;
+
+        tempText = player1SiegeTotalScore;
+        player1SiegeTotalScore = player2SiegeTotalScore;
+        player2SiegeTotalScore = tempText;
+
+        // Swap ImageViews
+        ImageView tempImageView;
+        tempImageView = player1Gem1;
+        player1Gem1 = player2Gem1;
+        player2Gem1 = tempImageView;
+
+        tempImageView = player1Gem2;
+        player1Gem2 = player2Gem2;
+        player2Gem2 = tempImageView;
+
+        tempImageView = player1Faction;
+        player1Faction = player2Faction;
+        player2Faction = tempImageView;
+
+        // Swap StackPanes
+        StackPane tempStackPane;
+        tempStackPane = player1Leader;
+        player1Leader = player2Leader;
+        player2Leader = tempStackPane;
+
+        // Swap HBoxes
+        HBox tempHBox;
+        tempHBox = player1Graveyard;
+        player1Graveyard = player2Graveyard;
+        player2Graveyard = tempHBox;
+
+        tempHBox = player1Hand;
+        player1Hand = player2Hand;
+        player2Hand = tempHBox;
+
+        tempHBox = player1CloseCombat;
+        player1CloseCombat = player2CloseCombat;
+        player2CloseCombat = tempHBox;
+
+        tempHBox = player1Ranged;
+        player1Ranged = player2Ranged;
+        player2Ranged = tempHBox;
+
+        tempHBox = player1Siege;
+        player1Siege = player2Siege;
+        player2Siege = tempHBox;
+
+        tempHBox = player1CloseCombatSpell;
+        player1CloseCombatSpell = player2CloseCombatSpell;
+        player2CloseCombatSpell = tempHBox;
+
+        tempHBox = player1RangedSpell;
+        player1RangedSpell = player2RangedSpell;
+        player2RangedSpell = tempHBox;
+
+        tempHBox = player1SiegeSpell;
+        player1SiegeSpell = player2SiegeSpell;
+        player2SiegeSpell = tempHBox;
     }
 }
