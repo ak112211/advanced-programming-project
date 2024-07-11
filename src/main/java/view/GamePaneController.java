@@ -142,6 +142,17 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        game = Game.getCurrentGame();
+        game.setGamePaneController(this);
+
+        if (game.isOnline()){
+            player2Hand.setVisible(false);
+            player2PassRoundButton.setVisible(false);
+            if (game.userIsPlayer1()) {
+                swapPlayers();
+            }
+        }
+
         GET_ROW_BOX = new HashMap<>() {{
             put(Row.PLAYER1_CLOSE_COMBAT, player1CloseCombat);
             put(Row.PLAYER1_RANGED, player1Ranged);
@@ -161,17 +172,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
             put(Row.PLAYER2_RANGED, player2RangedSpell);
             put(Row.PLAYER2_SIEGE, player2SiegeSpell);
         }};
-
-        game = Game.getCurrentGame();
-        game.setGamePaneController(this);
-
-        if (game.isOnline()){
-            player2Hand.setVisible(false);
-            player2PassRoundButton.setVisible(false);
-            if (game.userIsPlayer1()) {
-                swapPlayers();
-            }
-        }
 
         player1NameLabel.setText(game.getPlayer1().getUsername());
         player2NameLabel.setText(game.getPlayer2().getUsername());
