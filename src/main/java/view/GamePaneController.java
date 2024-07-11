@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -290,16 +291,29 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     private void setupCardsInHand() {
         player1Hand.getChildren().clear();
         player2Hand.getChildren().clear();
+        player1Hand.setOpacity(1);
+        player2Hand.setOpacity(1);
 
         if (game.isOnline()) {
             if (game.userIsPlayer1()) {
                 player1Hand.getChildren().addAll(game.getPlayer1InHandCards());
+                if (!game.isMyTurn()) {
+                    player1Hand.setOpacity(0.6);
+                }
             } else {
                 player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
+                if (!game.isMyTurn()) {
+                    player2Hand.setOpacity(0.6);
+                }
             }
         } else {
             player1Hand.getChildren().addAll(game.getPlayer1InHandCards());
             player2Hand.getChildren().addAll(game.getPlayer2InHandCards());
+            if (game.isPlayer1Turn()) {
+                player2Hand.setOpacity(0.6);
+            } else {
+                player1Hand.setOpacity(0.6);
+            }
         }
 
         for (Card card : CardsPlace.IN_HAND.getPlayerCards(game)) {
