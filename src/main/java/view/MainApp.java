@@ -1,5 +1,6 @@
 package view;
 
+import enums.path.MediaPath;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -84,7 +85,7 @@ public class MainApp extends Application {
     }
 
     private void setupBackgroundMusic() {
-        mediaPlayer = Tools.getMediaPlayer("/media/Ramin-Djawadi-Finale-128.mp3");
+        mediaPlayer = Tools.getMediaPlayer(MediaPath.FINALE.getPath());
         mediaPlayer.play();
     }
 

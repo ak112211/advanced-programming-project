@@ -4,6 +4,7 @@ import enums.Menu;
 import enums.Row;
 import enums.cardsinformation.CardsPlace;
 import enums.cardsinformation.Type;
+import enums.path.MediaPath;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -44,7 +45,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     private static final Image GEM_ON = Tools.getImage("/gwentImages/img/icons/icon_gem_on.png");
     private static final Image GEM_OFF = Tools.getImage("/gwentImages/img/icons/icon_gem_off.png");
-    private static final String CHEAT_TEXT = "alo pedarsag";
+    private static final String CHEAT_TEXT = "hesoyam";
 
     @FXML
     private Pane gamePane;
@@ -145,7 +146,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
         game = Game.getCurrentGame();
         game.setGamePaneController(this);
 
-        if (game.isOnline()){
+        if (game.isOnline()) {
             player2Hand.setVisible(false);
             player2PassRoundButton.setVisible(false);
             if (!game.userIsPlayer1()) {
@@ -228,7 +229,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
     }
 
     private void setupBackgroundMusic() {
-        mediaPlayer = Tools.getMediaPlayer("/media/Ramin-Djawadi-Finale-128.mp3");
+        mediaPlayer = Tools.getMediaPlayer(MediaPath.FINALE.getPath());
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
     }
 
@@ -418,7 +419,6 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
 
     @FXML
     private void passChoose() {
-        // nextTurn(); // ridam dahane in khate code
         overlayPane.setVisible(false);
         chooseDisplayVBox.setVisible(false);
         sendTaskResult("chose " + "null");
@@ -494,7 +494,7 @@ public class GamePaneController implements Initializable, ServerConnection.Serve
                         highlightRow(player2SiegeSpell, Row.PLAYER2_SIEGE, card);
                     }
                 }
-            } else if (card.getType() == Type.DECOY) { // kodoom ghashangtare? code ye khati paiin ya kode bala?
+            } else if (card.getType() == Type.DECOY) {
                 (isPlayer1 ?
                         Stream.concat(player1CloseCombat.getChildren().stream(),
                                 Stream.concat(player1Ranged.getChildren().stream(), player1Siege.getChildren().stream())) :
