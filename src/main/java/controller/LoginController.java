@@ -28,7 +28,7 @@ public class LoginController {
                         return new Result(true, "Code needed for 2FA", "User logged in successfully. Please check your email for the verification code.");
                     } else {
                         App.getServerConnection().sendMessage("login:" + User.getCurrentUser().getUsername());
-                        new Result(true, "Login successful", "Welcome " + user.getNickname() + "!");
+                        return new Result(true, "Login successful", "Welcome " + user.getNickname() + "!");
                     }
                 }
             } else {
@@ -37,6 +37,5 @@ public class LoginController {
         } catch (SQLException e) {
             return new Result(false, "", "Error during login: " + e.getMessage());
         }
-        return new Result(false, "", "");
     }
 }
