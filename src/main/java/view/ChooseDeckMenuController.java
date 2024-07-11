@@ -56,7 +56,7 @@ public class ChooseDeckMenuController {
     private Button startGameButton;
     @FXML
     private Button choosePlayer2DeckButton;
-    public static boolean isMulti;
+    public static boolean isMulti = true;
     public static League league;
     public static String leagueGameStep;
     private static User currentUser;
