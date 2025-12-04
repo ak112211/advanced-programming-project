@@ -1,4 +1,4 @@
-advanced-programming-project
+Advanced programming project at SUT for spring 2024.
 
 An online Gwent Card Game, with JavaFx as UI and a Java backend combined with a MySQL Database Schema.
 
