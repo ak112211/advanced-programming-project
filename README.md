@@ -1,4 +1,6 @@
-advanced-programming-project-group-13
+advanced-programming-project
+
+An online Gwent Card Game, with JavaFx as UI and a Java backend combined with a MySQL Database Schema.
 
 Soheil Sayah Varg
     402111237
